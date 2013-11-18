@@ -1,0 +1,9 @@
+.DS_Store
+.bundle
+.idea
+.ruby-version
+*.swp
+*.gem
+tmp/*
+Gemfile.lock
+
