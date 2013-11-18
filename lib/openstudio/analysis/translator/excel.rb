@@ -326,14 +326,12 @@ module OpenStudio
                   var['distribution']['source'] = row[14]
                 elsif var['method'] == 'static'
                   var['distribution']['static_value'] = row[7]
-                  #var['distribution']['apply_method'] = row[14]
                   var['distribution']['source'] = row[14]
                 end
 
                 var['notes'] = row[15]
                 var['relation_to_eui'] = row[16]
 
-                data['data'][measure_index]['apply_method'] ||= row[14]
                 data['data'][measure_index]['variables'] << var
               end
             else
