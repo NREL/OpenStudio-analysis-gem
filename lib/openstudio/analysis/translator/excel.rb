@@ -277,7 +277,7 @@ module OpenStudio
         # a higher level JSON file.  The JSON file is historic and it should really 
         # be omitted as an intermediate step
         def parse_variables()
-          rows = @xls.sheet('Sensitivity').parse()
+          rows = @xls.sheet('Variables').parse()
           data = {}
           data['data'] = []
 
