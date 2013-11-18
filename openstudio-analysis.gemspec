@@ -21,6 +21,9 @@ Gem::Specification.new do |s|
   s.add_runtime_dependency("faraday")
   s.add_runtime_dependency("uuid")
 
+  s.add_dependency("roo", ["~> 1.12.2"])
+  s.add_dependency("rubyzip", ["~> 1.1.0"])
+
   s.files = Dir.glob("lib/**/*") + %w(README.md Rakefile)
   s.test_files = Dir.glob("spec/**/*")
   s.require_path = "lib"

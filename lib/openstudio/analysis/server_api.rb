@@ -104,7 +104,7 @@ module OpenStudio
       end
 
       def new_analysis(project_id, options)
-        defaults = {analysis_name: "Test Analysis", reset_uuids: false}
+        defaults = {analysis_name: nil, reset_uuids: false}
         options = defaults.merge(options)
 
         raise "No project id passed" if project_id.nil?
@@ -141,7 +141,7 @@ module OpenStudio
         raise "No analysis id defined in analyis.json #{options[:formulation_file]}" if analysis_id.nil?
 
         # set the analysis name
-        formulation_json[:analysis][:name] = "#{options[:analysis_name]}"
+        formulation_json[:analysis][:name] = "#{options[:analysis_name]}" unless options[:analysis_name].nil?
 
         # save out this file to compare
         #File.open('formulation_merge.json', 'w') { |f| f << JSON.pretty_generate(formulation_json) }
