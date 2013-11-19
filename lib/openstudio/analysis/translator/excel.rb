@@ -87,7 +87,7 @@ module OpenStudio
         def get_binding
           binding
         end
-        
+
         # TODO: move this into a new class that helps construct this file
         def translate_to_analysis_json
           # Load in the templates for constructing the JSON file
@@ -125,12 +125,31 @@ module OpenStudio
                 if @variable['variable_type'] == 'argument'
                   ag = nil
                   if @variable['method'] == 'static'
+                    if !@variable['distribution']['static_value']
+                      raise "can not have an argument that is not a static value defined in which to set the argument"
+                    end
+
                     # add this as an argument
+                    case @variable['type']
+                      when "Double"
+                        @static_value = @variable['distribution']['static_value'].to_f
+                      when "Integer"
+                        @static_value = @variable['distribution']['static_value'].to_i
+                      when "String", "Choice"
+                        @static_value = @variable['distribution']['static_value'].inspect
+                      when "Bool"
+                        if @variable['distribution']['static_value'].downcase == "true"
+                          @static_value = true
+                        else
+                          @static_value = false
+                        end
+                      else
+                        raise "Unknown variable type of #{@variable['type']}"
+                    end
                     ag = JSON.parse(argument_template.result(get_binding))
-                  elsif raise "can not have an argument without having a static value defined in which to set the argument"
                   end
                   wf['arguments'] << ag
-                else
+                else # must be a vriable
                   vr = nil
                   if @variable['method'] == 'static'
                     # add this as an argument
@@ -195,8 +214,13 @@ module OpenStudio
 
           # Set the weather file as the first in the list -- this is optional
           # TODO: check if epw or if zip file
+
           analysis_json['analysis']['weather_file']['file_type'] = 'EPW'
-          analysis_json['analysis']['weather_file']['path'] = "./weather/#{File.basename(@weather_files.first, '.zip')}.epw"
+          if File.extname(@weather_files.first) =~ /.zip/i
+            analysis_json['analysis']['weather_file']['path'] = "./weather/#{File.basename(@weather_files.first, '.zip')}.epw"
+          else
+            analysis_json['analysis']['weather_file']['path'] = "./weather/#{File.basename(@weather_files.first)}"
+          end
 
           json_file_name = "#{@export_path}/#{model[:name]}.json"
           FileUtils.rm_f(json_file_name) if File.exists?(json_file_name)
@@ -348,6 +372,8 @@ module OpenStudio
               data['data'][measure_index]['enabled'] = row[0] == "TRUE" ? true : false
               data['data'][measure_index]['measure_file_name'] = row[2]
               data['data'][measure_index]['measure_file_name_directory'] = row[2].underscore
+              data['data'][measure_index]['measure_type'] = row[3]
+              
               data['data'][measure_index]['version'] = @version_id
 
               data['data'][measure_index]['variables'] = []

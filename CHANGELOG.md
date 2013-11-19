@@ -12,3 +12,8 @@ Version 0.1.1
 
 ### Resolved Issues
 
+* Added check for when weather file is a zip or an epw
+
+* Convert argument values to the right variable types
+
+* Add measure type parsing by reading the inherited class
