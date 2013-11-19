@@ -1,6 +1,17 @@
 OpenStudio Analysis Gem Change Log
 ==================================
 
+Version 0.1.3
+-------------
+
+### Major Changes (may be backwards incompatible)
+
+### New Features
+
+### Resolved Issues
+
+* Removed spaced in measure type
+
 Version 0.1.1
 -------------
 
@@ -17,3 +28,5 @@ Version 0.1.1
 * Convert argument values to the right variable types
 
 * Add measure type parsing by reading the inherited class
+
+
