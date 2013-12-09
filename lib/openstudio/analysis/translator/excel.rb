@@ -5,11 +5,17 @@ module OpenStudio
         attr_reader :variables
         attr_reader :models
         attr_reader :weather_files
-
+        attr_reader :measure_path
+        attr_reader :export_path
+        attr_reader :variables
+        
         # remove these once we have classes to construct the JSON file
         attr_reader :name
         attr_reader :number_of_samples
+        attr_reader :template_json
 
+        # methods to override instance variables
+        
         # pass in the filename to read
         def initialize(xls_filename)
           @root_path = File.expand_path(File.dirname(xls_filename))
@@ -29,7 +35,10 @@ module OpenStudio
           @export_path = "./export"
           @measure_path = "./measures"
           @number_of_samples = 0
-
+          @template_json = nil
+        end
+        
+        def process
           @setup = parse_setup()
           @variables = parse_variables()
 
@@ -42,7 +51,6 @@ module OpenStudio
           FileUtils.rm_f(filename) if File.exists?(filename)
           File.open(filename, 'w') { |f| f << JSON.pretty_generate(@variables) }
         end
-
 
         def validate_analysis
           # Setup the paths and do some error checking
@@ -68,28 +76,26 @@ module OpenStudio
           end
 
           FileUtils.mkdir_p(@export_path)
+          
+          true
         end
 
         def save_analysis
-          # save the format in the OpenStudio analysis json format
-          new_json = translate_to_analysis_json()
+          # save the format in the OpenStudio analysis json format template without
+          # the correct weather files or models
+          @template_json = translate_to_analysis_json_template()
+          
+          #validate_template_json
 
           # iterate over each model and save the zip and json
           @models.each do |model|
             save_analysis_zip(model)
-            save_analysis_json(new_json, model)
+            analysis_json = create_analysis_json(@template_json, model)
           end
         end
 
-        protected
-
-        # helper method for ERB
-        def get_binding
-          binding
-        end
-
         # TODO: move this into a new class that helps construct this file
-        def translate_to_analysis_json
+        def translate_to_analysis_json_template
           # Load in the templates for constructing the JSON file
           template_root = File.join(File.dirname(__FILE__), "../../templates")
           analysis_template = ERB.new(File.open("#{template_root}/analysis.json.erb", 'r').read)
@@ -148,8 +154,9 @@ module OpenStudio
                     end
                     ag = JSON.parse(argument_template.result(get_binding))
                   end
+                  raise "Argument '#{@variable['name']}' did not process.  Most likely it did not have all parameters defined." if ag.nil?
                   wf['arguments'] << ag
-                else # must be a vriable
+                else # must be a variable
                   vr = nil
                   if @variable['method'] == 'static'
                     # add this as an argument
@@ -165,6 +172,7 @@ module OpenStudio
                     @values_and_weights = @variable['distribution']['enumerations'].map { |v| {value: v} }.to_json
                     vr =JSON.parse(pivot_variable_template.result(get_binding))
                   end
+                  raise "variable was nil after processing" if vr.nil?
                   wf['variables'] << vr
                 end
               end
@@ -175,6 +183,14 @@ module OpenStudio
 
           openstudio_analysis_json
         end
+
+        protected
+
+        # helper method for ERB
+        def get_binding
+          binding
+        end
+
 
         # Package up the seed, weather files, and measures
         def save_analysis_zip(model)
@@ -206,7 +222,7 @@ module OpenStudio
           end
         end
 
-        def save_analysis_json(analysis_json, model)
+        def create_analysis_json(analysis_json, model)
           # Set the seed model in the analysis_json
           analysis_json['analysis']['seed']['file_type'] = model[:type]
           # This is the path that will be seen on the server when this runs
@@ -227,8 +243,7 @@ module OpenStudio
 
           File.open("#{@export_path}/#{model[:name]}.json", "w") { |f| f << JSON.pretty_generate(analysis_json) }
         end
-
-
+        
         # parse_setup will pull out the data on the "setup" tab and store it in memory for later use
         def parse_setup()
           rows = @xls.sheet('Setup').parse()
@@ -302,6 +317,11 @@ module OpenStudio
         # be omitted as an intermediate step
         def parse_variables()
           rows = @xls.sheet('Variables').parse()
+          
+          if !rows 
+            raise "Could not find the sheet name 'Variables' in excel file #{@root_path}"
+          end
+          
           data = {}
           data['data'] = []
 
