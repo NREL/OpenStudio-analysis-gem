@@ -16,9 +16,6 @@ describe OpenStudio::Analysis::ServerApi do
       options = {hostname: "http://abc.def.ghi"}
       api = OpenStudio::Analysis::ServerApi.new(options)
       api.hostname.should eq(options[:hostname])
-      
     end
   end
-
-
 end
