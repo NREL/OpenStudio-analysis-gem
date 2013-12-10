@@ -77,6 +77,42 @@ module OpenStudio
 
           FileUtils.mkdir_p(@export_path)
           
+          # verify that all continuous variables have all the data needed
+          @variables['data'].each do |measure|
+            if measure['enabled'] && measure['name'] != 'baseline'
+              measure['variables'].each do |variable|
+                # Determine if row is suppose to be an argument or a variable to be perturbed.
+                if variable['variable_type'] == 'variable'
+                  vr = nil
+                  if variable['method'] == 'static'
+                    # add this as an argument
+                    vr = JSON.parse(static_variable_template.result(get_binding))
+                  elsif variable['method'] == 'lhs'
+                    if variable['type'] == 'enum'
+                      # check something
+                    else # must be an integer or double
+                      if variable['distribution']['min'].nil? || variable['distribution']['min'] == ""
+                        raise "Variable #{measure['name']}:#{variable['name']} must have a minimum"
+                      end
+                      if variable['distribution']['max'].nil? || variable['distribution']['max'] == ""
+                        raise "Variable #{measure['name']}:#{variable['name']} must have a maximum"
+                      end
+                      if variable['distribution']['mean'].nil? || variable['distribution']['mean'] == ""
+                        raise "Variable #{measure['name']}:#{variable['name']} must have a mean"
+                      end
+                      if variable['distribution']['stddev'].nil? || variable['distribution']['stddev'] == ""
+                        raise "Variable #{measure['name']}:#{variable['name']} must have a stddev"
+                      end
+                    end
+                  elsif variable['method'] == 'pivot'
+                    # check something
+                  end
+                end
+              end
+            end
+          end
+          
+          # most of the checks will raise a runtime exception, so this true will never be called
           true
         end
 

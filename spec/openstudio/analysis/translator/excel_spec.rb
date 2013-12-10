@@ -37,18 +37,27 @@ describe OpenStudio::Analysis::Translator::Excel do
 
   end
 
+  context "small list of imcomplete variables" do
+    before(:all) do
+      @excel = OpenStudio::Analysis::Translator::Excel.new("spec/files/small_list_incomplete.xlsx")
+    end
+
+    it "should fail to process" do
+      expect { @excel.process }.to raise_error("Variable adjust_thermostat_setpoints_by_degrees:cooling_adjustment must have a mean")
+    end
+  end
+
   context "small list of variables" do
     before(:all) do
       @excel = OpenStudio::Analysis::Translator::Excel.new("spec/files/small_list.xlsx")
       @excel.process
     end
-
     it "should have a model" do
       @excel.models.first.should_not be_nil
       puts @excel.models.first[:name].should eq("small_seed")
     end
-    
-    it "should have a weather file" do 
+
+    it "should have a weather file" do
       @excel.weather_files.first.should_not be_nil
       @excel.weather_files.first.include?("partial_weather.epw").should be_true
     end
