@@ -3,7 +3,7 @@ require 'spec_helper'
 describe OpenStudio::Analysis::Translator::Excel do
   context "no variables defined" do
     let(:path) { "spec/files/no_variables.xlsx" }
-    
+
     before(:each) do
       @excel = OpenStudio::Analysis::Translator::Excel.new(path)
     end
@@ -19,9 +19,9 @@ describe OpenStudio::Analysis::Translator::Excel do
 
     it "should process the excel file" do
       @excel.process.should eq(true)
-      
+
       # after processing the measures directory should be what is in the excel file
-      @excel.measure_path.should eq(File.expand_path(File.join("spec","files","measures")))
+      @excel.measure_path.should eq(File.expand_path(File.join("spec", "files", "measures")))
     end
 
     it "should not work because no variables defined" do
@@ -29,11 +29,30 @@ describe OpenStudio::Analysis::Translator::Excel do
       #@excel.measure_path = "path/does/not/exist"
       #
     end
-    
+
     it "should export to a JSON" do
       @excel.process
-      expect {@excel.save_analysis }.to raise_error("Argument 'r_value' did not process.  Most likely it did not have all parameters defined.")
+      expect { @excel.save_analysis }.to raise_error("Argument 'r_value' did not process.  Most likely it did not have all parameters defined.")
     end
+
+  end
+
+  context "small list of variables" do
+    before(:all) do
+      @excel = OpenStudio::Analysis::Translator::Excel.new("spec/files/small_list.xlsx")
+      @excel.process
+    end
+
+    it "should have a model" do
+      @excel.models.first.should_not be_nil
+      puts @excel.models.first[:name].should eq("small_seed")
+    end
+    
+    it "should have a weather file" do 
+      @excel.weather_files.first.should_not be_nil
+      @excel.weather_files.first.include?("partial_weather.epw").should be_true
+    end
+
 
   end
 end
