@@ -1,6 +1,6 @@
 {
     "analysis": {
-        "display_name":  "<%= @name %>",
+        "display_name": "<%= @name %>",
         "name": "<%= @name.downcase.gsub(" ", "_") %>",
         "algorithm": {
             "sample_method": "lhs",
@@ -11,6 +11,10 @@
         "problem": {
             "number_of_samples_KEEP_HERE_UNTIL_ALGO_IS_IMPLEMENTED": <%= @number_of_samples %>,
             "number_of_samples": <%= @number_of_samples %>,
+            "algorithm": {
+                "number_of_samples": <%= @number_of_samples %>,
+                "sample_method": "all_variables"
+            }
             "name": "Problem",
             "workflow": []
         },
