@@ -34,7 +34,6 @@ describe OpenStudio::Analysis::Translator::Excel do
       @excel.process
       expect { @excel.save_analysis }.to raise_error("Argument 'r_value' did not process.  Most likely it did not have all parameters defined.")
     end
-
   end
 
   context "small list of incomplete variables" do
@@ -47,7 +46,7 @@ describe OpenStudio::Analysis::Translator::Excel do
     end
   end
 
-  context "small with with repeated variable names" do
+  context "small list with with repeated variable names" do
     before(:all) do
       @excel = OpenStudio::Analysis::Translator::Excel.new("spec/files/small_list_repeat_vars.xlsx")
     end
