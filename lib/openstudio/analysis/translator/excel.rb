@@ -77,16 +77,17 @@ module OpenStudio
 
           FileUtils.mkdir_p(@export_path)
           
-          # verify that all continuous variables have all the data needed
+          # verify that all continuous variables have all the data needed and create a name maps
+          variable_names = []
           @variables['data'].each do |measure|
             if measure['enabled'] && measure['name'] != 'baseline'
               measure['variables'].each do |variable|
                 # Determine if row is suppose to be an argument or a variable to be perturbed.
                 if variable['variable_type'] == 'variable'
-                  vr = nil
+                  variable_names << variable['display_name']
                   if variable['method'] == 'static'
                     # add this as an argument
-                    vr = JSON.parse(static_variable_template.result(get_binding))
+                    # check something
                   elsif variable['method'] == 'lhs'
                     if variable['type'] == 'enum'
                       # check something
@@ -110,6 +111,11 @@ module OpenStudio
                 end
               end
             end
+          end
+
+          dupes = variable_names.find_all { |e| variable_names.count(e) > 1 }.uniq
+          if dupes.count > 0
+            raise "duplicate variable names found in list #{dupes.inspect}"
           end
           
           # most of the checks will raise a runtime exception, so this true will never be called
