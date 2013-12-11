@@ -56,6 +56,16 @@ describe OpenStudio::Analysis::Translator::Excel do
     end
   end
 
+  context "small list of variables should not validate" do
+    before(:all) do
+      @excel = OpenStudio::Analysis::Translator::Excel.new("spec/files/small_list_validation_errors.xlsx")
+    end
+
+    it "should fail to process" do
+      expect { @excel.process }.to raise_error("Variable min is greater than variable max for adjust_thermostat_setpoints_by_degrees:heating_adjustment")
+    end
+  end
+
   context "small list of variables" do
     before(:all) do
       @excel = OpenStudio::Analysis::Translator::Excel.new("spec/files/small_list.xlsx")
@@ -70,9 +80,9 @@ describe OpenStudio::Analysis::Translator::Excel do
       @excel.weather_files.first.should_not be_nil
       @excel.weather_files.first.include?("partial_weather.epw").should be_true
     end
-
-
   end
+
+
 end
 
 

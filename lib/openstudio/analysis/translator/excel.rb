@@ -104,6 +104,9 @@ module OpenStudio
                       if variable['distribution']['stddev'].nil? || variable['distribution']['stddev'] == ""
                         raise "Variable #{measure['name']}:#{variable['name']} must have a stddev"
                       end
+                      if variable['distribution']['min'] > variable['distribution']['max']
+                        raise "Variable min is greater than variable max for #{measure['name']}:#{variable['name']}"
+                      end
                     end
                   elsif variable['method'] == 'pivot'
                     # check something

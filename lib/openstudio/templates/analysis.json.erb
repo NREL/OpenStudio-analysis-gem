@@ -4,7 +4,6 @@
         "name": "<%= @name.downcase.gsub(" ", "_") %>",
         "algorithm": {
             "sample_method": "lhs",
-            "sensitivity_method": "single_measure",
             "number_of_samples": <%= @number_of_samples %>
         },
         "parameter_space": [],
