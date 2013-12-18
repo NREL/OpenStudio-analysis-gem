@@ -30,7 +30,7 @@ describe OpenStudio::Analysis::Translator::Excel do
       #
     end
 
-    it "should export to a JSON" do
+    it "should not export to a JSON" do
       @excel.process
       expect { @excel.save_analysis }.to raise_error("Argument 'r_value' did not process.  Most likely it did not have all parameters defined.")
     end
@@ -79,6 +79,15 @@ describe OpenStudio::Analysis::Translator::Excel do
     it "should have a weather file" do
       @excel.weather_files.first.should_not be_nil
       @excel.weather_files.first.include?("partial_weather.epw").should be_true
+    end
+    
+    it "should write a json" do
+      @excel.save_analysis
+      expect(File).to exist("spec/files/export/analysis/small_seed.json")
+      expect(File).to exist("spec/files/export/analysis/small_seed.zip")
+      
+      expect(JSON.parse(File.read("spec/files/export/analysis/small_seed.json"))).not_to be_nil
+      
     end
   end
 
