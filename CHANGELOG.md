@@ -1,6 +1,17 @@
 OpenStudio Analysis Gem Change Log
 ==================================
 
+Version 0.1.5
+-------------
+
+### Major Changes (may be backwards incompatible)
+
+### New Features
+
+### Resolved Issues
+
+* Now depends on json_pure for window users
+
 Version 0.1.3
 -------------
 
