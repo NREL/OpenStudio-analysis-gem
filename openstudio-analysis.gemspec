@@ -14,15 +14,13 @@ Gem::Specification.new do |s|
   s.description = "Basic classes for generating the files needed for OpenStudio-Server"
   s.license = "LGPL"
 
-  s.required_ruby_version = ">= 2.0"
+  s.required_ruby_version = ">= 1.9.3"
   s.required_rubygems_version = ">= 1.3.6"
 
-  s.add_runtime_dependency("json_pure")
-  s.add_runtime_dependency("faraday")
-  s.add_runtime_dependency("uuid")
-
-  s.add_dependency("roo", ["~> 1.12.2"])
-  s.add_dependency("rubyzip", ["~> 1.1.0"])
+  s.add_dependency("faraday", "~> 0.8.8")
+  s.add_dependency("uuid", "~> 2.3.7")
+  s.add_dependency("roo", "~> 1.12.2")
+  s.add_dependency("rubyzip", "~> 1.1.0")
 
   s.files = Dir.glob("lib/**/*") + %w(README.md CHANGELOG.md Rakefile)
   s.test_files = Dir.glob("spec/**/*")

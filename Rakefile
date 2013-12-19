@@ -20,6 +20,7 @@ end
 
 desc "release gem (this builds, pushes to rubygems, and tags in github"
 task :release => :build do
+  # add catch if there are local changes not committed to crash
   system "git tag -a v#{OpenStudio::Analysis::VERSION} -m 'Tagging #{OpenStudio::Analysis::VERSION}'"
   system "git push --tags"
   system "gem push openstudio-analysis-#{OpenStudio::Analysis::VERSION}.gem"
