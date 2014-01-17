@@ -399,9 +399,18 @@ module OpenStudio
               @export_path = File.expand_path(File.join(@root_path, row[1])) if row[0] == "Export Directory"
               @measure_path = File.expand_path(File.join(@root_path, row[1])) if row[0] == "Measure Directory"
             elsif b_problem_setup
-              @problem["#{row[0].snake_case}"] = row[1] if row[0]
+              if row[0] 
+                v = row[1]
+                v.to_i if v % 1 == 0
+                @problem["#{row[0].snake_case}"] = v
+              end
+               
             elsif b_algorithm_setup
-              @algorithm["#{row[0].snake_case}"] = row[1] if row[0]
+              if row[0]
+                v = row[1]
+                v = v.to_i if v % 1 == 0 
+                @algorithm["#{row[0].snake_case}"] = v
+              end
             elsif b_weather_files
               if row[0] == "Weather File"
                 @weather_files += Dir.glob(File.expand_path(File.join(@root_path, row[1])))

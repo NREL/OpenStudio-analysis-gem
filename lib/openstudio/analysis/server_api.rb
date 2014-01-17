@@ -8,6 +8,7 @@ module OpenStudio
       def initialize(options = {})
         defaults = {:hostname => "http://localhost:8080"}
         options = defaults.merge(options)
+        @logger = Logger.new("faraday.log")
         
         @hostname = options[:hostname]
 
@@ -16,7 +17,8 @@ module OpenStudio
         # create connection with basic capabilities
         @conn = Faraday.new(:url => @hostname) do |faraday|
           faraday.request :url_encoded # form-encode POST params
-          faraday.response :logger # log requests to STDOUT
+          faraday.use Faraday::Response::Logger, @logger
+          #faraday.response @logger # log requests to STDOUT
           faraday.adapter Faraday.default_adapter # make requests with Net::HTTP
         end
 
@@ -24,7 +26,8 @@ module OpenStudio
         @conn_multipart = Faraday.new(:url => @hostname) do |faraday|
           faraday.request :multipart
           faraday.request :url_encoded # form-encode POST params
-          faraday.response :logger # log requests to STDOUT
+          faraday.use Faraday::Response::Logger, @logger
+          #faraday.response :logger # log requests to STDOUT
           faraday.adapter Faraday.default_adapter # make requests with Net::HTTP
         end
       end

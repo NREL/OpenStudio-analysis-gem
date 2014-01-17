@@ -9,3 +9,4 @@ tmp/*
 Gemfile.lock
 /spec/files/export
 /spec/reports
+/*.log

@@ -109,6 +109,10 @@ describe OpenStudio::Analysis::Translator::Excel do
         expect(@excel.algorithm["number_of_samples"]).to eq(100)
       expect(@excel.algorithm["number_of_generations"]).to eq(20)
       expect(@excel.algorithm["sample_method"]).to eq("all_variables")
+      expect(@excel.algorithm["number_of_generations"]).to be_a Integer
+      expect(@excel.algorithm["tolerance"]).to eq(0.115)
+      expect(@excel.algorithm["tolerance"]).to be_a Float
+      
     end
     
     it "should create a valid hash" do
