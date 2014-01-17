@@ -90,6 +90,32 @@ describe OpenStudio::Analysis::Translator::Excel do
       
     end
   end
+  
+  context "setup version 2" do
+    before(:all) do
+      @excel = OpenStudio::Analysis::Translator::Excel.new("spec/files/setup_version_2.xlsx")
+      @excel.process
+    end
+    
+    it "should have a version" do
+      expect(@excel.version).to eq("0.1.9")
+    end
+    it "should have the new settings" do
+      expect(@excel.settings["server_instance_type"]).to eq("m2.xlarge")
+    end
+    
+    it "should have problem setup" do
+      expect(@excel.problem["number_of_samples"]).to eq(100)
+      expect(@excel.problem["sensitivity_method"]).to eq("All Variables")
+    end
+
+    it "should have algorithm setup" do
+      expect(@excel.algorithm["number_of_generations"]).to eq(20)
+      #expect(@excel.algorithm["number_of_generations"]).to be_a Integer
+      expect(@excel.machine_name).to eq("example_analysis")
+    end
+    
+  end
 
 
 end

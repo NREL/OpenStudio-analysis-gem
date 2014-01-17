@@ -2,20 +2,24 @@ module OpenStudio
   module Analysis
     module Translator
       class Excel
+        attr_reader :version
+        attr_reader :settings
         attr_reader :variables
         attr_reader :models
         attr_reader :weather_files
         attr_reader :measure_path
         attr_reader :export_path
         attr_reader :variables
-        
+        attr_reader :algorithm
+        attr_reader :problem
+
         # remove these once we have classes to construct the JSON file
         attr_reader :name
-        attr_reader :number_of_samples
+        attr_reader :machine_name
         attr_reader :template_json
 
         # methods to override instance variables
-        
+
         # pass in the filename to read
         def initialize(xls_filename)
           @root_path = File.expand_path(File.dirname(xls_filename))
@@ -29,15 +33,21 @@ module OpenStudio
           end
 
           # Initialize some other instance variables
+          @version = nil
+          @name = nil
+          @machine_name = nil
+          @settings = {}
           @weather_files = []
           @models = []
           @other_files = []
           @export_path = "./export"
           @measure_path = "./measures"
-          @number_of_samples = 0
+          @number_of_samples = 0 # todo: remove this
+          @problem = {}
+          @algorithm = {}
           @template_json = nil
         end
-        
+
         def process
           @setup = parse_setup()
           @variables = parse_variables()
@@ -76,7 +86,7 @@ module OpenStudio
           end
 
           FileUtils.mkdir_p(@export_path)
-          
+
           # verify that all continuous variables have all the data needed and create a name maps
           variable_names = []
           @variables['data'].each do |measure|
@@ -120,7 +130,7 @@ module OpenStudio
           if dupes.count > 0
             raise "duplicate variable names found in list #{dupes.inspect}"
           end
-          
+
           # most of the checks will raise a runtime exception, so this true will never be called
           true
         end
@@ -129,7 +139,7 @@ module OpenStudio
           # save the format in the OpenStudio analysis json format template without
           # the correct weather files or models
           @template_json = translate_to_analysis_json_template()
-          
+
           #validate_template_json
 
           # iterate over each model and save the zip and json
@@ -274,8 +284,6 @@ module OpenStudio
           analysis_json['analysis']['seed']['path'] = "./seed/#{File.basename(model[:path])}"
 
           # Set the weather file as the first in the list -- this is optional
-          # TODO: check if epw or if zip file
-
           analysis_json['analysis']['weather_file']['file_type'] = 'EPW'
           if File.extname(@weather_files.first) =~ /.zip/i
             analysis_json['analysis']['weather_file']['path'] = "./weather/#{File.basename(@weather_files.first, '.zip')}.epw"
@@ -288,48 +296,78 @@ module OpenStudio
 
           File.open("#{@export_path}/#{model[:name]}.json", "w") { |f| f << JSON.pretty_generate(analysis_json) }
         end
-        
+
         # parse_setup will pull out the data on the "setup" tab and store it in memory for later use
         def parse_setup()
           rows = @xls.sheet('Setup').parse()
+          b_settings = false
           b_run_setup = false
           b_problem_setup = false
+          b_algorithm_setup = false
           b_weather_files = false
           b_models = false
           b_other_libs = false
 
           rows.each do |row|
-            if row[0] == "Running Setup"
+            if row[0] == "Settings"
+              b_settings = true
+              b_run_setup = false
+              b_problem_setup = false
+              b_algorithm_setup = false
+              b_weather_files = false
+              b_models = false
+              b_other_libs = false
+              next
+            elsif row[0] == "Running Setup"
+              b_settings = false
               b_run_setup = true
               b_problem_setup = false
+              b_algorithm_setup = false
               b_weather_files = false
               b_models = false
               b_other_libs = false
               next
             elsif row[0] == "Problem Definition"
+              b_settings = false
               b_run_setup = false
               b_problem_setup = true
+              b_algorithm_setup = false
+              b_weather_files = false
+              b_models = false
+              b_other_libs = false
+              next
+            elsif row[0] == "Algorithm Setup"
+              b_settings = false
+              b_run_setup = false
+              b_problem_setup = false
+              b_algorithm_setup = true
               b_weather_files = false
               b_models = false
               b_other_libs = false
               next
             elsif row[0] == "Weather Files"
+              b_settings = false
               b_run_setup = false
               b_problem_setup = false
+              b_algorithm_setup = false
               b_weather_files = true
               b_models = false
               b_other_libs = false
               next
             elsif row[0] == "Models"
+              b_settings = false
               b_run_setup = false
               b_problem_setup = false
+              b_algorithm_setup = false
               b_weather_files = false
               b_models = true
               b_other_libs = false
               next
             elsif row[0] == "Other Library Files"
+              b_settings = false
               b_run_setup = false
               b_problem_setup = false
+              b_algorithm_setup = false
               b_weather_files = false
               b_models = false
               b_other_libs = true
@@ -338,12 +376,18 @@ module OpenStudio
 
             next if row[0].nil?
 
-            if b_run_setup
+            if b_settings
+              @version = row[1].chomp if row[0] == "Spreadsheet Version"
+              @settings["#{row[0].snake_case}"] = row[1] if row[0]
+            elsif b_run_setup
               @name = row[1].chomp if row[0] == "Analysis Name"
+              @machine_name = @name.snake_case
               @export_path = File.expand_path(File.join(@root_path, row[1])) if row[0] == "Export Directory"
               @measure_path = File.expand_path(File.join(@root_path, row[1])) if row[0] == "Measure Directory"
             elsif b_problem_setup
-              @number_of_samples = row[1].to_i if row[0] == "Number of Samples"
+              @problem["#{row[0].snake_case}"] = row[1] if row[0]
+            elsif b_algorithm_setup
+              @algorithm["#{row[0].snake_case}"] = row[1] if row[0]
             elsif b_weather_files
               if row[0] == "Weather File"
                 @weather_files += Dir.glob(File.expand_path(File.join(@root_path, row[1])))
@@ -362,11 +406,11 @@ module OpenStudio
         # be omitted as an intermediate step
         def parse_variables()
           rows = @xls.sheet('Variables').parse()
-          
-          if !rows 
+
+          if !rows
             raise "Could not find the sheet name 'Variables' in excel file #{@root_path}"
           end
-          
+
           data = {}
           data['data'] = []
 
@@ -429,7 +473,7 @@ module OpenStudio
               data['data'][measure_index] = {}
 
               #generate name id
-              puts "Parsing measure #{row[1]}"
+              #todo: put this into a logger. puts "Parsing measure #{row[1]}"
               display_name = row[1].chomp.strip
               measure_name = display_name.downcase.strip.gsub("-", "_").gsub(" ", "_")
               data['data'][measure_index]['display_name'] = display_name
@@ -438,7 +482,7 @@ module OpenStudio
               data['data'][measure_index]['measure_file_name'] = row[2]
               data['data'][measure_index]['measure_file_name_directory'] = row[2].underscore
               data['data'][measure_index]['measure_type'] = row[3]
-              
+
               data['data'][measure_index]['version'] = @version_id
 
               data['data'][measure_index]['variables'] = []

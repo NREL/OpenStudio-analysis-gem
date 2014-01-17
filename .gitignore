@@ -4,6 +4,7 @@
 .ruby-version
 *.swp
 *.gem
+~$*
 tmp/*
 Gemfile.lock
 /spec/files/export

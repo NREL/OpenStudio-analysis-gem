@@ -4,15 +4,15 @@
         "name": "<%= @name.downcase.gsub(" ", "_") %>",
         "algorithm": {
             "sample_method": "lhs",
-            "number_of_samples": <%= @number_of_samples %>
+            "number_of_samples": <%= @problem['number_of_samples'].to_i %>
         },
         "parameter_space": [],
         "problem": {
-            "number_of_samples_KEEP_HERE_UNTIL_ALGO_IS_IMPLEMENTED": <%= @number_of_samples %>,
-            "number_of_samples": <%= @number_of_samples %>,
+            "number_of_samples_KEEP_HERE_UNTIL_ALGO_IS_IMPLEMENTED": <%= @problem['number_of_samples'].to_i %>,
+            "number_of_samples": <%= @problem['number_of_samples'].to_i %>,
             "algorithm": {
-                "number_of_samples": <%= @number_of_samples %>,
-                "sample_method": "all_variables"
+                "number_of_samples": <%= @problem['number_of_samples'].to_i %>,
+                "sample_method": <%= @problem['sensitivity_method'].to_i %>
             },
             "name": "Problem",
             "workflow": []

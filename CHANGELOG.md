@@ -1,6 +1,17 @@
 OpenStudio Analysis Gem Change Log
 ==================================
 
+Version 0.1.7
+-------------
+
+* Add setting section
+
+* Add problem and algorithm arguments
+
+Version 0.1.6
+-------------
+                 
+* Small fixes                
 Version 0.1.5
 -------------
 

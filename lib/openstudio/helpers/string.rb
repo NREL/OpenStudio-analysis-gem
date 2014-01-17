@@ -8,5 +8,10 @@ class String
         tr("-", "_").
         downcase
   end
+  
+  def snake_case
+    self.gsub(" ", "_").
+        downcase
+  end
 end
                      
