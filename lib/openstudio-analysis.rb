@@ -4,6 +4,7 @@ require 'uuid'
 require 'roo'
 require 'erb'
 require 'zip'
+require 'semantic'
 
 # core
 require 'openstudio/analysis/server_api'

@@ -97,24 +97,28 @@ describe OpenStudio::Analysis::Translator::Excel do
       @excel.process
     end
     
-    it "should have a version" do
+    it "should have a version and machine name" do
       expect(@excel.version).to eq("0.1.9")
+      expect(@excel.machine_name).to eq("example_analysis")
     end
     it "should have the new settings" do
       expect(@excel.settings["server_instance_type"]).to eq("m2.xlarge")
     end
     
-    it "should have problem setup" do
-      expect(@excel.problem["number_of_samples"]).to eq(100)
-      expect(@excel.problem["sensitivity_method"]).to eq("All Variables")
-    end
-
     it "should have algorithm setup" do
+        expect(@excel.algorithm["number_of_samples"]).to eq(100)
       expect(@excel.algorithm["number_of_generations"]).to eq(20)
-      #expect(@excel.algorithm["number_of_generations"]).to be_a Integer
-      expect(@excel.machine_name).to eq("example_analysis")
+      expect(@excel.algorithm["sample_method"]).to eq("all_variables")
     end
     
+    it "should create a valid hash" do
+      h = @excel.create_analysis_hash
+      
+      expect(h['analysis']['problem']['analysis_type']).to eq("lhs")
+      expect(h['analysis']['problem']['algorithm']).not_to be_nil
+      expect(h['analysis']['problem']['algorithm']['number_of_samples']).to eq(100)
+      expect(h['analysis']['problem']['algorithm']['sample_method']).to eq("all_variables")
+    end
   end
 
 

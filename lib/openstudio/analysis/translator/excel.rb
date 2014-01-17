@@ -33,7 +33,7 @@ module OpenStudio
           end
 
           # Initialize some other instance variables
-          @version = nil
+          @version = '0.0.1'
           @name = nil
           @machine_name = nil
           @settings = {}
@@ -63,6 +63,9 @@ module OpenStudio
         end
 
         def validate_analysis
+          version_test = Semantic::Version.new @version
+          raise "Spreadsheet version #{@version} is no longer supported.  Please upgrade your spreadsheet to at least 0.1.9" if version_test < '0.1.9'
+
           # Setup the paths and do some error checking
           raise "Measures directory '#{@measure_path}' does not exist" unless Dir.exists?(@measure_path)
 
@@ -135,11 +138,17 @@ module OpenStudio
           true
         end
 
-        def save_analysis
+        def create_analysis_hash
           # save the format in the OpenStudio analysis json format template without
           # the correct weather files or models
           @template_json = translate_to_analysis_json_template()
-
+          
+          @template_json
+        end
+        
+        def save_analysis
+          @template_json = create_analysis_hash
+          
           #validate_template_json
 
           # iterate over each model and save the zip and json
@@ -164,6 +173,11 @@ module OpenStudio
           # Templated analysis json file (this is what is returned)
           puts "Analysis name is #{@name}"
           openstudio_analysis_json = JSON.parse(analysis_template.result(get_binding))
+          
+          openstudio_analysis_json['analysis']['problem'].merge!(@problem)
+          openstudio_analysis_json['analysis']['problem']['algorithm'].merge!(@algorithm)
+          
+          
 
           @measure_index = -1
           @variables['data'].each do |measure|
@@ -254,21 +268,21 @@ module OpenStudio
 
           Zip::File.open(zipfile_name, Zip::File::CREATE) do |zipfile|
             @weather_files.each do |filename|
-              puts "  Adding #{filename}"
+              #puts "  Adding #{filename}"
               zipfile.add("./weather/#{File.basename(filename)}", filename)
             end
 
             Dir.glob("#{@measure_path}/**/*.rb").each do |measure|
               next if measure.include?("spec") # don't include the spec folders nor files
               measure_name = measure.split(File::SEPARATOR).last(2).first
-              puts "  Adding ./measures/#{measure_name}/#{File.basename(measure)}"
+              #puts "  Adding ./measures/#{measure_name}/#{File.basename(measure)}"
               zipfile.add("./measures/#{measure_name}/#{File.basename(measure)}", measure)
             end
 
-            puts "Adding #{model[:path]}"
+            #puts "Adding #{model[:path]}"
             zipfile.add("./seed/#{File.basename(model[:path])}", model[:path])
 
-            puts "Adding in other files #{@other_files.inspect}"
+            #puts "Adding in other files #{@other_files.inspect}"
             @other_files.each do |others|
               Dir[File.join(others[:path], '**', '**')].each do |file|
                 zipfile.add(file.sub(others[:path], "./lib/#{others[:lib_zip_name]}/"), file)
