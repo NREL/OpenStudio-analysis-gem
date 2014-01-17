@@ -28,7 +28,7 @@ task :release => :build do
 end
 
 RSpec::Core::RakeTask.new("spec") do |spec|
-  #spec.rspec_opts = %w(--format progress --format CI::Reporter::RSpec)
+  spec.rspec_opts = %w(--format progress --format CI::Reporter::RSpec)
   spec.pattern = "spec/**/*_spec.rb"
 end
 
