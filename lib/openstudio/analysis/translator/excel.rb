@@ -142,13 +142,13 @@ module OpenStudio
           # save the format in the OpenStudio analysis json format template without
           # the correct weather files or models
           @template_json = translate_to_analysis_json_template()
-          
+
           @template_json
         end
-        
+
         def save_analysis
           @template_json = create_analysis_hash
-          
+
           #validate_template_json
 
           # iterate over each model and save the zip and json
@@ -173,11 +173,10 @@ module OpenStudio
           # Templated analysis json file (this is what is returned)
           puts "Analysis name is #{@name}"
           openstudio_analysis_json = JSON.parse(analysis_template.result(get_binding))
-          
+
           openstudio_analysis_json['analysis']['problem'].merge!(@problem)
           openstudio_analysis_json['analysis']['problem']['algorithm'].merge!(@algorithm)
-          
-          
+
 
           @measure_index = -1
           @variables['data'].each do |measure|
@@ -275,7 +274,7 @@ module OpenStudio
             Dir.glob("#{@measure_path}/**/*.rb").each do |measure|
               next if measure.include?("spec") # don't include the spec folders nor files
               measure_name = measure.split(File::SEPARATOR).last(2).first
-              #puts "  Adding ./measures/#{measure_name}/#{File.basename(measure)}"
+                                               #puts "  Adding ./measures/#{measure_name}/#{File.basename(measure)}"
               zipfile.add("./measures/#{measure_name}/#{File.basename(measure)}", measure)
             end
 
@@ -393,22 +392,26 @@ module OpenStudio
             if b_settings
               @version = row[1].chomp if row[0] == "Spreadsheet Version"
               @settings["#{row[0].snake_case}"] = row[1] if row[0]
+
+              # type some of the values that we know
+              @settings["proxy_port"] = @settings["proxy_port"].to_i.to_s if @settings["proxy_port"]
+
             elsif b_run_setup
               @name = row[1].chomp if row[0] == "Analysis Name"
               @machine_name = @name.snake_case
               @export_path = File.expand_path(File.join(@root_path, row[1])) if row[0] == "Export Directory"
               @measure_path = File.expand_path(File.join(@root_path, row[1])) if row[0] == "Measure Directory"
             elsif b_problem_setup
-              if row[0] 
+              if row[0]
                 v = row[1]
                 v.to_i if v % 1 == 0
                 @problem["#{row[0].snake_case}"] = v
               end
-               
+
             elsif b_algorithm_setup
               if row[0]
                 v = row[1]
-                v = v.to_i if v % 1 == 0 
+                v = v.to_i if v % 1 == 0
                 @algorithm["#{row[0].snake_case}"] = v
               end
             elsif b_weather_files

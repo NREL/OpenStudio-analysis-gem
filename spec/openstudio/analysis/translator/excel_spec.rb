@@ -80,23 +80,23 @@ describe OpenStudio::Analysis::Translator::Excel do
       @excel.weather_files.first.should_not be_nil
       @excel.weather_files.first.include?("partial_weather.epw").should be_true
     end
-    
+
     it "should write a json" do
       @excel.save_analysis
       expect(File).to exist("spec/files/export/analysis/small_seed.json")
       expect(File).to exist("spec/files/export/analysis/small_seed.zip")
-      
+
       expect(JSON.parse(File.read("spec/files/export/analysis/small_seed.json"))).not_to be_nil
-      
+
     end
   end
-  
+
   context "setup version 2" do
     before(:all) do
       @excel = OpenStudio::Analysis::Translator::Excel.new("spec/files/setup_version_2.xlsx")
       @excel.process
     end
-    
+
     it "should have a version and machine name" do
       expect(@excel.version).to eq("0.1.9")
       expect(@excel.machine_name).to eq("example_analysis")
@@ -104,24 +104,51 @@ describe OpenStudio::Analysis::Translator::Excel do
     it "should have the new settings" do
       expect(@excel.settings["server_instance_type"]).to eq("m2.xlarge")
     end
-    
+
     it "should have algorithm setup" do
-        expect(@excel.algorithm["number_of_samples"]).to eq(100)
+      expect(@excel.algorithm["number_of_samples"]).to eq(100)
       expect(@excel.algorithm["number_of_generations"]).to eq(20)
       expect(@excel.algorithm["sample_method"]).to eq("all_variables")
       expect(@excel.algorithm["number_of_generations"]).to be_a Integer
       expect(@excel.algorithm["tolerance"]).to eq(0.115)
       expect(@excel.algorithm["tolerance"]).to be_a Float
-      
+
     end
-    
+
     it "should create a valid hash" do
       h = @excel.create_analysis_hash
-      
+
       expect(h['analysis']['problem']['analysis_type']).to eq("lhs")
       expect(h['analysis']['problem']['algorithm']).not_to be_nil
       expect(h['analysis']['problem']['algorithm']['number_of_samples']).to eq(100)
       expect(h['analysis']['problem']['algorithm']['sample_method']).to eq("all_variables")
+    end
+  end
+
+  context "proxy setup" do
+    before(:all) do
+      @excel = OpenStudio::Analysis::Translator::Excel.new("spec/files/proxy.xlsx")
+      @excel.process
+    end
+    
+    it "should have a proxy setting" do
+      expect(@excel.settings["proxy_host"]).to eq("192.168.0.1")
+      expect(@excel.settings["proxy_port"]).to eq("8080")
+      expect(@excel.settings["proxy_username"]).to be_nil
+
+    end
+  end
+
+  context "proxy setup with user" do
+    before(:all) do
+      @excel = OpenStudio::Analysis::Translator::Excel.new("spec/files/proxy_user.xlsx")
+      @excel.process
+    end
+
+    it "should have a user" do
+      expect(@excel.settings["proxy_host"]).to eq("192.168.0.1")
+      expect(@excel.settings["proxy_port"]).to eq("8080")
+      expect(@excel.settings["proxy_username"]).to eq("a_user")
     end
   end
 
