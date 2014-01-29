@@ -394,7 +394,7 @@ module OpenStudio
               @settings["#{row[0].snake_case}"] = row[1] if row[0]
 
               # type some of the values that we know
-              @settings["proxy_port"] = @settings["proxy_port"].to_i.to_s if @settings["proxy_port"]
+              @settings["proxy_port"] = @settings["proxy_port"].to_i if @settings["proxy_port"]
 
             elsif b_run_setup
               @name = row[1].chomp if row[0] == "Analysis Name"

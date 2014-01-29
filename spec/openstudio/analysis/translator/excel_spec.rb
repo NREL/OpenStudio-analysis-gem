@@ -133,7 +133,7 @@ describe OpenStudio::Analysis::Translator::Excel do
     
     it "should have a proxy setting" do
       expect(@excel.settings["proxy_host"]).to eq("192.168.0.1")
-      expect(@excel.settings["proxy_port"]).to eq("8080")
+      expect(@excel.settings["proxy_port"]).to eq(8080)
       expect(@excel.settings["proxy_username"]).to be_nil
 
     end
@@ -147,7 +147,7 @@ describe OpenStudio::Analysis::Translator::Excel do
 
     it "should have a user" do
       expect(@excel.settings["proxy_host"]).to eq("192.168.0.1")
-      expect(@excel.settings["proxy_port"]).to eq("8080")
+      expect(@excel.settings["proxy_port"]).to eq(8080)
       expect(@excel.settings["proxy_username"]).to eq("a_user")
     end
   end

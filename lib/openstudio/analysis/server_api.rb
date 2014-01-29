@@ -14,6 +14,8 @@ module OpenStudio
 
         raise "no host defined for server api class" if @hostname.nil?
 
+        # todo: add support for the proxy
+        
         # create connection with basic capabilities
         @conn = Faraday.new(:url => @hostname) do |faraday|
           faraday.request :url_encoded # form-encode POST params
