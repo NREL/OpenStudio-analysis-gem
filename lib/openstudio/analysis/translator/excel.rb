@@ -212,14 +212,14 @@ module OpenStudio
                     end
 
                     # add this as an argument
-                    case @variable['type']
-                      when "Double"
+                    case @variable['type'].downcase
+                      when "double"
                         @static_value = @variable['distribution']['static_value'].to_f
-                      when "Integer"
+                      when "integer"
                         @static_value = @variable['distribution']['static_value'].to_i
-                      when "String", "Choice"
+                      when "string", "choice"
                         @static_value = @variable['distribution']['static_value'].inspect
-                      when "Bool"
+                      when "bool"
                         if @variable['distribution']['static_value'].downcase == "true"
                           @static_value = true
                         else

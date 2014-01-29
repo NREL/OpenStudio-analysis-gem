@@ -4,6 +4,11 @@ OpenStudio Analysis Gem Change Log
 Version 0.1.9
 -------------
 
+* Downcase checking of variable data types
+
+Version 0.1.9
+-------------
+
 * Clean up the "delete_mes" in the JSONs
 
 * Added discrete variables to the spreadsheet and bumped version
