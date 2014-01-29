@@ -78,7 +78,20 @@ describe OpenStudio::Analysis::Translator::Excel do
 
     it "should have a weather file" do
       @excel.weather_files.first.should_not be_nil
-      @excel.weather_files.first.include?("partial_weather.epw").should be_true
+      puts @excel.weather_files.first
+      expect(@excel.weather_files.first.include?("partial_weather.epw")).to eq(true)
+    end
+
+    it "should have notes and source" do
+      @excel.variables['data'].each do |measure|
+        measure['variables'].each do |var|
+          if var['machine_name'] == 'lighting_power_reduction'
+            expect(var['distribution']['source']).to eq("some data source")
+          elsif var['machine_name'] == 'demo_cost_initial_const'
+            expect(var['notes']).to eq("some note")
+          end
+        end
+      end
     end
 
     it "should write a json" do
@@ -130,7 +143,7 @@ describe OpenStudio::Analysis::Translator::Excel do
       @excel = OpenStudio::Analysis::Translator::Excel.new("spec/files/proxy.xlsx")
       @excel.process
     end
-    
+
     it "should have a proxy setting" do
       expect(@excel.settings["proxy_host"]).to eq("192.168.0.1")
       expect(@excel.settings["proxy_port"]).to eq(8080)
@@ -152,6 +165,24 @@ describe OpenStudio::Analysis::Translator::Excel do
     end
   end
 
+  context "discrete variables" do
+    before(:all) do
+      @excel = OpenStudio::Analysis::Translator::Excel.new("spec/files/discrete_variables.xlsx")
+      @excel.process
+    end
+
+    it "should have parsed the spreadsheet" do
+      @excel.variables['data'].each do |measure|
+        measure['variables'].each do |var|
+
+        end
+      end
+    end
+    
+    it "should save the file" do
+      @excel.save_analysis
+    end
+  end
 
 end
 

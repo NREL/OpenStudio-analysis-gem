@@ -1,6 +1,18 @@
 OpenStudio Analysis Gem Change Log
 ==================================
 
+Version 0.1.9
+-------------
+
+* Clean up the "delete_mes" in the JSONs
+
+* Added discrete variables to the spreadsheet and bumped version
+
+Version 0.1.8
+-------------
+
+* Parsing of Proxy parameters
+
 Version 0.1.7
 -------------
 
@@ -11,7 +23,8 @@ Version 0.1.7
 Version 0.1.6
 -------------
                  
-* Small fixes                
+* Small fixes
+                
 Version 0.1.5
 -------------
 

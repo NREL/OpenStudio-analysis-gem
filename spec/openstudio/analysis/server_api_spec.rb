@@ -7,7 +7,7 @@ describe OpenStudio::Analysis::ServerApi do
     end
 
     it "should set the default host to localhost" do
-      @api.hostname.should eq("http://localhost:8080")
+      expect(@api.hostname).to eq("http://localhost:8080")
     end
   end
 

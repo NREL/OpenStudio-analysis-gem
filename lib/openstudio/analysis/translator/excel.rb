@@ -50,6 +50,10 @@ module OpenStudio
 
         def process
           @setup = parse_setup()
+
+          @version = Semantic::Version.new @version
+          raise "Spreadsheet version #{@version} is no longer supported.  Please upgrade your spreadsheet to at least 0.1.9" if @version < '0.1.9'
+
           @variables = parse_variables()
 
           # call validate to make sure everything that is needed exists (i.e. directories)          
@@ -63,9 +67,6 @@ module OpenStudio
         end
 
         def validate_analysis
-          version_test = Semantic::Version.new @version
-          raise "Spreadsheet version #{@version} is no longer supported.  Please upgrade your spreadsheet to at least 0.1.9" if version_test < '0.1.9'
-
           # Setup the paths and do some error checking
           raise "Measures directory '#{@measure_path}' does not exist" unless Dir.exists?(@measure_path)
 
@@ -102,24 +103,31 @@ module OpenStudio
                     # add this as an argument
                     # check something
                   elsif variable['method'] == 'lhs'
-                    if variable['type'] == 'enum'
+                    if variable['type'] == 'enum' || variable['type'] == 'Choice'
                       # check something
                     else # must be an integer or double
-                      if variable['distribution']['min'].nil? || variable['distribution']['min'] == ""
-                        raise "Variable #{measure['name']}:#{variable['name']} must have a minimum"
+                      if variable['distribution']['type'] == 'discrete_uncertain'
+                        if variable['distribution']['discrete_values'].nil? || variable['distribution']['discrete_values'] == ""
+                          raise "Variable #{measure['name']}:#{variable['name']} needs discrete values"
+                        end
+                      else
+                        if variable['distribution']['min'].nil? || variable['distribution']['min'] == ""
+                          raise "Variable #{measure['name']}:#{variable['name']} must have a minimum"
+                        end
+                        if variable['distribution']['max'].nil? || variable['distribution']['max'] == ""
+                          raise "Variable #{measure['name']}:#{variable['name']} must have a maximum"
+                        end
+                        if variable['distribution']['mean'].nil? || variable['distribution']['mean'] == ""
+                          raise "Variable #{measure['name']}:#{variable['name']} must have a mean"
+                        end
+                        if variable['distribution']['stddev'].nil? || variable['distribution']['stddev'] == ""
+                          raise "Variable #{measure['name']}:#{variable['name']} must have a stddev"
+                        end
+                        if variable['distribution']['min'] > variable['distribution']['max']
+                          raise "Variable min is greater than variable max for #{measure['name']}:#{variable['name']}"
+                        end
                       end
-                      if variable['distribution']['max'].nil? || variable['distribution']['max'] == ""
-                        raise "Variable #{measure['name']}:#{variable['name']} must have a maximum"
-                      end
-                      if variable['distribution']['mean'].nil? || variable['distribution']['mean'] == ""
-                        raise "Variable #{measure['name']}:#{variable['name']} must have a mean"
-                      end
-                      if variable['distribution']['stddev'].nil? || variable['distribution']['stddev'] == ""
-                        raise "Variable #{measure['name']}:#{variable['name']} must have a stddev"
-                      end
-                      if variable['distribution']['min'] > variable['distribution']['max']
-                        raise "Variable min is greater than variable max for #{measure['name']}:#{variable['name']}"
-                      end
+
                     end
                   elsif variable['method'] == 'pivot'
                     # check something
@@ -230,9 +238,32 @@ module OpenStudio
                     # add this as an argument
                     vr = JSON.parse(static_variable_template.result(get_binding))
                   elsif @variable['method'] == 'lhs'
-                    if @variable['type'] == 'enum'
+                    if @variable['type'] == 'enum' || @variable['type'].downcase == 'choice'
                       @values_and_weights = @variable['distribution']['enumerations'].map { |v| {value: v} }.to_json
-                      vr =JSON.parse(discrete_uncertain_variable_template.result(get_binding))
+                      vr = JSON.parse(discrete_uncertain_variable_template.result(get_binding))
+                    elsif @variable['distribution']['type'] == 'discrete_uncertain'
+                      puts @variable.inspect
+                      weights = nil
+                      if @variable['distribution']['discrete_weights'] && @variable['distribution']['discrete_weights'] != ''
+                        weights = eval(@variable['distribution']['discrete_weights'])
+                      end
+                      
+                      values = nil
+                      if variable['type'].downcase == 'bool'
+                        values = eval(@variable['distribution']['discrete_values'])
+                        values.map!{|v| v.downcase == 'true'}
+                      else
+                        values = eval(@variable['distribution']['discrete_values'])
+                      end
+
+                      if weights
+                        raise "Discrete variable #{@variable['name']} does not have equal length of values and weights" if values.size != weights.size
+                        @values_and_weights = values.zip( weights ).map { |v,w| {value: v, weight: w} }.to_json
+                      else
+                        @values_and_weights = values.map { |v| {value: v} }.to_json
+                      end
+
+                      vr = JSON.parse(discrete_uncertain_variable_template.result(get_binding))
                     else
                       vr = JSON.parse(uncertain_variable_template.result(get_binding))
                     end
@@ -467,12 +498,12 @@ module OpenStudio
 
                 var['distribution'] = {}
 
-                #parse the enums
-                if var['type'] == 'enum'
+                #parse the choices/enums
+                if var['type'] == 'enum' || var['type'] == 'Choice' # this is now a choice
                   var['distribution']['enumerations'] = row[8].gsub("|", "").split(",").map { |v| v.strip }
-                elsif var['type'] == 'bool' #TODO: i think this has been deprecated
+                elsif var['type'] == 'bool'
                   var['distribution']['enumerations'] = []
-                  var['distribution']['enumerations'] << 'true'
+                  var['distribution']['enumerations'] << 'true' #todo: should this be a real bool?
                   var['distribution']['enumerations'] << 'false'
                 end
 
@@ -481,15 +512,28 @@ module OpenStudio
                   var['distribution']['max'] = row[10]
                   var['distribution']['mean'] = row[11]
                   var['distribution']['stddev'] = row[12]
-                  var['distribution']['type'] = row[13]
-                  var['distribution']['source'] = row[14]
+
+                  if @version >= "0.1.10"
+                    var['distribution']['discrete_values'] = row[13]
+                    var['distribution']['discrete_weights'] = row[14]
+                    var['distribution']['type'] = row[15]
+                  else
+                    var['distribution']['type'] = row[13]
+                  end
                 elsif var['method'] == 'static'
                   var['distribution']['static_value'] = row[7]
-                  var['distribution']['source'] = row[14]
                 end
 
-                var['notes'] = row[15]
-                var['relation_to_eui'] = row[16]
+                if @version >= "0.1.10"
+                  # new columns for discrete variables
+                  var['distribution']['source'] = row[16]
+                  var['notes'] = row[17]
+                  var['relation_to_eui'] = row[18]
+                else
+                  var['distribution']['source'] = row[14]
+                  var['notes'] = row[15]
+                  var['relation_to_eui'] = row[16]
+                end
 
                 data['data'][measure_index]['variables'] << var
               end
