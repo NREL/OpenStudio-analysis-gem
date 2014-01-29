@@ -10,8 +10,7 @@ class String
   end
   
   def snake_case
-    self.gsub(" ", "_").
-        downcase
+    self.gsub(" ", "_").downcase
   end
 end
                      
