@@ -12,6 +12,7 @@ module OpenStudio
         attr_reader :variables
         attr_reader :algorithm
         attr_reader :problem
+        attr_reader :output_variables
 
         # remove these once we have classes to construct the JSON file
         attr_reader :name
@@ -46,6 +47,7 @@ module OpenStudio
           @problem = {}
           @algorithm = {}
           @template_json = nil
+          @output_variables = {}
         end
 
         def process
@@ -55,6 +57,8 @@ module OpenStudio
           raise "Spreadsheet version #{@version} is no longer supported.  Please upgrade your spreadsheet to at least 0.1.9" if @version < '0.1.9'
 
           @variables = parse_variables()
+
+          @outputs = parse_outputs()
 
           # call validate to make sure everything that is needed exists (i.e. directories)          
           validate_analysis()
@@ -184,7 +188,7 @@ module OpenStudio
 
           openstudio_analysis_json['analysis']['problem'].merge!(@problem)
           openstudio_analysis_json['analysis']['problem']['algorithm'].merge!(@algorithm)
-
+          openstudio_analysis_json['analysis'].merge!(@outputs)
 
           @measure_index = -1
           @variables['data'].each do |measure|
@@ -457,7 +461,6 @@ module OpenStudio
           end
         end
 
-
         # parse_variables will parse the XLS spreadsheet and save the data into
         # a higher level JSON file.  The JSON file is historic and it should really 
         # be omitted as an intermediate step
@@ -562,6 +565,38 @@ module OpenStudio
 
           data
         end
+
+        def parse_outputs()
+          rows = @xls.sheet('Outputs').parse()
+
+          if !rows
+            raise "Could not find the sheet name 'Outputs' in excel file #{@root_path}"
+          end
+
+          data = {}
+          data['output_variables'] = []
+
+          icnt = 0
+          variable_index = -1
+          rows.each do |row|
+            icnt += 1
+            # puts "Parsing line: #{icnt}"
+            next if icnt <= 3 # skip the first 3 lines of the file
+	    variable_index += 1
+	    var = {}
+	    var['display_name'] = row[0].strip
+	    var['name'] = row[1]
+	    var['units'] = row[2]
+	    var['objective_function'] = row[3]
+	    var['objective_function_target'] = row[4]
+	    var['index'] = variable_index
+	    data['output_variables'] << var
+          end
+
+          data
+        end
+
+
 
       end
     end

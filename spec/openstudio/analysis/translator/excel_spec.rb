@@ -183,6 +183,65 @@ describe OpenStudio::Analysis::Translator::Excel do
       @excel.save_analysis
     end
   end
+  
+ context "setup output variables" do
+    before(:all) do
+      @excel = OpenStudio::Analysis::Translator::Excel.new("spec/files/outputvars.xlsx")
+      @excel.process
+    end
+
+   it "should have a model" do
+      @excel.models.first.should_not be_nil
+      puts @excel.models.first[:name].should eq("output_vars")
+    end
+
+    it "should have a weather file" do
+      @excel.weather_files.first.should_not be_nil
+      puts @excel.weather_files.first
+      expect(@excel.weather_files.first.include?("partial_weather.epw")).to eq(true)
+    end
+
+    it "should have notes and source" do
+      @excel.variables['data'].each do |measure|
+        measure['variables'].each do |var|
+          if var['machine_name'] == 'lighting_power_reduction'
+            expect(var['distribution']['source']).to eq("some data source")
+          elsif var['machine_name'] == 'demo_cost_initial_const'
+            expect(var['notes']).to eq("some note")
+          end
+        end
+      end
+    end
+
+    it "should have algorithm setup" do
+      expect(@excel.algorithm["number_of_samples"]).to eq(100)
+      expect(@excel.algorithm["number_of_generations"]).to eq(20)
+      expect(@excel.algorithm["sample_method"]).to eq("all_variables")
+      expect(@excel.algorithm["number_of_generations"]).to be_a Integer
+      #expect(@excel.algorithm["tolerance"]).to eq(0.115)
+      #expect(@excel.algorithm["tolerance"]).to be_a Float
+
+    end
+
+    it "should create a valid hash" do
+      h = @excel.create_analysis_hash
+
+      expect(h['analysis']['problem']['analysis_type']).to eq("nsga")
+      expect(h['analysis']['problem']['algorithm']).not_to be_nil
+      expect(h['analysis']['problem']['algorithm']['number_of_samples']).to eq(100)
+      expect(h['analysis']['problem']['algorithm']['sample_method']).to eq("all_variables")
+    end
+
+
+    it "should write a json" do
+      @excel.save_analysis
+      expect(File).to exist("spec/files/export/analysis/output_vars.json")
+      expect(File).to exist("spec/files/export/analysis/output_vars.zip")
+
+      expect(JSON.parse(File.read("spec/files/export/analysis/output_vars.json"))).not_to be_nil
+      
+    end
+  end    
 
 end
 
