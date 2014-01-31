@@ -1,6 +1,11 @@
 OpenStudio Analysis Gem Change Log
 ==================================
 
+Version 0.1.10
+-------------
+
+* Add output variables to the spreadsheet as a separate tab
+
 Version 0.1.9
 -------------
 

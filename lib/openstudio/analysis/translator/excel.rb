@@ -5,6 +5,7 @@ module OpenStudio
         attr_reader :version
         attr_reader :settings
         attr_reader :variables
+        attr_reader :outputs
         attr_reader :models
         attr_reader :weather_files
         attr_reader :measure_path
@@ -47,7 +48,7 @@ module OpenStudio
           @problem = {}
           @algorithm = {}
           @template_json = nil
-          @output_variables = {}
+          @outputs = {}
         end
 
         def process
@@ -251,18 +252,18 @@ module OpenStudio
                       if @variable['distribution']['discrete_weights'] && @variable['distribution']['discrete_weights'] != ''
                         weights = eval(@variable['distribution']['discrete_weights'])
                       end
-                      
+
                       values = nil
                       if variable['type'].downcase == 'bool'
                         values = eval(@variable['distribution']['discrete_values'])
-                        values.map!{|v| v.downcase == 'true'}
+                        values.map! { |v| v.downcase == 'true' }
                       else
                         values = eval(@variable['distribution']['discrete_values'])
                       end
 
                       if weights
                         raise "Discrete variable #{@variable['name']} does not have equal length of values and weights" if values.size != weights.size
-                        @values_and_weights = values.zip( weights ).map { |v,w| {value: v, weight: w} }.to_json
+                        @values_and_weights = values.zip(weights).map { |v, w| {value: v, weight: w} }.to_json
                       else
                         @values_and_weights = values.map { |v| {value: v} }.to_json
                       end
@@ -582,22 +583,19 @@ module OpenStudio
             icnt += 1
             # puts "Parsing line: #{icnt}"
             next if icnt <= 3 # skip the first 3 lines of the file
-	    variable_index += 1
-	    var = {}
-	    var['display_name'] = row[0].strip
-	    var['name'] = row[1]
-	    var['units'] = row[2]
-	    var['objective_function'] = row[3]
-	    var['objective_function_target'] = row[4]
-	    var['index'] = variable_index
-	    data['output_variables'] << var
+            variable_index += 1
+            var = {}
+            var['display_name'] = row[0].strip
+            var['name'] = row[1]
+            var['units'] = row[2]
+            var['objective_function'] = row[3]
+            var['objective_function_target'] = row[4]
+            var['index'] = variable_index
+            data['output_variables'] << var
           end
 
           data
         end
-
-
-
       end
     end
   end
