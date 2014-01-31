@@ -581,6 +581,8 @@ module OpenStudio
 
           icnt = 0
           variable_index = -1
+          @algorithm['objective_functions'] = []
+          
           rows.each do |row|
             icnt += 1
             # puts "Parsing line: #{icnt}"
@@ -591,6 +593,9 @@ module OpenStudio
             var['name'] = row[1]
             var['units'] = row[2]
             var['objective_function'] = row[3].downcase == "true" ? true : false
+            if var['objective_function'] == true
+              @algorithm['objective_functions'] << var['name']
+            end  
             var['objective_function_target'] = row[4]
             var['index'] = variable_index
             data['output_variables'] << var
