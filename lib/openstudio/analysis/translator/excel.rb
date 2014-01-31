@@ -13,7 +13,7 @@ module OpenStudio
         attr_reader :variables
         attr_reader :algorithm
         attr_reader :problem
-        attr_reader :output_variables
+        attr_reader :run_setup
 
         # remove these once we have classes to construct the JSON file
         attr_reader :name
@@ -49,6 +49,7 @@ module OpenStudio
           @algorithm = {}
           @template_json = nil
           @outputs = {}
+          @run_setup = {}
         end
 
         def process
@@ -437,6 +438,7 @@ module OpenStudio
               @machine_name = @name.snake_case
               @export_path = File.expand_path(File.join(@root_path, row[1])) if row[0] == "Export Directory"
               @measure_path = File.expand_path(File.join(@root_path, row[1])) if row[0] == "Measure Directory"
+              @run_setup["#{row[0].snake_case}"] = row[1] if row[0]
             elsif b_problem_setup
               if row[0]
                 v = row[1]
@@ -588,7 +590,7 @@ module OpenStudio
             var['display_name'] = row[0].strip
             var['name'] = row[1]
             var['units'] = row[2]
-            var['objective_function'] = row[3]
+            var['objective_function'] = row[3].downcase == "true" ? true : false
             var['objective_function_target'] = row[4]
             var['index'] = variable_index
             data['output_variables'] << var
