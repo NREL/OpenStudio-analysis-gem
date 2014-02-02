@@ -83,7 +83,7 @@ module OpenStudio
 
           puts "new project created with ID: #{project_id}"
           #grab the project id
-        elsif response.code == 500
+        elsif response.status == 500
           puts "500 Error"
           puts response.inspect
         end
