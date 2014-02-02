@@ -597,7 +597,7 @@ module OpenStudio
               @algorithm['objective_functions'] << var['name']
             end  
             var['objective_function_target'] = row[4]
-            var['index'] = variable_index
+            var['objective_function_index'] = variable_index
             data['output_variables'] << var
           end
 
