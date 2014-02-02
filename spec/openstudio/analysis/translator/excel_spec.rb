@@ -9,19 +9,19 @@ describe OpenStudio::Analysis::Translator::Excel do
     end
 
     it "should have measure path" do
-      @excel.measure_path.should eq("./measures")
+      expect(@excel.measure_path).to eq("./measures")
     end
 
     it "should have excel data" do
       puts @excel
-      @excel.should_not be_nil
+      expect(@excel).not_to be_nil
     end
 
     it "should process the excel file" do
-      @excel.process.should eq(true)
+      expect(@excel.process).to eq(true)
 
       # after processing the measures directory should be what is in the excel file
-      @excel.measure_path.should eq(File.expand_path(File.join("spec", "files", "measures")))
+      expect(@excel.measure_path).to eq(File.expand_path(File.join("spec", "files", "measures")))
     end
 
     it "should not work because no variables defined" do
@@ -72,12 +72,12 @@ describe OpenStudio::Analysis::Translator::Excel do
       @excel.process
     end
     it "should have a model" do
-      @excel.models.first.should_not be_nil
-      puts @excel.models.first[:name].should eq("small_seed")
+      expect(@excel.models.first).not_to be_nil
+      expect(@excel.models.first[:name]).to eq("small_seed")
     end
 
     it "should have a weather file" do
-      @excel.weather_files.first.should_not be_nil
+      expect(@excel.weather_files.first).not_to be_nil
       puts @excel.weather_files.first
       expect(@excel.weather_files.first.include?("partial_weather.epw")).to eq(true)
     end
@@ -191,12 +191,12 @@ describe OpenStudio::Analysis::Translator::Excel do
     end
 
     it "should have a model" do
-      @excel.models.first.should_not be_nil
-      puts @excel.models.first[:name].should eq("output_vars")
+      expect(@excel.models.first).not_to be_nil
+      expect(@excel.models.first[:name]).to eq("output_vars")
     end
 
     it "should have a weather file" do
-      @excel.weather_files.first.should_not be_nil
+      expect(@excel.weather_files.first).not_to be_nil
       puts @excel.weather_files.first
       expect(@excel.weather_files.first.include?("partial_weather.epw")).to eq(true)
     end
@@ -261,7 +261,7 @@ describe OpenStudio::Analysis::Translator::Excel do
       puts @excel.settings.inspect
       expect(@excel.settings["user_id"]).to eq('new_user')
       expect(@excel.settings["openstudio_server_version"]).to eq('1.3.2')
-      expect(@excel.settings["cluster_name"]).to eq('analysis_cluster')
+      expect(@excel.cluster_name).to eq('analysis_cluster')
       puts @excel.run_setup.inspect
       expect(@excel.run_setup["analysis_name"]).to eq('LHS Example Project')
     end
