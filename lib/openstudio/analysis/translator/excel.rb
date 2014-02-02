@@ -10,6 +10,7 @@ module OpenStudio
         attr_reader :weather_files
         attr_reader :measure_path
         attr_reader :export_path
+        attr_reader :cluster_name
         attr_reader :variables
         attr_reader :algorithm
         attr_reader :problem
@@ -38,6 +39,7 @@ module OpenStudio
           @version = '0.0.1'
           @name = nil
           @machine_name = nil
+          @cluster_name = nil
           @settings = {}
           @weather_files = []
           @models = []
@@ -429,13 +431,10 @@ module OpenStudio
             if b_settings
               @version = row[1].chomp if row[0] == "Spreadsheet Version"
               @settings["#{row[0].snake_case}"] = row[1] if row[0]
-
+              @cluster_name = @settings["cluster_name"].snake_case if @settings["cluster_name"]
+              
               # type some of the values that we know
               @settings["proxy_port"] = @settings["proxy_port"].to_i if @settings["proxy_port"]
-              if @settings["cluster_name"]
-                @settings["cluster_name"] = @settings["cluster_name"].snake_case
-              end
-
             elsif b_run_setup
               @name = row[1].chomp if row[0] == "Analysis Name"
               @machine_name = @name.snake_case
