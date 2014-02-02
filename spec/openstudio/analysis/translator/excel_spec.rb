@@ -104,7 +104,7 @@ describe OpenStudio::Analysis::Translator::Excel do
     end
   end
 
-  context "setup version 2" do
+  context "setup version 0.1.9" do
     before(:all) do
       @excel = OpenStudio::Analysis::Translator::Excel.new("spec/files/setup_version_2.xlsx")
       @excel.process
@@ -178,19 +178,19 @@ describe OpenStudio::Analysis::Translator::Excel do
         end
       end
     end
-    
+
     it "should save the file" do
       @excel.save_analysis
     end
   end
-  
- context "setup output variables" do
+
+  context "setup output variables" do
     before(:all) do
       @excel = OpenStudio::Analysis::Translator::Excel.new("spec/files/outputvars.xlsx")
       @excel.process
     end
 
-   it "should have a model" do
+    it "should have a model" do
       @excel.models.first.should_not be_nil
       puts @excel.models.first[:name].should eq("output_vars")
     end
@@ -213,6 +213,11 @@ describe OpenStudio::Analysis::Translator::Excel do
       end
     end
 
+    it "should have typed booleans" do
+      expect(@excel.run_setup['use_server_as_worker']).to eq(true)
+      expect(@excel.run_setup['allow_multiple_jobs']).to eq(true)
+    end
+    
     it "should have algorithm setup" do
       expect(@excel.algorithm["number_of_samples"]).to eq(100)
       expect(@excel.algorithm["number_of_generations"]).to eq(20)
@@ -239,9 +244,29 @@ describe OpenStudio::Analysis::Translator::Excel do
       expect(File).to exist("spec/files/export/analysis/output_vars.zip")
 
       expect(JSON.parse(File.read("spec/files/export/analysis/output_vars.json"))).not_to be_nil
-      
+
     end
-  end    
+  end
+
+  context "version 0.1.10" do
+    before(:all) do
+      @excel = OpenStudio::Analysis::Translator::Excel.new("spec/files/template_input_0.1.10.xlsx")
+    end
+    
+    it "should process" do
+      expect(@excel.process).to eq(true)
+    end
+    
+    it "should have new setting variables" do
+      puts @excel.settings.inspect
+      expect(@excel.settings["user_id"]).to eq('new_user')
+      expect(@excel.settings["openstudio_server_version"]).to eq('1.3.2')
+      expect(@excel.settings["cluster_name"]).to eq('analysis_cluster')
+      puts @excel.run_setup.inspect
+      expect(@excel.run_setup["analysis_name"]).to eq('LHS Example Project')
+    end
+  end
+  
 
 end
 

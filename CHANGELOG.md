@@ -1,6 +1,14 @@
 OpenStudio Analysis Gem Change Log
 ==================================
 
+Version 0.1.11
+-------------
+
+* Add cluster name and openstudio server version
+
+* Make the booleans in run_options actual booleans
+
+
 Version 0.1.10
 -------------
 

@@ -432,13 +432,22 @@ module OpenStudio
 
               # type some of the values that we know
               @settings["proxy_port"] = @settings["proxy_port"].to_i if @settings["proxy_port"]
+              if @settings["cluster_name"]
+                @settings["cluster_name"] = @settings["cluster_name"].snake_case
+              end
 
             elsif b_run_setup
               @name = row[1].chomp if row[0] == "Analysis Name"
               @machine_name = @name.snake_case
               @export_path = File.expand_path(File.join(@root_path, row[1])) if row[0] == "Export Directory"
               @measure_path = File.expand_path(File.join(@root_path, row[1])) if row[0] == "Measure Directory"
+
               @run_setup["#{row[0].snake_case}"] = row[1] if row[0]
+
+              # type cast
+              @run_setup["allow_multiple_jobs"] = @run_setup["allow_multiple_jobs"].to_s.to_bool if @run_setup["allow_multiple_jobs"]
+              @run_setup["use_server_as_worker"] = @run_setup["use_server_as_worker"].to_s.to_bool if @run_setup["use_server_as_worker"]
+
             elsif b_problem_setup
               if row[0]
                 v = row[1]
@@ -582,7 +591,7 @@ module OpenStudio
           icnt = 0
           variable_index = -1
           @algorithm['objective_functions'] = []
-          
+
           rows.each do |row|
             icnt += 1
             # puts "Parsing line: #{icnt}"
@@ -595,7 +604,7 @@ module OpenStudio
             var['objective_function'] = row[3].downcase == "true" ? true : false
             if var['objective_function'] == true
               @algorithm['objective_functions'] << var['name']
-            end  
+            end
             var['objective_function_target'] = row[4]
             var['objective_function_index'] = variable_index
             data['output_variables'] << var
