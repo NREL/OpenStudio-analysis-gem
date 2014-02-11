@@ -595,7 +595,7 @@ module OpenStudio
             icnt += 1
             # puts "Parsing line: #{icnt}"
             next if icnt <= 3 # skip the first 3 lines of the file
-            variable_index += 1
+            
             var = {}
             var['display_name'] = row[0].strip
             var['name'] = row[1]
@@ -603,9 +603,12 @@ module OpenStudio
             var['objective_function'] = row[3].downcase == "true" ? true : false
             if var['objective_function'] == true
               @algorithm['objective_functions'] << var['name']
+              variable_index += 1
+              var['objective_function_index'] = variable_index
+            else
+              var['objective_function_index'] = nil
             end
-            var['objective_function_target'] = row[4]
-            var['objective_function_index'] = variable_index
+            var['objective_function_target'] = row[4]            
             data['output_variables'] << var
           end
 
