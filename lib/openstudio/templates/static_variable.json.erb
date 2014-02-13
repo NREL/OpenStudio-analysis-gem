@@ -16,7 +16,7 @@
     "relation_to_output_ADDME": "<%= @variable['relation_to_eui'] %>",
     "static_value": <%= @variable['distribution']['static_value'].inspect %>,
     "static_value_ADDME": <%= @variable['distribution']['static_value'].inspect %>,
-    "uuid": "d157d709-b83e-42bd-bd30-1bc3a7979672",
+    "uuid": "<%= UUID.new.generate %>",
     "variable_type": "RubyContinuousVariable",
-    "version_uuid": "26e7d8de-83e3-4a53-938b-45d3e0f29953"
+    "version_uuid": "<%= UUID.new.generate %>"
 }
