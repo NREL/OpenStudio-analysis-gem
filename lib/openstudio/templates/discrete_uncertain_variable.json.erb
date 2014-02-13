@@ -10,6 +10,8 @@
     "display_name": "<%= @variable['display_name'] %>",
     "machine_name": "<%= @variable['machine_name'] %>",
     "name": "<%= @variable['machine_name'] %>",
+    "minimum": <%= @variable['distribution']['min'].inspect %>,
+    "maximum": <%= @variable['distribution']['max'].inspect %>,
     "units": "<%= @variable['units'] %>",
     "value_type": "<%= @variable['type'] %>",
     "variable": true,
@@ -21,6 +23,10 @@
                 "name": "discrete",
                 "values_and_weights":
                     <%= @values_and_weights %>
+            },
+            {
+                "name": "modes",
+                "value": <%= @variable['distribution']['mean'] %>
             }
         ],
         "type": "discrete_uncertain"
