@@ -4,6 +4,13 @@ OpenStudio Analysis Gem Change Log
 Version 0.1.11
 -------------
 
+* Add machine name to pivot variables
+
+* Force generation of unique UUIDs
+
+Version 0.1.11
+-------------
+
 * Add cluster name and openstudio server version
 
 * Make the booleans in run_options actual booleans
