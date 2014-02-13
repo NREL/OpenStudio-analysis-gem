@@ -1,12 +1,16 @@
 OpenStudio Analysis Gem Change Log
 ==================================
 
-Version 0.1.11
+Version 0.1.12/13
 -------------
 
 * Add machine name to pivot variables
 
 * Force generation of unique UUIDs
+
+* Add data types to arguments and variables for XML based measures
+
+* Move Pivot variable type to Type (not sample method)
 
 Version 0.1.11
 -------------

@@ -240,17 +240,18 @@ module OpenStudio
                   end
                   raise "Argument '#{@variable['name']}' did not process.  Most likely it did not have all parameters defined." if ag.nil?
                   wf['arguments'] << ag
-                else # must be a variable
+                else # must be a variable [either pivot or normal variable]
                   vr = nil
                   if @variable['method'] == 'static'
                     # add this as an argument
                     vr = JSON.parse(static_variable_template.result(get_binding))
                   elsif @variable['method'] == 'lhs'
+                    # TODO: remove enum and choice as this is not the variable type
                     if @variable['type'] == 'enum' || @variable['type'].downcase == 'choice'
                       @values_and_weights = @variable['distribution']['enumerations'].map { |v| {value: v} }.to_json
                       vr = JSON.parse(discrete_uncertain_variable_template.result(get_binding))
                     elsif @variable['distribution']['type'] == 'discrete_uncertain'
-                      puts @variable.inspect
+                      #puts @variable.inspect
                       weights = nil
                       if @variable['distribution']['discrete_weights'] && @variable['distribution']['discrete_weights'] != ''
                         weights = eval(@variable['distribution']['discrete_weights'])
@@ -271,13 +272,18 @@ module OpenStudio
                         @values_and_weights = values.map { |v| {value: v} }.to_json
                       end
 
-                      vr = JSON.parse(discrete_uncertain_variable_template.result(get_binding))
+                      if @variable['variable_type'] == 'pivot'
+                        vr = JSON.parse(pivot_variable_template.result(get_binding))
+                      else
+                        vr = JSON.parse(discrete_uncertain_variable_template.result(get_binding))
+                      end
                     else
-                      vr = JSON.parse(uncertain_variable_template.result(get_binding))
+                      if @variable['variable_type'] == 'pivot'
+                        raise "Currently unable to pivot on continuous variables... stay tuned."
+                      else
+                        vr = JSON.parse(uncertain_variable_template.result(get_binding))
+                      end
                     end
-                  elsif @variable['method'] == 'pivot'
-                    @values_and_weights = @variable['distribution']['enumerations'].map { |v| {value: v} }.to_json
-                    vr =JSON.parse(pivot_variable_template.result(get_binding))
                   end
                   raise "variable was nil after processing" if vr.nil?
                   wf['variables'] << vr
@@ -432,7 +438,7 @@ module OpenStudio
               @version = row[1].chomp if row[0] == "Spreadsheet Version"
               @settings["#{row[0].snake_case}"] = row[1] if row[0]
               @cluster_name = @settings["cluster_name"].snake_case if @settings["cluster_name"]
-              
+
               # type some of the values that we know
               @settings["proxy_port"] = @settings["proxy_port"].to_i if @settings["proxy_port"]
             elsif b_run_setup
@@ -595,7 +601,7 @@ module OpenStudio
             icnt += 1
             # puts "Parsing line: #{icnt}"
             next if icnt <= 3 # skip the first 3 lines of the file
-            
+
             var = {}
             var['display_name'] = row[0].strip
             var['name'] = row[1]
@@ -608,7 +614,7 @@ module OpenStudio
             else
               var['objective_function_index'] = nil
             end
-            var['objective_function_target'] = row[4]            
+            var['objective_function_target'] = row[4]
             data['output_variables'] << var
           end
 

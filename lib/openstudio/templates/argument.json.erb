@@ -3,6 +3,7 @@
     "machine_name": "<%= @variable['machine_name'] %>",
     "name": "<%= @variable['name'] %>",
     "value": <%= @static_value %>,
+    "value_type": "<%= @variable['type'] %>",
     "uuid": "<%= UUID.new.generate %>",
     "version_uuid": "<%= UUID.new.generate %>"
 }
