@@ -615,6 +615,7 @@ module OpenStudio
               var['objective_function_index'] = nil
             end
             var['objective_function_target'] = row[4]
+            var['scaling_factor'] = row[5]
             data['output_variables'] << var
           end
 
