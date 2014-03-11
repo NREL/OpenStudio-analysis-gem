@@ -595,6 +595,7 @@ module OpenStudio
 
           icnt = 0
           variable_index = -1
+          group_index = 1
           @algorithm['objective_functions'] = []
 
           rows.each do |row|
@@ -616,6 +617,12 @@ module OpenStudio
             end
             var['objective_function_target'] = row[4]
             var['scaling_factor'] = row[5]
+            if row[6].nil?
+              var['objective_function_group'] = group_index
+              group_index += 1
+            else
+              var['objective_function_group'] = row[6]
+            end
             data['output_variables'] << var
           end
 
