@@ -533,18 +533,34 @@ module OpenStudio
                   var['distribution']['mean'] = row[11]
                   var['distribution']['stddev'] = row[12]
 
-                  if @version >= "0.1.10"
+                  if @version >= "0.1.11"
+                    if row[13].nil?
+		      var['distribution']['delta_x'] = 0
+                    else
+                      var['distribution']['delta_x'] = row[13]
+                    end
+                    var['distribution']['discrete_values'] = row[14]
+                    var['distribution']['discrete_weights'] = row[15]
+                    var['distribution']['type'] = row[16]
+                  elsif @version == "0.1.10"
+                    var['distribution']['delta_x'] = 0
                     var['distribution']['discrete_values'] = row[13]
                     var['distribution']['discrete_weights'] = row[14]
                     var['distribution']['type'] = row[15]
                   else
                     var['distribution']['type'] = row[13]
+                    var['distribution']['delta_x'] = 0
                   end
                 elsif var['method'] == 'static'
                   var['distribution']['static_value'] = row[7]
                 end
-
-                if @version >= "0.1.10"
+ 
+                if @version >= "0.1.11"
+                  # new columns for discrete variables
+                  var['distribution']['source'] = row[17]
+                  var['notes'] = row[18]
+                  var['relation_to_eui'] = row[19]
+                elsif @version == "0.1.10"
                   # new columns for discrete variables
                   var['distribution']['source'] = row[16]
                   var['notes'] = row[17]
