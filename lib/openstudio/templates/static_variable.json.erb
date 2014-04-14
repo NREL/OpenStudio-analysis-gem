@@ -12,11 +12,9 @@
     "units": "<%= @variable['units'] %>",
     "value_type": "<%= @variable['type'] %>",
     "static": true,
-    "static_ADDME": true,
     "relation_to_output": "<%= @variable['relation_to_eui'] %>",
     "relation_to_output_ADDME": "<%= @variable['relation_to_eui'] %>",
     "static_value": <%= @variable['distribution']['static_value'].inspect %>,
-    "static_value_ADDME": <%= @variable['distribution']['static_value'].inspect %>,
     "uuid": "<%= UUID.new.generate %>",
     "variable_type": "RubyContinuousVariable",
     "version_uuid": "<%= UUID.new.generate %>"

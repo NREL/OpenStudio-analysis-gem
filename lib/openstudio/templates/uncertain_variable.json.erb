@@ -14,7 +14,6 @@
     "units": "<%= @variable['units'] %>",
     "value_type": "<%= @variable['type'] %>",
     "variable": true,
-    "variable_ADDME": true,
     "relation_to_output": "<%= @variable['relation_to_eui'] %>",
     "uncertainty_description": {
         "attributes": [
@@ -36,7 +35,7 @@
             },
             {
                 "name": "delta_x",
-                "value": <%= @variable['distribution']['delta_x'] %>
+                "value": <%= @variable['distribution']['delta_x'] ?  @variable['distribution']['delta_x'].inspect : 'null' %>
             }
         ],
         "type": <%= @variable['distribution']['type'].inspect %>
