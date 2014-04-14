@@ -10,12 +10,11 @@
     "display_name": "<%= @variable['display_name'] %>",
     "machine_name": "<%= @variable['machine_name'] %>",
     "name": "<%= @variable['machine_name'] %>",
-    "minimum": <%= @variable['distribution']['min'].inspect %>,
-    "maximum": <%= @variable['distribution']['max'].inspect %>,
+    "minimum": <%= @variable['distribution']['min'] ?  @variable['distribution']['min'].inspect : 'null' %>,
+    "maximum": <%= @variable['distribution']['max'] ?  @variable['distribution']['max'].inspect : 'null' %>,
     "units": "<%= @variable['units'] %>",
     "value_type": "<%= @variable['type'] %>",
     "variable": true,
-    "variable_ADDME": true,
     "relation_to_output": "<%= @variable['relation_to_eui'] %>",
     "uncertainty_description": {
         "attributes": [
@@ -25,7 +24,7 @@
             },
             {
                 "name": "modes",
-                "value": <%= @variable['distribution']['mean'] %>
+                "value": <%= @variable['distribution']['mean'] ?  @variable['distribution']['mean'].inspect : 'null' %>
             }
         ],
         "type": "discrete_uncertain"

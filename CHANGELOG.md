@@ -1,6 +1,12 @@
 OpenStudio Analysis Gem Change Log
 ==================================
 
+Version 0.1.14
+--------------
+
+* Symbolize headers parsed from excel file.
+
+
 Version 0.1.12/13
 -------------
 

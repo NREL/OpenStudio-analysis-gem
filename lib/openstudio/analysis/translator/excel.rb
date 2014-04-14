@@ -25,14 +25,15 @@ module OpenStudio
 
         # pass in the filename to read
         def initialize(xls_filename)
-          @root_path = File.expand_path(File.dirname(xls_filename))
+          @xls_filename = xls_filename
+          @root_path = File.expand_path(File.dirname(@xls_filename))
 
           @xls = nil
           # try to read the spreadsheet as a roo object
-          if File.exists?(xls_filename)
-            @xls = Roo::Spreadsheet.open(xls_filename)
+          if File.exists?(@xls_filename)
+            @xls = Roo::Spreadsheet.open(@xls_filename)
           else
-            raise "File #{xls_filename} does not exist"
+            raise "File #{@xls_filename} does not exist"
           end
 
           # Initialize some other instance variables
@@ -118,6 +119,9 @@ module OpenStudio
                         if variable['distribution']['discrete_values'].nil? || variable['distribution']['discrete_values'] == ""
                           raise "Variable #{measure['name']}:#{variable['name']} needs discrete values"
                         end
+                        #if variable['distribution']['mean'].nil? || variable['distribution']['mean'] == ""
+                        #  raise "Variable #{measure['name']}:#{variable['name']} must have a mean/mode"
+                        #end
                       else
                         if variable['distribution']['min'].nil? || variable['distribution']['min'] == ""
                           raise "Variable #{measure['name']}:#{variable['name']} must have a minimum"
@@ -319,7 +323,7 @@ module OpenStudio
             Dir.glob("#{@measure_path}/**/*.rb").each do |measure|
               next if measure.include?("spec") # don't include the spec folders nor files
               measure_name = measure.split(File::SEPARATOR).last(2).first
-                                               #puts "  Adding ./measures/#{measure_name}/#{File.basename(measure)}"
+              #puts "  Adding ./measures/#{measure_name}/#{File.basename(measure)}"
               zipfile.add("./measures/#{measure_name}/#{File.basename(measure)}", measure)
             end
 
@@ -482,12 +486,88 @@ module OpenStudio
         # a higher level JSON file.  The JSON file is historic and it should really 
         # be omitted as an intermediate step
         def parse_variables()
-          rows = @xls.sheet('Variables').parse()
 
-          if !rows
-            raise "Could not find the sheet name 'Variables' in excel file #{@root_path}"
+          # clean remove whitespace and unicode chars
+          # The parse is a unique format (https://github.com/Empact/roo/blob/master/lib/roo/base.rb#L444) 
+          # If you add a new column and you want that variable in the hash, then you must add it here.
+          #rows = @xls.sheet('Variables').parse(:enabled => "# variable")
+          #puts rows.inspect
+          rows = nil
+          begin
+            if @version >= "0.1.12"  # add delta x
+              rows = @xls.sheet('Variables').parse(:enabled => '# variable',
+                                                   :measure_name_or_var_type => 'type',
+                                                   :measure_file_name_or_var_display_name => 'parameter display name.*',
+                                                   :measure_type_or_parameter_name_in_measure => 'parameter name in measure',
+                                                   :sampling_method => 'sampling method',
+                                                   :variable_type => 'Variable Type',
+                                                   :units => 'units',
+                                                   :default_value => 'static.default value',
+                                                   :enums => 'enumerations',
+                                                   :min => 'min',
+                                                   :max => 'max',
+                                                   :mode => 'mean|mode',
+                                                   :stddev => 'std dev',
+                                                   :delta_x => 'delta.x',
+                                                   :discrete_values => 'discrete values',
+                                                   :discrete_weights => 'discrete weights',
+                                                   :distribution => 'distribution',
+                                                   :source => 'data source',
+                                                   :notes => 'notes',
+                                                   :relation_to_eui => 'typical var to eui relationship',
+                                                   :clean => true)
+            elsif @version >= "0.1.11" # add discrete variables
+              rows = @xls.sheet('Variables').parse(:enabled => '# variable',
+                                                   :measure_name_or_var_type => 'type',
+                                                   :measure_file_name_or_var_display_name => 'parameter display name.*',
+                                                   :measure_type_or_parameter_name_in_measure => 'parameter name in measure',
+                                                   :sampling_method => 'sampling method',
+                                                   :variable_type => 'Variable Type',
+                                                   :units => 'units',
+                                                   :default_value => 'static.default value',
+                                                   :enums => 'enumerations',
+                                                   :min => 'min',
+                                                   :max => 'max',
+                                                   :mode => 'mean|mode',
+                                                   :stddev => 'std dev',
+                                                   #:delta_x => 'delta.x',
+                                                   :discrete_values => 'discrete values',
+                                                   :discrete_weights => 'discrete weights',
+                                                   :distribution => 'distribution',
+                                                   :source => 'data source',
+                                                   :notes => 'notes',
+                                                   :relation_to_eui => 'typical var to eui relationship',
+                                                   :clean => true)
+            else
+              rows = @xls.sheet('Variables').parse(:enabled => '# variable',
+                                                   :measure_name_or_var_type => 'type',
+                                                   :measure_file_name_or_var_display_name => 'parameter display name.*',
+                                                   :measure_type_or_parameter_name_in_measure => 'parameter name in measure',
+                                                   :sampling_method => 'sampling method',
+                                                   :variable_type => 'Variable Type',
+                                                   :units => 'units',
+                                                   :default_value => 'static.default value',
+                                                   :enums => 'enumerations',
+                                                   :min => 'min',
+                                                   :max => 'max',
+                                                   :mode => 'mean|mode',
+                                                   :stddev => 'std dev',
+                                                   #:delta_x => 'delta.x',
+                                                   #:discrete_values => 'discrete values',
+                                                   #:discrete_weights => 'discrete weights',
+                                                   :distribution => 'distribution',
+                                                   :source => 'data source',
+                                                   :notes => 'notes',
+                                                   :relation_to_eui => 'typical var to eui relationship',
+                                                   :clean => true)
+            end
+          rescue Exception => e
+            raise "#{e.message} with Spreadsheet #{@xls_filename} with Version #{@version}  "
           end
 
+          raise "Could not find the sheet name 'Variables' in excel file #{@root_path}" if !rows
+
+          # map the data to another hash that is more easily processed
           data = {}
           data['data'] = []
 
@@ -497,30 +577,30 @@ module OpenStudio
           measure_name = nil
           rows.each do |row|
             icnt += 1
-            # puts "Parsing line: #{icnt}"
-            next if icnt <= 3 # skip the first 3 lines of the file
+            next if icnt <= 1 # skip the first line after the header
+            #puts "Parsing line: #{icnt}:#{row}"
 
-            # check if we are a measure
-            if row[0].nil?
+            # check if we are a measure - nil means that the cell was blank
+            if row[:enabled].nil?
               unless measure_name.nil?
                 variable_index += 1
 
                 var = {}
-                var['variable_type'] = row[1]
-                var['display_name'] = row[2].strip
-                var['machine_name'] = var['display_name'].downcase.strip.gsub("-", "_").gsub(" ", "_").strip
-                var['name'] = row[3].strip
-                var['index'] = variable_index #order of the variable (eventually use to force order of applying measures)
+                var['variable_type'] = row[:measure_name_or_var_type]
+                var['display_name'] = row[:measure_file_name_or_var_display_name]
+                var['machine_name'] = row[:measure_file_name_or_var_display_name].downcase.strip.gsub("-", "_").gsub(" ", "_").strip
+                var['name'] = row[:measure_type_or_parameter_name_in_measure]
+                var['index'] = variable_index #order of the variable (not sure of its need)
 
-                var['method'] = row[4]
-                var['type'] = row[5]
-                var['units'] = row[6]
+                var['method'] = row[:sampling_method]
+                var['type'] = row[:variable_type] ? row[:variable_type].downcase : row[:variable_type]
+                var['units'] = row[:units]
 
                 var['distribution'] = {}
 
                 #parse the choices/enums
-                if var['type'] == 'enum' || var['type'] == 'Choice' # this is now a choice
-                  var['distribution']['enumerations'] = row[8].gsub("|", "").split(",").map { |v| v.strip }
+                if var['type'] == 'enum' || var['type'] == 'choice' # this is now a choice
+                  var['distribution']['enumerations'] = row[:enums].gsub("|", "").split(",").map { |v| v.strip }
                 elsif var['type'] == 'bool'
                   var['distribution']['enumerations'] = []
                   var['distribution']['enumerations'] << 'true' #todo: should this be a real bool?
@@ -528,32 +608,20 @@ module OpenStudio
                 end
 
                 if var['method'] == 'lhs'
-                  var['distribution']['min'] = row[9]
-                  var['distribution']['max'] = row[10]
-                  var['distribution']['mean'] = row[11]
-                  var['distribution']['stddev'] = row[12]
-
-                  if @version >= "0.1.10"
-                    var['distribution']['discrete_values'] = row[13]
-                    var['distribution']['discrete_weights'] = row[14]
-                    var['distribution']['type'] = row[15]
-                  else
-                    var['distribution']['type'] = row[13]
-                  end
+                  var['distribution']['min'] = row[:min]
+                  var['distribution']['max'] = row[:max]
+                  var['distribution']['mean'] = row[:mode]
+                  var['distribution']['stddev'] = row[:stddev]
+                  var['distribution']['discrete_values'] = row[:discrete_values]
+                  var['distribution']['discrete_weights'] = row[:discrete_weights]
+                  var['distribution']['type'] = row[:distribution]
                 elsif var['method'] == 'static'
-                  var['distribution']['static_value'] = row[7]
+                  var['distribution']['static_value'] = row[:default_value]
                 end
 
-                if @version >= "0.1.10"
-                  # new columns for discrete variables
-                  var['distribution']['source'] = row[16]
-                  var['notes'] = row[17]
-                  var['relation_to_eui'] = row[18]
-                else
-                  var['distribution']['source'] = row[14]
-                  var['notes'] = row[15]
-                  var['relation_to_eui'] = row[16]
-                end
+                var['distribution']['source'] = row[:source]
+                var['notes'] = row[:notes]
+                var['relation_to_eui'] = row[:relation_to_eui]
 
                 data['data'][measure_index]['variables'] << var
               end
@@ -564,14 +632,14 @@ module OpenStudio
 
               #generate name id
               #todo: put this into a logger. puts "Parsing measure #{row[1]}"
-              display_name = row[1].chomp.strip
+              display_name = row[:measure_name_or_var_type]
               measure_name = display_name.downcase.strip.gsub("-", "_").gsub(" ", "_")
               data['data'][measure_index]['display_name'] = display_name
               data['data'][measure_index]['name'] = measure_name
-              data['data'][measure_index]['enabled'] = row[0] == "TRUE" ? true : false
-              data['data'][measure_index]['measure_file_name'] = row[2]
-              data['data'][measure_index]['measure_file_name_directory'] = row[2].underscore
-              data['data'][measure_index]['measure_type'] = row[3]
+              data['data'][measure_index]['enabled'] = row[:enabled] == "TRUE" ? true : false
+              data['data'][measure_index]['measure_file_name'] = row[:measure_file_name_or_var_display_name]
+              data['data'][measure_index]['measure_file_name_directory'] = row[:measure_file_name_or_var_display_name].underscore
+              data['data'][measure_index]['measure_type'] = row[:measure_type_or_parameter_name_in_measure]
 
               data['data'][measure_index]['version'] = @version_id
 
@@ -580,6 +648,7 @@ module OpenStudio
             end
           end
 
+          #puts data.inspect
           data
         end
 
