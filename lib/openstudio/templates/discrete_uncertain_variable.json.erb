@@ -23,6 +23,14 @@
                 "values_and_weights": <%= @values_and_weights %>
             },
             {
+                "name": "lower_bounds",
+                "value": <%= @variable['distribution']['min'] %>
+            },
+            {
+                "name": "upper_bounds",
+                "value": <%= @variable['distribution']['max'] %>
+            },
+            {
                 "name": "modes",
                 "value": <%= @variable['distribution']['mean'] ?  @variable['distribution']['mean'].inspect : 'null' %>
             }

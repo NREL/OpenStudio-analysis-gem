@@ -119,26 +119,28 @@ module OpenStudio
                         if variable['distribution']['discrete_values'].nil? || variable['distribution']['discrete_values'] == ""
                           raise "Variable #{measure['name']}:#{variable['name']} needs discrete values"
                         end
-                        #if variable['distribution']['mean'].nil? || variable['distribution']['mean'] == ""
-                        #  raise "Variable #{measure['name']}:#{variable['name']} must have a mean/mode"
-                        #end
                       else
-                        if variable['distribution']['min'].nil? || variable['distribution']['min'] == ""
-                          raise "Variable #{measure['name']}:#{variable['name']} must have a minimum"
-                        end
-                        if variable['distribution']['max'].nil? || variable['distribution']['max'] == ""
-                          raise "Variable #{measure['name']}:#{variable['name']} must have a maximum"
-                        end
                         if variable['distribution']['mean'].nil? || variable['distribution']['mean'] == ""
                           raise "Variable #{measure['name']}:#{variable['name']} must have a mean"
                         end
                         if variable['distribution']['stddev'].nil? || variable['distribution']['stddev'] == ""
                           raise "Variable #{measure['name']}:#{variable['name']} must have a stddev"
                         end
-                        if variable['distribution']['min'] > variable['distribution']['max']
-                          raise "Variable min is greater than variable max for #{measure['name']}:#{variable['name']}"
-                        end
                       end
+
+                      if variable['distribution']['mean'].nil? || variable['distribution']['mean'] == ""
+                        raise "Variable #{measure['name']}:#{variable['name']} must have a mean/mode"
+                      end
+                      if variable['distribution']['min'].nil? || variable['distribution']['min'] == ""
+                        raise "Variable #{measure['name']}:#{variable['name']} must have a minimum"
+                      end
+                      if variable['distribution']['max'].nil? || variable['distribution']['max'] == ""
+                        raise "Variable #{measure['name']}:#{variable['name']} must have a maximum"
+                      end
+                      if variable['distribution']['min'] > variable['distribution']['max']
+                        raise "Variable min is greater than variable max for #{measure['name']}:#{variable['name']}"
+                      end
+                      
 
                     end
                   elsif variable['method'] == 'pivot'
@@ -640,11 +642,9 @@ module OpenStudio
               data['data'][measure_index]['measure_file_name'] = row[:measure_file_name_or_var_display_name]
               data['data'][measure_index]['measure_file_name_directory'] = row[:measure_file_name_or_var_display_name].underscore
               data['data'][measure_index]['measure_type'] = row[:measure_type_or_parameter_name_in_measure]
-
               data['data'][measure_index]['version'] = @version_id
 
               data['data'][measure_index]['variables'] = []
-
             end
           end
 
