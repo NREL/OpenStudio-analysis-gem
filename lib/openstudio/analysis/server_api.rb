@@ -57,7 +57,7 @@ module OpenStudio
         puts "Deleting Projects #{ids}"
         ids.each do |id|
           response = @conn.delete "/projects/#{id}.json"
-          if response.status == 200
+          if response.status == 204
             puts "Successfully deleted project #{id}"
           else
             puts "ERROR deleting project #{id}"

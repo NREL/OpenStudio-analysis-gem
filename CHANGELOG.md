@@ -1,6 +1,11 @@
 OpenStudio Analysis Gem Change Log
 ==================================
 
+Unreleased
+--------------
+
+* DELETE should return success if 204
+
 Version 0.1.14
 --------------
 
