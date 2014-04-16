@@ -496,7 +496,30 @@ module OpenStudio
           #puts rows.inspect
           rows = nil
           begin
-            if @version >= "0.1.12"  # add delta x
+            if @version >= "0.2.0"
+              rows = @xls.sheet('Variables').parse(:enabled => '# variable',
+                                                   :measure_name_or_var_type => 'type',
+                                                   :measure_file_name_or_var_display_name => 'parameter display name.*',
+                                                   :measure_file_name_directory => 'measure directory',
+                                                   :measure_type_or_parameter_name_in_measure => 'parameter name in measure',
+                                                   :sampling_method => 'sampling method',
+                                                   :variable_type => 'Variable Type',
+                                                   :units => 'units',
+                                                   :default_value => 'static.default value',
+                                                   :enums => 'enumerations',
+                                                   :min => 'min',
+                                                   :max => 'max',
+                                                   :mode => 'mean|mode',
+                                                   :stddev => 'std dev',
+                                                   :delta_x => 'delta.x',
+                                                   :discrete_values => 'discrete values',
+                                                   :discrete_weights => 'discrete weights',
+                                                   :distribution => 'distribution',
+                                                   :source => 'data source',
+                                                   :notes => 'notes',
+                                                   :relation_to_eui => 'typical var to eui relationship',
+                                                   :clean => true)              
+            elsif @version >= "0.1.12"  # add delta x
               rows = @xls.sheet('Variables').parse(:enabled => '# variable',
                                                    :measure_name_or_var_type => 'type',
                                                    :measure_file_name_or_var_display_name => 'parameter display name.*',
@@ -640,7 +663,7 @@ module OpenStudio
               data['data'][measure_index]['name'] = measure_name
               data['data'][measure_index]['enabled'] = row[:enabled] == "TRUE" ? true : false
               data['data'][measure_index]['measure_file_name'] = row[:measure_file_name_or_var_display_name]
-              data['data'][measure_index]['measure_file_name_directory'] = row[:measure_file_name_or_var_display_name].underscore
+              data['data'][measure_index]['measure_file_name_directory'] = row[:measure_file_name_directory]
               data['data'][measure_index]['measure_type'] = row[:measure_type_or_parameter_name_in_measure]
               data['data'][measure_index]['version'] = @version_id
 
