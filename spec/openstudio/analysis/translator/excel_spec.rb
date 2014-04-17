@@ -285,16 +285,16 @@ describe OpenStudio::Analysis::Translator::Excel do
       expect(@excel.run_setup["analysis_name"]).to eq('LHS Example Project')
     end
   end
-
+  
   context "version 0.2.0" do
     before(:all) do
       @excel = OpenStudio::Analysis::Translator::Excel.new("spec/files/template_0_2_0.xlsx")
     end
-
+  
     it "should process" do
       expect(@excel.process).to eq(true)
     end
-
+  
     it "should have new setting variables" do
       puts @excel.settings.inspect
       expect(@excel.settings["user_id"]).to eq('new_user')
@@ -307,12 +307,38 @@ describe OpenStudio::Analysis::Translator::Excel do
     it "should have the new measure directory column" do
       expect(@excel.variables['data'][1]['measure_file_name_directory']).to eq('ReduceLightingLoadsByPercentage')
     end
-
+  
     it "should write a json" do
        @excel.save_analysis
     end
   end
-  
+
+  context "version 0.2.0 simple" do
+    before(:all) do
+      @excel = OpenStudio::Analysis::Translator::Excel.new("spec/files/template_0_2_0_simpletest.xlsx")
+    end
+
+    it "should process" do
+      expect(@excel.process).to eq(true)
+    end
+
+    it "should have new setting variables" do
+      puts @excel.settings.inspect
+      expect(@excel.settings["user_id"]).to eq('new_user')
+      expect(@excel.settings["openstudio_server_version"]).to eq('1.3.2')
+      puts @excel.run_setup.inspect
+    end
+
+    it "should have the new measure directory column" do
+      expect(@excel.variables['data'][1]['measure_file_name_directory']).to eq('AdjustThermostatSetpointsByDegrees')
+    end
+
+    it "should write a json" do
+      @excel.save_analysis
+    end
+  end
+
+
 
 end
 
