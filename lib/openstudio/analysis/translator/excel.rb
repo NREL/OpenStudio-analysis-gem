@@ -592,6 +592,7 @@ module OpenStudio
 
           raise "Could not find the sheet name 'Variables' in excel file #{@root_path}" if !rows
 
+          puts rows.inspect
           # map the data to another hash that is more easily processed
           data = {}
           data['data'] = []
