@@ -316,8 +316,8 @@
               "name": "space_type",
               "value": "*Entire Building*",
               "value_type": "choice",
-              "uuid": "f6e97f90-a8a2-0131-cf63-14109fdf0b37",
-              "version_uuid": "f6e986b0-a8a2-0131-cf64-14109fdf0b37"
+              "uuid": "4716efa0-a8a4-0131-d967-14109fdf0b37",
+              "version_uuid": "4716f6b0-a8a4-0131-d968-14109fdf0b37"
             },
             {
               "display_name": "Increase in Material and Installation Cost for Lighting per Floor Area (%).",
@@ -325,8 +325,8 @@
               "name": "material_and_installation_cost",
               "value": 0.0,
               "value_type": "double",
-              "uuid": "f6e9a670-a8a2-0131-cf66-14109fdf0b37",
-              "version_uuid": "f6e9ad80-a8a2-0131-cf67-14109fdf0b37"
+              "uuid": "471715c0-a8a4-0131-d96a-14109fdf0b37",
+              "version_uuid": "47171ce0-a8a4-0131-d96b-14109fdf0b37"
             },
             {
               "display_name": "Increase in Demolition Costs for Lighting per Floor Area (%).",
@@ -334,8 +334,8 @@
               "name": "demolition_cost",
               "value": 0.0,
               "value_type": "double",
-              "uuid": "f6e9b9d0-a8a2-0131-cf68-14109fdf0b37",
-              "version_uuid": "f6e9c1f0-a8a2-0131-cf69-14109fdf0b37"
+              "uuid": "47172920-a8a4-0131-d96c-14109fdf0b37",
+              "version_uuid": "47173040-a8a4-0131-d96d-14109fdf0b37"
             },
             {
               "display_name": "Years Until Costs Start (whole years).",
@@ -343,8 +343,8 @@
               "name": "years_until_costs_start",
               "value": 0,
               "value_type": "integer",
-              "uuid": "f6e9cc60-a8a2-0131-cf6a-14109fdf0b37",
-              "version_uuid": "f6e9d240-a8a2-0131-cf6b-14109fdf0b37"
+              "uuid": "47173c80-a8a4-0131-d96e-14109fdf0b37",
+              "version_uuid": "471743e0-a8a4-0131-d96f-14109fdf0b37"
             },
             {
               "display_name": "Demolition Costs Occur During Initial Construction?",
@@ -352,8 +352,8 @@
               "name": "demo_cost_initial_const",
               "value": true,
               "value_type": "bool",
-              "uuid": "f6e9dc80-a8a2-0131-cf6c-14109fdf0b37",
-              "version_uuid": "f6e9e270-a8a2-0131-cf6d-14109fdf0b37"
+              "uuid": "47174e40-a8a4-0131-d970-14109fdf0b37",
+              "version_uuid": "47175420-a8a4-0131-d971-14109fdf0b37"
             },
             {
               "display_name": "Expected Life (whole years).",
@@ -361,8 +361,8 @@
               "name": "expected_life",
               "value": 15,
               "value_type": "integer",
-              "uuid": "f6e9ed60-a8a2-0131-cf6e-14109fdf0b37",
-              "version_uuid": "f6e9f4b0-a8a2-0131-cf6f-14109fdf0b37"
+              "uuid": "47175ea0-a8a4-0131-d972-14109fdf0b37",
+              "version_uuid": "47176490-a8a4-0131-d973-14109fdf0b37"
             },
             {
               "display_name": "Increase O & M Costs for Lighting per Floor Area (%).",
@@ -370,8 +370,8 @@
               "name": "om_cost",
               "value": 0.0,
               "value_type": "double",
-              "uuid": "f6e9ff50-a8a2-0131-cf70-14109fdf0b37",
-              "version_uuid": "f6ea0520-a8a2-0131-cf71-14109fdf0b37"
+              "uuid": "47176ef0-a8a4-0131-d974-14109fdf0b37",
+              "version_uuid": "471774c0-a8a4-0131-d975-14109fdf0b37"
             },
             {
               "display_name": "O & M Frequency (whole years).",
@@ -379,8 +379,8 @@
               "name": "om_frequency",
               "value": 1,
               "value_type": "integer",
-              "uuid": "f6ea0f60-a8a2-0131-cf72-14109fdf0b37",
-              "version_uuid": "f6ea1550-a8a2-0131-cf73-14109fdf0b37"
+              "uuid": "47177ef0-a8a4-0131-d976-14109fdf0b37",
+              "version_uuid": "471784d0-a8a4-0131-d977-14109fdf0b37"
             }
           ],
           "bcl_measure_directory": "./measures/ReduceLightingLoadsByPercentage",
@@ -388,21 +388,21 @@
           "bcl_measure_class_name_ADDME": "ReduceLightingLoadsByPercentage",
           "measure_definition_class_name_CHANGE_TO_ME": "ReduceLightingLoadsByPercentage",
           "measure_definition_class_name": "ReduceLightingLoadsByPercentage",
-          "bcl_measure_uuid": "f6e8ffb0-a8a2-0131-cf5d-14109fdf0b37",
-          "measure_definition_uuid_CHANGE_TO_ME": "f6e93e40-a8a2-0131-cf5e-14109fdf0b37",
-          "bcl_measure_version_uuid": "f6e94d50-a8a2-0131-cf5f-14109fdf0b37",
-          "measure_definition_version_uuid_CHANGE_TO_ME": "f6e95a30-a8a2-0131-cf60-14109fdf0b37",
+          "bcl_measure_uuid": "47167130-a8a4-0131-d961-14109fdf0b37",
+          "measure_definition_uuid_CHANGE_TO_ME": "4716b290-a8a4-0131-d962-14109fdf0b37",
+          "bcl_measure_version_uuid": "4716bf60-a8a4-0131-d963-14109fdf0b37",
+          "measure_definition_version_uuid_CHANGE_TO_ME": "4716cc10-a8a4-0131-d964-14109fdf0b37",
           "measure_type": "RubyMeasure",
           "name": "reduce_lighting_loads_by_percentage",
           "display_name": "Reduce Lighting Loads by Percentage",
-          "uuid": "f6e96430-a8a2-0131-cf61-14109fdf0b37",
+          "uuid": "4716d740-a8a4-0131-d965-14109fdf0b37",
           "variables": [
             {
               "argument": {
                 "display_name": "Lighting Power Reduction",
                 "machine_name": "lighting_power_reduction",
                 "name": "lighting_power_reduction_percent",
-                "uuid": "f6e998f0-a8a2-0131-cf65-14109fdf0b37",
+                "uuid": "47170910-a8a4-0131-d969-14109fdf0b37",
                 "version_uuid": "b33cf6b0-f1aa-4706-afab-9470e6bd1912"
               },
               "display_name": "Lighting Power Reduction",
@@ -444,7 +444,7 @@
               "version_uuid": "26e7d8de-83e3-4a53-938b-45d3e0f29953"
             }
           ],
-          "version_uuid": "f6e96dd0-a8a2-0131-cf62-14109fdf0b37",
+          "version_uuid": "4716e040-a8a4-0131-d966-14109fdf0b37",
           "workflow_index": 0,
           "workflow_step_type": "Measure"
         },
@@ -456,8 +456,8 @@
               "name": "space_type",
               "value": "*Entire Building*",
               "value_type": "choice",
-              "uuid": "f6ea4ef0-a8a2-0131-cf7a-14109fdf0b37",
-              "version_uuid": "f6ea54d0-a8a2-0131-cf7b-14109fdf0b37"
+              "uuid": "4717b8c0-a8a4-0131-d97e-14109fdf0b37",
+              "version_uuid": "4717bdd0-a8a4-0131-d97f-14109fdf0b37"
             },
             {
               "display_name": "Increase in Material and Installation Cost for Electric Equipment per Floor Area (%).",
@@ -465,8 +465,8 @@
               "name": "material_and_installation_cost",
               "value": 0.0,
               "value_type": "double",
-              "uuid": "f6ea6f50-a8a2-0131-cf7d-14109fdf0b37",
-              "version_uuid": "f6ea7550-a8a2-0131-cf7e-14109fdf0b37"
+              "uuid": "4717d4e0-a8a4-0131-d981-14109fdf0b37",
+              "version_uuid": "4717dab0-a8a4-0131-d982-14109fdf0b37"
             },
             {
               "display_name": "Increase in Demolition Costs for Electric Equipment per Floor Area (%).",
@@ -474,8 +474,8 @@
               "name": "demolition_cost",
               "value": 0.0,
               "value_type": "double",
-              "uuid": "f6ea7f70-a8a2-0131-cf7f-14109fdf0b37",
-              "version_uuid": "f6ea8580-a8a2-0131-cf80-14109fdf0b37"
+              "uuid": "4717e4f0-a8a4-0131-d983-14109fdf0b37",
+              "version_uuid": "4717eaf0-a8a4-0131-d984-14109fdf0b37"
             },
             {
               "display_name": "Years Until Costs Start (whole years).",
@@ -483,8 +483,8 @@
               "name": "years_until_costs_start",
               "value": 0,
               "value_type": "integer",
-              "uuid": "f6ea8f30-a8a2-0131-cf81-14109fdf0b37",
-              "version_uuid": "f6ea9500-a8a2-0131-cf82-14109fdf0b37"
+              "uuid": "4717f550-a8a4-0131-d985-14109fdf0b37",
+              "version_uuid": "4717fbe0-a8a4-0131-d986-14109fdf0b37"
             },
             {
               "display_name": "Demolition Costs Occur During Initial Construction?",
@@ -492,8 +492,8 @@
               "name": "demo_cost_initial_const",
               "value": false,
               "value_type": "bool",
-              "uuid": "f6ea9f30-a8a2-0131-cf83-14109fdf0b37",
-              "version_uuid": "f6eaa540-a8a2-0131-cf84-14109fdf0b37"
+              "uuid": "47180610-a8a4-0131-d987-14109fdf0b37",
+              "version_uuid": "47180c00-a8a4-0131-d988-14109fdf0b37"
             },
             {
               "display_name": "Expected Life (whole years).",
@@ -501,8 +501,8 @@
               "name": "expected_life",
               "value": 15,
               "value_type": "integer",
-              "uuid": "f6eaaf90-a8a2-0131-cf85-14109fdf0b37",
-              "version_uuid": "f6eab570-a8a2-0131-cf86-14109fdf0b37"
+              "uuid": "47181600-a8a4-0131-d989-14109fdf0b37",
+              "version_uuid": "47181bf0-a8a4-0131-d98a-14109fdf0b37"
             },
             {
               "display_name": "Increase O & M Costs for Electric Equipment per Floor Area (%).",
@@ -510,8 +510,8 @@
               "name": "om_cost",
               "value": 0.0,
               "value_type": "double",
-              "uuid": "f6eabfc0-a8a2-0131-cf87-14109fdf0b37",
-              "version_uuid": "f6eac510-a8a2-0131-cf88-14109fdf0b37"
+              "uuid": "47182600-a8a4-0131-d98b-14109fdf0b37",
+              "version_uuid": "47182bc0-a8a4-0131-d98c-14109fdf0b37"
             },
             {
               "display_name": "O & M Frequency (whole years).",
@@ -519,8 +519,8 @@
               "name": "om_frequency",
               "value": 1,
               "value_type": "integer",
-              "uuid": "f6eaced0-a8a2-0131-cf89-14109fdf0b37",
-              "version_uuid": "f6ead420-a8a2-0131-cf8a-14109fdf0b37"
+              "uuid": "471835e0-a8a4-0131-d98d-14109fdf0b37",
+              "version_uuid": "47183c10-a8a4-0131-d98e-14109fdf0b37"
             }
           ],
           "bcl_measure_directory": "./measures/ReduceElectricEquipmentLoadsByPercentage",
@@ -528,21 +528,21 @@
           "bcl_measure_class_name_ADDME": "ReduceElectricEquipmentLoadsByPercentage",
           "measure_definition_class_name_CHANGE_TO_ME": "ReduceElectricEquipmentLoadsByPercentage",
           "measure_definition_class_name": "ReduceElectricEquipmentLoadsByPercentage",
-          "bcl_measure_uuid": "f6ea2370-a8a2-0131-cf74-14109fdf0b37",
-          "measure_definition_uuid_CHANGE_TO_ME": "f6ea2950-a8a2-0131-cf75-14109fdf0b37",
-          "bcl_measure_version_uuid": "f6ea2fb0-a8a2-0131-cf76-14109fdf0b37",
-          "measure_definition_version_uuid_CHANGE_TO_ME": "f6ea3680-a8a2-0131-cf77-14109fdf0b37",
+          "bcl_measure_uuid": "47179290-a8a4-0131-d978-14109fdf0b37",
+          "measure_definition_uuid_CHANGE_TO_ME": "47179870-a8a4-0131-d979-14109fdf0b37",
+          "bcl_measure_version_uuid": "47179e30-a8a4-0131-d97a-14109fdf0b37",
+          "measure_definition_version_uuid_CHANGE_TO_ME": "4717a440-a8a4-0131-d97b-14109fdf0b37",
           "measure_type": "RubyMeasure",
           "name": "reduce_electric_equipment_loads_by_percentage",
           "display_name": "Reduce Electric Equipment Loads by Percentage",
-          "uuid": "f6ea3ce0-a8a2-0131-cf78-14109fdf0b37",
+          "uuid": "4717aa90-a8a4-0131-d97c-14109fdf0b37",
           "variables": [
             {
               "argument": {
                 "display_name": "Electric Equipment Power Reduction (%).",
                 "machine_name": "electric_equipment_power_reduction_(%).",
                 "name": "elecequip_power_reduction_percent",
-                "uuid": "f6ea6330-a8a2-0131-cf7c-14109fdf0b37",
+                "uuid": "4717c8f0-a8a4-0131-d980-14109fdf0b37",
                 "version_uuid": "b33cf6b0-f1aa-4706-afab-9470e6bd1912"
               },
               "display_name": "Electric Equipment Power Reduction (%).",
@@ -584,7 +584,7 @@
               "version_uuid": "26e7d8de-83e3-4a53-938b-45d3e0f29953"
             }
           ],
-          "version_uuid": "f6ea43f0-a8a2-0131-cf79-14109fdf0b37",
+          "version_uuid": "4717b060-a8a4-0131-d97d-14109fdf0b37",
           "workflow_index": 1,
           "workflow_step_type": "Measure"
         },
@@ -596,8 +596,8 @@
               "name": "space_type",
               "value": "*Entire Building*",
               "value_type": "choice",
-              "uuid": "f6eb0b60-a8a2-0131-cf91-14109fdf0b37",
-              "version_uuid": "f6eb1130-a8a2-0131-cf92-14109fdf0b37"
+              "uuid": "47187230-a8a4-0131-d995-14109fdf0b37",
+              "version_uuid": "47187730-a8a4-0131-d996-14109fdf0b37"
             },
             {
               "display_name": "Increase in Material and Installation Costs for Building per Affected Floor Area ($/ft^2).",
@@ -605,8 +605,8 @@
               "name": "material_and_installation_cost",
               "value": 0.0,
               "value_type": "double",
-              "uuid": "f6edbe40-a8a2-0131-cf94-14109fdf0b37",
-              "version_uuid": "f6edce70-a8a2-0131-cf95-14109fdf0b37"
+              "uuid": "47188bd0-a8a4-0131-d998-14109fdf0b37",
+              "version_uuid": "471890d0-a8a4-0131-d999-14109fdf0b37"
             },
             {
               "display_name": "O & M Costs for Construction per Affected Floor Area ($/ft^2).",
@@ -614,8 +614,8 @@
               "name": "om_cost",
               "value": 0.0,
               "value_type": "double",
-              "uuid": "f6eddd30-a8a2-0131-cf96-14109fdf0b37",
-              "version_uuid": "f6ede5f0-a8a2-0131-cf97-14109fdf0b37"
+              "uuid": "471898a0-a8a4-0131-d99a-14109fdf0b37",
+              "version_uuid": "4718a1c0-a8a4-0131-d99b-14109fdf0b37"
             },
             {
               "display_name": "O & M Frequency (whole years).",
@@ -623,8 +623,8 @@
               "name": "om_frequency",
               "value": 1,
               "value_type": "integer",
-              "uuid": "f6edf2b0-a8a2-0131-cf98-14109fdf0b37",
-              "version_uuid": "f6edfc10-a8a2-0131-cf99-14109fdf0b37"
+              "uuid": "471ae2e0-a8a4-0131-d99c-14109fdf0b37",
+              "version_uuid": "471aeb70-a8a4-0131-d99d-14109fdf0b37"
             }
           ],
           "bcl_measure_directory": "./measures/ReduceSpaceInfiltrationByPercentage",
@@ -632,21 +632,21 @@
           "bcl_measure_class_name_ADDME": "ReduceSpaceInfiltrationByPercentage",
           "measure_definition_class_name_CHANGE_TO_ME": "ReduceSpaceInfiltrationByPercentage",
           "measure_definition_class_name": "ReduceSpaceInfiltrationByPercentage",
-          "bcl_measure_uuid": "f6eadf80-a8a2-0131-cf8b-14109fdf0b37",
-          "measure_definition_uuid_CHANGE_TO_ME": "f6eae500-a8a2-0131-cf8c-14109fdf0b37",
-          "bcl_measure_version_uuid": "f6eaeb40-a8a2-0131-cf8d-14109fdf0b37",
-          "measure_definition_version_uuid_CHANGE_TO_ME": "f6eaf110-a8a2-0131-cf8e-14109fdf0b37",
+          "bcl_measure_uuid": "471847d0-a8a4-0131-d98f-14109fdf0b37",
+          "measure_definition_uuid_CHANGE_TO_ME": "47184e60-a8a4-0131-d990-14109fdf0b37",
+          "bcl_measure_version_uuid": "47185680-a8a4-0131-d991-14109fdf0b37",
+          "measure_definition_version_uuid_CHANGE_TO_ME": "47185e80-a8a4-0131-d992-14109fdf0b37",
           "measure_type": "RubyMeasure",
           "name": "reducespaceinfiltrationbypercentage",
           "display_name": "ReduceSpaceInfiltrationByPercentage",
-          "uuid": "f6eaf6e0-a8a2-0131-cf8f-14109fdf0b37",
+          "uuid": "47186470-a8a4-0131-d993-14109fdf0b37",
           "variables": [
             {
               "argument": {
                 "display_name": "Space Infiltration Power Reduction",
                 "machine_name": "space_infiltration_power_reduction",
                 "name": "space_infiltration_reduction_percent",
-                "uuid": "f6edb020-a8a2-0131-cf93-14109fdf0b37",
+                "uuid": "47188270-a8a4-0131-d997-14109fdf0b37",
                 "version_uuid": "b33cf6b0-f1aa-4706-afab-9470e6bd1912"
               },
               "display_name": "Space Infiltration Power Reduction",
@@ -688,7 +688,7 @@
               "version_uuid": "26e7d8de-83e3-4a53-938b-45d3e0f29953"
             }
           ],
-          "version_uuid": "f6eafc80-a8a2-0131-cf90-14109fdf0b37",
+          "version_uuid": "47186960-a8a4-0131-d994-14109fdf0b37",
           "workflow_index": 2,
           "workflow_step_type": "Measure"
         },
@@ -700,8 +700,8 @@
               "name": "alter_design_days",
               "value": false,
               "value_type": "bool",
-              "uuid": "f6ee5490-a8a2-0131-cfa2-14109fdf0b37",
-              "version_uuid": "f6ee59f0-a8a2-0131-cfa3-14109fdf0b37"
+              "uuid": "471b3d80-a8a4-0131-d9a6-14109fdf0b37",
+              "version_uuid": "471b4460-a8a4-0131-d9a7-14109fdf0b37"
             }
           ],
           "bcl_measure_directory": "./measures/AdjustTheromstatSetpointsByDegrees",
@@ -709,21 +709,21 @@
           "bcl_measure_class_name_ADDME": "AdjustTheromstatSetpointsByDegrees",
           "measure_definition_class_name_CHANGE_TO_ME": "AdjustTheromstatSetpointsByDegrees",
           "measure_definition_class_name": "AdjustTheromstatSetpointsByDegrees",
-          "bcl_measure_uuid": "f6ee0e90-a8a2-0131-cf9a-14109fdf0b37",
-          "measure_definition_uuid_CHANGE_TO_ME": "f6ee15e0-a8a2-0131-cf9b-14109fdf0b37",
-          "bcl_measure_version_uuid": "f6ee1c00-a8a2-0131-cf9c-14109fdf0b37",
-          "measure_definition_version_uuid_CHANGE_TO_ME": "f6ee2220-a8a2-0131-cf9d-14109fdf0b37",
+          "bcl_measure_uuid": "471afc70-a8a4-0131-d99e-14109fdf0b37",
+          "measure_definition_uuid_CHANGE_TO_ME": "471b02e0-a8a4-0131-d99f-14109fdf0b37",
+          "bcl_measure_version_uuid": "471b07e0-a8a4-0131-d9a0-14109fdf0b37",
+          "measure_definition_version_uuid_CHANGE_TO_ME": "471b0cc0-a8a4-0131-d9a1-14109fdf0b37",
           "measure_type": "RubyMeasure",
           "name": "adjust_thermostat_setpoints_by_degrees",
           "display_name": "Adjust Thermostat Setpoints by Degrees",
-          "uuid": "f6ee27b0-a8a2-0131-cf9e-14109fdf0b37",
+          "uuid": "471b11c0-a8a4-0131-d9a2-14109fdf0b37",
           "variables": [
             {
               "argument": {
                 "display_name": "Degrees Fahrenheit to Adjust Cooling Setpoint By.",
                 "machine_name": "degrees_fahrenheit_to_adjust_cooling_setpoint_by.",
                 "name": "cooling_adjustment",
-                "uuid": "f6ee3b30-a8a2-0131-cfa0-14109fdf0b37",
+                "uuid": "471b24c0-a8a4-0131-d9a4-14109fdf0b37",
                 "version_uuid": "b33cf6b0-f1aa-4706-afab-9470e6bd1912"
               },
               "display_name": "Degrees Fahrenheit to Adjust Cooling Setpoint By.",
@@ -769,7 +769,7 @@
                 "display_name": "Degrees Fahrenheit to Adjust heating Setpoint By.",
                 "machine_name": "degrees_fahrenheit_to_adjust_heating_setpoint_by.",
                 "name": "heating_adjustment",
-                "uuid": "f6ee49e0-a8a2-0131-cfa1-14109fdf0b37",
+                "uuid": "471b3320-a8a4-0131-d9a5-14109fdf0b37",
                 "version_uuid": "b33cf6b0-f1aa-4706-afab-9470e6bd1912"
               },
               "display_name": "Degrees Fahrenheit to Adjust heating Setpoint By.",
@@ -811,7 +811,7 @@
               "version_uuid": "26e7d8de-83e3-4a53-938b-45d3e0f29953"
             }
           ],
-          "version_uuid": "f6ee2d20-a8a2-0131-cf9f-14109fdf0b37",
+          "version_uuid": "471b1680-a8a4-0131-d9a3-14109fdf0b37",
           "workflow_index": 3,
           "workflow_step_type": "Measure"
         },
@@ -823,8 +823,8 @@
               "name": "space_type",
               "value": "*Entire Building*",
               "value_type": "choice",
-              "uuid": "f6ee8990-a8a2-0131-cfaa-14109fdf0b37",
-              "version_uuid": "f6ee8ed0-a8a2-0131-cfab-14109fdf0b37"
+              "uuid": "471b88d0-a8a4-0131-d9ae-14109fdf0b37",
+              "version_uuid": "471b8fe0-a8a4-0131-d9af-14109fdf0b37"
             }
           ],
           "bcl_measure_directory": "./measures/ReduceVentilationByPercentage",
@@ -832,21 +832,21 @@
           "bcl_measure_class_name_ADDME": "ReduceVentilationByPercentage",
           "measure_definition_class_name_CHANGE_TO_ME": "ReduceVentilationByPercentage",
           "measure_definition_class_name": "ReduceVentilationByPercentage",
-          "bcl_measure_uuid": "f6ee6650-a8a2-0131-cfa4-14109fdf0b37",
-          "measure_definition_uuid_CHANGE_TO_ME": "f6ee6bc0-a8a2-0131-cfa5-14109fdf0b37",
-          "bcl_measure_version_uuid": "f6ee7100-a8a2-0131-cfa6-14109fdf0b37",
-          "measure_definition_version_uuid_CHANGE_TO_ME": "f6ee7640-a8a2-0131-cfa7-14109fdf0b37",
+          "bcl_measure_uuid": "471b56e0-a8a4-0131-d9a8-14109fdf0b37",
+          "measure_definition_uuid_CHANGE_TO_ME": "471b5ef0-a8a4-0131-d9a9-14109fdf0b37",
+          "bcl_measure_version_uuid": "471b6680-a8a4-0131-d9aa-14109fdf0b37",
+          "measure_definition_version_uuid_CHANGE_TO_ME": "471b6d90-a8a4-0131-d9ab-14109fdf0b37",
           "measure_type": "RubyMeasure",
           "name": "reduce_ventilation_by_percentage",
           "display_name": "Reduce Ventilation By Percentage",
-          "uuid": "f6ee7b20-a8a2-0131-cfa8-14109fdf0b37",
+          "uuid": "471b74f0-a8a4-0131-d9ac-14109fdf0b37",
           "variables": [
             {
               "argument": {
                 "display_name": "Design Specification Outdoor Air Reduction (%).",
                 "machine_name": "design_specification_outdoor_air_reduction_(%).",
                 "name": "design_spec_outdoor_air_reduction_percent",
-                "uuid": "f6ee9b40-a8a2-0131-cfac-14109fdf0b37",
+                "uuid": "471ba200-a8a4-0131-d9b0-14109fdf0b37",
                 "version_uuid": "b33cf6b0-f1aa-4706-afab-9470e6bd1912"
               },
               "display_name": "Design Specification Outdoor Air Reduction (%).",
@@ -888,7 +888,7 @@
               "version_uuid": "26e7d8de-83e3-4a53-938b-45d3e0f29953"
             }
           ],
-          "version_uuid": "f6ee8030-a8a2-0131-cfa9-14109fdf0b37",
+          "version_uuid": "471b7c20-a8a4-0131-d9ad-14109fdf0b37",
           "workflow_index": 4,
           "workflow_step_type": "Measure"
         },
@@ -900,8 +900,8 @@
               "name": "object",
               "value": "*All Air Loops*",
               "value_type": "choice",
-              "uuid": "f6eecd70-a8a2-0131-cfb3-14109fdf0b37",
-              "version_uuid": "f6eed270-a8a2-0131-cfb4-14109fdf0b37"
+              "uuid": "471bdfe0-a8a4-0131-d9b7-14109fdf0b37",
+              "version_uuid": "471be6c0-a8a4-0131-d9b8-14109fdf0b37"
             },
             {
               "display_name": "Economizer Control Type.",
@@ -909,8 +909,8 @@
               "name": "economizer_type",
               "value": "FixedDryBulb",
               "value_type": "choice",
-              "uuid": "f6eedb20-a8a2-0131-cfb5-14109fdf0b37",
-              "version_uuid": "f6eee060-a8a2-0131-cfb6-14109fdf0b37"
+              "uuid": "471bf160-a8a4-0131-d9b9-14109fdf0b37",
+              "version_uuid": "471bf770-a8a4-0131-d9ba-14109fdf0b37"
             },
             {
               "display_name": "Economizer Maximum Enthalpy (Btu/lb).",
@@ -918,8 +918,8 @@
               "name": "econoMaxEnthalpy",
               "value": 28.0,
               "value_type": "double",
-              "uuid": "f6eef710-a8a2-0131-cfb8-14109fdf0b37",
-              "version_uuid": "f6eefc40-a8a2-0131-cfb9-14109fdf0b37"
+              "uuid": "471c13a0-a8a4-0131-d9bc-14109fdf0b37",
+              "version_uuid": "471c19a0-a8a4-0131-d9bd-14109fdf0b37"
             },
             {
               "display_name": "Economizer Maximum Limit Dewpoint Temperature (F).",
@@ -927,8 +927,8 @@
               "name": "econoMaxDewpointTemp",
               "value": 55.0,
               "value_type": "double",
-              "uuid": "f6ef0600-a8a2-0131-cfba-14109fdf0b37",
-              "version_uuid": "f6ef0ac0-a8a2-0131-cfbb-14109fdf0b37"
+              "uuid": "471c2430-a8a4-0131-d9be-14109fdf0b37",
+              "version_uuid": "471c2a40-a8a4-0131-d9bf-14109fdf0b37"
             },
             {
               "display_name": "Economizer Minimum Limit Dry-Bulb Temperature (F).",
@@ -936,8 +936,8 @@
               "name": "econoMinDryBulbTemp",
               "value": -148.0,
               "value_type": "double",
-              "uuid": "f6ef1310-a8a2-0131-cfbc-14109fdf0b37",
-              "version_uuid": "f6ef18d0-a8a2-0131-cfbd-14109fdf0b37"
+              "uuid": "471c3500-a8a4-0131-d9c0-14109fdf0b37",
+              "version_uuid": "471c3b70-a8a4-0131-d9c1-14109fdf0b37"
             },
             {
               "display_name": "Remove Baseline Costs From Effected AirLoopHVACOutdoorAirSystems?",
@@ -945,8 +945,8 @@
               "name": "remove_costs",
               "value": false,
               "value_type": "bool",
-              "uuid": "f6ef2210-a8a2-0131-cfbe-14109fdf0b37",
-              "version_uuid": "f6ef2700-a8a2-0131-cfbf-14109fdf0b37"
+              "uuid": "471c44d0-a8a4-0131-d9c2-14109fdf0b37",
+              "version_uuid": "471c4ac0-a8a4-0131-d9c3-14109fdf0b37"
             },
             {
               "display_name": "Material and Installation Costs per Air Loop to Enable Economizer ($).",
@@ -954,8 +954,8 @@
               "name": "material_cost",
               "value": 0.0,
               "value_type": "double",
-              "uuid": "f6ef2fd0-a8a2-0131-cfc0-14109fdf0b37",
-              "version_uuid": "f6ef4cd0-a8a2-0131-cfc1-14109fdf0b37"
+              "uuid": "471c5530-a8a4-0131-d9c4-14109fdf0b37",
+              "version_uuid": "471c5d00-a8a4-0131-d9c5-14109fdf0b37"
             },
             {
               "display_name": "Demolition Costs per Air Loop to Enable Economizer ($).",
@@ -963,8 +963,8 @@
               "name": "demolition_cost",
               "value": 0.0,
               "value_type": "double",
-              "uuid": "f6ef5770-a8a2-0131-cfc2-14109fdf0b37",
-              "version_uuid": "f6ef5fa0-a8a2-0131-cfc3-14109fdf0b37"
+              "uuid": "471c6790-a8a4-0131-d9c6-14109fdf0b37",
+              "version_uuid": "471c7240-a8a4-0131-d9c7-14109fdf0b37"
             },
             {
               "display_name": "Years Until Costs Start (whole years).",
@@ -972,8 +972,8 @@
               "name": "years_until_costs_start",
               "value": 0,
               "value_type": "integer",
-              "uuid": "f6ef68f0-a8a2-0131-cfc4-14109fdf0b37",
-              "version_uuid": "f6ef6e10-a8a2-0131-cfc5-14109fdf0b37"
+              "uuid": "471c7bb0-a8a4-0131-d9c8-14109fdf0b37",
+              "version_uuid": "471c8370-a8a4-0131-d9c9-14109fdf0b37"
             },
             {
               "display_name": "Demolition Costs Occur During Initial Construction?",
@@ -981,8 +981,8 @@
               "name": "demo_cost_initial_const",
               "value": false,
               "value_type": "bool",
-              "uuid": "f6ef7730-a8a2-0131-cfc6-14109fdf0b37",
-              "version_uuid": "f6ef7cd0-a8a2-0131-cfc7-14109fdf0b37"
+              "uuid": "471c8c40-a8a4-0131-d9ca-14109fdf0b37",
+              "version_uuid": "471c9160-a8a4-0131-d9cb-14109fdf0b37"
             },
             {
               "display_name": "Expected Life (whole years).",
@@ -990,8 +990,8 @@
               "name": "expected_life",
               "value": 20,
               "value_type": "integer",
-              "uuid": "f6ef8510-a8a2-0131-cfc8-14109fdf0b37",
-              "version_uuid": "f6ef8a40-a8a2-0131-cfc9-14109fdf0b37"
+              "uuid": "471c99f0-a8a4-0131-d9cc-14109fdf0b37",
+              "version_uuid": "471c9f10-a8a4-0131-d9cd-14109fdf0b37"
             },
             {
               "display_name": "O & M Costs per Air Loop for Economizer  ($).",
@@ -999,8 +999,8 @@
               "name": "om_cost",
               "value": 0.0,
               "value_type": "double",
-              "uuid": "f6ef9260-a8a2-0131-cfca-14109fdf0b37",
-              "version_uuid": "f6ef9770-a8a2-0131-cfcb-14109fdf0b37"
+              "uuid": "471ca780-a8a4-0131-d9ce-14109fdf0b37",
+              "version_uuid": "471cae00-a8a4-0131-d9cf-14109fdf0b37"
             },
             {
               "display_name": "O & M Frequency (whole years).",
@@ -1008,8 +1008,8 @@
               "name": "om_frequency",
               "value": 1,
               "value_type": "integer",
-              "uuid": "f6ef9f70-a8a2-0131-cfcc-14109fdf0b37",
-              "version_uuid": "f6efa590-a8a2-0131-cfcd-14109fdf0b37"
+              "uuid": "471cb7e0-a8a4-0131-d9d0-14109fdf0b37",
+              "version_uuid": "471cbcf0-a8a4-0131-d9d1-14109fdf0b37"
             }
           ],
           "bcl_measure_directory": "./measures/EnableEconomizerControl",
@@ -1017,21 +1017,21 @@
           "bcl_measure_class_name_ADDME": "EnableEconomizerControl",
           "measure_definition_class_name_CHANGE_TO_ME": "EnableEconomizerControl",
           "measure_definition_class_name": "EnableEconomizerControl",
-          "bcl_measure_uuid": "f6eea8f0-a8a2-0131-cfad-14109fdf0b37",
-          "measure_definition_uuid_CHANGE_TO_ME": "f6eeaed0-a8a2-0131-cfae-14109fdf0b37",
-          "bcl_measure_version_uuid": "f6eeb410-a8a2-0131-cfaf-14109fdf0b37",
-          "measure_definition_version_uuid_CHANGE_TO_ME": "f6eeb920-a8a2-0131-cfb0-14109fdf0b37",
+          "bcl_measure_uuid": "471bb5f0-a8a4-0131-d9b1-14109fdf0b37",
+          "measure_definition_uuid_CHANGE_TO_ME": "471bbc90-a8a4-0131-d9b2-14109fdf0b37",
+          "bcl_measure_version_uuid": "471bc280-a8a4-0131-d9b3-14109fdf0b37",
+          "measure_definition_version_uuid_CHANGE_TO_ME": "471bc860-a8a4-0131-d9b4-14109fdf0b37",
           "measure_type": "RubyMeasure",
           "name": "enable_economizer_control",
           "display_name": "Enable Economizer Control",
-          "uuid": "f6eebeb0-a8a2-0131-cfb1-14109fdf0b37",
+          "uuid": "471bce90-a8a4-0131-d9b5-14109fdf0b37",
           "variables": [
             {
               "argument": {
                 "display_name": "Economizer Maximum Limit Dry-Bulb Temperature (F).",
                 "machine_name": "economizer_maximum_limit_dry_bulb_temperature_(f).",
                 "name": "econoMaxDryBulbTemp",
-                "uuid": "f6eeeca0-a8a2-0131-cfb7-14109fdf0b37",
+                "uuid": "471c06a0-a8a4-0131-d9bb-14109fdf0b37",
                 "version_uuid": "b33cf6b0-f1aa-4706-afab-9470e6bd1912"
               },
               "display_name": "Economizer Maximum Limit Dry-Bulb Temperature (F).",
@@ -1073,7 +1073,7 @@
               "version_uuid": "26e7d8de-83e3-4a53-938b-45d3e0f29953"
             }
           ],
-          "version_uuid": "f6eec3c0-a8a2-0131-cfb2-14109fdf0b37",
+          "version_uuid": "471bd480-a8a4-0131-d9b6-14109fdf0b37",
           "workflow_index": 5,
           "workflow_step_type": "Measure"
         },
@@ -1085,8 +1085,8 @@
               "name": "boiler_widget",
               "value": "*All boilers*",
               "value_type": "choice",
-              "uuid": "f6efd590-a8a2-0131-cfd4-14109fdf0b37",
-              "version_uuid": "f6efda90-a8a2-0131-cfd5-14109fdf0b37"
+              "uuid": "471ceb50-a8a4-0131-d9d8-14109fdf0b37",
+              "version_uuid": "471cf340-a8a4-0131-d9d9-14109fdf0b37"
             },
             {
               "display_name": "Option 1, set boiler nominal thermal efficiency to a user defined value",
@@ -1094,8 +1094,8 @@
               "name": "input_option_manual",
               "value": true,
               "value_type": "bool",
-              "uuid": "f6efe2b0-a8a2-0131-cfd6-14109fdf0b37",
-              "version_uuid": "f6efe910-a8a2-0131-cfd7-14109fdf0b37"
+              "uuid": "471cfce0-a8a4-0131-d9da-14109fdf0b37",
+              "version_uuid": "471d0280-a8a4-0131-d9db-14109fdf0b37"
             },
             {
               "display_name": "Option 2, set boiler nominal thermal efficiency based on ASHRAE Standard 90.1 requirement",
@@ -1103,8 +1103,8 @@
               "name": "input_option_standard",
               "value": false,
               "value_type": "bool",
-              "uuid": "f6f00170-a8a2-0131-cfd9-14109fdf0b37",
-              "version_uuid": "f6f00f00-a8a2-0131-cfda-14109fdf0b37"
+              "uuid": "471d19e0-a8a4-0131-d9dd-14109fdf0b37",
+              "version_uuid": "471d1f70-a8a4-0131-d9de-14109fdf0b37"
             },
             {
               "display_name": "Boiler nominal capacity [W]",
@@ -1112,8 +1112,8 @@
               "name": "nominal_capacity",
               "value": 0.0,
               "value_type": "double",
-              "uuid": "f6f01a70-a8a2-0131-cfdb-14109fdf0b37",
-              "version_uuid": "f6f02290-a8a2-0131-cfdc-14109fdf0b37"
+              "uuid": "471d27d0-a8a4-0131-d9df-14109fdf0b37",
+              "version_uuid": "471d2cd0-a8a4-0131-d9e0-14109fdf0b37"
             },
             {
               "display_name": "Fuel type",
@@ -1121,8 +1121,8 @@
               "name": "fuel_type_widget",
               "value": 0.0,
               "value_type": "choice",
-              "uuid": "f6f02bf0-a8a2-0131-cfdd-14109fdf0b37",
-              "version_uuid": "f6f03460-a8a2-0131-cfde-14109fdf0b37"
+              "uuid": "471d3540-a8a4-0131-d9e1-14109fdf0b37",
+              "version_uuid": "471d3a80-a8a4-0131-d9e2-14109fdf0b37"
             },
             {
               "display_name": "ASHRAE Standards 90.1",
@@ -1130,8 +1130,8 @@
               "name": "standards_widget",
               "value": 0.0,
               "value_type": "choice",
-              "uuid": "f6f03e00-a8a2-0131-cfdf-14109fdf0b37",
-              "version_uuid": "f6f042a0-a8a2-0131-cfe0-14109fdf0b37"
+              "uuid": "471d42b0-a8a4-0131-d9e3-14109fdf0b37",
+              "version_uuid": "471d4970-a8a4-0131-d9e4-14109fdf0b37"
             }
           ],
           "bcl_measure_directory": "./measures/SetBoilerThermalEfficiency",
@@ -1139,21 +1139,21 @@
           "bcl_measure_class_name_ADDME": "SetBoilerThermalEfficiency",
           "measure_definition_class_name_CHANGE_TO_ME": "SetBoilerThermalEfficiency",
           "measure_definition_class_name": "SetBoilerThermalEfficiency",
-          "bcl_measure_uuid": "f6efb1f0-a8a2-0131-cfce-14109fdf0b37",
-          "measure_definition_uuid_CHANGE_TO_ME": "f6efb800-a8a2-0131-cfcf-14109fdf0b37",
-          "bcl_measure_version_uuid": "f6efbd10-a8a2-0131-cfd0-14109fdf0b37",
-          "measure_definition_version_uuid_CHANGE_TO_ME": "f6efc240-a8a2-0131-cfd1-14109fdf0b37",
+          "bcl_measure_uuid": "471cc940-a8a4-0131-d9d2-14109fdf0b37",
+          "measure_definition_uuid_CHANGE_TO_ME": "471cce50-a8a4-0131-d9d3-14109fdf0b37",
+          "bcl_measure_version_uuid": "471cd340-a8a4-0131-d9d4-14109fdf0b37",
+          "measure_definition_version_uuid_CHANGE_TO_ME": "471cd830-a8a4-0131-d9d5-14109fdf0b37",
           "measure_type": "RubyMeasure",
           "name": "set_boiler_thermal_efficiency",
           "display_name": "Set Boiler Thermal Efficiency",
-          "uuid": "f6efc7a0-a8a2-0131-cfd2-14109fdf0b37",
+          "uuid": "471cdd50-a8a4-0131-d9d6-14109fdf0b37",
           "variables": [
             {
               "argument": {
                 "display_name": "Boiler nominal thermal efficiency (between 0 and 1)",
                 "machine_name": "boiler_nominal_thermal_efficiency_(between_0_and_1)",
                 "name": "boiler_thermal_efficiency",
-                "uuid": "f6eff6f0-a8a2-0131-cfd8-14109fdf0b37",
+                "uuid": "471d0f40-a8a4-0131-d9dc-14109fdf0b37",
                 "version_uuid": "b33cf6b0-f1aa-4706-afab-9470e6bd1912"
               },
               "display_name": "Boiler nominal thermal efficiency (between 0 and 1)",
@@ -1195,7 +1195,7 @@
               "version_uuid": "26e7d8de-83e3-4a53-938b-45d3e0f29953"
             }
           ],
-          "version_uuid": "f6efcce0-a8a2-0131-cfd3-14109fdf0b37",
+          "version_uuid": "471ce230-a8a4-0131-d9d7-14109fdf0b37",
           "workflow_index": 6,
           "workflow_step_type": "Measure"
         },
@@ -1207,8 +1207,8 @@
               "name": "allow_reduction",
               "value": true,
               "value_type": "bool",
-              "uuid": "f6f084c0-a8a2-0131-cfe8-14109fdf0b37",
-              "version_uuid": "f6f08c10-a8a2-0131-cfe9-14109fdf0b37"
+              "uuid": "471d86f0-a8a4-0131-d9ec-14109fdf0b37",
+              "version_uuid": "471d8c50-a8a4-0131-d9ed-14109fdf0b37"
             },
             {
               "display_name": "Increase in Material and Installation Costs for Construction per Area Used ($/ft^2).",
@@ -1216,8 +1216,8 @@
               "name": "material_cost_increase_ip",
               "value": 0.0,
               "value_type": "double",
-              "uuid": "f6f09720-a8a2-0131-cfea-14109fdf0b37",
-              "version_uuid": "f6f09e40-a8a2-0131-cfeb-14109fdf0b37"
+              "uuid": "471d9450-a8a4-0131-d9ee-14109fdf0b37",
+              "version_uuid": "471d99c0-a8a4-0131-d9ef-14109fdf0b37"
             },
             {
               "display_name": "One Time Retrofit Cost to Add Insulation to Construction ($/ft^2).",
@@ -1225,8 +1225,8 @@
               "name": "one_time_retrofit_cost_ip",
               "value": 0.0,
               "value_type": "double",
-              "uuid": "f6f0a800-a8a2-0131-cfec-14109fdf0b37",
-              "version_uuid": "f6f0ad70-a8a2-0131-cfed-14109fdf0b37"
+              "uuid": "471da190-a8a4-0131-d9f0-14109fdf0b37",
+              "version_uuid": "471da680-a8a4-0131-d9f1-14109fdf0b37"
             },
             {
               "display_name": "Year to Incur One Time Retrofit Cost (whole years).",
@@ -1234,8 +1234,8 @@
               "name": "years_until_retrofit_cost",
               "value": 0,
               "value_type": "integer",
-              "uuid": "f6f0b5e0-a8a2-0131-cfee-14109fdf0b37",
-              "version_uuid": "f6f0bd60-a8a2-0131-cfef-14109fdf0b37"
+              "uuid": "471dae30-a8a4-0131-d9f2-14109fdf0b37",
+              "version_uuid": "471db3b0-a8a4-0131-d9f3-14109fdf0b37"
             }
           ],
           "bcl_measure_directory": "./measures/IncreaseInsulationRValueForExteriorWalls",
@@ -1243,21 +1243,21 @@
           "bcl_measure_class_name_ADDME": "IncreaseInsulationRValueForExteriorWalls",
           "measure_definition_class_name_CHANGE_TO_ME": "IncreaseInsulationRValueForExteriorWalls",
           "measure_definition_class_name": "IncreaseInsulationRValueForExteriorWalls",
-          "bcl_measure_uuid": "f6f050d0-a8a2-0131-cfe1-14109fdf0b37",
-          "measure_definition_uuid_CHANGE_TO_ME": "f6f056c0-a8a2-0131-cfe2-14109fdf0b37",
-          "bcl_measure_version_uuid": "f6f05c10-a8a2-0131-cfe3-14109fdf0b37",
-          "measure_definition_version_uuid_CHANGE_TO_ME": "f6f06150-a8a2-0131-cfe4-14109fdf0b37",
+          "bcl_measure_uuid": "471d5670-a8a4-0131-d9e5-14109fdf0b37",
+          "measure_definition_uuid_CHANGE_TO_ME": "471d5bf0-a8a4-0131-d9e6-14109fdf0b37",
+          "bcl_measure_version_uuid": "471d6120-a8a4-0131-d9e7-14109fdf0b37",
+          "measure_definition_version_uuid_CHANGE_TO_ME": "471d6640-a8a4-0131-d9e8-14109fdf0b37",
           "measure_type": "RubyMeasure",
           "name": "set_r_value_of_insulation_for_exterior_walls_to_a_specific_value",
           "display_name": "Set R-value of Insulation for Exterior Walls to a Specific Value",
-          "uuid": "f6f066e0-a8a2-0131-cfe5-14109fdf0b37",
+          "uuid": "471d6b10-a8a4-0131-d9e9-14109fdf0b37",
           "variables": [
             {
               "argument": {
                 "display_name": "Insulation R-value (ft^2*h*R/Btu).",
                 "machine_name": "insulation_r_value_(ft^2*h*r/btu).",
                 "name": "r_value",
-                "uuid": "f6f07a70-a8a2-0131-cfe7-14109fdf0b37",
+                "uuid": "471d7cc0-a8a4-0131-d9eb-14109fdf0b37",
                 "version_uuid": "b33cf6b0-f1aa-4706-afab-9470e6bd1912"
               },
               "display_name": "Insulation R-value (ft^2*h*R/Btu).",
@@ -1299,7 +1299,7 @@
               "version_uuid": "26e7d8de-83e3-4a53-938b-45d3e0f29953"
             }
           ],
-          "version_uuid": "f6f06c00-a8a2-0131-cfe6-14109fdf0b37",
+          "version_uuid": "471d7040-a8a4-0131-d9ea-14109fdf0b37",
           "workflow_index": 7,
           "workflow_step_type": "Measure"
         },
@@ -1311,8 +1311,8 @@
               "name": "chiller_widget",
               "value": "*All chillers*",
               "value_type": "choice",
-              "uuid": "f6f0f330-a8a2-0131-cff6-14109fdf0b37",
-              "version_uuid": "f6f0f870-a8a2-0131-cff7-14109fdf0b37"
+              "uuid": "471ddfa0-a8a4-0131-d9fa-14109fdf0b37",
+              "version_uuid": "471de490-a8a4-0131-d9fb-14109fdf0b37"
             }
           ],
           "bcl_measure_directory": "./measures/SetChillerCOP",
@@ -1320,21 +1320,21 @@
           "bcl_measure_class_name_ADDME": "SetChillerCOP",
           "measure_definition_class_name_CHANGE_TO_ME": "SetChillerCOP",
           "measure_definition_class_name": "SetChillerCOP",
-          "bcl_measure_uuid": "f6f0c9b0-a8a2-0131-cff0-14109fdf0b37",
-          "measure_definition_uuid_CHANGE_TO_ME": "f6f0d2b0-a8a2-0131-cff1-14109fdf0b37",
-          "bcl_measure_version_uuid": "f6f0d8a0-a8a2-0131-cff2-14109fdf0b37",
-          "measure_definition_version_uuid_CHANGE_TO_ME": "f6f0ddd0-a8a2-0131-cff3-14109fdf0b37",
+          "bcl_measure_uuid": "471dbeb0-a8a4-0131-d9f4-14109fdf0b37",
+          "measure_definition_uuid_CHANGE_TO_ME": "471dc3c0-a8a4-0131-d9f5-14109fdf0b37",
+          "bcl_measure_version_uuid": "471dc8b0-a8a4-0131-d9f6-14109fdf0b37",
+          "measure_definition_version_uuid_CHANGE_TO_ME": "471dcda0-a8a4-0131-d9f7-14109fdf0b37",
           "measure_type": "RubyMeasure",
           "name": "setchillercop",
           "display_name": "SetChillerCOP",
-          "uuid": "f6f0e360-a8a2-0131-cff4-14109fdf0b37",
+          "uuid": "471dd240-a8a4-0131-d9f8-14109fdf0b37",
           "variables": [
             {
               "argument": {
                 "display_name": "Chiller Rated COP (more than 0)",
                 "machine_name": "chiller_rated_cop_(more_than_0)",
                 "name": "chiller_thermal_efficiency",
-                "uuid": "f6f10490-a8a2-0131-cff8-14109fdf0b37",
+                "uuid": "471df020-a8a4-0131-d9fc-14109fdf0b37",
                 "version_uuid": "b33cf6b0-f1aa-4706-afab-9470e6bd1912"
               },
               "display_name": "Chiller Rated COP (more than 0)",
@@ -1376,7 +1376,7 @@
               "version_uuid": "26e7d8de-83e3-4a53-938b-45d3e0f29953"
             }
           ],
-          "version_uuid": "f6f0e940-a8a2-0131-cff5-14109fdf0b37",
+          "version_uuid": "471dd730-a8a4-0131-d9f9-14109fdf0b37",
           "workflow_index": 8,
           "workflow_step_type": "Measure"
         },
@@ -1389,21 +1389,21 @@
           "bcl_measure_class_name_ADDME": "SetHeatingandCoolingSizingFactors",
           "measure_definition_class_name_CHANGE_TO_ME": "SetHeatingandCoolingSizingFactors",
           "measure_definition_class_name": "SetHeatingandCoolingSizingFactors",
-          "bcl_measure_uuid": "f6f111f0-a8a2-0131-cff9-14109fdf0b37",
-          "measure_definition_uuid_CHANGE_TO_ME": "f6f11950-a8a2-0131-cffa-14109fdf0b37",
-          "bcl_measure_version_uuid": "f6f12340-a8a2-0131-cffb-14109fdf0b37",
-          "measure_definition_version_uuid_CHANGE_TO_ME": "f6f129a0-a8a2-0131-cffc-14109fdf0b37",
+          "bcl_measure_uuid": "471dfc60-a8a4-0131-d9fd-14109fdf0b37",
+          "measure_definition_uuid_CHANGE_TO_ME": "471e0400-a8a4-0131-d9fe-14109fdf0b37",
+          "bcl_measure_version_uuid": "471e08f0-a8a4-0131-d9ff-14109fdf0b37",
+          "measure_definition_version_uuid_CHANGE_TO_ME": "471e0f00-a8a4-0131-da00-14109fdf0b37",
           "measure_type": "RubyMeasure",
           "name": "set_heating_and_cooling_sizing_factors",
           "display_name": "Set Heating and Cooling Sizing Factors",
-          "uuid": "f6f12ed0-a8a2-0131-cffd-14109fdf0b37",
+          "uuid": "471e1430-a8a4-0131-da01-14109fdf0b37",
           "variables": [
             {
               "argument": {
                 "display_name": "Heating Sizing Factor (eg 1.25 = 125% of required heating capacity.",
                 "machine_name": "heating_sizing_factor_(eg_1.25_=_125%_of_required_heating_capacity.",
                 "name": "htg_sz_factor",
-                "uuid": "f6f14090-a8a2-0131-cfff-14109fdf0b37",
+                "uuid": "471e25b0-a8a4-0131-da03-14109fdf0b37",
                 "version_uuid": "b33cf6b0-f1aa-4706-afab-9470e6bd1912"
               },
               "display_name": "Heating Sizing Factor (eg 1.25 = 125% of required heating capacity.",
@@ -1449,7 +1449,7 @@
                 "display_name": "Coolinig Sizing Factor (eg 1.15 = 115% of required cooling capacity.",
                 "machine_name": "coolinig_sizing_factor_(eg_1.15_=_115%_of_required_cooling_capacity.",
                 "name": "clg_sz_factor",
-                "uuid": "f6f14dc0-a8a2-0131-d000-14109fdf0b37",
+                "uuid": "471e32c0-a8a4-0131-da04-14109fdf0b37",
                 "version_uuid": "b33cf6b0-f1aa-4706-afab-9470e6bd1912"
               },
               "display_name": "Coolinig Sizing Factor (eg 1.15 = 115% of required cooling capacity.",
@@ -1491,7 +1491,7 @@
               "version_uuid": "26e7d8de-83e3-4a53-938b-45d3e0f29953"
             }
           ],
-          "version_uuid": "f6f133e0-a8a2-0131-cffe-14109fdf0b37",
+          "version_uuid": "471e1930-a8a4-0131-da02-14109fdf0b37",
           "workflow_index": 9,
           "workflow_step_type": "Measure"
         },
@@ -1504,21 +1504,21 @@
           "bcl_measure_class_name_ADDME": "SetChilledWaterLoopTemperature",
           "measure_definition_class_name_CHANGE_TO_ME": "SetChilledWaterLoopTemperature",
           "measure_definition_class_name": "SetChilledWaterLoopTemperature",
-          "bcl_measure_uuid": "f6f15b30-a8a2-0131-d001-14109fdf0b37",
-          "measure_definition_uuid_CHANGE_TO_ME": "f6f16170-a8a2-0131-d002-14109fdf0b37",
-          "bcl_measure_version_uuid": "f6f166f0-a8a2-0131-d003-14109fdf0b37",
-          "measure_definition_version_uuid_CHANGE_TO_ME": "f6f16c60-a8a2-0131-d004-14109fdf0b37",
+          "bcl_measure_uuid": "471e3f40-a8a4-0131-da05-14109fdf0b37",
+          "measure_definition_uuid_CHANGE_TO_ME": "471e4730-a8a4-0131-da06-14109fdf0b37",
+          "bcl_measure_version_uuid": "471e50e0-a8a4-0131-da07-14109fdf0b37",
+          "measure_definition_version_uuid_CHANGE_TO_ME": "471e5790-a8a4-0131-da08-14109fdf0b37",
           "measure_type": "RubyMeasure",
           "name": "set_chilled_water_loop_temperature",
           "display_name": "Set Chilled Water Loop Temperature",
-          "uuid": "f6f17160-a8a2-0131-d005-14109fdf0b37",
+          "uuid": "471e5d80-a8a4-0131-da09-14109fdf0b37",
           "variables": [
             {
               "argument": {
                 "display_name": "Desired chilled water setpoint (F)",
                 "machine_name": "desired_chilled_water_setpoint_(f)",
                 "name": "cw_temp_f",
-                "uuid": "f6f187a0-a8a2-0131-d007-14109fdf0b37",
+                "uuid": "471e6f40-a8a4-0131-da0b-14109fdf0b37",
                 "version_uuid": "b33cf6b0-f1aa-4706-afab-9470e6bd1912"
               },
               "display_name": "Desired chilled water setpoint (F)",
@@ -1560,7 +1560,7 @@
               "version_uuid": "26e7d8de-83e3-4a53-938b-45d3e0f29953"
             }
           ],
-          "version_uuid": "f6f17690-a8a2-0131-d006-14109fdf0b37",
+          "version_uuid": "471e62c0-a8a4-0131-da0a-14109fdf0b37",
           "workflow_index": 10,
           "workflow_step_type": "Measure"
         },
@@ -1573,21 +1573,21 @@
           "bcl_measure_class_name_ADDME": "SetHotWaterLoopTemperature",
           "measure_definition_class_name_CHANGE_TO_ME": "SetHotWaterLoopTemperature",
           "measure_definition_class_name": "SetHotWaterLoopTemperature",
-          "bcl_measure_uuid": "f6f198f0-a8a2-0131-d008-14109fdf0b37",
-          "measure_definition_uuid_CHANGE_TO_ME": "f6f19e80-a8a2-0131-d009-14109fdf0b37",
-          "bcl_measure_version_uuid": "f6f1a7e0-a8a2-0131-d00a-14109fdf0b37",
-          "measure_definition_version_uuid_CHANGE_TO_ME": "f6f1ad60-a8a2-0131-d00b-14109fdf0b37",
+          "bcl_measure_uuid": "471e7c80-a8a4-0131-da0c-14109fdf0b37",
+          "measure_definition_uuid_CHANGE_TO_ME": "471e81e0-a8a4-0131-da0d-14109fdf0b37",
+          "bcl_measure_version_uuid": "471e8710-a8a4-0131-da0e-14109fdf0b37",
+          "measure_definition_version_uuid_CHANGE_TO_ME": "471e8cc0-a8a4-0131-da0f-14109fdf0b37",
           "measure_type": "RubyMeasure",
           "name": "set_hot_water_loop_temperature",
           "display_name": "Set Hot Water Loop Temperature",
-          "uuid": "f6f1b290-a8a2-0131-d00c-14109fdf0b37",
+          "uuid": "471e9230-a8a4-0131-da10-14109fdf0b37",
           "variables": [
             {
               "argument": {
                 "display_name": "Desired hot water setpoint (F)",
                 "machine_name": "desired_hot_water_setpoint_(f)",
                 "name": "hw_temp_f",
-                "uuid": "f6f1c740-a8a2-0131-d00e-14109fdf0b37",
+                "uuid": "471ea420-a8a4-0131-da12-14109fdf0b37",
                 "version_uuid": "b33cf6b0-f1aa-4706-afab-9470e6bd1912"
               },
               "display_name": "Desired hot water setpoint (F)",
@@ -1629,7 +1629,7 @@
               "version_uuid": "26e7d8de-83e3-4a53-938b-45d3e0f29953"
             }
           ],
-          "version_uuid": "f6f1b800-a8a2-0131-d00d-14109fdf0b37",
+          "version_uuid": "471e9750-a8a4-0131-da11-14109fdf0b37",
           "workflow_index": 11,
           "workflow_step_type": "Measure"
         },
@@ -1642,21 +1642,21 @@
           "bcl_measure_class_name_ADDME": "SetMinimumVAVTerminalFlowFraction",
           "measure_definition_class_name_CHANGE_TO_ME": "SetMinimumVAVTerminalFlowFraction",
           "measure_definition_class_name": "SetMinimumVAVTerminalFlowFraction",
-          "bcl_measure_uuid": "f6f1d5a0-a8a2-0131-d00f-14109fdf0b37",
-          "measure_definition_uuid_CHANGE_TO_ME": "f6f1db70-a8a2-0131-d010-14109fdf0b37",
-          "bcl_measure_version_uuid": "f6f1e0b0-a8a2-0131-d011-14109fdf0b37",
-          "measure_definition_version_uuid_CHANGE_TO_ME": "f6f1e760-a8a2-0131-d012-14109fdf0b37",
+          "bcl_measure_uuid": "471eb1b0-a8a4-0131-da13-14109fdf0b37",
+          "measure_definition_uuid_CHANGE_TO_ME": "471eb700-a8a4-0131-da14-14109fdf0b37",
+          "bcl_measure_version_uuid": "471ebc00-a8a4-0131-da15-14109fdf0b37",
+          "measure_definition_version_uuid_CHANGE_TO_ME": "471ec230-a8a4-0131-da16-14109fdf0b37",
           "measure_type": "RubyMeasure",
           "name": "set_minimum_vav_terminal_flow_fraction",
           "display_name": "Set Minimum VAV Terminal Flow Fraction",
-          "uuid": "f6f1efd0-a8a2-0131-d013-14109fdf0b37",
+          "uuid": "471ecb90-a8a4-0131-da17-14109fdf0b37",
           "variables": [
             {
               "argument": {
                 "display_name": "Minimum VAV Terminal Flow Fraction (%)",
                 "machine_name": "minimum_vav_terminal_flow_fraction_(%)",
                 "name": "min_vav_frac",
-                "uuid": "f6f206c0-a8a2-0131-d015-14109fdf0b37",
+                "uuid": "471ee0b0-a8a4-0131-da19-14109fdf0b37",
                 "version_uuid": "b33cf6b0-f1aa-4706-afab-9470e6bd1912"
               },
               "display_name": "Minimum VAV Terminal Flow Fraction (%)",
@@ -1698,7 +1698,7 @@
               "version_uuid": "26e7d8de-83e3-4a53-938b-45d3e0f29953"
             }
           ],
-          "version_uuid": "f6f1f730-a8a2-0131-d014-14109fdf0b37",
+          "version_uuid": "471ed150-a8a4-0131-da18-14109fdf0b37",
           "workflow_index": 12,
           "workflow_step_type": "Measure"
         },
@@ -1711,21 +1711,21 @@
           "bcl_measure_class_name_ADDME": "ModifyEnergyPlusFanVariableVolumeObjects",
           "measure_definition_class_name_CHANGE_TO_ME": "ModifyEnergyPlusFanVariableVolumeObjects",
           "measure_definition_class_name": "ModifyEnergyPlusFanVariableVolumeObjects",
-          "bcl_measure_uuid": "f6f213d0-a8a2-0131-d016-14109fdf0b37",
-          "measure_definition_uuid_CHANGE_TO_ME": "f6f219e0-a8a2-0131-d017-14109fdf0b37",
-          "bcl_measure_version_uuid": "f6f21f10-a8a2-0131-d018-14109fdf0b37",
-          "measure_definition_version_uuid_CHANGE_TO_ME": "f6f22400-a8a2-0131-d019-14109fdf0b37",
+          "bcl_measure_uuid": "471f00a0-a8a4-0131-da1a-14109fdf0b37",
+          "measure_definition_uuid_CHANGE_TO_ME": "4721d030-a8a4-0131-da1b-14109fdf0b37",
+          "bcl_measure_version_uuid": "4721da60-a8a4-0131-da1c-14109fdf0b37",
+          "measure_definition_version_uuid_CHANGE_TO_ME": "4721e270-a8a4-0131-da1d-14109fdf0b37",
           "measure_type": "EnergyPlusMeasure",
           "name": "modify_energyplus_fan_varaible_volume_objects",
           "display_name": "Modify EnergyPlus Fan Varaible Volume Objects",
-          "uuid": "f6f22950-a8a2-0131-d01a-14109fdf0b37",
+          "uuid": "4721f260-a8a4-0131-da1e-14109fdf0b37",
           "variables": [
             {
               "argument": {
                 "display_name": "Pressure Rise (Pa).",
                 "machine_name": "pressure_rise_(pa).",
                 "name": "pressureRise",
-                "uuid": "f6f23a10-a8a2-0131-d01c-14109fdf0b37",
+                "uuid": "47235280-a8a4-0131-da20-14109fdf0b37",
                 "version_uuid": "b33cf6b0-f1aa-4706-afab-9470e6bd1912"
               },
               "display_name": "Pressure Rise (Pa).",
@@ -1767,7 +1767,7 @@
               "version_uuid": "26e7d8de-83e3-4a53-938b-45d3e0f29953"
             }
           ],
-          "version_uuid": "f6f22e40-a8a2-0131-d01b-14109fdf0b37",
+          "version_uuid": "47233510-a8a4-0131-da1f-14109fdf0b37",
           "workflow_index": 13,
           "workflow_step_type": "Measure"
         }
