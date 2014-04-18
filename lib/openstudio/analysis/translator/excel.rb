@@ -663,7 +663,8 @@ module OpenStudio
               data['data'][measure_index]['name'] = measure_name
               data['data'][measure_index]['enabled'] = row[:enabled] == "TRUE" ? true : false
               data['data'][measure_index]['measure_file_name'] = row[:measure_file_name_or_var_display_name]
-              data['data'][measure_index]['measure_file_name_directory'] = row[:measure_file_name_directory]
+              data['data'][measure_index]['measure_file_name_directory'] = row[:measure_file_name_directory] ? 
+                  row[:measure_file_name_directory] : row[:measure_file_name_or_var_display_name].underscore
               data['data'][measure_index]['measure_type'] = row[:measure_type_or_parameter_name_in_measure]
               data['data'][measure_index]['version'] = @version_id
 

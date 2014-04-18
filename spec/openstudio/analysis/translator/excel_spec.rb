@@ -331,6 +331,7 @@ describe OpenStudio::Analysis::Translator::Excel do
 
     it "should have the new measure directory column" do
       expect(@excel.variables['data'][1]['measure_file_name_directory']).to eq('AdjustThermostatSetpointsByDegrees')
+      expect(@excel.variables['data'][0]['measure_file_name_directory']).to eq('baseline')
     end
 
     it "should write a json" do
