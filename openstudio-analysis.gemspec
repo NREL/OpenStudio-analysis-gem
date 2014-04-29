@@ -17,11 +17,11 @@ Gem::Specification.new do |s|
   s.required_ruby_version = ">= 1.9.3"
   s.required_rubygems_version = ">= 1.3.6"
 
-  s.add_dependency("faraday", "~> 0.8.8")
-  s.add_dependency("uuid", "~> 2.3.7")
-  s.add_dependency("roo", "~> 1.12.2")
-  s.add_dependency("rubyzip", "~> 1.1.0")
-  s.add_dependency("semantic", "~> 1.3.0")
+  s.add_dependency("faraday", "~> 0.8")
+  s.add_dependency("uuid", "~> 2.3")
+  s.add_dependency("roo", "~> 1.12")
+  s.add_dependency("rubyzip", "~> 1.1")
+  s.add_dependency("semantic", "~> 1.3")
 
   s.files = Dir.glob("lib/**/*") + %w(README.md CHANGELOG.md Rakefile)
   s.test_files = Dir.glob("spec/**/*")
