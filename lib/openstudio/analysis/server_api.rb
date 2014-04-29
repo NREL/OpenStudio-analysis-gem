@@ -66,11 +66,12 @@ module OpenStudio
       end
 
       def new_project(options = {})
-        defaults = {project_name: "project #{(rand()*1000).round}"}
+        defaults = {project_name: "Project #{Time.now.strftime('%Y-%m-%d %H:%M:%S')}"}
         options = defaults.merge(options)
         project_id = nil
 
-        project_hash = {project: {name: "#{options[:project_name]}"}}
+        # TODO: make this a display name and a machine name
+	project_hash = {project: {name: "#{options[:project_name]}"}}
 
         response = @conn.post do |req|
           req.url "/projects.json"
