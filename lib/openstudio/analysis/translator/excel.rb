@@ -223,7 +223,7 @@ module OpenStudio
                   ag = nil
                   if @variable['method'] == 'static'
                     if @variable['distribution']['static_value'].nil? || @variable['distribution']['static_value'] == 'null'
-                      puts "    Warning: #{measure['name']}:#{@variable['name']} static value was empty or null, assuming optional and skipping"
+                      puts "    Warning: '#{measure['name']}:#{@variable['name']}' static value was empty or null, assuming optional and skipping"
                       next
                     end
                     # unless @variable['distribution']['static_value']
@@ -246,7 +246,7 @@ module OpenStudio
                         @static_value = false
                       end
                     else
-                      fail "Unknown variable type of #{@variable['type']}"
+                      fail "Unknown variable type of '#{@variable['type']}'"
                     end
                     ag = JSON.parse(argument_template.result(get_binding))
                   end
@@ -278,7 +278,7 @@ module OpenStudio
                       end
 
                       if weights
-                        fail "Discrete variable #{@variable['name']} does not have equal length of values and weights" if values.size != weights.size
+                        fail "Discrete variable '#{@variable['name']}' does not have equal length of values and weights" if values.size != weights.size
                         @values_and_weights = values.zip(weights).map { |v, w| { value: v, weight: w } }.to_json
                       else
                         @values_and_weights = values.map { |v| { value: v } }.to_json
