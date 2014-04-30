@@ -6,6 +6,7 @@ require 'erb'
 require 'zip'
 require 'semantic'
 require 'logger'
+require 'pp'
 
 # core
 require 'openstudio/analysis/server_api'
