@@ -222,9 +222,13 @@ module OpenStudio
                 if @variable['variable_type'] == 'argument'
                   ag = nil
                   if @variable['method'] == 'static'
-                    unless @variable['distribution']['static_value']
-                      fail 'can not have an argument that is not a static value defined in which to set the argument'
+                    if @variable['distribution']['static_value'].nil? || @variable['distribution']['static_value'] == 'null'
+                      puts "    Warning: #{measure['name']}:#{@variable['name']} static value was empty or null, assuming optional and skipping"
+                      next
                     end
+                    # unless @variable['distribution']['static_value']
+                    #   fail 'Cannot have an argument that is not a static value defined in which to set the argument'
+                    # end
 
                     # add this as an argument
                     case @variable['type'].downcase
@@ -232,6 +236,7 @@ module OpenStudio
                       @static_value = @variable['distribution']['static_value'].to_f
                     when 'integer'
                       @static_value = @variable['distribution']['static_value'].to_i
+                    # TODO: update openstudio export to write only Strings
                     when 'string', 'choice'
                       @static_value = @variable['distribution']['static_value'].inspect
                     when 'bool'
