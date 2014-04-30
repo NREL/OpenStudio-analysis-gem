@@ -255,7 +255,7 @@ module OpenStudio
                   elsif @variable['method'] == 'lhs'
                     # TODO: remove enum and choice as this is not the variable type
                     if @variable['type'] == 'enum' || @variable['type'].downcase == 'choice'
-                      @values_and_weights = @variable['distribution']['enumerations'].map { |v| {value: v} }.to_json
+                      @values_and_weights = @variable['distribution']['enumerations'].map { |v| { value: v } }.to_json
                       vr = JSON.parse(discrete_uncertain_variable_template.result(get_binding))
                     elsif @variable['distribution']['type'] == 'discrete_uncertain'
                       # puts @variable.inspect
@@ -274,9 +274,9 @@ module OpenStudio
 
                       if weights
                         fail "Discrete variable #{@variable['name']} does not have equal length of values and weights" if values.size != weights.size
-                        @values_and_weights = values.zip(weights).map { |v, w| {value: v, weight: w} }.to_json
+                        @values_and_weights = values.zip(weights).map { |v, w| { value: v, weight: w } }.to_json
                       else
-                        @values_and_weights = values.map { |v| {value: v} }.to_json
+                        @values_and_weights = values.map { |v| { value: v } }.to_json
                       end
 
                       if @variable['variable_type'] == 'pivot'
@@ -312,9 +312,9 @@ module OpenStudio
         end
 
         def add_directory_to_zip(zipfile, local_directory, relative_zip_directory)
-          #pp "Add Directory #{local_directory}"
+          # pp "Add Directory #{local_directory}"
           Dir[File.join("#{local_directory}", '**', '**')].each do |file|
-            #pp "Adding File #{file}"
+            # pp "Adding File #{file}"
             zipfile.add(file.sub(local_directory, relative_zip_directory), file)
           end
           zipfile
@@ -339,32 +339,32 @@ module OpenStudio
             @variables['data'].each do |v|
               measure_to_save = nil
               measure_files.each do |measure|
-                #pp v['measure_file_name_directory']
+                # pp v['measure_file_name_directory']
                 if measure.include? "/#{v['measure_file_name_directory']}/"
                   measure_to_save = File.dirname(measure)
-                  #pp "Measure to save is #{measure}"
+                  # pp "Measure to save is #{measure}"
                   break
                 end
               end
 
               if v['measure_file_name_directory'] =~ /baseline/i
-                puts "  Skipping baseline measure"
+                puts '  Skipping baseline measure'
                 next
               end
 
               if measure_to_save && !added_measures.include?(measure_to_save)
-                #pp "Attempting to add measure #{measure_to_save}"
+                # pp "Attempting to add measure #{measure_to_save}"
                 if File.exist?(measure_to_save)
-                  #pp "Adding measure directory to zip #{measure_to_save}"
+                  # pp "Adding measure directory to zip #{measure_to_save}"
                   Dir[File.join(measure_to_save, '**')].each do |file|
                     if File.directory?(file)
                       if File.basename(file) == 'resources'
                         add_directory_to_zip(zipfile, file, "./measures/#{v['measure_file_name_directory']}/#{File.basename(file)}")
                       else
-                        #pp "Skipping Directory #{File.basename(file)}"
+                        # pp "Skipping Directory #{File.basename(file)}"
                       end
                     else
-                      #pp "Adding File #{file}"
+                      # pp "Adding File #{file}"
                       # added_measures << measure_dir unless added_measures.include? measure_dir
                       zipfile.add(file.sub(measure_to_save, "./measures/#{v['measure_file_name_directory']}/"), file)
                     end
@@ -524,9 +524,9 @@ module OpenStudio
                 @weather_files += Dir.glob(File.expand_path(File.join(@root_path, row[1])))
               end
             elsif b_models
-              @models << {name: row[1], type: row[2], path: File.expand_path(File.join(@root_path, row[3]))}
+              @models << { name: row[1], type: row[2], path: File.expand_path(File.join(@root_path, row[3])) }
             elsif b_other_libs
-              @other_files << {lib_zip_name: row[1], path: row[2]}
+              @other_files << { lib_zip_name: row[1], path: row[2] }
             end
           end
         end
