@@ -62,7 +62,8 @@ describe OpenStudio::Analysis::Translator::Excel do
     end
 
     it 'should fail to process' do
-      expect { @excel.process }.to raise_error('Variable min is greater than variable max for adjust_thermostat_setpoints_by_degrees:heating_adjustment')
+      error_message = 'Variable min is greater than variable max for adjust_thermostat_setpoints_by_degrees:heating_adjustment'
+      expect { @excel.process }.to raise_error(error_message)
     end
   end
 

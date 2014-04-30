@@ -228,20 +228,20 @@ module OpenStudio
 
                     # add this as an argument
                     case @variable['type'].downcase
-                      when 'double'
-                        @static_value = @variable['distribution']['static_value'].to_f
-                      when 'integer'
-                        @static_value = @variable['distribution']['static_value'].to_i
-                      when 'string', 'choice'
-                        @static_value = @variable['distribution']['static_value'].inspect
-                      when 'bool'
-                        if @variable['distribution']['static_value'].downcase == 'true'
-                          @static_value = true
-                        else
-                          @static_value = false
-                        end
+                    when 'double'
+                      @static_value = @variable['distribution']['static_value'].to_f
+                    when 'integer'
+                      @static_value = @variable['distribution']['static_value'].to_i
+                    when 'string', 'choice'
+                      @static_value = @variable['distribution']['static_value'].inspect
+                    when 'bool'
+                      if @variable['distribution']['static_value'].downcase == 'true'
+                        @static_value = true
                       else
-                        fail "Unknown variable type of #{@variable['type']}"
+                        @static_value = false
+                      end
+                    else
+                      fail "Unknown variable type of #{@variable['type']}"
                     end
                     ag = JSON.parse(argument_template.result(get_binding))
                   end
@@ -311,17 +311,17 @@ module OpenStudio
           binding
         end
 
-        def add_directory_to_zip(zipfile, local_directory, relative_zip_directory)
-          # pp "Add Directory #{local_directory}"
-          Dir[File.join("#{local_directory}", '**', '**')].each do |file|
-            # pp "Adding File #{file}"
-            zipfile.add(file.sub(local_directory, relative_zip_directory), file)
-          end
-          zipfile
-        end
-
         # Package up the seed, weather files, and measures
         def save_analysis_zip(model)
+          def add_directory_to_zip(zipfile, local_directory, relative_zip_directory)
+            # pp "Add Directory #{local_directory}"
+            Dir[File.join("#{local_directory}", '**', '**')].each do |file|
+              # pp "Adding File #{file}"
+              zipfile.add(file.sub(local_directory, relative_zip_directory), file)
+            end
+            zipfile
+          end
+
           zipfile_name = "#{@export_path}/#{model[:name]}.zip"
           FileUtils.rm_f(zipfile_name) if File.exist?(zipfile_name)
 
@@ -674,7 +674,7 @@ module OpenStudio
                   var['distribution']['enumerations'] = row[:enums].gsub('|', '').split(',').map { |v| v.strip }
                 elsif var['type'] == 'bool'
                   var['distribution']['enumerations'] = []
-                  var['distribution']['enumerations'] << 'true' # todo: should this be a real bool?
+                  var['distribution']['enumerations'] << 'true' # TODO: should this be a real bool?
                   var['distribution']['enumerations'] << 'false'
                 end
 
@@ -702,15 +702,18 @@ module OpenStudio
               data['data'][measure_index] = {}
 
               # generate name id
-              # todo: put this into a logger. puts "Parsing measure #{row[1]}"
+              # TODO: put this into a logger. puts "Parsing measure #{row[1]}"
               display_name = row[:measure_name_or_var_type]
               measure_name = display_name.downcase.strip.gsub('-', '_').gsub(' ', '_')
               data['data'][measure_index]['display_name'] = display_name
               data['data'][measure_index]['name'] = measure_name
               data['data'][measure_index]['enabled'] = row[:enabled] == 'TRUE' ? true : false
               data['data'][measure_index]['measure_file_name'] = row[:measure_file_name_or_var_display_name]
-              data['data'][measure_index]['measure_file_name_directory'] = row[:measure_file_name_directory] ?
-                  row[:measure_file_name_directory] : row[:measure_file_name_or_var_display_name].underscore
+              if row[:measure_file_name_directory] 
+                data['data'][measure_index]['measure_file_name_directory'] = row[:measure_file_name_directory]
+              else
+                data['data'][measure_index]['measure_file_name_directory'] = row[:measure_file_name_or_var_display_name].underscore
+              end
               data['data'][measure_index]['measure_type'] = row[:measure_type_or_parameter_name_in_measure]
               data['data'][measure_index]['version'] = @version_id
 

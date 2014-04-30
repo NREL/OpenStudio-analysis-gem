@@ -71,7 +71,7 @@ module OpenStudio
         project_id = nil
 
         # TODO: make this a display name and a machine name
-	       project_hash = { project: { name: "#{options[:project_name]}" } }
+        project_hash = { project: { name: "#{options[:project_name]}" } }
 
         response = @conn.post do |req|
           req.url '/projects.json'
@@ -135,9 +135,7 @@ module OpenStudio
             if wf[:variables]
               wf[:variables].each do |var|
                 var[:uuid] = UUID.new.generate
-                if var[:argument]
-                  var[:argument][:uuid] = UUID.new.generate
-                end
+                var[:argument][:uuid] = UUID.new.generate if var[:argument]
               end
             end
           end
