@@ -363,7 +363,7 @@ module OpenStudio
                   # pp "Adding measure directory to zip #{measure_to_save}"
                   Dir[File.join(measure_to_save, '**')].each do |file|
                     if File.directory?(file)
-                      if File.basename(file) == 'resources'
+                      if File.basename(file) == 'resources' || File.basename(file) == 'lib'
                         add_directory_to_zip(zipfile, file, "./measures/#{v['measure_file_name_directory']}/#{File.basename(file)}")
                       else
                         # pp "Skipping Directory #{File.basename(file)}"
