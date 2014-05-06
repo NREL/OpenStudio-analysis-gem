@@ -4,7 +4,12 @@ OpenStudio Analysis Gem Change Log
 Unreleased
 --------------
 
-* DELETE should return success if 204
+Version 0.2.3
+--------------
+
+* Support for optional variables
+* Display names and Machine names in the models now
+* More error checking
 
 Version 0.1.14
 --------------

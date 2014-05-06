@@ -177,7 +177,7 @@ module OpenStudio
           # iterate over each model and save the zip and json
           @models.each do |model|
             save_analysis_zip(model)
-            analysis_json = create_analysis_json(@template_json, model)
+            analysis_json = create_analysis_json(@template_json, model, @models.count > 1)
           end
         end
 
@@ -393,24 +393,34 @@ module OpenStudio
           end
         end
 
-        def create_analysis_json(analysis_json, model)
+        def create_analysis_json(analysis_json, model, append_model_name)
+          def deep_copy(o)
+            Marshal.load(Marshal.dump(o))
+          end
+          # append the model name to the analysis name if requested (normally if there are more than
+          # 1 models in the spreadsheet)
+          new_analysis_json = deep_copy(analysis_json)
+          if append_model_name
+            new_analysis_json['analysis']['display_name'] = new_analysis_json['analysis']['display_name'] + ' - ' + model[:display_name]
+            new_analysis_json['analysis']['name'] = new_analysis_json['analysis']['name'] + '_' + model[:name]
+          end
+
           # Set the seed model in the analysis_json
-          analysis_json['analysis']['seed']['file_type'] = model[:type]
+          new_analysis_json['analysis']['seed']['file_type'] = model[:type]
           # This is the path that will be seen on the server when this runs
-          analysis_json['analysis']['seed']['path'] = "./seed/#{File.basename(model[:path])}"
+          new_analysis_json['analysis']['seed']['path'] = "./seed/#{File.basename(model[:path])}"
 
           # Set the weather file as the first in the list -- this is optional
-          analysis_json['analysis']['weather_file']['file_type'] = 'EPW'
+          new_analysis_json['analysis']['weather_file']['file_type'].downcase == 'epw'
           if File.extname(@weather_files.first) =~ /.zip/i
-            analysis_json['analysis']['weather_file']['path'] = "./weather/#{File.basename(@weather_files.first, '.zip')}.epw"
+            new_analysis_json['analysis']['weather_file']['path'] = "./weather/#{File.basename(@weather_files.first, '.zip')}.epw"
           else
-            analysis_json['analysis']['weather_file']['path'] = "./weather/#{File.basename(@weather_files.first)}"
+            new_analysis_json['analysis']['weather_file']['path'] = "./weather/#{File.basename(@weather_files.first)}"
           end
 
           json_file_name = "#{@export_path}/#{model[:name]}.json"
           FileUtils.rm_f(json_file_name) if File.exist?(json_file_name)
-
-          File.open("#{@export_path}/#{model[:name]}.json", 'w') { |f| f << JSON.pretty_generate(analysis_json) }
+          File.open(json_file_name, 'w') { |f| f << JSON.pretty_generate(new_analysis_json) }
         end
 
         # parse_setup will pull out the data on the "setup" tab and store it in memory for later use
@@ -529,7 +539,7 @@ module OpenStudio
                 @weather_files += Dir.glob(File.expand_path(File.join(@root_path, row[1])))
               end
             elsif b_models
-              @models << { name: row[1], type: row[2], path: File.expand_path(File.join(@root_path, row[3])) }
+              @models << { name: row[1].snake_case, display_name: row[1], type: row[2], path: File.expand_path(File.join(@root_path, row[3])) }
             elsif b_other_libs
               @other_files << { lib_zip_name: row[1], path: row[2] }
             end
