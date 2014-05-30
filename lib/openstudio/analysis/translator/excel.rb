@@ -565,12 +565,13 @@ module OpenStudio
           # puts rows.inspect
           rows = nil
           begin
-            if @version >= '0.3.0'
+            if @version >= '0.3.0'.to_version
               rows = @xls.sheet('Variables').parse(enabled: '# variable',
                                                    measure_name_or_var_type: 'type',
                                                    measure_file_name_or_var_display_name: 'parameter display name.*',
                                                    measure_file_name_directory: 'measure directory',
                                                    measure_type_or_parameter_name_in_measure: 'parameter name in measure',
+                                                   #sampling_method: 'sampling method',
                                                    variable_type: 'Variable Type',
                                                    units: 'units',
                                                    default_value: 'static.default value',
@@ -587,7 +588,7 @@ module OpenStudio
                                                    notes: 'notes',
                                                    relation_to_eui: 'typical var to eui relationship',
                                                    clean: true)
-            elsif @version >= '0.2.0'
+            elsif @version >= '0.2.0'.to_version
               rows = @xls.sheet('Variables').parse(enabled: '# variable',
                                                    measure_name_or_var_type: 'type',
                                                    measure_file_name_or_var_display_name: 'parameter display name.*',
@@ -610,7 +611,7 @@ module OpenStudio
                                                    notes: 'notes',
                                                    relation_to_eui: 'typical var to eui relationship',
                                                    clean: true)
-            elsif @version >= '0.1.12' # add delta x
+            elsif @version >= '0.1.12'.to_version
               rows = @xls.sheet('Variables').parse(enabled: '# variable',
                                                    measure_name_or_var_type: 'type',
                                                    measure_file_name_or_var_display_name: 'parameter display name.*',
@@ -632,7 +633,7 @@ module OpenStudio
                                                    notes: 'notes',
                                                    relation_to_eui: 'typical var to eui relationship',
                                                    clean: true)
-            elsif @version >= '0.1.11' # add discrete variables
+            elsif @version >= '0.1.11'.to_version
               rows = @xls.sheet('Variables').parse(enabled: '# variable',
                                                    measure_name_or_var_type: 'type',
                                                    measure_file_name_or_var_display_name: 'parameter display name.*',
@@ -766,24 +767,26 @@ module OpenStudio
 
         def parse_outputs
           rows = nil
-          if @version >= '0.3.0'
+          if @version >= '0.3.0'.to_version
             rows = @xls.sheet('Outputs').parse(display_name: 'Variable Display Name',
-                                               name: 'Name',
-                                               units: 'units',
-                                               objective_function: 'objective function',
-                                               objective_function_target: 'objective function target',
-                                               scaling_factor: 'scale',
-                                               objective_function_group: 'objective')
+                                               name: '^Name$',
+                                               units: 'Units',
+                                               visualize: 'Visualize',
+                                               export: 'Export',
+                                               variable_type: 'Variable Type',
+                                               objective_function: 'Objective Function',
+                                               objective_function_target: 'Objective Function Target',
+                                               scaling_factor: 'Scale',
+                                               objective_function_group: 'Objective Function Group')
           else
             rows = @xls.sheet('Outputs').parse(display_name: 'Variable Display Name',
-                                               name: 'Name',
+                                               name: '^Name$',
                                                units: 'units',
                                                objective_function: 'objective function',
                                                objective_function_target: 'objective function target',
                                                scaling_factor: 'scale',
                                                objective_function_group: 'objective')
           end
-
 
           unless rows
             fail "Could not find the sheet name 'Outputs' in excel file #{@root_path}"
@@ -797,12 +800,15 @@ module OpenStudio
           @algorithm['objective_functions'] = []
 
           rows.each_with_index do |row, icnt|
-            next if icnt <= 3 # skip the first 3 lines of the file
+            next if icnt < 2 # skip the first 3 lines of the file
 
             var = {}
-            var['display_name'] = row[:display_name].strip
+            var['display_name'] = row[:display_name]
             var['name'] = row[:name]
             var['units'] = row[:units]
+            var['visualize'] = row[:visualize].downcase == 'true' ? true : false if row[:visualize]
+            var['export'] = row[:export].downcase == 'true' ? true : false if row[:export]
+            var['variable_type'] = row[:variable_type] if row[:variable_type]
             var['objective_function'] = row[:objective_function].downcase == 'true' ? true : false
             if var['objective_function'] == true
               @algorithm['objective_functions'] << var['name']
@@ -813,7 +819,9 @@ module OpenStudio
             end
             var['objective_function_target'] = row[:objective_function_target]
             var['scaling_factor'] = row[:scaling_factor]
-            if row[6].nil?
+
+            # TODO: BB - should we only increment the group if it is an objective function?
+            if row[:objective_function_group].nil?
               var['objective_function_group'] = group_index
               group_index += 1
             else

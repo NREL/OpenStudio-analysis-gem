@@ -5,6 +5,7 @@ require 'roo'
 require 'erb'
 require 'zip'
 require 'semantic'
+require 'semantic/core_ext'
 require 'logger'
 require 'pp'
 
