@@ -103,7 +103,7 @@ module OpenStudio
           # verify that all continuous variables have all the data needed and create a name maps
           variable_names = []
           @variables['data'].each do |measure|
-            if measure['enabled'] && measure['name'] != 'baseline'
+            if measure['enabled']
               measure['variables'].each do |variable|
                 # Determine if row is suppose to be an argument or a variable to be perturbed.
                 if variable['variable_type'] == 'variable'
@@ -202,7 +202,7 @@ module OpenStudio
           @measure_index = -1
           @variables['data'].each do |measure|
             # With OpenStudio server we need to create the workflow with all the measure instances
-            if measure['enabled'] && measure['name'] != 'baseline'
+            if measure['enabled']
               @measure_index += 1
 
               puts "  Adding measure item '#{measure['name']}'"
@@ -215,7 +215,6 @@ module OpenStudio
               # add in the variables
               measure['variables'].each do |variable|
                 @variable = variable
-
                 # Determine if row is suppose to be an argument or a variable to be perturbed.
                 if @variable['variable_type'] == 'argument'
                   ag = nil
@@ -292,7 +291,9 @@ module OpenStudio
                       @values_and_weights = values.map { |v| {value: v} }.to_json
                     end
 
+
                     if @variable['variable_type'] == 'pivot'
+
                       vr = JSON.parse(pivot_variable_template.result(get_binding))
                     else
                       vr = JSON.parse(discrete_uncertain_variable_template.result(get_binding))
@@ -357,11 +358,6 @@ module OpenStudio
                   # pp "Measure to save is #{measure}"
                   break
                 end
-              end
-
-              if v['measure_file_name_directory'] =~ /baseline/i
-                puts '  Skipping baseline measure'
-                next
               end
 
               if measure_to_save && !added_measures.include?(measure_to_save)
@@ -692,7 +688,7 @@ module OpenStudio
           variable_index = -1
           measure_name = nil
           rows.each_with_index do |row, icnt|
-            next if icnt <= 1 # skip the first line after the header
+            next if icnt < 1 # skip the first line after the header
             # puts "Parsing line: #{icnt}:#{row}"
 
             # check if we are a measure - nil means that the cell was blank
