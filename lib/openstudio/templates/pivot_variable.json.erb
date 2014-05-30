@@ -10,8 +10,6 @@
     "display_name": "<%= @variable['display_name'] %>",
     "machine_name": "<%= @variable['machine_name'] %>",
     "name": "<%= @variable['machine_name'] %>",
-    "units": "<%= @variable['units'] %>",
-    "value_type": "<%= @variable['type'] %>",
     "pivot": true,
     "relation_to_output": "<%= @variable['relation_to_eui'] %>",
     "uncertainty_description": {
@@ -19,13 +17,15 @@
             {
                 "name": "discrete",
                 "values_and_weights":
-                    <%= @values_and_weights %>
+                <%= @values_and_weights %>
             }
         ],
         "type": "discrete_uncertain"
     },
-    "uuid": "<%= UUID.new.generate %>",
+    "units": "<%= @variable['units'] %>",
+    "value_type": "<%= @variable['type'] %>",
     "variable_type": "RubyContinuousVariable",
+    "uuid": "<%= UUID.new.generate %>",
     "version_uuid": "<%= UUID.new.generate %>"
 }
 

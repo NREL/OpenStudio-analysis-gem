@@ -3,25 +3,19 @@
         "display_name": "<%= @variable['display_name'] %>",
         "machine_name": "<%= @variable['machine_name'] %>",
         "name": "<%= @variable['name'] %>",
+        "required": false,
         "uuid": "<%= UUID.new.generate %>",
-        "version_uuid": "b33cf6b0-f1aa-4706-afab-9470e6bd1912"
+        "version_uuid": "<%= UUID.new.generate %>"
     },
     "display_name": "<%= @variable['display_name'] %>",
     "machine_name": "<%= @variable['machine_name'] %>",
+    "maximum": <%= @variable['distribution']['max'] ?  @variable['distribution']['max'].inspect : 'null' %>,
+    "minimum": <%= @variable['distribution']['min'] ?  @variable['distribution']['min'].inspect : 'null' %>,
     "name": "<%= @variable['machine_name'] %>",
-    "minimum": <%= @variable['distribution']['min'].inspect %>,
-    "maximum": <%= @variable['distribution']['max'].inspect %>,
-    "units": "<%= @variable['units'] %>",
-    "value_type": "<%= @variable['type'] %>",
-    "variable": true,
     "relation_to_output": "<%= @variable['relation_to_eui'] %>",
     "static_value": <%= @variable['distribution']['static_value'].inspect %>,
     "uncertainty_description": {
         "attributes": [
-            {
-                "name": "modes",
-                "value": <%= @variable['distribution']['mean'] %>
-            },
             {
                 "name": "lower_bounds",
                 "value": <%= @variable['distribution']['min'] %>
@@ -37,11 +31,18 @@
             {
                 "name": "delta_x",
                 "value": <%= @variable['distribution']['delta_x'] ?  @variable['distribution']['delta_x'].inspect : 'null' %>
+            },
+            {
+                "name": "modes",
+                "value": <%= @variable['distribution']['mean'] %>
             }
         ],
         "type": <%= @variable['distribution']['type'].inspect %>
     },
-    "uuid": "d157d709-b83e-42bd-bd30-1bc3a7979672",
+    "units": "<%= @variable['units'] %>",
+    "value_type": "<%= @variable['type'] %>",
+    "variable": true,
     "variable_type": "RubyContinuousVariable",
-    "version_uuid": "26e7d8de-83e3-4a53-938b-45d3e0f29953"
+    "uuid": "<%= UUID.new.generate %>",
+    "version_uuid": "<%= UUID.new.generate %>"
 }
