@@ -4,6 +4,11 @@ OpenStudio Analysis Gem Change Log
 Unreleased
 --------------
 
+Version 0.3.0
+--------------
+* Remove the column for Sampling Method. That is now part of the analysis config.
+* All variables need static values now.
+
 Version 0.2.3
 --------------
 
