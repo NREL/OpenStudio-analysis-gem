@@ -687,12 +687,10 @@ module OpenStudio
           data = {}
           data['data'] = []
 
-          icnt = 0
           measure_index = -1
           variable_index = -1
           measure_name = nil
-          rows.each do |row|
-            icnt += 1
+          rows.each_with_index do |row, icnt|
             next if icnt <= 1 # skip the first line after the header
             # puts "Parsing line: #{icnt}:#{row}"
 
@@ -767,7 +765,25 @@ module OpenStudio
         end
 
         def parse_outputs
-          rows = @xls.sheet('Outputs').parse
+          rows = nil
+          if @version >= '0.3.0'
+            rows = @xls.sheet('Outputs').parse(display_name: 'Variable Display Name',
+                                               name: 'Name',
+                                               units: 'units',
+                                               objective_function: 'objective function',
+                                               objective_function_target: 'objective function target',
+                                               scaling_factor: 'scale',
+                                               objective_function_group: 'objective')
+          else
+            rows = @xls.sheet('Outputs').parse(display_name: 'Variable Display Name',
+                                               name: 'Name',
+                                               units: 'units',
+                                               objective_function: 'objective function',
+                                               objective_function_target: 'objective function target',
+                                               scaling_factor: 'scale',
+                                               objective_function_group: 'objective')
+          end
+
 
           unless rows
             fail "Could not find the sheet name 'Outputs' in excel file #{@root_path}"
@@ -776,21 +792,18 @@ module OpenStudio
           data = {}
           data['output_variables'] = []
 
-          icnt = 0
           variable_index = -1
           group_index = 1
           @algorithm['objective_functions'] = []
 
-          rows.each do |row|
-            icnt += 1
-            # puts "Parsing line: #{icnt}"
+          rows.each_with_index do |row, icnt|
             next if icnt <= 3 # skip the first 3 lines of the file
 
             var = {}
-            var['display_name'] = row[0].strip
-            var['name'] = row[1]
-            var['units'] = row[2]
-            var['objective_function'] = row[3].downcase == 'true' ? true : false
+            var['display_name'] = row[:display_name].strip
+            var['name'] = row[:name]
+            var['units'] = row[:units]
+            var['objective_function'] = row[:objective_function].downcase == 'true' ? true : false
             if var['objective_function'] == true
               @algorithm['objective_functions'] << var['name']
               variable_index += 1
@@ -798,13 +811,13 @@ module OpenStudio
             else
               var['objective_function_index'] = nil
             end
-            var['objective_function_target'] = row[4]
-            var['scaling_factor'] = row[5]
+            var['objective_function_target'] = row[:objective_function_target]
+            var['scaling_factor'] = row[:scaling_factor]
             if row[6].nil?
               var['objective_function_group'] = group_index
               group_index += 1
             else
-              var['objective_function_group'] = row[6]
+              var['objective_function_group'] = row[:objective_function_group]
             end
             data['output_variables'] << var
           end
