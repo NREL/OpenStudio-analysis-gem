@@ -765,6 +765,7 @@ module OpenStudio
           rows = nil
           if @version >= '0.3.0'.to_version
             rows = @xls.sheet('Outputs').parse(display_name: 'Variable Display Name',
+                                               metadata_id: 'Taxonomy Identifier',
                                                name: '^Name$',
                                                units: 'Units',
                                                visualize: 'Visualize',
@@ -800,6 +801,7 @@ module OpenStudio
 
             var = {}
             var['display_name'] = row[:display_name]
+            var['metadata_id'] = row[:metadata_id]
             var['name'] = row[:name]
             var['units'] = row[:units]
             var['visualize'] = row[:visualize].downcase == 'true' ? true : false if row[:visualize]
