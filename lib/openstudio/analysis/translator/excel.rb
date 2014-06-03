@@ -139,8 +139,10 @@ module OpenStudio
                     if variable['distribution']['max'].nil? || variable['distribution']['max'] == ''
                       fail "Variable #{measure['name']}:#{variable['name']} must have a maximum"
                     end
-                    if variable['distribution']['min'] > variable['distribution']['max']
-                      fail "Variable min is greater than variable max for #{measure['name']}:#{variable['name']}"
+                    unless variable['type'] == 'string'
+                      if variable['distribution']['min'] > variable['distribution']['max']
+                        fail "Variable min is greater than variable max for #{measure['name']}:#{variable['name']}"
+                      end
                     end
 
                   end
