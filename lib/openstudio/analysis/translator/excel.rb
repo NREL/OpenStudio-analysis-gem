@@ -17,7 +17,7 @@ module OpenStudio
         attr_reader :run_setup
 
         # remove these once we have classes to construct the JSON file
-        attr_reader :name
+        attr_accessor :name
         attr_reader :machine_name
         attr_reader :template_json
 
@@ -516,11 +516,23 @@ module OpenStudio
               # type some of the values that we know
               @settings['proxy_port'] = @settings['proxy_port'].to_i if @settings['proxy_port']
             elsif b_run_setup
-              @name = row[1].chomp if row[0] == 'Analysis Name'
-              @machine_name = @name.snake_case
+              if row[0] == 'Analysis Name'
+                if row[1]
+                  @name = row[1]
+                else
+                  @name = UUID.new.generate
+                end
+                @machine_name = @name.snake_case
+              end
               @export_path = File.expand_path(File.join(@root_path, row[1])) if row[0] == 'Export Directory'
-              @measure_path = File.expand_path(File.join(@root_path, row[1])) if row[0] == 'Measure Directory'
-
+              if row[0] == 'Measure Directory'
+                tmp_filepath = row[1]
+                if (Pathname.new tmp_filepath).absolute?
+                  @measure_path = tmp_filepath
+                else
+                  @measure_path = File.expand_path(File.join(@root_path, tmp_filepath))
+                end
+              end
               @run_setup["#{row[0].snake_case}"] = row[1] if row[0]
 
               # type cast
@@ -545,7 +557,12 @@ module OpenStudio
                 @weather_files += Dir.glob(File.expand_path(File.join(@root_path, row[1])))
               end
             elsif b_models
-              @models << {name: row[1].snake_case, display_name: row[1], type: row[2], path: File.expand_path(File.join(@root_path, row[3]))}
+              if row[1]
+                tmp_m_name = row[1]
+              else
+                tmp_m_name = UUID.new.generate
+              end
+              @models << {name: tmp_m_name.snake_case, display_name: tmp_m_name, type: row[2], path: File.expand_path(File.join(@root_path, row[3]))}
             elsif b_other_libs
               @other_files << {lib_zip_name: row[1], path: row[2]}
             end

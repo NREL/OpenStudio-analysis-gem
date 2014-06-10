@@ -8,6 +8,7 @@ require 'semantic'
 require 'semantic/core_ext'
 require 'logger'
 require 'pp'
+require 'pathname'
 
 # core
 require 'openstudio/analysis/server_api'
