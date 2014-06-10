@@ -133,7 +133,7 @@ module OpenStudio
 
         fail 'No project id passed' if project_id.nil?
         fail 'no formulation passed to new_analysis' unless options[:formulation_file]
-        fail "No formation exists #{options[:formulation_file]}" unless File.exist?(options[:formulation_file])
+        fail "No formulation exists #{options[:formulation_file]}" unless File.exist?(options[:formulation_file])
 
         formulation_json = JSON.parse(File.read(options[:formulation_file]), symbolize_names: true)
 

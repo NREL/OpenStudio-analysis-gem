@@ -4,16 +4,16 @@
     "bcl_measure_class_name": "<%= @measure['measure_file_name'] %>",
     "bcl_measure_uuid": "<%= UUID.new.generate %>",
     "bcl_measure_version_uuid": "<%= UUID.new.generate %>",
+    "display_name": "<%= @measure['display_name'] %>",
     "measure_definition_directory": "./measures/<%= @measure['measure_file_name_directory'] %>",
     "measure_definition_class_name": "<%= @measure['measure_file_name'] %>",
     "measure_definition_uuid": "<%= UUID.new.generate %>",
     "measure_definition_version_uuid": "<%= UUID.new.generate %>",
     "measure_type": "<%= @measure['measure_type'] %>",
     "name": "<%= @measure['name'] %>",
-    "display_name": "<%= @measure['display_name'] %>",
-    "uuid": "<%= UUID.new.generate %>",
     "variables": [],
-    "version_uuid": "<%= UUID.new.generate %>",
     "workflow_index": <%= @measure_index %>,
-    "workflow_step_type": "Measure"
+    "workflow_step_type": "Measure",
+    "uuid": "<%= UUID.new.generate %>",
+    "version_uuid": "<%= UUID.new.generate %>"
 }

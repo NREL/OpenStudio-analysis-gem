@@ -5,17 +5,15 @@
         "name": "<%= @variable['name'] %>",
         "required": false,
         "uuid": "<%= UUID.new.generate %>",
-        "version_uuid": "<%= UUID.new.generate %>"               
+        "version_uuid": "<%= UUID.new.generate %>"
     },
     "display_name": "<%= @variable['display_name'] %>",
     "machine_name": "<%= @variable['machine_name'] %>",
-    "name": "<%= @variable['machine_name'] %>",
-    "minimum": <%= @variable['distribution']['min'] ?  @variable['distribution']['min'].inspect : 'null' %>,
     "maximum": <%= @variable['distribution']['max'] ?  @variable['distribution']['max'].inspect : 'null' %>,
-    "units": "<%= @variable['units'] %>",
-    "value_type": "<%= @variable['type'] %>",
-    "variable": true,
+    "minimum": <%= @variable['distribution']['min'] ?  @variable['distribution']['min'].inspect : 'null' %>,
+    "name": "<%= @variable['machine_name'] %>",
     "relation_to_output": "<%= @variable['relation_to_eui'] %>",
+    "static_value": <%= @variable['distribution']['static_value'].inspect %>,
     "uncertainty_description": {
         "attributes": [
             {
@@ -24,11 +22,11 @@
             },
             {
                 "name": "lower_bounds",
-                "value": <%= @variable['distribution']['min'] %>
+                "value": <%= @variable['distribution']['min'].inspect %>
             },
             {
                 "name": "upper_bounds",
-                "value": <%= @variable['distribution']['max'] %>
+                "value": <%= @variable['distribution']['max'].inspect %>
             },
             {
                 "name": "modes",
@@ -37,9 +35,10 @@
         ],
         "type": "discrete_uncertain"
     },
-    "uuid": "<%= UUID.new.generate %>",
+    "units": "<%= @variable['units'] %>",
+    "value_type": "<%= @variable['type'] %>",
+    "variable": true,
     "variable_type": "RubyContinuousVariable",
+    "uuid": "<%= UUID.new.generate %>",
     "version_uuid": "<%= UUID.new.generate %>"
 }
-
-
