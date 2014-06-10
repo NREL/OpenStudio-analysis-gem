@@ -837,7 +837,6 @@ module OpenStudio
             var['objective_function_target'] = row[:objective_function_target]
             var['scaling_factor'] = row[:scaling_factor]
 
-            # TODO: BB - should we only increment the group if it is an objective function?
             if var['objective_function'] == true
               if row['objective_function_group'].nil?
                 var['objective_function_group'] = group_index
@@ -845,7 +844,7 @@ module OpenStudio
               else
                 var['objective_function_group'] = row[:objective_function_group]
               end
-            end  
+            end
             data['output_variables'] << var
           end
 
