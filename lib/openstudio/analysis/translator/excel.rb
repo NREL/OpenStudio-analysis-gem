@@ -565,7 +565,10 @@ module OpenStudio
               else
                 tmp_m_name = UUID.new.generate
               end
-              @models << {name: tmp_m_name.snake_case, display_name: tmp_m_name, type: row[2], path: File.expand_path(File.join(@root_path, row[3]))}
+              # Only add models if the row is flagged
+              if row[0] && row[0].downcase == 'model'
+                @models << {name: tmp_m_name.snake_case, display_name: tmp_m_name, type: row[2], path: File.expand_path(File.join(@root_path, row[3]))}
+              end
             elsif b_other_libs
               @other_files << {lib_zip_name: row[1], path: row[2]}
             end
