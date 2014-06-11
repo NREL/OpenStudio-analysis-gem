@@ -32,7 +32,7 @@ describe OpenStudio::Analysis::Translator::Excel do
 
     it 'should not export to a JSON' do
       @excel.process
-      expect { @excel.save_analysis }.to raise_error("Argument 'r_value' did not process.  Most likely it did not have all parameters defined.")
+
     end
   end
 
@@ -336,6 +336,53 @@ describe OpenStudio::Analysis::Translator::Excel do
 
     it 'should write a json' do
       @excel.save_analysis
+
+    end
+  end
+
+  context 'version 0.3.0 objective functions' do
+    before(:all) do
+      @excel = OpenStudio::Analysis::Translator::Excel.new('spec/files/0_3_0_outputs.xlsx')
+    end
+
+    it 'should process' do
+      expect(@excel.process).to eq(true)
+    end
+
+    it 'should have new setting variables' do
+      puts @excel.settings.inspect
+      expect(@excel.settings['user_id']).to eq('new_user')
+      expect(@excel.settings['openstudio_server_version']).to eq('1.6.1')
+      puts @excel.run_setup.inspect
+    end
+
+    it 'should have typed outputs' do
+      h = @excel.create_analysis_hash
+      expect(h['analysis']['output_variables']).to be_an Array
+      h['analysis']['output_variables'].each do |o|
+        if o['name'] == 'standard_report_legacy.total_energy'
+          expect(o['variable_type']).to eq 'Double'
+          expect(o['objective_function']).to eq true
+          expect(o['objective_function_index']).to eq 0
+          expect(o['objective_function_target']).to eq nil
+          expect(o['scaling_factor']).to eq nil
+          expect(o['objective_function_group']).to eq 1
+        end
+        if o['name'] == 'standard_report_legacy.total_source_energy'
+          expect(o['variable_type']).to eq 'Double'
+          expect(o['objective_function']).to eq true
+          expect(o['objective_function_index']).to eq 1
+          expect(o['objective_function_target']).to eq 25.1
+          expect(o['scaling_factor']).to eq 25.2
+          expect(o['objective_function_group']).to eq 7
+        end
+      end
+    end
+
+    it 'should write a json' do
+      @excel.save_analysis
+      expect(File.exist?('spec/files/export/analysis/0_3_0_outputs.json')).to eq true
+      expect(File.exist?('spec/files/export/analysis/0_3_0_outputs.zip')).to eq true
     end
   end
 

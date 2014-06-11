@@ -827,7 +827,7 @@ module OpenStudio
             var['export'] = row[:export].downcase == 'true' ? true : false if row[:export]
             var['variable_type'] = row[:variable_type] if row[:variable_type]
             var['objective_function'] = row[:objective_function].downcase == 'true' ? true : false
-            if var['objective_function'] == true
+            if var['objective_function']
               @algorithm['objective_functions'] << var['name']
               variable_index += 1
               var['objective_function_index'] = variable_index
@@ -837,12 +837,13 @@ module OpenStudio
             var['objective_function_target'] = row[:objective_function_target]
             var['scaling_factor'] = row[:scaling_factor]
 
-            # TODO: BB - should we only increment the group if it is an objective function?
-            if row['objective_function_group'].nil?
-              var['objective_function_group'] = group_index
-              group_index += 1
-            else
-              var['objective_function_group'] = row[:objective_function_group]
+            if var['objective_function']
+              if row[:objective_function_group].nil?
+                var['objective_function_group'] = group_index
+                group_index += 1
+              else
+                var['objective_function_group'] = row[:objective_function_group]
+              end
             end
             data['output_variables'] << var
           end
