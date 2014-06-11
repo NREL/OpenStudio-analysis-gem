@@ -109,8 +109,8 @@ module OpenStudio
         analysis_ids
       end
 
-      def download_dataframe(analysis_id, save_directory=".")
-        response = @conn.get "/analyses/#{analysis_id}/download_data.rdata"
+      def download_dataframe(analysis_id, format='rdata', save_directory=".")
+        response = @conn.get "/analyses/#{analysis_id}/download_data.#{format}"
         if response.status == 200
           filename = response['content-disposition'].match(/filename=(\"?)(.+)\1/)[2]
           puts "File #{filename} already exists, overwriting" if File.exist?("#{save_directory}/#{filename}")
@@ -118,8 +118,8 @@ module OpenStudio
         end
       end
 
-      def download_variables(analysis_id, save_directory=".")
-        response = @conn.get "/analyses/#{analysis_id}/download_variables.rdata"
+      def download_variables(analysis_id, format='rdata', save_directory=".")
+        response = @conn.get "/analyses/#{analysis_id}/download_variables.#{format}"
         if response.status == 200
           filename = response['content-disposition'].match(/filename=(\"?)(.+)\1/)[2]
           puts "File #{filename} already exists, overwriting" if File.exist?("#{save_directory}/#{filename}")
