@@ -383,7 +383,13 @@ describe OpenStudio::Analysis::Translator::Excel do
       @excel.save_analysis
       expect(File.exist?('spec/files/export/analysis/0_3_0_outputs.json')).to eq true
       expect(File.exist?('spec/files/export/analysis/0_3_0_outputs.zip')).to eq true
+
+      # check the JSON
+      h = JSON.parse(File.read('spec/files/export/analysis/0_3_0_outputs.json'))
+      expect(h['analysis']['weather_file']).to be_a Hash
+      expect(h['analysis']['weather_file']['path']).to eq './weather/partial_weather.epw'
     end
+
   end
 
 end
