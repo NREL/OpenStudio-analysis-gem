@@ -110,7 +110,8 @@ module OpenStudio
       end
 
       def download_dataframe(analysis_id, format='rdata', save_directory=".")
-        response = @conn.get "/analyses/#{analysis_id}/download_data.#{format}"
+        # Set the export = true flag to retrieve all the variables for the export (not just the visualize variables)
+        response = @conn.get "/analyses/#{analysis_id}/download_data.#{format}?export=true"
         if response.status == 200
           filename = response['content-disposition'].match(/filename=(\"?)(.+)\1/)[2]
           puts "File #{filename} already exists, overwriting" if File.exist?("#{save_directory}/#{filename}")
