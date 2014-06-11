@@ -119,7 +119,7 @@ module OpenStudio
       end
 
       def download_variables(analysis_id, format='rdata', save_directory=".")
-        response = @conn.get "/analyses/#{analysis_id}/download_variables.#{format}"
+        response = @conn.get "/analyses/#{analysis_id}/variables/download_variables.#{format}"
         if response.status == 200
           filename = response['content-disposition'].match(/filename=(\"?)(.+)\1/)[2]
           puts "File #{filename} already exists, overwriting" if File.exist?("#{save_directory}/#{filename}")
