@@ -421,7 +421,10 @@ module OpenStudio
           if File.extname(@weather_files.first) =~ /.zip/i
             new_analysis_json['analysis']['weather_file']['path'] = "./weather/#{File.basename(@weather_files.first, '.zip')}.epw"
           else
-            new_analysis_json['analysis']['weather_file']['path'] = "./weather/#{File.basename(@weather_files.first)}"
+            # get the first EPW file (not the first file)
+            weather = @weather_files.find{|w| File.extname(w).downcase == '.epw'}
+            fail "Could not find a weather file (*.epw) in weather directory #{File.dirname(@weather_files.first)}" unless weather
+            new_analysis_json['analysis']['weather_file']['path'] = "./weather/#{File.basename(weather)}"
           end
 
           json_file_name = "#{@export_path}/#{model[:name]}.json"
@@ -562,7 +565,10 @@ module OpenStudio
               else
                 tmp_m_name = UUID.new.generate
               end
-              @models << {name: tmp_m_name.snake_case, display_name: tmp_m_name, type: row[2], path: File.expand_path(File.join(@root_path, row[3]))}
+              # Only add models if the row is flagged
+              if row[0] && row[0].downcase == 'model'
+                @models << {name: tmp_m_name.snake_case, display_name: tmp_m_name, type: row[2], path: File.expand_path(File.join(@root_path, row[3]))}
+              end
             elsif b_other_libs
               @other_files << {lib_zip_name: row[1], path: row[2]}
             end
