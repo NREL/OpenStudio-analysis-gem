@@ -527,7 +527,14 @@ module OpenStudio
                 end
                 @machine_name = @name.snake_case
               end
-              @export_path = File.expand_path(File.join(@root_path, row[1])) if row[0] == 'Export Directory'
+              if row[0] == 'Export Directory'
+                tmp_filepath = row[1]
+                if (Pathname.new tmp_filepath).absolute?
+                  @export_path = tmp_filepath
+                else
+                  @export_path = File.expand_path(File.join(@root_path, tmp_filepath))
+                end
+              end
               if row[0] == 'Measure Directory'
                 tmp_filepath = row[1]
                 if (Pathname.new tmp_filepath).absolute?
@@ -557,7 +564,11 @@ module OpenStudio
               end
             elsif b_weather_files
               if row[0] == 'Weather File'
-                @weather_files += Dir.glob(File.expand_path(File.join(@root_path, row[1])))
+                weather_path = row[1]
+                unless (Pathname.new weather_path).absolute?
+                  weather_path = File.expand_path(File.join(@root_path, weather_path))
+                end
+                @weather_files += Dir.glob(weather_path)
               end
             elsif b_models
               if row[1]
@@ -567,10 +578,20 @@ module OpenStudio
               end
               # Only add models if the row is flagged
               if row[0] && row[0].downcase == 'model'
-                @models << {name: tmp_m_name.snake_case, display_name: tmp_m_name, type: row[2], path: File.expand_path(File.join(@root_path, row[3]))}
+                model_path = row[3]
+                unless (Pathname.new model_path).absolute?
+                  model_path = File.expand_path(File.join(@root_path, model_path))
+                end
+                @models << {name: tmp_m_name.snake_case, display_name: tmp_m_name, type: row[2], path: model_path}
               end
             elsif b_other_libs
-              @other_files << {lib_zip_name: row[1], path: row[2]}
+              # determine if the path is relative
+              other_path = row[2]
+              unless (Pathname.new other_path).absolute?
+                other_path = File.expand_path(File.join(@root_path, other_path))
+              end
+
+              @other_files << {lib_zip_name: row[1], path: other_path}
             end
           end
         end
