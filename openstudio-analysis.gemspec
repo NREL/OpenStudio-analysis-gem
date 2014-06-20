@@ -20,7 +20,7 @@ Gem::Specification.new do |s|
   s.add_dependency("faraday", "~> 0.8")
   s.add_dependency("uuid", "~> 2.3")
   s.add_dependency("roo", "~> 1.12")
-  s.add_dependency("rubyzip", "~> 1.1")
+  s.add_dependency("rubyzip", "~> 1.0") # don't update because of jruby
   s.add_dependency("semantic", "~> 1.3")
 
   s.files = Dir.glob("lib/**/*") + %w(README.md CHANGELOG.md Rakefile)

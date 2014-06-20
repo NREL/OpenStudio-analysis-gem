@@ -6,7 +6,7 @@ module OpenStudio
       attr_reader :hostname
 
       def initialize(options = {})
-        defaults = { hostname: 'http://localhost:8080' }
+        defaults = {hostname: 'http://localhost:8080'}
         options = defaults.merge(options)
         @logger = Logger.new('faraday.log')
 
@@ -66,12 +66,12 @@ module OpenStudio
       end
 
       def new_project(options = {})
-        defaults = { project_name: "Project #{Time.now.strftime('%Y-%m-%d %H:%M:%S')}" }
+        defaults = {project_name: "Project #{Time.now.strftime('%Y-%m-%d %H:%M:%S')}"}
         options = defaults.merge(options)
         project_id = nil
 
         # TODO: make this a display name and a machine name
-        project_hash = { project: { name: "#{options[:project_name]}" } }
+        project_hash = {project: {name: "#{options[:project_name]}"}}
 
         response = @conn.post do |req|
           req.url '/projects.json'
@@ -115,7 +115,7 @@ module OpenStudio
         if response.status == 200
           filename = response['content-disposition'].match(/filename=(\"?)(.+)\1/)[2]
           puts "File #{filename} already exists, overwriting" if File.exist?("#{save_directory}/#{filename}")
-          File.open("#{save_directory}/#{filename}",'w') {|f| f << response.body}
+          File.open("#{save_directory}/#{filename}", 'w') { |f| f << response.body }
         end
       end
 
@@ -124,7 +124,7 @@ module OpenStudio
         if response.status == 200
           filename = response['content-disposition'].match(/filename=(\"?)(.+)\1/)[2]
           puts "File #{filename} already exists, overwriting" if File.exist?("#{save_directory}/#{filename}")
-          File.open("#{save_directory}/#{filename}",'w') {|f| f << response.body}
+          File.open("#{save_directory}/#{filename}", 'w') { |f| f << response.body }
         end
       end
 
@@ -133,16 +133,16 @@ module OpenStudio
         if response.status == 200
           filename = response['content-disposition'].match(/filename=(\"?)(.+)\1/)[2]
           puts "File #{filename} already exists, overwriting" if File.exist?("#{save_directory}/#{filename}")
-          File.open("#{save_directory}/#{filename}",'w') {|f| f << response.body}
+          File.open("#{save_directory}/#{filename}", 'w') { |f| f << response.body }
         end
       end
 
       def new_analysis(project_id, options)
-        defaults = { analysis_name: nil, reset_uuids: false }
+        defaults = {analysis_name: nil, reset_uuids: false}
         options = defaults.merge(options)
 
         fail 'No project id passed' if project_id.nil?
-        fail 'no formulation passed to new_analysis' unless options[:formulation_file]
+        fail 'No formulation passed to new_analysis' unless options[:formulation_file]
         fail "No formulation exists #{options[:formulation_file]}" unless File.exist?(options[:formulation_file])
 
         formulation_json = JSON.parse(File.read(options[:formulation_file]), symbolize_names: true)
@@ -198,7 +198,7 @@ module OpenStudio
         if options[:upload_file]
           fail "upload file does not exist #{options[:upload_file]}" unless File.exist?(options[:upload_file])
 
-          payload = { file: Faraday::UploadIO.new(options[:upload_file], 'application/zip') }
+          payload = {file: Faraday::UploadIO.new(options[:upload_file], 'application/zip')}
           response = @conn_multipart.post "analyses/#{analysis_id}/upload.json", payload
 
           if response.status == 201
@@ -212,7 +212,7 @@ module OpenStudio
       end
 
       def upload_datapoint(analysis_id, options)
-        defaults = { reset_uuids: false }
+        defaults = {reset_uuids: false}
         options = defaults.merge(options)
 
         fail 'No analysis id passed' if analysis_id.nil?
@@ -265,7 +265,7 @@ module OpenStudio
       end
 
       def run_analysis(analysis_id, options)
-        defaults = { analysis_action: 'start', without_delay: false }
+        defaults = {analysis_action: 'start', without_delay: false}
         options = defaults.merge(options)
 
         puts "Run analysis is configured with #{options.to_json}"
@@ -284,7 +284,7 @@ module OpenStudio
       end
 
       def kill_analysis(analysis_id)
-        analysis_action = { analysis_action: 'stop' }
+        analysis_action = {analysis_action: 'stop'}
 
         response = @conn.post do |req|
           req.url "analyses/#{analysis_id}/action.json"
@@ -314,16 +314,63 @@ module OpenStudio
       end
 
       def get_datapoint_status(analysis_id, filter = nil)
+        data_points = nil
         # get the status of all the entire analysis
         unless analysis_id.nil?
           if filter.nil? || filter == ''
             resp = @conn.get "analyses/#{analysis_id}/status.json"
-            puts "Data points (all): #{resp}"
+            if resp.status == 200
+              data_points = JSON.parse(resp.body, symbolize_names: true)[:data_points]
+            end
           else
             resp = @conn.get "#{@hostname}/analyses/#{analysis_id}/status.json", jobs: filter
-            puts "Data points (#{filter}): #{resp}"
+            if resp.status == 200
+              data_points = JSON.parse(resp.body, symbolize_names: true)[:data_points]
+            end
           end
         end
+
+        data_points
+      end
+
+      def get_datapoint(data_point_id)
+        data_point = nil
+
+        resp = @conn.get "/data_points/#{data_point_id}/show_full.json"
+        if resp.status == 200
+          data_point = JSON.parse resp.body, symbolize_names: true
+        end
+
+        data_point
+      end
+
+      # Check the status of the simulation. Format should be:
+      # {
+      #   analysis: {
+      #     status: "completed",
+      #     analysis_type: "batch_run"
+      #   },
+      #     data_points: [
+      #     {
+      #         _id: "bbd57e90-ce59-0131-35de-080027880ca6",
+      #         status: "completed"
+      #     }
+      #   ]
+      # }
+      def get_analysis_status(analysis_id, analysis_type)
+        status = nil
+
+        unless analysis_id.nil?
+          resp = @conn.get "analyses/#{analysis_id}/status.json"
+          if resp.status == 200
+            j = JSON.parse resp.body, symbolize_names: true
+            if j && j[:analysis] && j[:analysis][:analysis_type] == analysis_type
+              status = j[:analysis][:status]
+            end
+          end
+        end
+
+        status
       end
     end
   end
