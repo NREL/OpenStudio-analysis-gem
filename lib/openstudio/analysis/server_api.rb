@@ -395,9 +395,42 @@ module OpenStudio
         data_point
       end
 
+      ## here are a bunch of runs that really don't belong here.
+      def run_single_model(formulation_filename, analysis_zip_filename)
+        project_options = {}
+        project_id = new_project(project_options)
 
+        analysis_options = {
+            formulation_file: formulation_filename,
+            upload_file: analysis_zip_filename,
+            reset_uuids: true
+        }
+        analysis_id = new_analysis(project_id, analysis_options)
 
+        run_options = {
+            analysis_action: "start",
+            without_delay: false, # run in background
+            analysis_type: 'single_run',
+            allow_multiple_jobs: true,
+            use_server_as_worker: true,
+            simulate_data_point_filename: 'simulate_data_point.rb',
+            run_data_point_filename: 'run_openstudio_workflow_monthly.rb'
+        }
+        run_analysis(analysis_id, run_options)
 
+        run_options = {
+            analysis_action: "start",
+            without_delay: false, # run in background
+            analysis_type: 'batch_run',
+            allow_multiple_jobs: true,
+            use_server_as_worker: true,
+            simulate_data_point_filename: 'simulate_data_point.rb',
+            run_data_point_filename: 'run_openstudio_workflow_monthly.rb'
+        }
+        run_analysis(analysis_id, run_options)
+
+        analysis_id
+      end
     end
   end
 end
