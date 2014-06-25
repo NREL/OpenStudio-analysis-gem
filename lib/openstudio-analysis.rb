@@ -17,5 +17,6 @@ require 'openstudio/analysis/version'
 # translators
 require 'openstudio/analysis/translator/excel'
 
-# helpers
+# helpers / core_ext
 require 'openstudio/helpers/string'
+require 'openstudio/helpers/hash'

@@ -109,6 +109,57 @@ module OpenStudio
         analysis_ids
       end
 
+      # return the entire analysis JSON
+      def get_analysis(analysis_id)
+        result = nil
+        response = @conn.get "/analyses/#{analysis_id}.json"
+        if response.status == 200
+          result = JSON.parse(response.body, symbolize_names: true, max_nesting: false)[:analysis]
+        end
+
+        result
+      end
+
+      # Check the status of the simulation. Format should be:
+      # {
+      #   analysis: {
+      #     status: "completed",
+      #     analysis_type: "batch_run"
+      #   },
+      #     data_points: [
+      #     {
+      #         _id: "bbd57e90-ce59-0131-35de-080027880ca6",
+      #         status: "completed"
+      #     }
+      #   ]
+      # }
+      def get_analysis_status(analysis_id, analysis_type)
+        status = nil
+
+        unless analysis_id.nil?
+          resp = @conn.get "analyses/#{analysis_id}/status.json"
+          if resp.status == 200
+            j = JSON.parse resp.body, symbolize_names: true
+            if j && j[:analysis] && j[:analysis][:analysis_type] == analysis_type
+              status = j[:analysis][:status]
+            end
+          end
+        end
+
+        status
+      end
+
+      # return the data point results in JSON format
+      def get_analysis_results(analysis_id)
+        analysis = nil
+        response = @conn.get "/analyses/#{analysis_id}/analysis_data.json"
+        if response.status == 200
+          analysis = JSON.parse(response.body, symbolize_names: true, max_nesting: false)
+        end
+
+        analysis
+      end
+
       def download_dataframe(analysis_id, format='rdata', save_directory=".")
         # Set the export = true flag to retrieve all the variables for the export (not just the visualize variables)
         response = @conn.get "/analyses/#{analysis_id}/download_data.#{format}?export=true"
@@ -344,34 +395,9 @@ module OpenStudio
         data_point
       end
 
-      # Check the status of the simulation. Format should be:
-      # {
-      #   analysis: {
-      #     status: "completed",
-      #     analysis_type: "batch_run"
-      #   },
-      #     data_points: [
-      #     {
-      #         _id: "bbd57e90-ce59-0131-35de-080027880ca6",
-      #         status: "completed"
-      #     }
-      #   ]
-      # }
-      def get_analysis_status(analysis_id, analysis_type)
-        status = nil
 
-        unless analysis_id.nil?
-          resp = @conn.get "analyses/#{analysis_id}/status.json"
-          if resp.status == 200
-            j = JSON.parse resp.body, symbolize_names: true
-            if j && j[:analysis] && j[:analysis][:analysis_type] == analysis_type
-              status = j[:analysis][:status]
-            end
-          end
-        end
 
-        status
-      end
+
     end
   end
 end
