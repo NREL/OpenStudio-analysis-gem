@@ -152,6 +152,7 @@ module OpenStudio
       # return the data point results in JSON format
       def get_analysis_results(analysis_id)
         analysis = nil
+
         response = @conn.get "/analyses/#{analysis_id}/analysis_data.json"
         if response.status == 200
           analysis = JSON.parse(response.body, symbolize_names: true, max_nesting: false)
@@ -396,6 +397,8 @@ module OpenStudio
       end
 
       ## here are a bunch of runs that really don't belong here.
+
+      # create a new analysis and run a single model
       def run_single_model(formulation_filename, analysis_zip_filename)
         project_options = {}
         project_id = new_project(project_options)
@@ -422,6 +425,32 @@ module OpenStudio
             analysis_action: "start",
             without_delay: false, # run in background
             analysis_type: 'batch_run',
+            allow_multiple_jobs: true,
+            use_server_as_worker: true,
+            simulate_data_point_filename: 'simulate_data_point.rb',
+            run_data_point_filename: 'run_openstudio_workflow_monthly.rb'
+        }
+        run_analysis(analysis_id, run_options)
+
+        analysis_id
+      end
+
+      # creates a new analysis and runs rgenoud optimization - number of generations isn't used right now
+      def run_rgenoud(formulation_filename, analysis_zip_filename, number_of_generations)
+        project_options = {}
+        project_id = new_project(project_options)
+
+        analysis_options = {
+            formulation_file: formulation_filename,
+            upload_file: analysis_zip_filename,
+            reset_uuids: true
+        }
+        analysis_id = new_analysis(project_id, analysis_options)
+
+        run_options = {
+            analysis_action: "start",
+            without_delay: false,
+            analysis_type: 'rgenoud',
             allow_multiple_jobs: true,
             use_server_as_worker: true,
             simulate_data_point_filename: 'simulate_data_point.rb',
