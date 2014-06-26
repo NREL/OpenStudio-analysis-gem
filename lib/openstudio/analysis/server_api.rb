@@ -493,6 +493,8 @@ module OpenStudio
             run_data_point_filename: 'run_openstudio_workflow_monthly.rb'
         }
         run_analysis(analysis_id, run_options)
+
+        analysis_id
       end
     end
   end
