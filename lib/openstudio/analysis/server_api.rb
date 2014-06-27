@@ -136,6 +136,8 @@ module OpenStudio
       def get_analysis_status(analysis_id, analysis_type)
         status = nil
 
+        #sleep 2  # super cheesy---need to update how this works. Right now there is a good chance to get a
+                 # race condition when the analysis state changes.
         unless analysis_id.nil?
           resp = @conn.get "analyses/#{analysis_id}/status.json"
           if resp.status == 200
@@ -180,6 +182,15 @@ module OpenStudio
         end
       end
 
+      def download_datapoint(datapoint_id, save_directory=".")
+        response = @conn.get "/data_points/#{datapoint_id}/download"
+        if response.status == 200
+          filename = response['content-disposition'].match(/filename=(\"?)(.+)\1/)[2]
+          puts "File #{filename} already exists, overwriting" if File.exist?("#{save_directory}/#{filename}")
+          File.open("#{save_directory}/#{filename}", 'w') { |f| f << response.body }
+        end
+      end
+
       def download_all_data_points(analysis_id, save_directory=".")
         response = @conn.get "/analyses/#{analysis_id}/download_all_data_points"
         if response.status == 200
@@ -194,38 +205,49 @@ module OpenStudio
         options = defaults.merge(options)
 
         fail 'No project id passed' if project_id.nil?
-        fail 'No formulation passed to new_analysis' unless options[:formulation_file]
-        fail "No formulation exists #{options[:formulation_file]}" unless File.exist?(options[:formulation_file])
 
-        formulation_json = JSON.parse(File.read(options[:formulation_file]), symbolize_names: true)
+        formulation_json = nil
+        if options[:formulation_file]
+          fail "No formulation exists #{options[:formulation_file]}" unless File.exist?(options[:formulation_file])
+          formulation_json = JSON.parse(File.read(options[:formulation_file]), symbolize_names: true)
+        end
 
         # read in the analysis id from the analysis.json file
         analysis_id = nil
-        if options[:reset_uuids]
+        if formulation_json
+          if options[:reset_uuids]
+            analysis_id = UUID.new.generate
+            formulation_json[:analysis][:uuid] = analysis_id
+
+            formulation_json[:analysis][:problem][:workflow].each do |wf|
+              wf[:uuid] = UUID.new.generate
+              if wf[:arguments]
+                wf[:arguments].each do |arg|
+                  arg[:uuid] = UUID.new.generate
+                end
+              end
+              if wf[:variables]
+                wf[:variables].each do |var|
+                  var[:uuid] = UUID.new.generate
+                  var[:argument][:uuid] = UUID.new.generate if var[:argument]
+                end
+              end
+            end
+          else
+            analysis_id = formulation_json[:analysis][:uuid]
+          end
+
+          # set the analysis name
+          formulation_json[:analysis][:name] = "#{options[:analysis_name]}" unless options[:analysis_name].nil?
+        else
+          formulation_json = {
+              analysis: options
+          }
+          puts formulation_json
           analysis_id = UUID.new.generate
           formulation_json[:analysis][:uuid] = analysis_id
-
-          formulation_json[:analysis][:problem][:workflow].each do |wf|
-            wf[:uuid] = UUID.new.generate
-            if wf[:arguments]
-              wf[:arguments].each do |arg|
-                arg[:uuid] = UUID.new.generate
-              end
-            end
-            if wf[:variables]
-              wf[:variables].each do |var|
-                var[:uuid] = UUID.new.generate
-                var[:argument][:uuid] = UUID.new.generate if var[:argument]
-              end
-            end
-          end
-        else
-          analysis_id = formulation_json[:analysis][:uuid]
         end
         fail "No analysis id defined in analyis.json #{options[:formulation_file]}" if analysis_id.nil?
-
-        # set the analysis name
-        formulation_json[:analysis][:name] = "#{options[:analysis_name]}" unless options[:analysis_name].nil?
 
         # save out this file to compare
         # File.open('formulation_merge.json', 'w') { |f| f << JSON.pretty_generate(formulation_json) }
@@ -385,6 +407,7 @@ module OpenStudio
         data_points
       end
 
+      # Return the JSON (Full) of the datapoint
       def get_datapoint(data_point_id)
         data_point = nil
 
@@ -410,9 +433,10 @@ module OpenStudio
         }
         analysis_id = new_analysis(project_id, analysis_options)
 
+        # Force this to run in the foreground for now until we can deal with checing the 'analysis state of various anlaysis'
         run_options = {
             analysis_action: "start",
-            without_delay: false, # run in background
+            without_delay: true, # run this in the foreground
             analysis_type: 'single_run',
             allow_multiple_jobs: true,
             use_server_as_worker: true,
