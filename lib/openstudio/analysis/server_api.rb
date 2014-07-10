@@ -187,7 +187,7 @@ module OpenStudio
         if response.status == 200
           filename = response['content-disposition'].match(/filename=(\"?)(.+)\1/)[2]
           puts "File #{filename} already exists, overwriting" if File.exist?("#{save_directory}/#{filename}")
-          File.open("#{save_directory}/#{filename}", 'w') { |f| f << response.body }
+          File.open("#{save_directory}/#{filename}", 'wb') { |f| f << response.body }
         end
       end
 
@@ -196,7 +196,7 @@ module OpenStudio
         if response.status == 200
           filename = response['content-disposition'].match(/filename=(\"?)(.+)\1/)[2]
           puts "File #{filename} already exists, overwriting" if File.exist?("#{save_directory}/#{filename}")
-          File.open("#{save_directory}/#{filename}", 'w') { |f| f << response.body }
+          File.open("#{save_directory}/#{filename}", 'wb') { |f| f << response.body }
         end
       end
 
