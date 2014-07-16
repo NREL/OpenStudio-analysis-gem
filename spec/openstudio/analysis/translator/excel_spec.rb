@@ -1,8 +1,16 @@
 require 'spec_helper'
 
 describe OpenStudio::Analysis::Translator::Excel do
+  before :all do
+    clean_dir = File.expand_path 'spec/files/export/analysis'
+
+    if Dir.exist? clean_dir
+      FileUtils.rm_rf clean_dir
+    end
+  end
+
   context 'no variables defined' do
-    let(:path) { 'spec/files/no_variables.xlsx' }
+    let(:path) { 'spec/files/0_1_09_no_variables.xlsx' }
 
     before(:each) do
       @excel = OpenStudio::Analysis::Translator::Excel.new(path)
@@ -38,7 +46,7 @@ describe OpenStudio::Analysis::Translator::Excel do
 
   context 'small list of incomplete variables' do
     before(:all) do
-      @excel = OpenStudio::Analysis::Translator::Excel.new('spec/files/small_list_incomplete.xlsx')
+      @excel = OpenStudio::Analysis::Translator::Excel.new('spec/files/0_1_09_small_list_incomplete.xlsx')
     end
 
     it 'should fail to process' do
@@ -48,7 +56,7 @@ describe OpenStudio::Analysis::Translator::Excel do
 
   context 'small list with with repeated variable names' do
     before(:all) do
-      @excel = OpenStudio::Analysis::Translator::Excel.new('spec/files/small_list_repeat_vars.xlsx')
+      @excel = OpenStudio::Analysis::Translator::Excel.new('spec/files/0_1_09_small_list_repeat_vars.xlsx')
     end
 
     it 'should fail to process' do
@@ -58,7 +66,7 @@ describe OpenStudio::Analysis::Translator::Excel do
 
   context 'small list of variables should not validate' do
     before(:all) do
-      @excel = OpenStudio::Analysis::Translator::Excel.new('spec/files/small_list_validation_errors.xlsx')
+      @excel = OpenStudio::Analysis::Translator::Excel.new('spec/files/0_1_09_small_list_validation_errors.xlsx')
     end
 
     it 'should fail to process' do
@@ -69,7 +77,7 @@ describe OpenStudio::Analysis::Translator::Excel do
 
   context 'small list of variables' do
     before(:all) do
-      @excel = OpenStudio::Analysis::Translator::Excel.new('spec/files/small_list.xlsx')
+      @excel = OpenStudio::Analysis::Translator::Excel.new('spec/files/0_1_09_small_list.xlsx')
       @excel.process
     end
     it 'should have a model' do
@@ -107,7 +115,7 @@ describe OpenStudio::Analysis::Translator::Excel do
 
   context 'setup version 0.1.9' do
     before(:all) do
-      @excel = OpenStudio::Analysis::Translator::Excel.new('spec/files/setup_version_2.xlsx')
+      @excel = OpenStudio::Analysis::Translator::Excel.new('spec/files/0_1_09_setup_version_2.xlsx')
       @excel.process
     end
 
@@ -141,7 +149,7 @@ describe OpenStudio::Analysis::Translator::Excel do
 
   context 'proxy setup' do
     before(:all) do
-      @excel = OpenStudio::Analysis::Translator::Excel.new('spec/files/proxy.xlsx')
+      @excel = OpenStudio::Analysis::Translator::Excel.new('spec/files/0_1_10_proxy.xlsx')
       @excel.process
     end
 
@@ -149,13 +157,12 @@ describe OpenStudio::Analysis::Translator::Excel do
       expect(@excel.settings['proxy_host']).to eq('192.168.0.1')
       expect(@excel.settings['proxy_port']).to eq(8080)
       expect(@excel.settings['proxy_username']).to be_nil
-
     end
   end
 
   context 'proxy setup with user' do
     before(:all) do
-      @excel = OpenStudio::Analysis::Translator::Excel.new('spec/files/proxy_user.xlsx')
+      @excel = OpenStudio::Analysis::Translator::Excel.new('spec/files/0_1_10_proxy_user.xlsx')
       @excel.process
     end
 
@@ -168,51 +175,61 @@ describe OpenStudio::Analysis::Translator::Excel do
 
   context 'discrete variables' do
     before(:all) do
-      @excel = OpenStudio::Analysis::Translator::Excel.new('spec/files/discrete_variables.xlsx')
+      @excel = OpenStudio::Analysis::Translator::Excel.new('spec/files/0_1_11_discrete_variables.xlsx')
       @excel.process
     end
 
     it 'should have parsed the spreadsheet' do
       @excel.variables['data'].each do |measure|
         measure['variables'].each do |var|
-
+          # TODO: Add some tests!
+          if var['name'] == 'alter_design_days'
+            puts var.inspect
+            expect(var['type']).to eq 'bool'
+            expect(eval(var['distribution']['discrete_values'])).to match_array ["true", "false"]
+            expect(eval(var['distribution']['discrete_weights'])).to match_array [0.8,0.2]
+          end
         end
       end
     end
 
     it 'should save the file' do
       @excel.save_analysis
+      expect(File.exist?('spec/files/export/analysis/0_1_11_discrete_variables.json')).to eq true
+      expect(File.exist?('spec/files/export/analysis/0_1_11_discrete_variables.zip')).to eq true
     end
   end
 
   context 'discrete with dynamic columns' do
     before(:all) do
-      @excel = OpenStudio::Analysis::Translator::Excel.new('spec/files/discrete_dynamic_columns.xlsx')
+      @excel = OpenStudio::Analysis::Translator::Excel.new('spec/files/0_1_12_discrete_dynamic_columns.xlsx')
       @excel.process
     end
 
     it 'should have parsed the spreadsheet' do
       @excel.variables['data'].each do |measure|
         measure['variables'].each do |var|
-          puts var.inspect
+          # TODO: test something?
         end
       end
     end
 
     it 'should save the file' do
       @excel.save_analysis
+      expect(File.exist?('spec/files/export/analysis/0_1_12_discrete_dynamic_columns.json')).to eq true
+      expect(File.exist?('spec/files/export/analysis/0_1_12_discrete_dynamic_columns.zip')).to eq true
     end
   end
 
   context 'setup output variables' do
     before(:all) do
-      @excel = OpenStudio::Analysis::Translator::Excel.new('spec/files/outputvars.xlsx')
+      @excel = OpenStudio::Analysis::Translator::Excel.new('spec/files/0_1_09_outputvars.xlsx')
       @excel.process
     end
 
     it 'should have a model' do
       expect(@excel.models.first).not_to be_nil
-      expect(@excel.models.first[:name]).to eq('output_vars')
+      expect(@excel.models.first[:name]).to eq('0_1_09_outputvars')
     end
 
     it 'should have a weather file' do
@@ -259,17 +276,15 @@ describe OpenStudio::Analysis::Translator::Excel do
 
     it 'should write a json' do
       @excel.save_analysis
-      expect(File).to exist('spec/files/export/analysis/output_vars.json')
-      expect(File).to exist('spec/files/export/analysis/output_vars.zip')
-
-      expect(JSON.parse(File.read('spec/files/export/analysis/output_vars.json'))).not_to be_nil
-
+      expect(File).to exist('spec/files/export/analysis/0_1_09_outputvars.json')
+      expect(File).to exist('spec/files/export/analysis/0_1_09_outputvars.zip')
+      expect(JSON.parse(File.read('spec/files/export/analysis/0_1_09_outputvars.json'))).not_to be_nil
     end
   end
 
   context 'version 0.1.10' do
     before(:all) do
-      @excel = OpenStudio::Analysis::Translator::Excel.new('spec/files/template_input_0.1.10.xlsx')
+      @excel = OpenStudio::Analysis::Translator::Excel.new('spec/files/0_1_10_template_input.xlsx')
     end
 
     it 'should process' do
@@ -288,7 +303,7 @@ describe OpenStudio::Analysis::Translator::Excel do
 
   context 'version 0.2.0' do
     before(:all) do
-      @excel = OpenStudio::Analysis::Translator::Excel.new('spec/files/template_0_2_0.xlsx')
+      @excel = OpenStudio::Analysis::Translator::Excel.new('spec/files/0_2_0_template.xlsx')
     end
 
     it 'should process' do
@@ -315,7 +330,7 @@ describe OpenStudio::Analysis::Translator::Excel do
 
   context 'version 0.2.0 simple' do
     before(:all) do
-      @excel = OpenStudio::Analysis::Translator::Excel.new('spec/files/template_0_2_0_simpletest.xlsx')
+      @excel = OpenStudio::Analysis::Translator::Excel.new('spec/files/0_2_0_template_simpletest.xlsx')
     end
 
     it 'should process' do
@@ -330,13 +345,14 @@ describe OpenStudio::Analysis::Translator::Excel do
     end
 
     it 'should have the new measure directory column' do
-      expect(@excel.variables['data'][1]['measure_file_name_directory']).to eq('AdjustThermostatSetpointsByDegrees')
-      expect(@excel.variables['data'][0]['measure_file_name_directory']).to eq('baseline')
+      expect(@excel.variables['data'][0]['measure_file_name_directory']).to eq('ExampleMeasure')
+      expect(@excel.variables['data'][0]['display_name']).to eq('Baseline')
     end
 
     it 'should write a json' do
       @excel.save_analysis
-
+      expect(File.exist?('spec/files/export/analysis/0_2_0_template_simpletest.json')).to eq true
+      expect(File.exist?('spec/files/export/analysis/0_2_0_template_simpletest.zip')).to eq true
     end
   end
 
@@ -389,7 +405,20 @@ describe OpenStudio::Analysis::Translator::Excel do
       expect(h['analysis']['weather_file']).to be_a Hash
       expect(h['analysis']['weather_file']['path']).to eq './weather/partial_weather.epw'
     end
+  end
 
+  context 'version 0.3.0 measure existence checks' do
+    before(:all) do
+      @excel = OpenStudio::Analysis::Translator::Excel.new('spec/files/0_3_0_measure_existence.xlsx')
+    end
+
+    it 'should process' do
+      expect(@excel.process).to eq(true)
+    end
+
+    it 'should error out with missing measure information' do
+      expect{@excel.save_analysis}.to raise_error /Measure in directory.*not contain a measure.rb.*$/
+    end
   end
 
 end

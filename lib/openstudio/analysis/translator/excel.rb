@@ -347,41 +347,36 @@ module OpenStudio
             end
 
             # Add only the measures that are defined in the spreadsheet
-            added_measures = []
-            measure_files = Dir.glob("#{@measure_path}/**/measure.rb")
+            required_measures = @variables['data'].map { |v| v['measure_file_name_directory'] if v['enabled'] }.compact.uniq
 
-            # go through each of the Variables
-            @variables['data'].each do |v|
-              measure_to_save = nil
-              measure_files.each do |measure|
-                # pp v['measure_file_name_directory']
-                if measure.include? "/#{v['measure_file_name_directory']}/"
-                  measure_to_save = File.dirname(measure)
-                  # pp "Measure to save is #{measure}"
-                  break
+            # first validate that all the measures exist
+            errors = []
+            required_measures.each do |measure|
+              measure_dir_to_add = "#{@measure_path}/#{measure}"
+
+              if Dir.exist? measure_dir_to_add
+                unless File.exist? "#{measure_dir_to_add}/measure.rb"
+                  errors << "Measure in directory '#{@measure_path}/#{measure}' did not contain a measure.rb file"
                 end
+              else
+                errors << "Could not find measure '#{measure}' in directory '#{@measure_path}'"
               end
+            end
+            fail errors.join("\n") unless errors.empty?
 
-              if measure_to_save && !added_measures.include?(measure_to_save)
-                # pp "Attempting to add measure #{measure_to_save}"
-                if File.exist?(measure_to_save)
-                  # pp "Adding measure directory to zip #{measure_to_save}"
-                  Dir[File.join(measure_to_save, '**')].each do |file|
-                    if File.directory?(file)
-                      if File.basename(file) == 'resources' || File.basename(file) == 'lib'
-                        add_directory_to_zip(zipfile, file, "./measures/#{v['measure_file_name_directory']}/#{File.basename(file)}")
-                      else
-                        # pp "Skipping Directory #{File.basename(file)}"
-                      end
-                    else
-                      # pp "Adding File #{file}"
-                      # added_measures << measure_dir unless added_measures.include? measure_dir
-                      zipfile.add(file.sub(measure_to_save, "./measures/#{v['measure_file_name_directory']}/"), file)
-                    end
+            required_measures.each do |measure|
+              # pp "Adding measure directory to zip #{measure_to_save}"
+              Dir[File.join(measure, '**')].each do |file|
+                if File.directory?(file)
+                  if File.basename(file) == 'resources' || File.basename(file) == 'lib'
+                    add_directory_to_zip(zipfile, file, "./measures/#{v['measure_file_name_directory']}/#{File.basename(file)}")
+                  else
+                    # pp "Skipping Directory #{File.basename(file)}"
                   end
-                  added_measures << measure_to_save unless added_measures.include? measure_to_save
                 else
-                  fail "Could not find measure to add to zip for #{@measure_path}/#{v['measure_file_name_directory']}"
+                  # pp "Adding File #{file}"
+                  # added_measures << measure_dir unless added_measures.include? measure_dir
+                  zipfile.add(file.sub(measure, "./measures/#{v['measure_file_name_directory']}/"), file)
                 end
               end
             end

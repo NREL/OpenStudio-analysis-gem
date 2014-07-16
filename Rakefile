@@ -29,7 +29,7 @@ end
 
 RSpec::Core::RakeTask.new("spec") do |spec|
   spec.rspec_opts = %w(--format progress --format CI::Reporter::RSpec)
-  spec.pattern = "spec/**/*_spec.rb"
+  spec.pattern = FileList['spec/**/*_spec.rb']
 end
 
 task :default => :spec
