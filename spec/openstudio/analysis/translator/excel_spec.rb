@@ -414,10 +414,33 @@ describe OpenStudio::Analysis::Translator::Excel do
 
     it 'should process' do
       expect(@excel.process).to eq(true)
+
+      model_name = @excel.models.first[:name]
+      expect(model_name).to eq '0_3_0_outputs'
     end
 
     it 'should error out with missing measure information' do
       expect{@excel.save_analysis}.to raise_error /Measure in directory.*not contain a measure.rb.*$/
+    end
+  end
+
+  context 'version 0.3.0 dynamic uuid assignments' do
+    before(:all) do
+      @excel = OpenStudio::Analysis::Translator::Excel.new('spec/files/0_3_0_dynamic_uuids.xlsx')
+    end
+
+    it 'should process' do
+      expect(@excel.process).to eq(true)
+
+      model_uuid = @excel.models.first[:name]
+      expect(model_uuid).to match /[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/
+    end
+
+    it 'should error out with missing measure information' do
+      @excel.save_analysis
+      model_uuid = @excel.models.first[:name]
+      expect(File.exist?("spec/files/export/analysis/#{model_uuid}.json")).to eq true
+      expect(File.exist?("spec/files/export/analysis/#{model_uuid}.zip")).to eq true
     end
   end
 
