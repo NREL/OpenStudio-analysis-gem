@@ -209,7 +209,7 @@ module OpenStudio
             if measure['enabled']
               @measure_index += 1
 
-              puts "  Adding measure item '#{measure['name']}'"
+              puts "  Adding measure item '#{measure['name']}' to analysis.json"
               @measure = measure
               @measure['measure_file_name_dir'] = @measure['measure_file_name'].underscore
 
@@ -367,18 +367,19 @@ module OpenStudio
             fail errors.join("\n") unless errors.empty?
 
             required_measures.each do |measure|
-              # pp "Adding measure directory to zip #{measure_to_save}"
-              Dir[File.join(measure, '**')].each do |file|
+              measure_dir_to_add = "#{@measure_path}/#{measure}"
+              puts "  Adding measure #{measure_dir_to_add} to zip file"
+              Dir[File.join(measure_dir_to_add, '**')].each do |file|
                 if File.directory?(file)
                   if File.basename(file) == 'resources' || File.basename(file) == 'lib'
-                    add_directory_to_zip(zipfile, file, "./measures/#{v['measure_file_name_directory']}/#{File.basename(file)}")
+                    add_directory_to_zip(zipfile, file, "./measures/#{measure}/#{File.basename(file)}")
                   else
                     # pp "Skipping Directory #{File.basename(file)}"
                   end
                 else
                   # pp "Adding File #{file}"
                   # added_measures << measure_dir unless added_measures.include? measure_dir
-                  zipfile.add(file.sub(measure, "./measures/#{v['measure_file_name_directory']}/"), file)
+                  zipfile.add(file.sub(measure_dir_to_add, "./measures/#{measure}/"), file)
                 end
               end
             end
@@ -545,7 +546,6 @@ module OpenStudio
               # type cast
               @run_setup['allow_multiple_jobs'] = @run_setup['allow_multiple_jobs'].to_s.to_bool if @run_setup['allow_multiple_jobs']
               @run_setup['use_server_as_worker'] = @run_setup['use_server_as_worker'].to_s.to_bool if @run_setup['use_server_as_worker']
-
             elsif b_problem_setup
               if row[0]
                 v = row[1]
