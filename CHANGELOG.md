@@ -3,6 +3,8 @@ OpenStudio Analysis Gem Change Log
 
 Unreleased
 --------------
+* Add delete_project method
+* Integration testing
 
 Version 0.3.4
 -------------
