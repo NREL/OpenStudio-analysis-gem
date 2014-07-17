@@ -4,6 +4,12 @@ OpenStudio Analysis Gem Change Log
 Unreleased
 --------------
 
+Version 0.3.3
+-------------
+* More unit tests
+* Allow a UUID model name to be automatically generated if the model name is not specified
+* Short name added to the variables input and output section of the spreadsheet. This required adding a new column and is not backwards compatible
+
 Version 0.3.2
 --------------
 * Support both relative and absolute paths in the spreadsheet

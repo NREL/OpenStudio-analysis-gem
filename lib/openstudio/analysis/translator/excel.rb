@@ -105,11 +105,13 @@ module OpenStudio
           @variables['data'].each do |measure|
             if measure['enabled']
               measure['variables'].each do |variable|
+
+
                 # Determine if row is suppose to be an argument or a variable to be perturbed.
                 if variable['variable_type'] == 'variable'
                   variable_names << variable['display_name']
 
-                  # make sure that the variable has a static value
+                  # make sure that variables have static values
                   if variable['distribution']['static_value'].nil? || variable['distribution']['static_value'] == ''
                     fail "Variable #{measure['name']}:#{variable['name']} needs a static value"
                   end
@@ -191,7 +193,7 @@ module OpenStudio
           uncertain_variable_template = ERB.new(File.open("#{template_root}/uncertain_variable.json.erb", 'r').read)
           discrete_uncertain_variable_template = ERB.new(File.open("#{template_root}/discrete_uncertain_variable.json.erb", 'r').read)
           pivot_variable_template = ERB.new(File.open("#{template_root}/pivot_variable.json.erb", 'r').read)
-          argument_template = ERB.new(File.open("#{template_root}/argument.json.erb", 'r').read)
+          argument_template = ERB.new(File.read("#{template_root}/argument.json.erb"))
 
           # Templated analysis json file (this is what is returned)
           puts "Analysis name is #{@name}"
@@ -602,7 +604,31 @@ module OpenStudio
           # puts rows.inspect
           rows = nil
           begin
-            if @version >= '0.3.0'.to_version
+            if @version >= '0.3.3'.to_version
+              rows = @xls.sheet('Variables').parse(enabled: '# variable',
+                                                   measure_name_or_var_type: 'type',
+                                                   measure_file_name_or_var_display_name: 'parameter display name.*',
+                                                   measure_file_name_directory: 'measure directory',
+                                                   measure_type_or_parameter_name_in_measure: 'parameter name in measure',
+                                                   display_name_short: 'parameter short display name',
+                                                   #sampling_method: 'sampling method',
+                                                   variable_type: 'Variable Type',
+                                                   units: 'units',
+                                                   default_value: 'static.default value',
+                                                   enums: 'enumerations',
+                                                   min: 'min',
+                                                   max: 'max',
+                                                   mode: 'mean|mode',
+                                                   stddev: 'std dev',
+                                                   delta_x: 'delta.x',
+                                                   discrete_values: 'discrete values',
+                                                   discrete_weights: 'discrete weights',
+                                                   distribution: 'distribution',
+                                                   source: 'data source',
+                                                   notes: 'notes',
+                                                   relation_to_eui: 'typical var to eui relationship',
+                                                   clean: true)
+            elsif @version >= '0.3.0'.to_version
               rows = @xls.sheet('Variables').parse(enabled: '# variable',
                                                    measure_name_or_var_type: 'type',
                                                    measure_file_name_or_var_display_name: 'parameter display name.*',
@@ -740,6 +766,9 @@ module OpenStudio
                 var = {}
                 var['variable_type'] = row[:measure_name_or_var_type]
                 var['display_name'] = row[:measure_file_name_or_var_display_name]
+                var['display_name_short'] = row[:display_name_short] ? row[:display_name_short] : var['display_name']
+
+                # TODO: convert this to measure class and parameter name
                 var['machine_name'] = row[:measure_file_name_or_var_display_name].downcase.strip.gsub('-', '_').gsub(' ', '_').strip
                 var['name'] = row[:measure_type_or_parameter_name_in_measure]
                 var['index'] = variable_index # order of the variable (not sure of its need)
