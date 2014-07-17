@@ -5,6 +5,7 @@ Unreleased
 --------------
 * Add delete_project method
 * Integration testing
+* Return status and filename of downlaoded files
 
 Version 0.3.4
 -------------

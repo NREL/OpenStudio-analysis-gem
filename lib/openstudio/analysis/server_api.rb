@@ -177,48 +177,71 @@ module OpenStudio
       end
 
       def download_dataframe(analysis_id, format='rdata', save_directory=".")
-        # Set the export = true flag to retrieve all the variables for the export (not just the visualize variables)
+        downloaded = false
+        file_path_and_name = nil
+
         response = @conn.get "/analyses/#{analysis_id}/download_data.#{format}?export=true"
         if response.status == 200
           filename = response['content-disposition'].match(/filename=(\"?)(.+)\1/)[2]
-          puts "File #{filename} already exists, overwriting" if File.exist?("#{save_directory}/#{filename}")
+          downloaded = true
+          file_path_and_name = "#{save_directory}/#{filename}"
+          puts "File #{filename} already exists, overwriting" if File.exist?(file_path_and_name)
           if format == 'rdata'
-            File.open("#{save_directory}/#{filename}", 'wb') { |f| f << response.body }
+            File.open(file_path_and_name, 'wb') { |f| f << response.body }
           else
-            File.open("#{save_directory}/#{filename}", 'w') { |f| f << response.body }
+            File.open(file_path_and_name, 'w') { |f| f << response.body }
           end
         end
+
+        [downloaded, file_path_and_name]
       end
 
       def download_variables(analysis_id, format='rdata', save_directory=".")
+        downloaded = false
+        file_path_and_name = nil
+
         response = @conn.get "/analyses/#{analysis_id}/variables/download_variables.#{format}"
         if response.status == 200
           filename = response['content-disposition'].match(/filename=(\"?)(.+)\1/)[2]
-          puts "File #{filename} already exists, overwriting" if File.exist?("#{save_directory}/#{filename}")
+          downloaded = true
+          file_path_and_name = "#{save_directory}/#{filename}"
+          puts "File #{filename} already exists, overwriting" if File.exist?(file_path_and_name)
           if format == 'rdata'
-            File.open("#{save_directory}/#{filename}", 'wb') { |f| f << response.body }
+            File.open(file_path_and_name, 'wb') { |f| f << response.body }
           else
-            File.open("#{save_directory}/#{filename}", 'w') { |f| f << response.body }
+            File.open(file_path_and_name, 'w') { |f| f << response.body }
           end
         end
+
+        [downloaded, file_path_and_name]
       end
 
       def download_datapoint(datapoint_id, save_directory=".")
+        downloaded = false
+        file_path_and_name = nil
+
         response = @conn.get "/data_points/#{datapoint_id}/download"
         if response.status == 200
           filename = response['content-disposition'].match(/filename=(\"?)(.+)\1/)[2]
-          puts "File #{filename} already exists, overwriting" if File.exist?("#{save_directory}/#{filename}")
-          File.open("#{save_directory}/#{filename}", 'wb') { |f| f << response.body }
+          downloaded = true
+          file_path_and_name = "#{save_directory}/#{filename}"
+          puts "File #{filename} already exists, overwriting" if File.exist?(file_path_and_name)
+          File.open(file_path_and_name, 'wb') { |f| f << response.body }
         end
+
+        [downloaded, file_path_and_name]
       end
 
       def download_all_data_points(analysis_id, save_directory=".")
         response = @conn.get "/analyses/#{analysis_id}/download_all_data_points"
         if response.status == 200
           filename = response['content-disposition'].match(/filename=(\"?)(.+)\1/)[2]
-          puts "File #{filename} already exists, overwriting" if File.exist?("#{save_directory}/#{filename}")
-          File.open("#{save_directory}/#{filename}", 'wb') { |f| f << response.body }
+          file_path_and_name = "#{save_directory}/#{filename}"
+          puts "File #{filename} already exists, overwriting" if File.exist?(file_path_and_name)
+          File.open(file_path_and_name, 'wb') { |f| f << response.body }
         end
+
+        [response, file_path_and_name]
       end
 
       def new_analysis(project_id, options)
