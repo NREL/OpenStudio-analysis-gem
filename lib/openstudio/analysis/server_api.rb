@@ -52,17 +52,30 @@ module OpenStudio
         ids.map { |project| project[:uuid] }
       end
 
+      def delete_project(id)
+        deleted = false
+        response = @conn.delete "/projects/#{id}.json"
+        if response.status == 204
+          puts "Successfully deleted project #{id}"
+          deleted = true
+        else
+          puts "ERROR deleting project #{id}"
+          deleted =false
+        end
+
+        deleted
+      end
+
       def delete_all
         ids = get_project_ids
-        puts "Deleting Projects #{ids}"
+        puts "deleting projects with IDs: #{ids}"
+        success = true
         ids.each do |id|
-          response = @conn.delete "/projects/#{id}.json"
-          if response.status == 204
-            puts "Successfully deleted project #{id}"
-          else
-            puts "ERROR deleting project #{id}"
-          end
+          r = delete_project id
+          success = false if r == false
         end
+
+        success
       end
 
       def new_project(options = {})

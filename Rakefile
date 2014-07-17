@@ -27,12 +27,17 @@ task :release => :build do
   system "rm openstudio-analysis-#{OpenStudio::Analysis::VERSION}.gem"
 end
 
-RSpec::Core::RakeTask.new("spec") do |spec|
+RSpec::Core::RakeTask.new("spec:unit") do |spec|
   spec.rspec_opts = %w(--format progress --format CI::Reporter::RSpec)
-  spec.pattern = FileList['spec/**/*_spec.rb']
+  spec.pattern = FileList['spec/openstudio/**/*_spec.rb']
 end
 
-task :default => :spec
+RSpec::Core::RakeTask.new("spec:integration") do |spec|
+  spec.rspec_opts = %w(--format progress --format CI::Reporter::RSpec)
+  spec.pattern = FileList['spec/integration/**/*_spec.rb']
+end
+
+task default: 'spec:unit'
 
 desc "import files from other repos"
 task :import_files do
