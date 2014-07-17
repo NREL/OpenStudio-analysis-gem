@@ -4,6 +4,10 @@ OpenStudio Analysis Gem Change Log
 Unreleased
 --------------
 
+Version 0.3.4
+-------------
+* BUG FIX: Measures were not being added to zip file
+
 Version 0.3.3
 -------------
 * More unit tests
