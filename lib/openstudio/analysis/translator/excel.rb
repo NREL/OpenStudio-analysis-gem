@@ -804,7 +804,20 @@ module OpenStudio
 
         def parse_outputs
           rows = nil
-          if @version >= '0.3.0'.to_version
+          if @version >= '0.3.3'.to_version
+            rows = @xls.sheet('Outputs').parse(display_name: 'Variable Display Name',
+                                               display_name_short: 'Short Display Name',
+                                               metadata_id: 'Taxonomy Identifier',
+                                               name: '^Name$',
+                                               units: 'Units',
+                                               visualize: 'Visualize',
+                                               export: 'Export',
+                                               variable_type: 'Variable Type',
+                                               objective_function: 'Objective Function',
+                                               objective_function_target: 'Objective Function Target',
+                                               scaling_factor: 'Scale',
+                                               objective_function_group: 'Objective Function Group')
+          elsif @version >= '0.3.0'.to_version
             rows = @xls.sheet('Outputs').parse(display_name: 'Variable Display Name',
                                                metadata_id: 'Taxonomy Identifier',
                                                name: '^Name$',
@@ -842,6 +855,7 @@ module OpenStudio
 
             var = {}
             var['display_name'] = row[:display_name]
+            var['display_name_short'] = row[:display_name_short] ? row[:display_name_short] : row[:display_name]
             var['metadata_id'] = row[:metadata_id]
             var['name'] = row[:name]
             var['units'] = row[:units]

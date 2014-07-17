@@ -444,4 +444,34 @@ describe OpenStudio::Analysis::Translator::Excel do
     end
   end
 
+  context 'version 0.3.3 and short display names' do
+    before :all do
+      @excel = OpenStudio::Analysis::Translator::Excel.new('spec/files/0_3_3_short_names.xlsx')
+    end
+
+    it 'should process' do
+      expect(@excel.process).to eq(true)
+
+      model_uuid = @excel.models.first[:name]
+      expect(model_uuid).to match /[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/
+    end
+
+    it 'should error out with missing measure information' do
+      @excel.save_analysis
+      model_uuid = @excel.models.first[:name]
+      expect(File.exist?("spec/files/export/analysis/#{model_uuid}.json")).to eq true
+      expect(File.exist?("spec/files/export/analysis/#{model_uuid}.zip")).to eq true
+
+      @excel.outputs['output_variables'].each do |o|
+        expect(o['display_name_short']).to eq "Site EUI" if o['name'] == 'standard_report_legacy.total_energy'
+        expect(o['display_name_short']).to eq "Natural Gas Heating Intensity" if o['name'] == 'standard_report_legacy.heating_natural_gas'
+      end
+
+      # Check the JSON
+      j = JSON.parse(File.read("spec/files/export/analysis/#{model_uuid}.json"))
+      expect(j['analysis']['output_variables'].first['display_name']).to eq "Total Site Energy Intensity"
+      expect(j['analysis']['output_variables'].first['display_name_short']).to eq "Site EUI"
+    end
+  end
+
 end
