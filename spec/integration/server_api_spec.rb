@@ -35,7 +35,7 @@ describe OpenStudio::Analysis::ServerApi, type: :integration do
         expect(project_id).to match /[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/
       end
 
-      r = api.delete_all
+      r = @api.delete_all
       expect(r).to eq true
     end
 
