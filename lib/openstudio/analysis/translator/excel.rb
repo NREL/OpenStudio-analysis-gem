@@ -554,7 +554,7 @@ module OpenStudio
               end
 
             elsif b_algorithm_setup
-              if row[0]
+              if row[0] && !row[0].empty?
                 v = row[1]
                 v = v.to_i if v % 1 == 0
                 @algorithm["#{row[0].snake_case}"] = v
