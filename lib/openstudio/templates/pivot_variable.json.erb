@@ -11,9 +11,12 @@
     "display_name": "<%= @variable['display_name'] %>",
     "display_name_short": "<%= @variable['display_name_short'] %>",
     "machine_name": "<%= @variable['machine_name'] %>",
+    "maximum": <%= @variable['distribution']['max'] ?  @variable['distribution']['max'].inspect : 'null' %>,
+    "minimum": <%= @variable['distribution']['min'] ?  @variable['distribution']['min'].inspect : 'null' %>,
     "name": "<%= @variable['machine_name'] %>",
-    "pivot": true,
     "relation_to_output": "<%= @variable['relation_to_eui'] %>",
+    "static_value": <%= @variable['distribution']['static_value'].inspect %>,
+    "pivot": true,
     "uncertainty_description": {
         "attributes": [
             {
