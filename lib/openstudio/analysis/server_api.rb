@@ -32,6 +32,7 @@ module OpenStudio
           # faraday.response :logger # log requests to STDOUT
           faraday.adapter Faraday.default_adapter # make requests with Net::HTTP
         end
+
       end
 
       def get_projects
@@ -109,8 +110,6 @@ module OpenStudio
         analysis_ids = []
         response = @conn.get "/projects/#{project_id}.json"
         if response.status == 200
-          puts 'received the list of analyses for the project'
-
           analyses = JSON.parse(response.body, symbolize_names: true, max_nesting: false)
           if analyses[:analyses]
             analyses[:analyses].each do |analysis|
@@ -120,6 +119,16 @@ module OpenStudio
         end
 
         analysis_ids
+      end
+
+      def get_analyses_detailed(project_id)
+        analyses = nil
+        response = @conn.get "/projects/#{project_id}.json"
+        if response.status == 200
+          analyses = JSON.parse(response.body, symbolize_names: true, max_nesting: false)[:analyses]
+        end
+
+        analyses
       end
 
       # return the entire analysis JSON
@@ -150,7 +159,7 @@ module OpenStudio
         status = nil
 
         #sleep 2  # super cheesy---need to update how this works. Right now there is a good chance to get a
-                 # race condition when the analysis state changes.
+        # race condition when the analysis state changes.
         unless analysis_id.nil?
           resp = @conn.get "analyses/#{analysis_id}/status.json"
           if resp.status == 200
@@ -162,6 +171,25 @@ module OpenStudio
         end
 
         status
+      end
+
+      def get_analysis_status_and_json(analysis_id, analysis_type)
+        status = nil
+        j = nil
+
+        #sleep 2  # super cheesy---need to update how this works. Right now there is a good chance to get a
+        # race condition when the analysis state changes.
+        unless analysis_id.nil?
+          resp = @conn.get "analyses/#{analysis_id}/status.json"
+          if resp.status == 200
+            j = JSON.parse resp.body, symbolize_names: true
+            if j && j[:analysis] && j[:analysis][:analysis_type] == analysis_type
+              status = j[:analysis][:status]
+            end
+          end
+        end
+
+        [status, j]
       end
 
       # return the data point results in JSON format
@@ -466,7 +494,7 @@ module OpenStudio
       ## here are a bunch of runs that really don't belong here.
 
       # create a new analysis and run a single model
-      def run_single_model(formulation_filename, analysis_zip_filename)
+      def run_single_model(formulation_filename, analysis_zip_filename, run_data_point_filename='run_openstudio_workflow_monthly.rb')
         project_options = {}
         project_id = new_project(project_options)
 
@@ -485,7 +513,7 @@ module OpenStudio
             allow_multiple_jobs: true,
             use_server_as_worker: true,
             simulate_data_point_filename: 'simulate_data_point.rb',
-            run_data_point_filename: 'run_openstudio_workflow_monthly.rb'
+            run_data_point_filename: run_data_point_filename
         }
         run_analysis(analysis_id, run_options)
 
@@ -496,7 +524,7 @@ module OpenStudio
             allow_multiple_jobs: true,
             use_server_as_worker: true,
             simulate_data_point_filename: 'simulate_data_point.rb',
-            run_data_point_filename: 'run_openstudio_workflow_monthly.rb'
+            run_data_point_filename: run_data_point_filename
         }
         run_analysis(analysis_id, run_options)
 
@@ -561,6 +589,48 @@ module OpenStudio
             run_data_point_filename: 'run_openstudio_workflow_monthly.rb'
         }
         run_analysis(analysis_id, run_options)
+
+        analysis_id
+      end
+
+      def run_analysis_detailed(formulation_filename, analysis_zip_filename,
+                                analysis_type, allow_multiple_jobs, server_as_worker, run_data_point_filename)
+        project_options = {}
+        project_id = new_project(project_options)
+
+        analysis_options = {
+            formulation_file: formulation_filename,
+            upload_file: analysis_zip_filename,
+            reset_uuids: true
+        }
+        analysis_id = new_analysis(project_id, analysis_options)
+
+        server_as_worker = true if analysis_type == 'optim' || analysis_type == 'rgenoud'
+        run_options = {
+            analysis_action: "start",
+            without_delay: false,
+            analysis_type: analysis_type,
+            allow_multiple_jobs: allow_multiple_jobs,
+            use_server_as_worker: server_as_worker,
+            simulate_data_point_filename: 'simulate_data_point.rb',
+            run_data_point_filename: run_data_point_filename
+        }
+        run_analysis(analysis_id, run_options)
+
+        # If the analysis is LHS, then go ahead and run batch run because there is
+        # no explicit way to tell the system to do it
+        if analysis_type == 'lhs' || analysis_type == 'preflight' || analysis_type == 'single_run'
+          run_options = {
+              analysis_action: "start",
+              without_delay: false,
+              analysis_type: 'batch_run',
+              allow_multiple_jobs: allow_multiple_jobs,
+              use_server_as_worker: server_as_worker,
+              simulate_data_point_filename: 'simulate_data_point.rb',
+              run_data_point_filename: run_data_point_filename
+          }
+          run_analysis(analysis_id, run_options)
+        end
 
         analysis_id
       end

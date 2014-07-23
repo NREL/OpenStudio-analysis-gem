@@ -6,6 +6,8 @@ Unreleased
 * Add delete_project method
 * Integration testing
 * Return status and filename of downlaoded files
+* Methods for removing models from the Excel translator
+* Return detailed analyses on a project
 
 Version 0.3.4
 -------------

@@ -69,6 +69,21 @@ module OpenStudio
           validate_analysis
         end
 
+        # Helper methods to remove models and add new ones programatically. Note that these should
+        # be moved into a general analysis class
+        def delete_models
+          @models = []
+        end
+
+        def add_model(name, display_name, type, path)
+          @models << {
+              :name => name,
+              :display_name => display_name,
+              :type => type,
+              :path => path
+          }
+        end
+
         # Save off the legacy format of the JSON file
         def save_variable_json(filename)
           FileUtils.rm_f(filename) if File.exist?(filename)
@@ -179,6 +194,7 @@ module OpenStudio
 
           # iterate over each model and save the zip and json
           @models.each do |model|
+            puts "Creating JSON and ZIP file for #{@name}:#{model[:display_name]}"
             save_analysis_zip(model)
             analysis_json = create_analysis_json(@template_json, model, @models.count > 1)
           end
@@ -196,7 +212,6 @@ module OpenStudio
           argument_template = ERB.new(File.read("#{template_root}/argument.json.erb"))
 
           # Templated analysis json file (this is what is returned)
-          puts "Analysis name is #{@name}"
           openstudio_analysis_json = JSON.parse(analysis_template.result(get_binding))
 
           openstudio_analysis_json['analysis']['problem'].merge!(@problem)
@@ -209,7 +224,7 @@ module OpenStudio
             if measure['enabled']
               @measure_index += 1
 
-              puts "  Adding measure item '#{measure['name']}' to analysis.json"
+              #puts "  Adding measure item '#{measure['name']}' to analysis.json"
               @measure = measure
               @measure['measure_file_name_dir'] = @measure['measure_file_name'].underscore
 
@@ -420,7 +435,7 @@ module OpenStudio
             new_analysis_json['analysis']['weather_file']['path'] = "./weather/#{File.basename(@weather_files.first, '.zip')}.epw"
           else
             # get the first EPW file (not the first file)
-            weather = @weather_files.find{|w| File.extname(w).downcase == '.epw'}
+            weather = @weather_files.find { |w| File.extname(w).downcase == '.epw' }
             fail "Could not find a weather file (*.epw) in weather directory #{File.dirname(@weather_files.first)}" unless weather
             new_analysis_json['analysis']['weather_file']['path'] = "./weather/#{File.basename(weather)}"
           end
