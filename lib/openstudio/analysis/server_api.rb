@@ -260,18 +260,6 @@ module OpenStudio
         [downloaded, file_path_and_name]
       end
 
-      def download_all_data_points(analysis_id, save_directory=".")
-        response = @conn.get "/analyses/#{analysis_id}/download_all_data_points"
-        if response.status == 200
-          filename = response['content-disposition'].match(/filename=(\"?)(.+)\1/)[2]
-          file_path_and_name = "#{save_directory}/#{filename}"
-          puts "File #{filename} already exists, overwriting" if File.exist?(file_path_and_name)
-          File.open(file_path_and_name, 'wb') { |f| f << response.body }
-        end
-
-        [response, file_path_and_name]
-      end
-
       def new_analysis(project_id, options)
         defaults = {analysis_name: nil, reset_uuids: false}
         options = defaults.merge(options)
