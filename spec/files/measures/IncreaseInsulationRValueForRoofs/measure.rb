@@ -6,7 +6,7 @@ class IncreaseInsulationRValueForRoofs < OpenStudio::Ruleset::ModelUserScript
   end
 
   # define the arguments that the user will input
-  def arguments(model)
+  def arguments(_model)
     args = OpenStudio::Ruleset::OSArgumentVector.new
   end # end the arguments method
 

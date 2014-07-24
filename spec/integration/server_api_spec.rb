@@ -25,12 +25,12 @@ describe OpenStudio::Analysis::ServerApi, type: :integration do
     end
 
     it 'should not be able to delete a non-existent project' do
-      r = @api.delete_project("not_a_uuid")
+      r = @api.delete_project('not_a_uuid')
       expect(r).to eq false
     end
 
     it 'create multiple projects and then delete them all' do
-      (1..20).each do |p|
+      (1..20).each do |_p|
         project_id = @api.new_project({})
         expect(project_id).to match /[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/
       end
