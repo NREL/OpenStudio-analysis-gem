@@ -1,6 +1,6 @@
 OpenStudio Analysis Gem
 =======================
-[![Build Status](https://travis-ci.org/NREL/OpenStudio-analysis-gem.svg?branch=deve)](https://travis-ci.org/NREL/OpenStudio-analysis-gem)
+[![Build Status](https://travis-ci.org/NREL/OpenStudio-analysis-gem.svg?branch=develop)](https://travis-ci.org/NREL/OpenStudio-analysis-gem)
 The OpenStudio Analysis Gem is used to communicate files to the OpenStudio Distributed Analysis.
 
 The purpose of this gem is to generate the analysis.json file, analysis.zip, and communicate with the server to upload 
