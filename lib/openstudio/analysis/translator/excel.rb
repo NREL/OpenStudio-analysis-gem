@@ -18,7 +18,7 @@ module OpenStudio
 
         # remove these once we have classes to construct the JSON file
         attr_accessor :name
-        attr_reader :machine_name
+        attr_reader :analysis_name
         attr_reader :template_json
 
         # methods to override instance variables
@@ -39,7 +39,7 @@ module OpenStudio
           # Initialize some other instance variables
           @version = '0.0.1'
           @name = nil
-          @machine_name = nil
+          @analysis_name = nil
           @cluster_name = nil
           @settings = {}
           @weather_files = []
@@ -536,7 +536,7 @@ module OpenStudio
                 else
                   @name = UUID.new.generate
                 end
-                @machine_name = @name.snake_case
+                @analysis_name = @name.snake_case
               end
               if row[0] == 'Export Directory'
                 tmp_filepath = row[1]
@@ -609,7 +609,7 @@ module OpenStudio
         # parse_variables will parse the XLS spreadsheet and save the data into
         # a higher level JSON file.  The JSON file is historic and it should really
         # be omitted as an intermediate step
-        def parse_variables
+        def   parse_variables
           # clean remove whitespace and unicode chars
           # The parse is a unique format (https://github.com/Empact/roo/blob/master/lib/roo/base.rb#L444)
           # If you add a new column and you want that variable in the hash, then you must add it here.
@@ -780,15 +780,10 @@ module OpenStudio
                 var['variable_type'] = row[:measure_name_or_var_type]
                 var['display_name'] = row[:measure_file_name_or_var_display_name]
                 var['display_name_short'] = row[:display_name_short] ? row[:display_name_short] : var['display_name']
-
-                # TODO: convert this to measure class and parameter name
-                var['machine_name'] = row[:measure_file_name_or_var_display_name].downcase.strip.gsub('-', '_').gsub(' ', '_').strip
                 var['name'] = row[:measure_type_or_parameter_name_in_measure]
                 var['index'] = variable_index # order of the variable (not sure of its need)
-
                 var['type'] = row[:variable_type] ? row[:variable_type].downcase : row[:variable_type]
                 var['units'] = row[:units]
-
                 var['distribution'] = {}
 
                 # parse the choices/enums
