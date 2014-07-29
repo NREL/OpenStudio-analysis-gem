@@ -119,9 +119,9 @@ describe OpenStudio::Analysis::Translator::Excel do
       @excel.process
     end
 
-    it 'should have a version and machine name' do
+    it 'should have a version and analysis name in machine format' do
       expect(@excel.version).to eq('0.1.9')
-      expect(@excel.machine_name).to eq('example_analysis')
+      expect(@excel.analysis_name).to eq('example_analysis')
     end
     it 'should have the new settings' do
       expect(@excel.settings['server_instance_type']).to eq('m2.xlarge')
