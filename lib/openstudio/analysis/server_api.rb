@@ -275,6 +275,85 @@ module OpenStudio
         [downloaded, file_path_and_name]
       end
 
+      def download_datapoint_reports(datapoint_id, save_directory = '.')
+        downloaded = false
+        file_path_and_name = nil
+
+        response = @conn.get "/data_points/#{datapoint_id}/download_reports"
+        if response.status == 200
+          filename = response['content-disposition'].match(/filename=(\"?)(.+)\1/)[2]
+          downloaded = true
+          file_path_and_name = "#{save_directory}/#{filename}"
+          puts "File #{filename} already exists, overwriting" if File.exist?(file_path_and_name)
+          File.open(file_path_and_name, 'wb') { |f| f << response.body }
+        end
+
+        [downloaded, file_path_and_name]
+      end
+
+      def download_datapoints_reports(analysis_id, save_directory = '.')
+        # get the list of all the datapoints
+        dps = get_datapoint_status(analysis_id)
+        dps.each do |dp|
+          if dp[:status] == 'completed'
+            download_datapoint_reports(dp[:_id], save_directory)
+          end
+        end
+      end
+
+      def download_datapoint_jsons(analysis_id, save_directory = '.')
+        # get the list of all the datapoints
+        dps = get_datapoint_status(analysis_id)
+        dps.each do |dp|
+          if dp[:status] == 'completed'
+            dp_h = get_datapoint(dp[:_id])
+            File.open("#{save_directory}/data_point_#{dp[:_id]}.json", 'w') { |f| f << JSON.pretty_generate(dp_h) }
+          end
+        end
+      end
+
+      def datapoint_dencity(datapoint_id)
+        # Return the JSON (Full) of the datapoint
+        data_point = nil
+
+        resp = @conn.get "/data_points/#{datapoint_id}/dencity.json"
+        if resp.status == 200
+          data_point = JSON.parse resp.body, symbolize_names: true
+        end
+
+        data_point
+      end
+
+      def analysis_dencity_json(analysis_id)
+        # Return the hash of the dencity format for the analysis
+        dencity = nil
+
+        resp = @conn.get "/analyses/#{analysis_id}/dencity.json"
+        if resp.status == 200
+          dencity = JSON.parse resp.body, symbolize_names: true
+        end
+
+        dencity
+      end
+
+      def download_dencity_json(analysis_id, save_directory = '.')
+        a_h = analysis_dencity_json(analysis_id)
+        if a_h
+          File.open("#{save_directory}/analysis_#{analysis_id}_dencity.json", 'w') { |f| f << JSON.pretty_generate(a_h) }
+        end
+      end
+
+      def download_datapoint_dencity_jsons(analysis_id, save_directory = '.')
+        # get the list of all the datapoints
+        dps = get_datapoint_status(analysis_id)
+        dps.each do |dp|
+          if dp[:status] == 'completed'
+            dp_h = datapoint_dencity(dp[:_id])
+            File.open("#{save_directory}/data_point_#{dp[:_id]}_dencity.json", 'w') { |f| f << JSON.pretty_generate(dp_h) }
+          end
+        end
+      end
+
       def new_analysis(project_id, options)
         defaults = { analysis_name: nil, reset_uuids: false }
         options = defaults.merge(options)
