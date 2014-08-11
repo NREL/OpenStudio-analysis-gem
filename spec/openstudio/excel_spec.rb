@@ -88,7 +88,7 @@ describe OpenStudio::Analysis::Translator::Excel do
     it 'should have a weather file' do
       expect(@excel.weather_files.first).not_to be_nil
       puts @excel.weather_files.first
-      expect(@excel.weather_files.first.include?('partial_weather.epw')).to eq(true)
+      expect(@excel.weather_files.first.include?('partial_weather')).to eq(true)
     end
 
     it 'should have notes and source' do
@@ -235,7 +235,7 @@ describe OpenStudio::Analysis::Translator::Excel do
     it 'should have a weather file' do
       expect(@excel.weather_files.first).not_to be_nil
       puts @excel.weather_files.first
-      expect(@excel.weather_files.first.include?('partial_weather.epw')).to eq(true)
+      expect(@excel.weather_files.first.include?('partial_weather')).to eq(true)
     end
 
     it 'should have notes and source' do
@@ -403,7 +403,7 @@ describe OpenStudio::Analysis::Translator::Excel do
       # check the JSON
       h = JSON.parse(File.read('spec/files/export/analysis/0_3_0_outputs.json'))
       expect(h['analysis']['weather_file']).to be_a Hash
-      expect(h['analysis']['weather_file']['path']).to eq './weather/partial_weather.epw'
+      expect(h['analysis']['weather_file']['path']).to match /partial_weather.*epw/
     end
   end
 
