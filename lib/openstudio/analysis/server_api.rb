@@ -207,7 +207,10 @@ module OpenStudio
         downloaded = false
         file_path_and_name = nil
 
-        response = @conn.get "/analyses/#{analysis_id}/download_data.#{format}?export=true"
+        response = @conn.get do |r|
+          r.url "/analyses/#{analysis_id}/download_data.#{format}?export=true"
+          r.options.timeout = 3600 # 60 minutes
+        end
         if response.status == 200
           filename = response['content-disposition'].match(/filename=(\"?)(.+)\1/)[2]
           downloaded = true
@@ -259,11 +262,17 @@ module OpenStudio
         [downloaded, file_path_and_name]
       end
 
+      # Download a MongoDB Snapshot.  This database can get large.  For 13,000 simulations with
+      # DEnCity reporting, the size is around 325MB
       def download_database(save_directory = '.')
         downloaded = false
         file_path_and_name = nil
 
-        response = @conn.get '/admin/backup_database?full_backup=true'
+        response = @conn.get do |r|
+          r.url  '/admin/backup_database?full_backup=true'
+          r.options.timeout = 3600 # 60 minutes
+        end
+
         if response.status == 200
           filename = response['content-disposition'].match(/filename=(\"?)(.+)\1/)[2]
           downloaded = true
