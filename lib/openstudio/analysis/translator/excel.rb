@@ -18,7 +18,7 @@ module OpenStudio
 
         # remove these once we have classes to construct the JSON file
         attr_accessor :name
-        attr_reader :machine_name
+        attr_reader :analysis_name
         attr_reader :template_json
 
         # methods to override instance variables
@@ -39,7 +39,7 @@ module OpenStudio
           # Initialize some other instance variables
           @version = '0.0.1'
           @name = nil
-          @machine_name = nil
+          @analysis_name = nil
           @cluster_name = nil
           @settings = {}
           @weather_files = []
@@ -77,10 +77,10 @@ module OpenStudio
 
         def add_model(name, display_name, type, path)
           @models << {
-              :name => name,
-              :display_name => display_name,
-              :type => type,
-              :path => path
+            name: name,
+            display_name: display_name,
+            type: type,
+            path: path
           }
         end
 
@@ -120,7 +120,6 @@ module OpenStudio
           @variables['data'].each do |measure|
             if measure['enabled']
               measure['variables'].each do |variable|
-
 
                 # Determine if row is suppose to be an argument or a variable to be perturbed.
                 if variable['variable_type'] == 'variable'
@@ -224,7 +223,7 @@ module OpenStudio
             if measure['enabled']
               @measure_index += 1
 
-              #puts "  Adding measure item '#{measure['name']}' to analysis.json"
+              # puts "  Adding measure item '#{measure['name']}' to analysis.json"
               @measure = measure
               @measure['measure_file_name_dir'] = @measure['measure_file_name'].underscore
 
@@ -286,7 +285,7 @@ module OpenStudio
 
                   # TODO: remove enum and choice as this is not the variable type
                   if @variable['type'] == 'enum' || @variable['type'].downcase == 'choice'
-                    @values_and_weights = @variable['distribution']['enumerations'].map { |v| {value: v} }.to_json
+                    @values_and_weights = @variable['distribution']['enumerations'].map { |v| { value: v } }.to_json
                     vr = JSON.parse(discrete_uncertain_variable_template.result(get_binding))
                   elsif @variable['distribution']['type'] == 'discrete_uncertain'
                     # puts @variable.inspect
@@ -305,11 +304,10 @@ module OpenStudio
 
                     if weights
                       fail "Discrete variable '#{@variable['name']}' does not have equal length of values and weights" if values.size != weights.size
-                      @values_and_weights = values.zip(weights).map { |v, w| {value: v, weight: w} }.to_json
+                      @values_and_weights = values.zip(weights).map { |v, w| { value: v, weight: w } }.to_json
                     else
-                      @values_and_weights = values.map { |v| {value: v} }.to_json
+                      @values_and_weights = values.map { |v| { value: v } }.to_json
                     end
-
 
                     if @variable['variable_type'] == 'pivot'
 
@@ -538,7 +536,7 @@ module OpenStudio
                 else
                   @name = UUID.new.generate
                 end
-                @machine_name = @name.snake_case
+                @analysis_name = @name.snake_case
               end
               if row[0] == 'Export Directory'
                 tmp_filepath = row[1]
@@ -594,7 +592,7 @@ module OpenStudio
                 unless (Pathname.new model_path).absolute?
                   model_path = File.expand_path(File.join(@root_path, model_path))
                 end
-                @models << {name: tmp_m_name.snake_case, display_name: tmp_m_name, type: row[2], path: model_path}
+                @models << { name: tmp_m_name.snake_case, display_name: tmp_m_name, type: row[2], path: model_path }
               end
             elsif b_other_libs
               # determine if the path is relative
@@ -603,7 +601,7 @@ module OpenStudio
                 other_path = File.expand_path(File.join(@root_path, other_path))
               end
 
-              @other_files << {lib_zip_name: row[1], path: other_path}
+              @other_files << { lib_zip_name: row[1], path: other_path }
             end
           end
         end
@@ -611,7 +609,7 @@ module OpenStudio
         # parse_variables will parse the XLS spreadsheet and save the data into
         # a higher level JSON file.  The JSON file is historic and it should really
         # be omitted as an intermediate step
-        def parse_variables
+        def   parse_variables
           # clean remove whitespace and unicode chars
           # The parse is a unique format (https://github.com/Empact/roo/blob/master/lib/roo/base.rb#L444)
           # If you add a new column and you want that variable in the hash, then you must add it here.
@@ -626,7 +624,7 @@ module OpenStudio
                                                    measure_file_name_directory: 'measure directory',
                                                    measure_type_or_parameter_name_in_measure: 'parameter name in measure',
                                                    display_name_short: 'parameter short display name',
-                                                   #sampling_method: 'sampling method',
+                                                   # sampling_method: 'sampling method',
                                                    variable_type: 'Variable Type',
                                                    units: 'units',
                                                    default_value: 'static.default value',
@@ -649,7 +647,7 @@ module OpenStudio
                                                    measure_file_name_or_var_display_name: 'parameter display name.*',
                                                    measure_file_name_directory: 'measure directory',
                                                    measure_type_or_parameter_name_in_measure: 'parameter name in measure',
-                                                   #sampling_method: 'sampling method',
+                                                   # sampling_method: 'sampling method',
                                                    variable_type: 'Variable Type',
                                                    units: 'units',
                                                    default_value: 'static.default value',
@@ -756,7 +754,7 @@ module OpenStudio
                                                    relation_to_eui: 'typical var to eui relationship',
                                                    clean: true)
             end
-          rescue Exception => e
+          rescue => e
             raise "#{e.message} with Spreadsheet #{@xls_filename} with Version #{@version}  "
           end
 
@@ -782,15 +780,10 @@ module OpenStudio
                 var['variable_type'] = row[:measure_name_or_var_type]
                 var['display_name'] = row[:measure_file_name_or_var_display_name]
                 var['display_name_short'] = row[:display_name_short] ? row[:display_name_short] : var['display_name']
-
-                # TODO: convert this to measure class and parameter name
-                var['machine_name'] = row[:measure_file_name_or_var_display_name].downcase.strip.gsub('-', '_').gsub(' ', '_').strip
                 var['name'] = row[:measure_type_or_parameter_name_in_measure]
                 var['index'] = variable_index # order of the variable (not sure of its need)
-
                 var['type'] = row[:variable_type] ? row[:variable_type].downcase : row[:variable_type]
                 var['units'] = row[:units]
-
                 var['distribution'] = {}
 
                 # parse the choices/enums

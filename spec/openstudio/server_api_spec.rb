@@ -17,7 +17,7 @@ describe OpenStudio::Analysis::ServerApi do
 
   context 'test not localhost' do
     it 'should have a not localhost URL' do
-      options = {hostname: 'http://abc.def.ghi'}
+      options = { hostname: 'http://abc.def.ghi' }
       api = OpenStudio::Analysis::ServerApi.new(options)
       expect(api.hostname).to eq(options[:hostname])
     end

@@ -88,7 +88,7 @@ describe OpenStudio::Analysis::Translator::Excel do
     it 'should have a weather file' do
       expect(@excel.weather_files.first).not_to be_nil
       puts @excel.weather_files.first
-      expect(@excel.weather_files.first.include?('partial_weather.epw')).to eq(true)
+      expect(@excel.weather_files.first.include?('partial_weather')).to eq(true)
     end
 
     it 'should have notes and source' do
@@ -119,9 +119,9 @@ describe OpenStudio::Analysis::Translator::Excel do
       @excel.process
     end
 
-    it 'should have a version and machine name' do
+    it 'should have a version and analysis name in machine format' do
       expect(@excel.version).to eq('0.1.9')
-      expect(@excel.machine_name).to eq('example_analysis')
+      expect(@excel.analysis_name).to eq('example_analysis')
     end
     it 'should have the new settings' do
       expect(@excel.settings['server_instance_type']).to eq('m2.xlarge')
@@ -186,8 +186,8 @@ describe OpenStudio::Analysis::Translator::Excel do
           if var['name'] == 'alter_design_days'
             puts var.inspect
             expect(var['type']).to eq 'bool'
-            expect(eval(var['distribution']['discrete_values'])).to match_array ["true", "false"]
-            expect(eval(var['distribution']['discrete_weights'])).to match_array [0.8,0.2]
+            expect(eval(var['distribution']['discrete_values'])).to match_array %w(true false)
+            expect(eval(var['distribution']['discrete_weights'])).to match_array [0.8, 0.2]
           end
         end
       end
@@ -208,7 +208,7 @@ describe OpenStudio::Analysis::Translator::Excel do
 
     it 'should have parsed the spreadsheet' do
       @excel.variables['data'].each do |measure|
-        measure['variables'].each do |var|
+        measure['variables'].each do |_var|
           # TODO: test something?
         end
       end
@@ -235,7 +235,7 @@ describe OpenStudio::Analysis::Translator::Excel do
     it 'should have a weather file' do
       expect(@excel.weather_files.first).not_to be_nil
       puts @excel.weather_files.first
-      expect(@excel.weather_files.first.include?('partial_weather.epw')).to eq(true)
+      expect(@excel.weather_files.first.include?('partial_weather')).to eq(true)
     end
 
     it 'should have notes and source' do
@@ -403,7 +403,7 @@ describe OpenStudio::Analysis::Translator::Excel do
       # check the JSON
       h = JSON.parse(File.read('spec/files/export/analysis/0_3_0_outputs.json'))
       expect(h['analysis']['weather_file']).to be_a Hash
-      expect(h['analysis']['weather_file']['path']).to eq './weather/partial_weather.epw'
+      expect(h['analysis']['weather_file']['path']).to match /partial_weather.*epw/
     end
   end
 
@@ -420,7 +420,7 @@ describe OpenStudio::Analysis::Translator::Excel do
     end
 
     it 'should error out with missing measure information' do
-      expect{@excel.save_analysis}.to raise_error /Measure in directory.*not contain a measure.rb.*$/
+      expect { @excel.save_analysis }.to raise_error /Measure in directory.*not contain a measure.rb.*$/
     end
   end
 
@@ -463,18 +463,18 @@ describe OpenStudio::Analysis::Translator::Excel do
       expect(File.exist?("spec/files/export/analysis/#{model_uuid}.zip")).to eq true
 
       @excel.outputs['output_variables'].each do |o|
-        expect(o['display_name_short']).to eq "Site EUI" if o['name'] == 'standard_report_legacy.total_energy'
-        expect(o['display_name_short']).to eq "Natural Gas Heating Intensity" if o['name'] == 'standard_report_legacy.heating_natural_gas'
+        expect(o['display_name_short']).to eq 'Site EUI' if o['name'] == 'standard_report_legacy.total_energy'
+        expect(o['display_name_short']).to eq 'Natural Gas Heating Intensity' if o['name'] == 'standard_report_legacy.heating_natural_gas'
       end
 
       # Check the JSON
       j = JSON.parse(File.read("spec/files/export/analysis/#{model_uuid}.json"))
-      expect(j['analysis']['output_variables'].first['display_name']).to eq "Total Site Energy Intensity"
-      expect(j['analysis']['output_variables'].first['display_name_short']).to eq "Site EUI"
-      expect(j['analysis']['problem']['workflow'][0]['variables'][0]['argument']['display_name']).to eq "Orientation"
-      expect(j['analysis']['problem']['workflow'][0]['variables'][0]['argument']['display_name_short']).to eq "Shorter Display Name"
-      expect(j['analysis']['problem']['workflow'][1]['arguments'][0]['display_name']).to eq "unknown"
-      expect(j['analysis']['problem']['workflow'][1]['arguments'][0]['display_name_short']).to eq "un"
+      expect(j['analysis']['output_variables'].first['display_name']).to eq 'Total Site Energy Intensity'
+      expect(j['analysis']['output_variables'].first['display_name_short']).to eq 'Site EUI'
+      expect(j['analysis']['problem']['workflow'][0]['variables'][0]['argument']['display_name']).to eq 'Orientation'
+      expect(j['analysis']['problem']['workflow'][0]['variables'][0]['argument']['display_name_short']).to eq 'Shorter Display Name'
+      expect(j['analysis']['problem']['workflow'][1]['arguments'][0]['display_name']).to eq 'unknown'
+      expect(j['analysis']['problem']['workflow'][1]['arguments'][0]['display_name_short']).to eq 'un'
     end
   end
 end

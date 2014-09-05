@@ -6,7 +6,7 @@ module OpenStudio
       attr_reader :hostname
 
       def initialize(options = {})
-        defaults = {hostname: 'http://localhost:8080'}
+        defaults = { hostname: 'http://localhost:8080' }
         options = defaults.merge(options)
         @logger = Logger.new('faraday.log')
 
@@ -32,7 +32,6 @@ module OpenStudio
           # faraday.response :logger # log requests to STDOUT
           faraday.adapter Faraday.default_adapter # make requests with Net::HTTP
         end
-
       end
 
       def get_projects
@@ -61,7 +60,7 @@ module OpenStudio
           deleted = true
         else
           puts "ERROR deleting project #{id}"
-          deleted =false
+          deleted = false
         end
 
         deleted
@@ -80,12 +79,12 @@ module OpenStudio
       end
 
       def new_project(options = {})
-        defaults = {project_name: "Project #{Time.now.strftime('%Y-%m-%d %H:%M:%S')}"}
+        defaults = { project_name: "Project #{Time.now.strftime('%Y-%m-%d %H:%M:%S')}" }
         options = defaults.merge(options)
         project_id = nil
 
         # TODO: make this a display name and a machine name
-        project_hash = {project: {name: "#{options[:project_name]}"}}
+        project_hash = { project: { name: "#{options[:project_name]}" } }
 
         response = @conn.post do |req|
           req.url '/projects.json'
@@ -158,7 +157,7 @@ module OpenStudio
       def get_analysis_status(analysis_id, analysis_type)
         status = nil
 
-        #sleep 2  # super cheesy---need to update how this works. Right now there is a good chance to get a
+        # sleep 2  # super cheesy---need to update how this works. Right now there is a good chance to get a
         # race condition when the analysis state changes.
         unless analysis_id.nil?
           resp = @conn.get "analyses/#{analysis_id}/status.json"
@@ -177,7 +176,7 @@ module OpenStudio
         status = nil
         j = nil
 
-        #sleep 2  # super cheesy---need to update how this works. Right now there is a good chance to get a
+        # sleep 2  # super cheesy---need to update how this works. Right now there is a good chance to get a
         # race condition when the analysis state changes.
         unless analysis_id.nil?
           resp = @conn.get "analyses/#{analysis_id}/status.json"
@@ -204,11 +203,14 @@ module OpenStudio
         analysis
       end
 
-      def download_dataframe(analysis_id, format='rdata', save_directory=".")
+      def download_dataframe(analysis_id, format = 'rdata', save_directory = '.')
         downloaded = false
         file_path_and_name = nil
 
-        response = @conn.get "/analyses/#{analysis_id}/download_data.#{format}?export=true"
+        response = @conn.get do |r|
+          r.url "/analyses/#{analysis_id}/download_data.#{format}?export=true"
+          r.options.timeout = 3600 # 60 minutes
+        end
         if response.status == 200
           filename = response['content-disposition'].match(/filename=(\"?)(.+)\1/)[2]
           downloaded = true
@@ -224,7 +226,7 @@ module OpenStudio
         [downloaded, file_path_and_name]
       end
 
-      def download_variables(analysis_id, format='rdata', save_directory=".")
+      def download_variables(analysis_id, format = 'rdata', save_directory = '.')
         downloaded = false
         file_path_and_name = nil
 
@@ -244,7 +246,7 @@ module OpenStudio
         [downloaded, file_path_and_name]
       end
 
-      def download_datapoint(datapoint_id, save_directory=".")
+      def download_datapoint(datapoint_id, save_directory = '.')
         downloaded = false
         file_path_and_name = nil
 
@@ -260,20 +262,109 @@ module OpenStudio
         [downloaded, file_path_and_name]
       end
 
-      def download_all_data_points(analysis_id, save_directory=".")
-        response = @conn.get "/analyses/#{analysis_id}/download_all_data_points"
+      # Download a MongoDB Snapshot.  This database can get large.  For 13,000 simulations with
+      # DEnCity reporting, the size is around 325MB
+      def download_database(save_directory = '.')
+        downloaded = false
+        file_path_and_name = nil
+
+        response = @conn.get do |r|
+          r.url  '/admin/backup_database?full_backup=true'
+          r.options.timeout = 3600 # 60 minutes
+        end
+
         if response.status == 200
           filename = response['content-disposition'].match(/filename=(\"?)(.+)\1/)[2]
+          downloaded = true
           file_path_and_name = "#{save_directory}/#{filename}"
           puts "File #{filename} already exists, overwriting" if File.exist?(file_path_and_name)
           File.open(file_path_and_name, 'wb') { |f| f << response.body }
         end
 
-        [response, file_path_and_name]
+        [downloaded, file_path_and_name]
+      end
+
+      def download_datapoint_reports(datapoint_id, save_directory = '.')
+        downloaded = false
+        file_path_and_name = nil
+
+        response = @conn.get "/data_points/#{datapoint_id}/download_reports"
+        if response.status == 200
+          filename = response['content-disposition'].match(/filename=(\"?)(.+)\1/)[2]
+          downloaded = true
+          file_path_and_name = "#{save_directory}/#{filename}"
+          puts "File #{filename} already exists, overwriting" if File.exist?(file_path_and_name)
+          File.open(file_path_and_name, 'wb') { |f| f << response.body }
+        end
+
+        [downloaded, file_path_and_name]
+      end
+
+      def download_datapoints_reports(analysis_id, save_directory = '.')
+        # get the list of all the datapoints
+        dps = get_datapoint_status(analysis_id)
+        dps.each do |dp|
+          if dp[:status] == 'completed'
+            download_datapoint_reports(dp[:_id], save_directory)
+          end
+        end
+      end
+
+      def download_datapoint_jsons(analysis_id, save_directory = '.')
+        # get the list of all the datapoints
+        dps = get_datapoint_status(analysis_id)
+        dps.each do |dp|
+          if dp[:status] == 'completed'
+            dp_h = get_datapoint(dp[:_id])
+            File.open("#{save_directory}/data_point_#{dp[:_id]}.json", 'w') { |f| f << JSON.pretty_generate(dp_h) }
+          end
+        end
+      end
+
+      def datapoint_dencity(datapoint_id)
+        # Return the JSON (Full) of the datapoint
+        data_point = nil
+
+        resp = @conn.get "/data_points/#{datapoint_id}/dencity.json"
+        if resp.status == 200
+          data_point = JSON.parse resp.body, symbolize_names: true
+        end
+
+        data_point
+      end
+
+      def analysis_dencity_json(analysis_id)
+        # Return the hash of the dencity format for the analysis
+        dencity = nil
+
+        resp = @conn.get "/analyses/#{analysis_id}/dencity.json"
+        if resp.status == 200
+          dencity = JSON.parse resp.body, symbolize_names: true
+        end
+
+        dencity
+      end
+
+      def download_dencity_json(analysis_id, save_directory = '.')
+        a_h = analysis_dencity_json(analysis_id)
+        if a_h
+          File.open("#{save_directory}/analysis_#{analysis_id}_dencity.json", 'w') { |f| f << JSON.pretty_generate(a_h) }
+        end
+      end
+
+      def download_datapoint_dencity_jsons(analysis_id, save_directory = '.')
+        # get the list of all the datapoints
+        dps = get_datapoint_status(analysis_id)
+        dps.each do |dp|
+          if dp[:status] == 'completed'
+            dp_h = datapoint_dencity(dp[:_id])
+            File.open("#{save_directory}/data_point_#{dp[:_id]}_dencity.json", 'w') { |f| f << JSON.pretty_generate(dp_h) }
+          end
+        end
       end
 
       def new_analysis(project_id, options)
-        defaults = {analysis_name: nil, reset_uuids: false}
+        defaults = { analysis_name: nil, reset_uuids: false }
         options = defaults.merge(options)
 
         fail 'No project id passed' if project_id.nil?
@@ -313,7 +404,7 @@ module OpenStudio
           formulation_json[:analysis][:name] = "#{options[:analysis_name]}" unless options[:analysis_name].nil?
         else
           formulation_json = {
-              analysis: options
+            analysis: options
           }
           puts formulation_json
           analysis_id = UUID.new.generate
@@ -344,8 +435,11 @@ module OpenStudio
         if options[:upload_file]
           fail "upload file does not exist #{options[:upload_file]}" unless File.exist?(options[:upload_file])
 
-          payload = {file: Faraday::UploadIO.new(options[:upload_file], 'application/zip')}
-          response = @conn_multipart.post "analyses/#{analysis_id}/upload.json", payload
+          payload = { file: Faraday::UploadIO.new(options[:upload_file], 'application/zip') }
+          response = @conn_multipart.post "analyses/#{analysis_id}/upload.json", payload do |req|
+            req.options[:timeout] = 1800 # seconds
+          end
+
 
           if response.status == 201
             puts 'Successfully uploaded ZIP file'
@@ -358,7 +452,7 @@ module OpenStudio
       end
 
       def upload_datapoint(analysis_id, options)
-        defaults = {reset_uuids: false}
+        defaults = { reset_uuids: false }
         options = defaults.merge(options)
 
         fail 'No analysis id passed' if analysis_id.nil?
@@ -411,7 +505,7 @@ module OpenStudio
       end
 
       def run_analysis(analysis_id, options)
-        defaults = {analysis_action: 'start', without_delay: false}
+        defaults = { analysis_action: 'start', without_delay: false }
         options = defaults.merge(options)
 
         puts "Run analysis is configured with #{options.to_json}"
@@ -430,7 +524,7 @@ module OpenStudio
       end
 
       def kill_analysis(analysis_id)
-        analysis_action = {analysis_action: 'stop'}
+        analysis_action = { analysis_action: 'stop' }
 
         response = @conn.post do |req|
           req.url "analyses/#{analysis_id}/action.json"
@@ -494,37 +588,37 @@ module OpenStudio
       ## here are a bunch of runs that really don't belong here.
 
       # create a new analysis and run a single model
-      def run_single_model(formulation_filename, analysis_zip_filename, run_data_point_filename='run_openstudio_workflow_monthly.rb')
+      def run_single_model(formulation_filename, analysis_zip_filename, run_data_point_filename = 'run_openstudio_workflow_monthly.rb')
         project_options = {}
         project_id = new_project(project_options)
 
         analysis_options = {
-            formulation_file: formulation_filename,
-            upload_file: analysis_zip_filename,
-            reset_uuids: true
+          formulation_file: formulation_filename,
+          upload_file: analysis_zip_filename,
+          reset_uuids: true
         }
         analysis_id = new_analysis(project_id, analysis_options)
 
         # Force this to run in the foreground for now until we can deal with checing the 'analysis state of various anlaysis'
         run_options = {
-            analysis_action: "start",
-            without_delay: true, # run this in the foreground
-            analysis_type: 'single_run',
-            allow_multiple_jobs: true,
-            use_server_as_worker: true,
-            simulate_data_point_filename: 'simulate_data_point.rb',
-            run_data_point_filename: run_data_point_filename
+          analysis_action: 'start',
+          without_delay: true, # run this in the foreground
+          analysis_type: 'single_run',
+          allow_multiple_jobs: true,
+          use_server_as_worker: true,
+          simulate_data_point_filename: 'simulate_data_point.rb',
+          run_data_point_filename: run_data_point_filename
         }
         run_analysis(analysis_id, run_options)
 
         run_options = {
-            analysis_action: "start",
-            without_delay: false, # run in background
-            analysis_type: 'batch_run',
-            allow_multiple_jobs: true,
-            use_server_as_worker: true,
-            simulate_data_point_filename: 'simulate_data_point.rb',
-            run_data_point_filename: run_data_point_filename
+          analysis_action: 'start',
+          without_delay: false, # run in background
+          analysis_type: 'batch_run',
+          allow_multiple_jobs: true,
+          use_server_as_worker: true,
+          simulate_data_point_filename: 'simulate_data_point.rb',
+          run_data_point_filename: run_data_point_filename
         }
         run_analysis(analysis_id, run_options)
 
@@ -532,25 +626,25 @@ module OpenStudio
       end
 
       # creates a new analysis and runs rgenoud optimization - number of generations isn't used right now
-      def run_rgenoud(formulation_filename, analysis_zip_filename, number_of_generations)
+      def run_rgenoud(formulation_filename, analysis_zip_filename, _number_of_generations)
         project_options = {}
         project_id = new_project(project_options)
 
         analysis_options = {
-            formulation_file: formulation_filename,
-            upload_file: analysis_zip_filename,
-            reset_uuids: true
+          formulation_file: formulation_filename,
+          upload_file: analysis_zip_filename,
+          reset_uuids: true
         }
         analysis_id = new_analysis(project_id, analysis_options)
 
         run_options = {
-            analysis_action: "start",
-            without_delay: false,
-            analysis_type: 'rgenoud',
-            allow_multiple_jobs: true,
-            use_server_as_worker: true,
-            simulate_data_point_filename: 'simulate_data_point.rb',
-            run_data_point_filename: 'run_openstudio_workflow_monthly.rb'
+          analysis_action: 'start',
+          without_delay: false,
+          analysis_type: 'rgenoud',
+          allow_multiple_jobs: true,
+          use_server_as_worker: true,
+          simulate_data_point_filename: 'simulate_data_point.rb',
+          run_data_point_filename: 'run_openstudio_workflow_monthly.rb'
         }
         run_analysis(analysis_id, run_options)
 
@@ -562,31 +656,31 @@ module OpenStudio
         project_id = new_project(project_options)
 
         analysis_options = {
-            formulation_file: formulation_filename,
-            upload_file: analysis_zip_filename,
-            reset_uuids: true
+          formulation_file: formulation_filename,
+          upload_file: analysis_zip_filename,
+          reset_uuids: true
         }
         analysis_id = new_analysis(project_id, analysis_options)
 
         run_options = {
-            analysis_action: "start",
-            without_delay: false,
-            analysis_type: 'lhs',
-            allow_multiple_jobs: true,
-            use_server_as_worker: true,
-            simulate_data_point_filename: 'simulate_data_point.rb',
-            run_data_point_filename: 'run_openstudio_workflow_monthly.rb'
+          analysis_action: 'start',
+          without_delay: false,
+          analysis_type: 'lhs',
+          allow_multiple_jobs: true,
+          use_server_as_worker: true,
+          simulate_data_point_filename: 'simulate_data_point.rb',
+          run_data_point_filename: 'run_openstudio_workflow_monthly.rb'
         }
         run_analysis(analysis_id, run_options)
 
         run_options = {
-            analysis_action: "start",
-            without_delay: false, # run in background
-            analysis_type: 'batch_run',
-            allow_multiple_jobs: true,
-            use_server_as_worker: true,
-            simulate_data_point_filename: 'simulate_data_point.rb',
-            run_data_point_filename: 'run_openstudio_workflow_monthly.rb'
+          analysis_action: 'start',
+          without_delay: false, # run in background
+          analysis_type: 'batch_run',
+          allow_multiple_jobs: true,
+          use_server_as_worker: true,
+          simulate_data_point_filename: 'simulate_data_point.rb',
+          run_data_point_filename: 'run_openstudio_workflow_monthly.rb'
         }
         run_analysis(analysis_id, run_options)
 
@@ -599,21 +693,21 @@ module OpenStudio
         project_id = new_project(project_options)
 
         analysis_options = {
-            formulation_file: formulation_filename,
-            upload_file: analysis_zip_filename,
-            reset_uuids: true
+          formulation_file: formulation_filename,
+          upload_file: analysis_zip_filename,
+          reset_uuids: true
         }
         analysis_id = new_analysis(project_id, analysis_options)
 
         server_as_worker = true if analysis_type == 'optim' || analysis_type == 'rgenoud'
         run_options = {
-            analysis_action: "start",
-            without_delay: false,
-            analysis_type: analysis_type,
-            allow_multiple_jobs: allow_multiple_jobs,
-            use_server_as_worker: server_as_worker,
-            simulate_data_point_filename: 'simulate_data_point.rb',
-            run_data_point_filename: run_data_point_filename
+          analysis_action: 'start',
+          without_delay: false,
+          analysis_type: analysis_type,
+          allow_multiple_jobs: allow_multiple_jobs,
+          use_server_as_worker: server_as_worker,
+          simulate_data_point_filename: 'simulate_data_point.rb',
+          run_data_point_filename: run_data_point_filename
         }
         run_analysis(analysis_id, run_options)
 
@@ -621,13 +715,13 @@ module OpenStudio
         # no explicit way to tell the system to do it
         if analysis_type == 'lhs' || analysis_type == 'preflight' || analysis_type == 'single_run'
           run_options = {
-              analysis_action: "start",
-              without_delay: false,
-              analysis_type: 'batch_run',
-              allow_multiple_jobs: allow_multiple_jobs,
-              use_server_as_worker: server_as_worker,
-              simulate_data_point_filename: 'simulate_data_point.rb',
-              run_data_point_filename: run_data_point_filename
+            analysis_action: 'start',
+            without_delay: false,
+            analysis_type: 'batch_run',
+            allow_multiple_jobs: allow_multiple_jobs,
+            use_server_as_worker: server_as_worker,
+            simulate_data_point_filename: 'simulate_data_point.rb',
+            run_data_point_filename: run_data_point_filename
           }
           run_analysis(analysis_id, run_options)
         end
