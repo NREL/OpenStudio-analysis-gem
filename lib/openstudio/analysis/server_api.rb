@@ -436,7 +436,10 @@ module OpenStudio
           fail "upload file does not exist #{options[:upload_file]}" unless File.exist?(options[:upload_file])
 
           payload = { file: Faraday::UploadIO.new(options[:upload_file], 'application/zip') }
-          response = @conn_multipart.post "analyses/#{analysis_id}/upload.json", payload
+          response = @conn_multipart.post "analyses/#{analysis_id}/upload.json", payload do |req|
+            req.options[:timeout] = 1800 # seconds
+          end
+
 
           if response.status == 201
             puts 'Successfully uploaded ZIP file'
