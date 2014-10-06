@@ -16,10 +16,6 @@ describe OpenStudio::Analysis::Translator::Excel do
       @excel = OpenStudio::Analysis::Translator::Excel.new(path)
     end
 
-    it 'should have measure path' do
-      expect(@excel.measure_path).to eq('./measures')
-    end
-
     it 'should have excel data' do
       puts @excel
       expect(@excel).not_to be_nil
@@ -29,7 +25,7 @@ describe OpenStudio::Analysis::Translator::Excel do
       expect(@excel.process).to eq(true)
 
       # after processing the measures directory should be what is in the excel file
-      expect(@excel.measure_path).to eq(File.expand_path(File.join('spec', 'files', 'measures')))
+      expect(@excel.measure_paths[0]).to eq(File.expand_path(File.join('spec', 'files', 'measures')))
     end
 
     it 'should not work because no variables defined' do
@@ -475,6 +471,26 @@ describe OpenStudio::Analysis::Translator::Excel do
       expect(j['analysis']['problem']['workflow'][0]['variables'][0]['argument']['display_name_short']).to eq 'Shorter Display Name'
       expect(j['analysis']['problem']['workflow'][1]['arguments'][0]['display_name']).to eq 'unknown'
       expect(j['analysis']['problem']['workflow'][1]['arguments'][0]['display_name_short']).to eq 'un'
+    end
+  end
+
+  context 'version 0.3.3 and short display names' do
+    before :all do
+      @excel = OpenStudio::Analysis::Translator::Excel.new('spec/files/0_3_5_multiple_measure_paths.xlsx')
+    end
+
+    it 'should process' do
+      expect(@excel.process).to eq(true)
+    end
+
+    it 'should save the analysis' do
+      @excel.save_analysis
+      model_uuid = @excel.models.first[:name]
+
+      expect(File.exist?("spec/files/export/analysis/#{model_uuid}.json")).to eq true
+      expect(File.exist?("spec/files/export/analysis/#{model_uuid}.zip")).to eq true
+
+      expect(@excel.aws_tags).to eq(['org=5500','nothing=else matters'])
     end
   end
 end
