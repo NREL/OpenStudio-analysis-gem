@@ -8,7 +8,7 @@ module OpenStudio
         attr_reader :outputs
         attr_reader :models
         attr_reader :weather_files
-        attr_reader :measure_path
+        attr_reader :measure_paths
         attr_reader :export_path
         attr_reader :cluster_name
         attr_reader :variables
@@ -46,7 +46,7 @@ module OpenStudio
           @models = []
           @other_files = []
           @export_path = './export'
-          @measure_path = './measures'
+          @measure_paths = []
           @number_of_samples = 0 # todo: remove this
           @problem = {}
           @algorithm = {}
@@ -92,7 +92,10 @@ module OpenStudio
 
         def validate_analysis
           # Setup the paths and do some error checking
-          fail "Measures directory '#{@measure_path}' does not exist" unless Dir.exist?(@measure_path)
+          @measure_paths.each do |mp|
+            fail "Measures directory '#{mp}' does not exist" unless Dir.exist?(mp)
+          end
+
 
           @models.uniq!
           fail 'No seed models defined in spreadsheet' if @models.empty?
@@ -364,35 +367,51 @@ module OpenStudio
             # Add only the measures that are defined in the spreadsheet
             required_measures = @variables['data'].map { |v| v['measure_file_name_directory'] if v['enabled'] }.compact.uniq
 
+            # Convert this into a hash which looks like {name: measure_name}. This will allow us to add more
+            # fields to the measure, such as which directory is the measure.
+            required_measures = required_measures.map { |value| {name: value} }
+
             # first validate that all the measures exist
             errors = []
             required_measures.each do |measure|
-              measure_dir_to_add = "#{@measure_path}/#{measure}"
+              next if measure.key? :path
 
-              if Dir.exist? measure_dir_to_add
-                unless File.exist? "#{measure_dir_to_add}/measure.rb"
-                  errors << "Measure in directory '#{@measure_path}/#{measure}' did not contain a measure.rb file"
+              @measure_paths.each do |measure_path|
+                measure_dir_to_add = "#{measure_path}/#{measure[:name]}"
+                if Dir.exist? measure_dir_to_add
+                  if File.exist? "#{measure_dir_to_add}/measure.rb"
+                    measure[:path] = measure_path
+                    break
+                  else
+                    errors << "Measure in directory '#{@measure_path}/#{measure}' did not contain a measure.rb file"
+                  end
                 end
-              else
+              end
+            end
+
+            # validate that all measures were found
+            required_measures.each do |measure|
+              unless measure.key? :path
                 errors << "Could not find measure '#{measure}' in directory '#{@measure_path}'"
               end
             end
+
             fail errors.join("\n") unless errors.empty?
 
             required_measures.each do |measure|
-              measure_dir_to_add = "#{@measure_path}/#{measure}"
+              measure_dir_to_add = "#{measure[:path]}/#{measure[:name]}"
               puts "  Adding measure #{measure_dir_to_add} to zip file"
               Dir[File.join(measure_dir_to_add, '**')].each do |file|
                 if File.directory?(file)
                   if File.basename(file) == 'resources' || File.basename(file) == 'lib'
-                    add_directory_to_zip(zipfile, file, "./measures/#{measure}/#{File.basename(file)}")
+                    add_directory_to_zip(zipfile, file, "./measures/#{measure[:name]}/#{File.basename(file)}")
                   else
                     # pp "Skipping Directory #{File.basename(file)}"
                   end
                 else
                   # pp "Adding File #{file}"
                   # added_measures << measure_dir unless added_measures.include? measure_dir
-                  zipfile.add(file.sub(measure_dir_to_add, "./measures/#{measure}/"), file)
+                  zipfile.add(file.sub(measure_dir_to_add, "./measures/#{measure[:name]}/"), file)
                 end
               end
             end
@@ -549,9 +568,9 @@ module OpenStudio
               if row[0] == 'Measure Directory'
                 tmp_filepath = row[1]
                 if (Pathname.new tmp_filepath).absolute?
-                  @measure_path = tmp_filepath
+                  @measure_paths << tmp_filepath
                 else
-                  @measure_path = File.expand_path(File.join(@root_path, tmp_filepath))
+                  @measure_paths << File.expand_path(File.join(@root_path, tmp_filepath))
                 end
               end
               @run_setup["#{row[0].snake_case}"] = row[1] if row[0]
@@ -604,6 +623,9 @@ module OpenStudio
               @other_files << { lib_zip_name: row[1], path: other_path }
             end
           end
+
+          # do some last checks
+          @measure_paths = ['./measures'] if @measure_paths.empty?
         end
 
         # parse_variables will parse the XLS spreadsheet and save the data into
