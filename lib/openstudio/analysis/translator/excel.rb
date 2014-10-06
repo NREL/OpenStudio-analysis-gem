@@ -15,6 +15,7 @@ module OpenStudio
         attr_reader :algorithm
         attr_reader :problem
         attr_reader :run_setup
+        attr_reader :aws_tags
 
         # remove these once we have classes to construct the JSON file
         attr_accessor :name
@@ -53,6 +54,7 @@ module OpenStudio
           @template_json = nil
           @outputs = {}
           @run_setup = {}
+          @aws_tags = []
         end
 
         def process
@@ -546,8 +548,14 @@ module OpenStudio
               @settings["#{row[0].snake_case}"] = row[1] if row[0]
               @cluster_name = @settings['cluster_name'].snake_case if @settings['cluster_name']
 
+              if row[0] == 'AWS Tag'
+                @aws_tags << row[1].strip
+              end
+
               # type some of the values that we know
               @settings['proxy_port'] = @settings['proxy_port'].to_i if @settings['proxy_port']
+
+
             elsif b_run_setup
               if row[0] == 'Analysis Name'
                 if row[1]

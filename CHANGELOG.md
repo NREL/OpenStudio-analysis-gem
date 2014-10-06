@@ -1,6 +1,11 @@
 OpenStudio Analysis Gem Change Log
 ==================================
 
+Version 0.3.6
+-------------
+* Allow multiple measure paths. Will search by order for the measure.
+* Add AWS Tag in the Settings
+
 Version 0.3.5
 --------------
 * Add delete_project method

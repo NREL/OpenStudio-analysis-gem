@@ -485,7 +485,12 @@ describe OpenStudio::Analysis::Translator::Excel do
 
     it 'should save the analysis' do
       @excel.save_analysis
+      model_uuid = @excel.models.first[:name]
 
+      expect(File.exist?("spec/files/export/analysis/#{model_uuid}.json")).to eq true
+      expect(File.exist?("spec/files/export/analysis/#{model_uuid}.zip")).to eq true
+
+      expect(@excel.aws_tags).to eq(['org=5500','nothing=else matters'])
     end
   end
 end
