@@ -1,6 +1,8 @@
 # Ruby libraries to include
 require 'json'
 require 'securerandom'
+require 'logger'
+require 'pathname'
 
 # gems to always include
 require 'faraday'
@@ -9,8 +11,6 @@ require 'erb'
 require 'zip'
 require 'semantic'
 require 'semantic/core_ext'
-require 'logger'
-require 'pathname'
 
 # core
 require 'openstudio/analysis/server_api'
