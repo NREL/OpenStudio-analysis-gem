@@ -474,7 +474,7 @@ describe OpenStudio::Analysis::Translator::Excel do
     end
   end
 
-  context 'version 0.3.3 and short display names' do
+  context 'version 0.3.5 and measure paths' do
     before :all do
       @excel = OpenStudio::Analysis::Translator::Excel.new('spec/files/0_3_5_multiple_measure_paths.xlsx')
     end
@@ -489,6 +489,11 @@ describe OpenStudio::Analysis::Translator::Excel do
 
       expect(File.exist?("spec/files/export/analysis/#{model_uuid}.json")).to eq true
       expect(File.exist?("spec/files/export/analysis/#{model_uuid}.zip")).to eq true
+
+      expect(@excel.settings['openstudio_server_version']).to eq('1.8.0')
+      expect(@excel.settings['spreadsheet_version']).to eq "0.3.5"
+      expect(@excel.settings['server_instance_type']).to eq "m3.xlarge"
+      expect(@excel.settings['worker_instance_type']).to eq "c3.2xlarge"
 
       expect(@excel.aws_tags).to eq(['org=5500','nothing=else matters'])
     end
