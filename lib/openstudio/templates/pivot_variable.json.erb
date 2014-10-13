@@ -25,8 +25,8 @@
     "units": "<%= @variable['units'] %>",
     "value_type": "<%= @variable['type'] %>",
     "variable_type": "RubyContinuousVariable",
-    "uuid": "<%= UUID.new.generate %>",
-    "version_uuid": "<%= UUID.new.generate %>"
+    "uuid": "<%= SecureRandom.uuid %>",
+    "version_uuid": "<%= SecureRandom.uuid %>"
 }
 
 

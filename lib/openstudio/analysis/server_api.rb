@@ -379,20 +379,20 @@ module OpenStudio
         analysis_id = nil
         if formulation_json
           if options[:reset_uuids]
-            analysis_id = UUID.new.generate
+            analysis_id = SecureRandom.uuid
             formulation_json[:analysis][:uuid] = analysis_id
 
             formulation_json[:analysis][:problem][:workflow].each do |wf|
-              wf[:uuid] = UUID.new.generate
+              wf[:uuid] = SecureRandom.uuid
               if wf[:arguments]
                 wf[:arguments].each do |arg|
-                  arg[:uuid] = UUID.new.generate
+                  arg[:uuid] = SecureRandom.uuid
                 end
               end
               if wf[:variables]
                 wf[:variables].each do |var|
-                  var[:uuid] = UUID.new.generate
-                  var[:argument][:uuid] = UUID.new.generate if var[:argument]
+                  var[:uuid] = SecureRandom.uuid
+                  var[:argument][:uuid] = SecureRandom.uuid if var[:argument]
                 end
               end
             end
@@ -407,7 +407,7 @@ module OpenStudio
             analysis: options
           }
           puts formulation_json
-          analysis_id = UUID.new.generate
+          analysis_id = SecureRandom.uuid
           formulation_json[:analysis][:uuid] = analysis_id
         end
         fail "No analysis id defined in analyis.json #{options[:formulation_file]}" if analysis_id.nil?
@@ -463,7 +463,7 @@ module OpenStudio
 
         if options[:reset_uuids]
           dp_hash[:analysis_uuid] = analysis_id
-          dp_hash[:uuid] = UUID.new.generate
+          dp_hash[:uuid] = SecureRandom.uuid
         end
 
         # merge in the analysis_id as it has to be what is in the database

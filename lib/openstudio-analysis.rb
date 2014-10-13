@@ -1,13 +1,15 @@
+# Ruby libraries to include
 require 'json'
+require 'securerandom'
+
+# gems to always include
 require 'faraday'
-require 'uuid'
 require 'roo'
 require 'erb'
 require 'zip'
 require 'semantic'
 require 'semantic/core_ext'
 require 'logger'
-require 'pp'
 require 'pathname'
 
 # core

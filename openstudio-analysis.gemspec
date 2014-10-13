@@ -18,7 +18,6 @@ Gem::Specification.new do |s|
   s.required_rubygems_version = '>= 1.3.6'
 
   s.add_dependency('faraday', '~> 0.8')
-  s.add_dependency('uuid', '~> 2.3')
   s.add_dependency('roo', '~> 1.12')
   s.add_dependency('rubyzip', '~> 1.0') # don't update because of jruby
   s.add_dependency('semantic', '~> 1.3')

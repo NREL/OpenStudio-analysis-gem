@@ -36,6 +36,6 @@
     "value_type": "<%= @variable['type'] %>",
     "variable": true,
     "variable_type": "RubyContinuousVariable",
-    "uuid": "<%= UUID.new.generate %>",
-    "version_uuid": "<%= UUID.new.generate %>"
+    "uuid": "<%= SecureRandom.uuid %>",
+    "version_uuid": "<%= SecureRandom.uuid %>"
 }

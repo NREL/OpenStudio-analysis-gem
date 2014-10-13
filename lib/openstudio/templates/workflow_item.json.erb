@@ -2,8 +2,8 @@
     "measure_definition_class_name": "<%= @measure['measure_file_name'] %>",
     "measure_definition_directory": "./measures/<%= @measure['measure_file_name_directory'] %>",
     "measure_definition_display_name": "<%= @measure['measure_file_name'] %>",
-    "measure_definition_uuid": "<%= UUID.new.generate %>",
-    "measure_definition_version_uuid": "<%= UUID.new.generate %>",
+    "measure_definition_uuid": "<%= SecureRandom.uuid %>",
+    "measure_definition_version_uuid": "<%= SecureRandom.uuid %>",
     "measure_type": "<%= @measure['measure_type'] %>",
     "arguments": [],
     "display_name": "<%= @measure['display_name'] %>",
@@ -11,6 +11,6 @@
     "variables": [],
     "workflow_index": <%= @measure_index %>,
     "workflow_step_type": "Measure",
-    "uuid": "<%= UUID.new.generate %>",
-    "version_uuid": "<%= UUID.new.generate %>"
+    "uuid": "<%= SecureRandom.uuid %>",
+    "version_uuid": "<%= SecureRandom.uuid %>"
 }
