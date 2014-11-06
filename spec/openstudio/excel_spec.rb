@@ -36,7 +36,6 @@ describe OpenStudio::Analysis::Translator::Excel do
 
     it 'should not export to a JSON' do
       @excel.process
-
     end
   end
 
@@ -534,4 +533,17 @@ describe OpenStudio::Analysis::Translator::Excel do
 
     end
   end
+
+
+  context 'version 0.3.7 and worker init-final scripts' do
+    before :all do
+      @excel = OpenStudio::Analysis::Translator::Excel.new('spec/files/0_3_7_unique_measure_names.xlsx')
+    end
+
+    it 'should fail to process' do
+      expect { @excel.process }.to raise_error("Measure Display Names are not unique for 'Rotate Building Relative to Current Orientation', 'Nothing Important'")
+    end
+
+  end
+
 end
