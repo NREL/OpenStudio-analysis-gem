@@ -269,7 +269,7 @@ module OpenStudio
         file_path_and_name = nil
 
         response = @conn.get do |r|
-          r.url  '/admin/backup_database?full_backup=true'
+          r.url '/admin/backup_database?full_backup=true'
           r.options.timeout = 3600 # 60 minutes
         end
 
@@ -439,7 +439,6 @@ module OpenStudio
           response = @conn_multipart.post "analyses/#{analysis_id}/upload.json", payload do |req|
             req.options[:timeout] = 1800 # seconds
           end
-
 
           if response.status == 201
             puts 'Successfully uploaded ZIP file'
