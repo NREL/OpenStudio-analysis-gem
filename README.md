@@ -16,6 +16,6 @@ Instructions
 Testing
 -------
 
-This gem used RSpec for testing.  To test simple run `rspec` at the command line.
+This gem used RSpec for testing.  To test simply run `rspec` at the command line.
 
 
