@@ -36,7 +36,6 @@ describe OpenStudio::Analysis::Translator::Excel do
 
     it 'should not export to a JSON' do
       @excel.process
-
     end
   end
 
@@ -491,11 +490,60 @@ describe OpenStudio::Analysis::Translator::Excel do
       expect(File.exist?("spec/files/export/analysis/#{model_uuid}.zip")).to eq true
 
       expect(@excel.settings['openstudio_server_version']).to eq('1.8.0')
-      expect(@excel.settings['spreadsheet_version']).to eq "0.3.5"
-      expect(@excel.settings['server_instance_type']).to eq "m3.xlarge"
-      expect(@excel.settings['worker_instance_type']).to eq "c3.2xlarge"
+      expect(@excel.settings['spreadsheet_version']).to eq '0.3.5'
+      expect(@excel.settings['server_instance_type']).to eq 'm3.xlarge'
+      expect(@excel.settings['worker_instance_type']).to eq 'c3.2xlarge'
 
-      expect(@excel.aws_tags).to eq(['org=5500','nothing=else matters'])
+      expect(@excel.aws_tags).to eq(['org=5500', 'nothing=else matters'])
     end
   end
+
+  context 'version 0.3.7 and worker init-final scripts' do
+    before :all do
+      @excel = OpenStudio::Analysis::Translator::Excel.new('spec/files/0_3_7_worker_init_final.xlsx')
+    end
+
+    it 'should process' do
+      expect(@excel.process).to eq(true)
+    end
+
+    it 'should save the analysis' do
+      @excel.save_analysis
+      model_uuid = @excel.models.first[:name]
+
+      expect(File.exist?("spec/files/export/analysis/#{model_uuid}.json")).to eq true
+      expect(File.exist?("spec/files/export/analysis/#{model_uuid}.zip")).to eq true
+
+      expect(@excel.worker_inits.size).to eq 2
+      expect(@excel.worker_inits[0][:name]).to eq 'initialize me'
+      expect(@excel.worker_inits[0][:args]).to eq "[\"first_arg\",2,{a_hash: \"input\"}]"
+
+      # test the evaling of the args
+      a = eval(@excel.worker_inits[0][:args])
+      expect(a[0]).to eq 'first_arg'
+      expect(a[1]).to eq 2
+      expect(a[2]).to be_a Hash
+      expect(a[2][:a_hash]).to eq 'input'
+
+      expect(@excel.worker_inits[0][:ordered_file_name]).to eq '00_first_file.rb'
+      expect(@excel.worker_inits[1][:ordered_file_name]).to eq '01_second_file.rb'
+
+      expect(@excel.worker_finals.size).to eq 1
+      expect(@excel.worker_inits[0][:ordered_file_name]).to eq '00_first_file.rb'
+
+    end
+  end
+
+
+  context 'version 0.3.7 and worker init-final scripts' do
+    before :all do
+      @excel = OpenStudio::Analysis::Translator::Excel.new('spec/files/0_3_7_unique_measure_names.xlsx')
+    end
+
+    it 'should fail to process' do
+      expect { @excel.process }.to raise_error("Measure Display Names are not unique for 'Rotate Building Relative to Current Orientation', 'Nothing Important'")
+    end
+
+  end
+
 end

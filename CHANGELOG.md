@@ -1,6 +1,11 @@
 OpenStudio Analysis Gem Change Log
 ==================================
 
+Version 0.3.7 (Unreleased)
+-------------
+* Worker initilization and finalization scripts
+* Do not allow the file to proccess if the Measure Display Names are not unique
+
 Version 0.3.6
 -------------
 * Allow multiple measure paths. Will search by order for the measure.
