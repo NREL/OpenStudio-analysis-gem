@@ -22,4 +22,4 @@ end
 task 'spec:unit' => 'ci:setup:rspec'
 task 'spec:integration' => 'ci:setup:rspec'
 
-task :default => 'spec:unit'
+task default: 'spec:unit'

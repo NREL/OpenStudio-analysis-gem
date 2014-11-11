@@ -534,7 +534,6 @@ describe OpenStudio::Analysis::Translator::Excel do
     end
   end
 
-
   context 'version 0.3.7 and worker init-final scripts' do
     before :all do
       @excel = OpenStudio::Analysis::Translator::Excel.new('spec/files/0_3_7_unique_measure_names.xlsx')

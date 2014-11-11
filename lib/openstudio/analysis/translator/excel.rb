@@ -132,9 +132,9 @@ module OpenStudio
           FileUtils.mkdir_p(@export_path)
 
           # verify that the measure display names are unique
-          #puts @variables.inspect
-          measure_display_names = @variables['data'].map{ |m| m['enabled'] ? m['display_name'] : nil}.compact
-          measure_display_names_mult = measure_display_names.select{ |m| measure_display_names.count(m) > 1 }.uniq
+          # puts @variables.inspect
+          measure_display_names = @variables['data'].map { |m| m['enabled'] ? m['display_name'] : nil }.compact
+          measure_display_names_mult = measure_display_names.select { |m| measure_display_names.count(m) > 1 }.uniq
           if measure_display_names_mult && !measure_display_names_mult.empty?
             fail "Measure Display Names are not unique for '#{measure_display_names_mult.join('\', \'')}'"
           end
@@ -948,7 +948,7 @@ module OpenStudio
               # generate name id
               # TODO: put this into a logger. puts "Parsing measure #{row[1]}"
               display_name = row[:measure_name_or_var_type]
-              measure_name = display_name.downcase.strip.gsub('-', '_').gsub(' ', '_').gsub('__','_')
+              measure_name = display_name.downcase.strip.gsub('-', '_').gsub(' ', '_').gsub('__', '_')
               data['data'][measure_index]['display_name'] = display_name
               data['data'][measure_index]['name'] = measure_name
               data['data'][measure_index]['enabled'] = row[:enabled] == 'TRUE' ? true : false

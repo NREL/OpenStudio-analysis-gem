@@ -3,7 +3,7 @@ class FirstFile
     # do nothing in this example
   end
 
-  def run(a_file, *args)
+  def run(_a_file, *args)
     puts args
 
     args
