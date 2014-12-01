@@ -3,8 +3,8 @@ OpenStudio Analysis Gem Change Log
 
 Version 0.3.7 (Unreleased)
 -------------
-* Worker initilization and finalization scripts
-* Do not allow the file to proccess if the Measure Display Names are not unique
+* Worker initialization and finalization scripts
+* Do not allow the file to process if the Measure Display Names are not unique
 
 Version 0.3.6
 -------------
@@ -96,7 +96,7 @@ Version 0.1.7
 Version 0.1.6
 -------------
 * Small fixes
-                
+
 Version 0.1.5
 -------------
 * Now depends on json_pure for window users
@@ -119,5 +119,3 @@ Version 0.1.1
 * Convert argument values to the right variable types
 
 * Add measure type parsing by reading the inherited class
-
-
