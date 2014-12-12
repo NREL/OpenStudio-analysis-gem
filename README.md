@@ -4,7 +4,7 @@
 
 The OpenStudio Analysis Gem is used to communicate files to the OpenStudio Distributed Analysis.
 
-The purpose of this gem is to generate the analysis.json file, analysis.zip, and communicate with the server to upload 
+The purpose of this gem is to generate the analysis.json file, analysis.zip, and communicate with the server to upload
 the simulations.
 
 This gem does not create the cluster. Currently the only supported Cloud platform is
@@ -49,6 +49,4 @@ m.argument_static_value('variable_argument_name', value)
 ## Testing
 
 
-This gem used RSpec for testing.  To test simple run `rspec` at the command line.
-
-
+This gem used RSpec for testing.  To test simply run `rspec` at the command line.
