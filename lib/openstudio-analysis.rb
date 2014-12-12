@@ -16,6 +16,11 @@ require 'semantic/core_ext'
 require 'openstudio/analysis/server_api'
 require 'openstudio/analysis/version'
 
+# analysis classes
+require 'openstudio/analysis'
+require 'openstudio/analysis/formulation'
+require 'openstudio/analysis/workflow'
+
 # translators
 require 'openstudio/analysis/translator/excel'
 
