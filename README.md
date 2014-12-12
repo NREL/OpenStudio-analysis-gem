@@ -28,8 +28,8 @@ analysis.workflow = OpenStudio::Analysis::Workflow.load_from_file(...)
 
 # add measures to the workflow
 wf = analysis.workflow
-wf.add_measure("path_to_measure")
-wf.add_measure("path_to_measure_2")
+wf.add_measure_from_path("path_to_measure")
+wf.add_measure_from_path("path_to_measure_2")
 
 # or allow the system to search for the measure based on default_measure_paths
 OpenStudio::Analysis.measure_paths = ['measures', '../project_specific_measures']
@@ -50,3 +50,10 @@ m.argument_static_value('variable_argument_name', value)
 
 
 This gem used RSpec for testing.  To test simply run `rspec` at the command line.
+
+# Todos
+
+In the programmatic interface there are still several items that need to be checked
+
+* verify that the measure.xml file exists
+

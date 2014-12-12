@@ -12,6 +12,8 @@ require 'zip'
 require 'semantic'
 require 'semantic/core_ext'
 
+require 'bcl'
+
 # core
 require 'openstudio/analysis/server_api'
 require 'openstudio/analysis/version'
