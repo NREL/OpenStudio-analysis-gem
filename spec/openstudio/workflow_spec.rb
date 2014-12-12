@@ -5,7 +5,7 @@ describe OpenStudio::Analysis::Workflow do
     @a = OpenStudio::Analysis::Workflow.new
   end
 
-  it 'should create aw workflow' do
+  it 'should create a workflow' do
     expect(@a).not_to be nil
     expect(@a).to be_a OpenStudio::Analysis::Workflow
   end
@@ -18,8 +18,6 @@ describe OpenStudio::Analysis::Workflow do
     FileUtils.remove "#{p}/measure.json" if File.exist? "#{p}/measure.json"
     m = @a.add_measure_from_path(p)
 
-
     puts @a.measures
-
   end
 end

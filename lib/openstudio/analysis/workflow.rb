@@ -23,6 +23,7 @@ module OpenStudio
           measure_hash = nil
           unless File.exist?(File.join(path_to_measure, 'measure.json'))
             measure_hash = b.parse_measure_file(nil, File.join(path_to_measure, 'measure.rb'))
+            File.open(File.join(path_to_measure, 'measure.json'), 'w') { |f| f << JSON.pretty_generate(measure_hash)}
             warn("#{path_to_measure}: measure.json not found, will parse measure file using Bcl bem")
           end
 
