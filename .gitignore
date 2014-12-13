@@ -7,7 +7,7 @@
 ~$*
 tmp/*
 Gemfile.lock
-/spec/files/analysis
+/spec/files/analysis/*.zip
 /spec/files/export
 /spec/reports
 /*.log

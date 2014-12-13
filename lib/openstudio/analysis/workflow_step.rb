@@ -52,7 +52,7 @@ module OpenStudio
         hash
       end
       
-      # Read the workflow item from a measure hash
+      # Read the workflow item from a measure hash.
       #
       # @param instance_name [String] Machine name of the instance
       # @param instance_display_name [String] Display name of the instance

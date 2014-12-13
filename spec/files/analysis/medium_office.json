@@ -1,0 +1,1674 @@
+{
+  "analysis": {
+    "display_name": "Name goes here",
+    "name": "name_goes_here",
+    "output_variables": [
+      {
+        "display_name": "Total Natual Gas",
+        "display_name_short": "Total Natual Gas",
+        "metadata_id": null,
+        "name": "total_natural_gas",
+        "units": "MJ/m2",
+        "objective_function": true,
+        "objective_function_index": 0,
+        "objective_function_target": 330.7,
+        "scaling_factor": null,
+        "objective_function_group": "TRUE"
+      },
+      {
+        "display_name": "Total Electricity",
+        "display_name_short": "Total Electricity",
+        "metadata_id": null,
+        "name": "total_electricity",
+        "units": "MJ/m2",
+        "objective_function": true,
+        "objective_function_index": 1,
+        "objective_function_target": 496.5,
+        "scaling_factor": null,
+        "objective_function_group": "TRUE"
+      },
+      {
+        "display_name": "cooling_electricity_jan",
+        "display_name_short": "cooling_electricity_jan",
+        "metadata_id": null,
+        "name": "cooling_electricity_jan",
+        "units": "J",
+        "objective_function": true,
+        "objective_function_index": 2,
+        "objective_function_target": 63597914341.3388,
+        "scaling_factor": 463203800000.0,
+        "objective_function_group": "TRUE"
+      },
+      {
+        "display_name": "cooling_electricity_feb",
+        "display_name_short": "cooling_electricity_feb",
+        "metadata_id": null,
+        "name": "cooling_electricity_feb",
+        "units": "J",
+        "objective_function": true,
+        "objective_function_index": 3,
+        "objective_function_target": 58138465958.3439,
+        "scaling_factor": 463203800000.0,
+        "objective_function_group": "TRUE"
+      },
+      {
+        "display_name": "cooling_electricity_mar",
+        "display_name_short": "cooling_electricity_mar",
+        "metadata_id": null,
+        "name": "cooling_electricity_mar",
+        "units": "J",
+        "objective_function": true,
+        "objective_function_index": 4,
+        "objective_function_target": 301531761648.05,
+        "scaling_factor": 463203800000.0,
+        "objective_function_group": "TRUE"
+      },
+      {
+        "display_name": "cooling_electricity_apr",
+        "display_name_short": "cooling_electricity_apr",
+        "metadata_id": null,
+        "name": "cooling_electricity_apr",
+        "units": "J",
+        "objective_function": true,
+        "objective_function_index": 5,
+        "objective_function_target": 336163175378.778,
+        "scaling_factor": 463203800000.0,
+        "objective_function_group": "TRUE"
+      },
+      {
+        "display_name": "cooling_electricity_may",
+        "display_name_short": "cooling_electricity_may",
+        "metadata_id": null,
+        "name": "cooling_electricity_may",
+        "units": "J",
+        "objective_function": true,
+        "objective_function_index": 6,
+        "objective_function_target": 1412749721236.32,
+        "scaling_factor": 463203800000.0,
+        "objective_function_group": "TRUE"
+      },
+      {
+        "display_name": "cooling_electricity_jun",
+        "display_name_short": "cooling_electricity_jun",
+        "metadata_id": null,
+        "name": "cooling_electricity_jun",
+        "units": "J",
+        "objective_function": true,
+        "objective_function_index": 7,
+        "objective_function_target": 2327741408781.58,
+        "scaling_factor": 463203800000.0,
+        "objective_function_group": "TRUE"
+      },
+      {
+        "display_name": "cooling_electricity_jul",
+        "display_name_short": "cooling_electricity_jul",
+        "metadata_id": null,
+        "name": "cooling_electricity_jul",
+        "units": "J",
+        "objective_function": true,
+        "objective_function_index": 8,
+        "objective_function_target": 2402590637505.39,
+        "scaling_factor": 463203800000.0,
+        "objective_function_group": "TRUE"
+      },
+      {
+        "display_name": "cooling_electricity_aug",
+        "display_name_short": "cooling_electricity_aug",
+        "metadata_id": null,
+        "name": "cooling_electricity_aug",
+        "units": "J",
+        "objective_function": true,
+        "objective_function_index": 9,
+        "objective_function_target": 2472656245279.37,
+        "scaling_factor": 463203800000.0,
+        "objective_function_group": "TRUE"
+      },
+      {
+        "display_name": "cooling_electricity_sep",
+        "display_name_short": "cooling_electricity_sep",
+        "metadata_id": null,
+        "name": "cooling_electricity_sep",
+        "units": "J",
+        "objective_function": true,
+        "objective_function_index": 10,
+        "objective_function_target": 1807432185051.14,
+        "scaling_factor": 463203800000.0,
+        "objective_function_group": "TRUE"
+      },
+      {
+        "display_name": "cooling_electricity_oct",
+        "display_name_short": "cooling_electricity_oct",
+        "metadata_id": null,
+        "name": "cooling_electricity_oct",
+        "units": "J",
+        "objective_function": true,
+        "objective_function_index": 11,
+        "objective_function_target": 619615878181.616,
+        "scaling_factor": 463203800000.0,
+        "objective_function_group": "TRUE"
+      },
+      {
+        "display_name": "cooling_electricity_nov",
+        "display_name_short": "cooling_electricity_nov",
+        "metadata_id": null,
+        "name": "cooling_electricity_nov",
+        "units": "J",
+        "objective_function": true,
+        "objective_function_index": 12,
+        "objective_function_target": 117109844324.095,
+        "scaling_factor": 463203800000.0,
+        "objective_function_group": "TRUE"
+      },
+      {
+        "display_name": "cooling_electricity_dec",
+        "display_name_short": "cooling_electricity_dec",
+        "metadata_id": null,
+        "name": "cooling_electricity_dec",
+        "units": "J",
+        "objective_function": true,
+        "objective_function_index": 13,
+        "objective_function_target": 103360013175.794,
+        "scaling_factor": 463203800000.0,
+        "objective_function_group": "TRUE"
+      },
+      {
+        "display_name": "heating_gas_jan",
+        "display_name_short": "heating_gas_jan",
+        "metadata_id": null,
+        "name": "heating_gas_jan",
+        "units": "J",
+        "objective_function": true,
+        "objective_function_index": 14,
+        "objective_function_target": 2799558466140.68,
+        "scaling_factor": 463203800000.0,
+        "objective_function_group": "TRUE"
+      },
+      {
+        "display_name": "heating_gas_feb",
+        "display_name_short": "heating_gas_feb",
+        "metadata_id": null,
+        "name": "heating_gas_feb",
+        "units": "J",
+        "objective_function": true,
+        "objective_function_index": 15,
+        "objective_function_target": 2663349812763.18,
+        "scaling_factor": 463203800000.0,
+        "objective_function_group": "TRUE"
+      },
+      {
+        "display_name": "heating_gas_mar",
+        "display_name_short": "heating_gas_mar",
+        "metadata_id": null,
+        "name": "heating_gas_mar",
+        "units": "J",
+        "objective_function": true,
+        "objective_function_index": 16,
+        "objective_function_target": 1576136833664.73,
+        "scaling_factor": 463203800000.0,
+        "objective_function_group": "TRUE"
+      },
+      {
+        "display_name": "heating_gas_apr",
+        "display_name_short": "heating_gas_apr",
+        "metadata_id": null,
+        "name": "heating_gas_apr",
+        "units": "J",
+        "objective_function": true,
+        "objective_function_index": 17,
+        "objective_function_target": 1752794439290.69,
+        "scaling_factor": 463203800000.0,
+        "objective_function_group": "TRUE"
+      },
+      {
+        "display_name": "heating_gas_may",
+        "display_name_short": "heating_gas_may",
+        "metadata_id": null,
+        "name": "heating_gas_may",
+        "units": "J",
+        "objective_function": true,
+        "objective_function_index": 18,
+        "objective_function_target": 375145279804.892,
+        "scaling_factor": 463203800000.0,
+        "objective_function_group": "TRUE"
+      },
+      {
+        "display_name": "heating_gas_jun",
+        "display_name_short": "heating_gas_jun",
+        "metadata_id": null,
+        "name": "heating_gas_jun",
+        "units": "J",
+        "objective_function": true,
+        "objective_function_index": 19,
+        "objective_function_target": 32970706746.2053,
+        "scaling_factor": 463203800000.0,
+        "objective_function_group": "TRUE"
+      },
+      {
+        "display_name": "heating_gas_jul",
+        "display_name_short": "heating_gas_jul",
+        "metadata_id": null,
+        "name": "heating_gas_jul",
+        "units": "J",
+        "objective_function": true,
+        "objective_function_index": 20,
+        "objective_function_target": 50096876832.5083,
+        "scaling_factor": 463203800000.0,
+        "objective_function_group": "TRUE"
+      },
+      {
+        "display_name": "heating_gas_aug",
+        "display_name_short": "heating_gas_aug",
+        "metadata_id": null,
+        "name": "heating_gas_aug",
+        "units": "J",
+        "objective_function": true,
+        "objective_function_index": 21,
+        "objective_function_target": 32660740137.6019,
+        "scaling_factor": 463203800000.0,
+        "objective_function_group": "TRUE"
+      },
+      {
+        "display_name": "heating_gas_sep",
+        "display_name_short": "heating_gas_sep",
+        "metadata_id": null,
+        "name": "heating_gas_sep",
+        "units": "J",
+        "objective_function": true,
+        "objective_function_index": 22,
+        "objective_function_target": 144097879467.636,
+        "scaling_factor": 463203800000.0,
+        "objective_function_group": "TRUE"
+      },
+      {
+        "display_name": "heating_gas_oct",
+        "display_name_short": "heating_gas_oct",
+        "metadata_id": null,
+        "name": "heating_gas_oct",
+        "units": "J",
+        "objective_function": true,
+        "objective_function_index": 23,
+        "objective_function_target": 970975709027.067,
+        "scaling_factor": 463203800000.0,
+        "objective_function_group": "TRUE"
+      },
+      {
+        "display_name": "heating_gas_nov",
+        "display_name_short": "heating_gas_nov",
+        "metadata_id": null,
+        "name": "heating_gas_nov",
+        "units": "J",
+        "objective_function": true,
+        "objective_function_index": 24,
+        "objective_function_target": 2261115778226.24,
+        "scaling_factor": 463203800000.0,
+        "objective_function_group": "TRUE"
+      },
+      {
+        "display_name": "heating_gas_dec",
+        "display_name_short": "heating_gas_dec",
+        "metadata_id": null,
+        "name": "heating_gas_dec",
+        "units": "J",
+        "objective_function": true,
+        "objective_function_index": 25,
+        "objective_function_target": 2657735386128.84,
+        "scaling_factor": 463203800000.0,
+        "objective_function_group": "TRUE"
+      }
+    ],
+    "problem": {
+      "algorithm": {
+        "popsize": 30,
+        "generations": 5,
+        "waitgenerations": 2,
+        "bfgsburnin": 2,
+        "solutiontolerance": 0.01,
+        "epsilongradient": 0.01,
+        "pgtol": 0.01,
+        "factr": 45036000000000,
+        "maxit": 100,
+        "normtype": "minkowski",
+        "ppower": 2,
+        "objective_functions": [
+          "total_natural_gas",
+          "total_electricity",
+          "cooling_electricity_jan",
+          "cooling_electricity_feb",
+          "cooling_electricity_mar",
+          "cooling_electricity_apr",
+          "cooling_electricity_may",
+          "cooling_electricity_jun",
+          "cooling_electricity_jul",
+          "cooling_electricity_aug",
+          "cooling_electricity_sep",
+          "cooling_electricity_oct",
+          "cooling_electricity_nov",
+          "cooling_electricity_dec",
+          "heating_gas_jan",
+          "heating_gas_feb",
+          "heating_gas_mar",
+          "heating_gas_apr",
+          "heating_gas_may",
+          "heating_gas_jun",
+          "heating_gas_jul",
+          "heating_gas_aug",
+          "heating_gas_sep",
+          "heating_gas_oct",
+          "heating_gas_nov",
+          "heating_gas_dec"
+        ]
+      },
+      "name": "Problem",
+      "workflow": [
+        {
+          "measure_definition_class_name": "ReduceLightingLoadsByPercentage",
+          "measure_definition_directory": "./measures/ReduceLightingLoadsByPercentage",
+          "measure_definition_display_name": "ReduceLightingLoadsByPercentage",
+          "measure_definition_uuid": "70d81aaf-ceb1-44d9-883f-fe6f31ed6431",
+          "measure_definition_version_uuid": "73cf008c-1092-4b96-b4f5-388518a7b57c",
+          "measure_type": "RubyMeasure",
+          "arguments": [
+            {
+              "display_name": "Apply the Measure to a Specific Space Type or to the Entire Model.",
+              "display_name_short": "Apply the Measure to a Specific Space Type or to the Entire Model.",
+              "name": "space_type",
+              "value": "*Entire Building*",
+              "value_type": "choice"
+            },
+            {
+              "display_name": "Increase in Material and Installation Cost for Lighting per Floor Area (%).",
+              "display_name_short": "Increase in Material and Installation Cost for Lighting per Floor Area (%).",
+              "name": "material_and_installation_cost",
+              "value": 0.0,
+              "value_type": "double"
+            },
+            {
+              "display_name": "Increase in Demolition Costs for Lighting per Floor Area (%).",
+              "display_name_short": "Increase in Demolition Costs for Lighting per Floor Area (%).",
+              "name": "demolition_cost",
+              "value": 0.0,
+              "value_type": "double"
+            },
+            {
+              "display_name": "Years Until Costs Start (whole years).",
+              "display_name_short": "Years Until Costs Start (whole years).",
+              "name": "years_until_costs_start",
+              "value": 0,
+              "value_type": "integer"
+            },
+            {
+              "display_name": "Demolition Costs Occur During Initial Construction?",
+              "display_name_short": "Demolition Costs Occur During Initial Construction?",
+              "name": "demo_cost_initial_const",
+              "value": true,
+              "value_type": "bool"
+            },
+            {
+              "display_name": "Expected Life (whole years).",
+              "display_name_short": "Expected Life (whole years).",
+              "name": "expected_life",
+              "value": 15,
+              "value_type": "integer"
+            },
+            {
+              "display_name": "Increase O & M Costs for Lighting per Floor Area (%).",
+              "display_name_short": "Increase O & M Costs for Lighting per Floor Area (%).",
+              "name": "om_cost",
+              "value": 0.0,
+              "value_type": "double"
+            },
+            {
+              "display_name": "O & M Frequency (whole years).",
+              "display_name_short": "O & M Frequency (whole years).",
+              "name": "om_frequency",
+              "value": 1,
+              "value_type": "integer"
+            }
+          ],
+          "display_name": "Reduce Lighting Loads by Percentage",
+          "name": "reduce_lighting_loads_by_percentage",
+          "variables": [
+            {
+              "argument": {
+                "display_name": "Lighting Power Reduction",
+                "display_name_short": "Lighting Power Reduction",
+                "name": "lighting_power_reduction_percent",
+                "value_type": "double"
+              },
+              "display_name": "Lighting Power Reduction",
+              "display_name_short": "Lighting Power Reduction",
+              "maximum": 20.0,
+              "minimum": -20.0,
+              "relation_to_output": "",
+              "static_value": 0.0,
+              "uncertainty_description": {
+                "attributes": [
+                  {
+                    "name": "lower_bounds",
+                    "value": -20.0
+                  },
+                  {
+                    "name": "upper_bounds",
+                    "value": 20.0
+                  },
+                  {
+                    "name": "stddev",
+                    "value": 6.666666666666667
+                  },
+                  {
+                    "name": "delta_x",
+                    "value": null
+                  },
+                  {
+                    "name": "modes",
+                    "value": -1.0
+                  }
+                ],
+                "type": "triangle_uncertain"
+              },
+              "units": "",
+              "value_type": "double",
+              "variable": true,
+              "variable_type": "RubyContinuousVariable",
+              "uuid": "0417e025-b81d-4142-89d3-4bcea81ba677",
+              "version_uuid": "01aea456-afb3-4c42-95b5-f1554e4ab0a1"
+            }
+          ],
+          "workflow_index": 0,
+          "workflow_step_type": "Measure",
+          "uuid": "145e49c2-59ec-440f-973b-e1f800965449",
+          "version_uuid": "92139e06-7f15-404b-bcb3-128a6bb9c1c7"
+        },
+        {
+          "measure_definition_class_name": "ReduceElectricEquipmentLoadsByPercentage",
+          "measure_definition_directory": "./measures/ExampleMeasure",
+          "measure_definition_display_name": "ReduceElectricEquipmentLoadsByPercentage",
+          "measure_definition_uuid": "2263d0d6-4d03-452a-a165-31512f5ac0e7",
+          "measure_definition_version_uuid": "8589f2ab-528e-4be6-a828-5c3d048743a5",
+          "measure_type": "RubyMeasure",
+          "arguments": [
+            {
+              "display_name": "Apply the Measure to a Specific Space Type or to the Entire Model.",
+              "display_name_short": "Apply the Measure to a Specific Space Type or to the Entire Model.",
+              "name": "space_type",
+              "value": "*Entire Building*",
+              "value_type": "choice"
+            },
+            {
+              "display_name": "Increase in Material and Installation Cost for Electric Equipment per Floor Area (%).",
+              "display_name_short": "Increase in Material and Installation Cost for Electric Equipment per Floor Area (%).",
+              "name": "material_and_installation_cost",
+              "value": 0.0,
+              "value_type": "double"
+            },
+            {
+              "display_name": "Increase in Demolition Costs for Electric Equipment per Floor Area (%).",
+              "display_name_short": "Increase in Demolition Costs for Electric Equipment per Floor Area (%).",
+              "name": "demolition_cost",
+              "value": 0.0,
+              "value_type": "double"
+            },
+            {
+              "display_name": "Years Until Costs Start (whole years).",
+              "display_name_short": "Years Until Costs Start (whole years).",
+              "name": "years_until_costs_start",
+              "value": 0,
+              "value_type": "integer"
+            },
+            {
+              "display_name": "Demolition Costs Occur During Initial Construction?",
+              "display_name_short": "Demolition Costs Occur During Initial Construction?",
+              "name": "demo_cost_initial_const",
+              "value": false,
+              "value_type": "bool"
+            },
+            {
+              "display_name": "Expected Life (whole years).",
+              "display_name_short": "Expected Life (whole years).",
+              "name": "expected_life",
+              "value": 15,
+              "value_type": "integer"
+            },
+            {
+              "display_name": "Increase O & M Costs for Electric Equipment per Floor Area (%).",
+              "display_name_short": "Increase O & M Costs for Electric Equipment per Floor Area (%).",
+              "name": "om_cost",
+              "value": 0.0,
+              "value_type": "double"
+            },
+            {
+              "display_name": "O & M Frequency (whole years).",
+              "display_name_short": "O & M Frequency (whole years).",
+              "name": "om_frequency",
+              "value": 1,
+              "value_type": "integer"
+            }
+          ],
+          "display_name": "Reduce Electric Equipment Loads by Percentage",
+          "name": "reduce_electric_equipment_loads_by_percentage",
+          "variables": [
+            {
+              "argument": {
+                "display_name": "Electric Equipment Power Reduction (%).",
+                "display_name_short": "Electric Equipment Power Reduction (%).",
+                "name": "elecequip_power_reduction_percent",
+                "value_type": "double"
+              },
+              "display_name": "Electric Equipment Power Reduction (%).",
+              "display_name_short": "Electric Equipment Power Reduction (%).",
+              "maximum": 30.0,
+              "minimum": -20.0,
+              "relation_to_output": "",
+              "static_value": 0.0,
+              "uncertainty_description": {
+                "attributes": [
+                  {
+                    "name": "lower_bounds",
+                    "value": -20.0
+                  },
+                  {
+                    "name": "upper_bounds",
+                    "value": 30.0
+                  },
+                  {
+                    "name": "stddev",
+                    "value": 8.333333333333334
+                  },
+                  {
+                    "name": "delta_x",
+                    "value": null
+                  },
+                  {
+                    "name": "modes",
+                    "value": 0.0
+                  }
+                ],
+                "type": "triangle_uncertain"
+              },
+              "units": "",
+              "value_type": "double",
+              "variable": true,
+              "variable_type": "RubyContinuousVariable",
+              "uuid": "b72a5975-9f8d-4795-8f18-e4f36df5f433",
+              "version_uuid": "1a2d8b66-ec53-48a7-91e2-4aad95eec5a6"
+            }
+          ],
+          "workflow_index": 1,
+          "workflow_step_type": "Measure",
+          "uuid": "cff505f9-7dfc-4cff-8be8-9c58968a3484",
+          "version_uuid": "4ebb618a-1dfc-4b9f-b91b-c10b5632c336"
+        },
+        {
+          "measure_definition_class_name": "ReduceSpaceInfiltrationByPercentage",
+          "measure_definition_directory": "./measures/ExampleMeasure",
+          "measure_definition_display_name": "ReduceSpaceInfiltrationByPercentage",
+          "measure_definition_uuid": "b0dfa783-74c7-40d8-9952-435d26781874",
+          "measure_definition_version_uuid": "787e84e8-dfd0-467a-93d7-6b4c7cb0a928",
+          "measure_type": "RubyMeasure",
+          "arguments": [
+            {
+              "display_name": "Apply the Measure to a Specific Space Type or to the Entire Model.",
+              "display_name_short": "Apply the Measure to a Specific Space Type or to the Entire Model.",
+              "name": "space_type",
+              "value": "*Entire Building*",
+              "value_type": "choice"
+            },
+            {
+              "display_name": "Increase in Material and Installation Costs for Building per Affected Floor Area ($/ft^2).",
+              "display_name_short": "Increase in Material and Installation Costs for Building per Affected Floor Area ($/ft^2).",
+              "name": "material_and_installation_cost",
+              "value": 0.0,
+              "value_type": "double"
+            },
+            {
+              "display_name": "O & M Costs for Construction per Affected Floor Area ($/ft^2).",
+              "display_name_short": "O & M Costs for Construction per Affected Floor Area ($/ft^2).",
+              "name": "om_cost",
+              "value": 0.0,
+              "value_type": "double"
+            },
+            {
+              "display_name": "O & M Frequency (whole years).",
+              "display_name_short": "O & M Frequency (whole years).",
+              "name": "om_frequency",
+              "value": 1,
+              "value_type": "integer"
+            }
+          ],
+          "display_name": "ReduceSpaceInfiltrationByPercentage",
+          "name": "reducespaceinfiltrationbypercentage",
+          "variables": [
+            {
+              "argument": {
+                "display_name": "Space Infiltration Power Reduction",
+                "display_name_short": "Space Infiltration Power Reduction",
+                "name": "space_infiltration_reduction_percent",
+                "value_type": "double"
+              },
+              "display_name": "Space Infiltration Power Reduction",
+              "display_name_short": "Space Infiltration Power Reduction",
+              "maximum": 1.0,
+              "minimum": -100.0,
+              "relation_to_output": "",
+              "static_value": 0.0,
+              "uncertainty_description": {
+                "attributes": [
+                  {
+                    "name": "lower_bounds",
+                    "value": -100.0
+                  },
+                  {
+                    "name": "upper_bounds",
+                    "value": 1.0
+                  },
+                  {
+                    "name": "stddev",
+                    "value": 16.833333333333332
+                  },
+                  {
+                    "name": "delta_x",
+                    "value": null
+                  },
+                  {
+                    "name": "modes",
+                    "value": -50.0
+                  }
+                ],
+                "type": "uniform_uncertain"
+              },
+              "units": "",
+              "value_type": "double",
+              "variable": true,
+              "variable_type": "RubyContinuousVariable",
+              "uuid": "f6629aff-a8de-4e01-aa47-19938487b6b8",
+              "version_uuid": "967729e6-61c9-4cdd-9dc1-1626db62d72f"
+            }
+          ],
+          "workflow_index": 2,
+          "workflow_step_type": "Measure",
+          "uuid": "37133d27-e617-420f-9012-1e43548cccb8",
+          "version_uuid": "20b4856a-86d6-4b71-87ed-078bdf68a1dc"
+        },
+        {
+          "measure_definition_class_name": "AdjustTheromstatSetpointsByDegrees",
+          "measure_definition_directory": "./measures/ExampleMeasure",
+          "measure_definition_display_name": "AdjustTheromstatSetpointsByDegrees",
+          "measure_definition_uuid": "92e3ad75-5ca0-48f1-82e5-919014713ace",
+          "measure_definition_version_uuid": "530fd25c-a8df-4093-bf17-0918a97ebbae",
+          "measure_type": "RubyMeasure",
+          "arguments": [
+            {
+              "display_name": "Alter Design Day Thermostats?",
+              "display_name_short": "Alter Design Day Thermostats?",
+              "name": "alter_design_days",
+              "value": false,
+              "value_type": "bool"
+            }
+          ],
+          "display_name": "Adjust Thermostat Setpoints by Degrees",
+          "name": "adjust_thermostat_setpoints_by_degrees",
+          "variables": [
+            {
+              "argument": {
+                "display_name": "Degrees Fahrenheit to Adjust Cooling Setpoint By.",
+                "display_name_short": "Degrees Fahrenheit to Adjust Cooling Setpoint By.",
+                "name": "cooling_adjustment",
+                "value_type": "double"
+              },
+              "display_name": "Degrees Fahrenheit to Adjust Cooling Setpoint By.",
+              "display_name_short": "Degrees Fahrenheit to Adjust Cooling Setpoint By.",
+              "maximum": 2.0,
+              "minimum": -2.0,
+              "relation_to_output": "",
+              "static_value": 1.0,
+              "uncertainty_description": {
+                "attributes": [
+                  {
+                    "name": "lower_bounds",
+                    "value": -2.0
+                  },
+                  {
+                    "name": "upper_bounds",
+                    "value": 2.0
+                  },
+                  {
+                    "name": "stddev",
+                    "value": 0.6666666666666666
+                  },
+                  {
+                    "name": "delta_x",
+                    "value": null
+                  },
+                  {
+                    "name": "modes",
+                    "value": 0.0
+                  }
+                ],
+                "type": "uniform_uncertain"
+              },
+              "units": "",
+              "value_type": "double",
+              "variable": true,
+              "variable_type": "RubyContinuousVariable",
+              "uuid": "24d95b3a-23b0-40ce-b039-c5c7c4e0d1b2",
+              "version_uuid": "860dd873-1b60-4b13-a3de-4305c20cc958"
+            },
+            {
+              "argument": {
+                "display_name": "Degrees Fahrenheit to Adjust heating Setpoint By.",
+                "display_name_short": "Degrees Fahrenheit to Adjust heating Setpoint By.",
+                "name": "heating_adjustment",
+                "value_type": "double"
+              },
+              "display_name": "Degrees Fahrenheit to Adjust heating Setpoint By.",
+              "display_name_short": "Degrees Fahrenheit to Adjust heating Setpoint By.",
+              "maximum": 2.0,
+              "minimum": -2.0,
+              "relation_to_output": "",
+              "static_value": -1.0,
+              "uncertainty_description": {
+                "attributes": [
+                  {
+                    "name": "lower_bounds",
+                    "value": -2.0
+                  },
+                  {
+                    "name": "upper_bounds",
+                    "value": 2.0
+                  },
+                  {
+                    "name": "stddev",
+                    "value": 0.6666666666666666
+                  },
+                  {
+                    "name": "delta_x",
+                    "value": null
+                  },
+                  {
+                    "name": "modes",
+                    "value": 0.0
+                  }
+                ],
+                "type": "uniform_uncertain"
+              },
+              "units": "",
+              "value_type": "double",
+              "variable": true,
+              "variable_type": "RubyContinuousVariable",
+              "uuid": "19ca7fe1-34e5-40ec-8a14-8a67b13edf97",
+              "version_uuid": "fe354e57-932a-4265-823f-c32fdb035e71"
+            }
+          ],
+          "workflow_index": 3,
+          "workflow_step_type": "Measure",
+          "uuid": "5bb8849e-d161-4629-8845-fb9fda0a209e",
+          "version_uuid": "294d8722-2fe7-417a-9d50-f5b02a469280"
+        },
+        {
+          "measure_definition_class_name": "ReduceVentilationByPercentage",
+          "measure_definition_directory": "./measures/ExampleMeasure",
+          "measure_definition_display_name": "ReduceVentilationByPercentage",
+          "measure_definition_uuid": "0c80717a-0bf0-4110-9790-8332d17ed9d9",
+          "measure_definition_version_uuid": "e1ad4275-3952-490e-9382-740818c698fd",
+          "measure_type": "RubyMeasure",
+          "arguments": [
+            {
+              "display_name": "Apply the Measure to a Specific Space Type or to the Entire Model.",
+              "display_name_short": "Apply the Measure to a Specific Space Type or to the Entire Model.",
+              "name": "space_type",
+              "value": "*Entire Building*",
+              "value_type": "choice"
+            }
+          ],
+          "display_name": "Reduce Ventilation By Percentage",
+          "name": "reduce_ventilation_by_percentage",
+          "variables": [
+            {
+              "argument": {
+                "display_name": "Design Specification Outdoor Air Reduction (%).",
+                "display_name_short": "Design Specification Outdoor Air Reduction (%).",
+                "name": "design_spec_outdoor_air_reduction_percent",
+                "value_type": "double"
+              },
+              "display_name": "Design Specification Outdoor Air Reduction (%).",
+              "display_name_short": "Design Specification Outdoor Air Reduction (%).",
+              "maximum": 90.0,
+              "minimum": -90.0,
+              "relation_to_output": "",
+              "static_value": 0.0,
+              "uncertainty_description": {
+                "attributes": [
+                  {
+                    "name": "lower_bounds",
+                    "value": -90.0
+                  },
+                  {
+                    "name": "upper_bounds",
+                    "value": 90.0
+                  },
+                  {
+                    "name": "stddev",
+                    "value": 30.0
+                  },
+                  {
+                    "name": "delta_x",
+                    "value": null
+                  },
+                  {
+                    "name": "modes",
+                    "value": -1.0
+                  }
+                ],
+                "type": "triangle_uncertain"
+              },
+              "units": "",
+              "value_type": "double",
+              "variable": true,
+              "variable_type": "RubyContinuousVariable",
+              "uuid": "8d0eca1c-f69e-4acc-b7e9-0bd286080744",
+              "version_uuid": "40db2051-3466-47b1-9578-097e7e9277ec"
+            }
+          ],
+          "workflow_index": 4,
+          "workflow_step_type": "Measure",
+          "uuid": "4d39bfaa-6e82-4881-94a4-5ad4953ff4b5",
+          "version_uuid": "2ad91db7-02f4-498a-9ccd-efb1f2602538"
+        },
+        {
+          "measure_definition_class_name": "EnableEconomizerControl",
+          "measure_definition_directory": "./measures/ExampleMeasure",
+          "measure_definition_display_name": "EnableEconomizerControl",
+          "measure_definition_uuid": "bdfb2884-dd6b-49b4-a460-66bdbacb4c16",
+          "measure_definition_version_uuid": "8f87983c-ed5e-4921-a0db-134dee9c3c22",
+          "measure_type": "RubyMeasure",
+          "arguments": [
+            {
+              "display_name": "Choose an Air Loop to Alter.",
+              "display_name_short": "Choose an Air Loop to Alter.",
+              "name": "object",
+              "value": "*All Air Loops*",
+              "value_type": "choice"
+            },
+            {
+              "display_name": "Economizer Control Type.",
+              "display_name_short": "Economizer Control Type.",
+              "name": "economizer_type",
+              "value": "FixedDryBulb",
+              "value_type": "choice"
+            },
+            {
+              "display_name": "Economizer Maximum Enthalpy (Btu/lb).",
+              "display_name_short": "Economizer Maximum Enthalpy (Btu/lb).",
+              "name": "econoMaxEnthalpy",
+              "value": 28.0,
+              "value_type": "double"
+            },
+            {
+              "display_name": "Economizer Maximum Limit Dewpoint Temperature (F).",
+              "display_name_short": "Economizer Maximum Limit Dewpoint Temperature (F).",
+              "name": "econoMaxDewpointTemp",
+              "value": 55.0,
+              "value_type": "double"
+            },
+            {
+              "display_name": "Economizer Minimum Limit Dry-Bulb Temperature (F).",
+              "display_name_short": "Economizer Minimum Limit Dry-Bulb Temperature (F).",
+              "name": "econoMinDryBulbTemp",
+              "value": -148.0,
+              "value_type": "double"
+            },
+            {
+              "display_name": "Remove Baseline Costs From Effected AirLoopHVACOutdoorAirSystems?",
+              "display_name_short": "Remove Baseline Costs From Effected AirLoopHVACOutdoorAirSystems?",
+              "name": "remove_costs",
+              "value": false,
+              "value_type": "bool"
+            },
+            {
+              "display_name": "Material and Installation Costs per Air Loop to Enable Economizer ($).",
+              "display_name_short": "Material and Installation Costs per Air Loop to Enable Economizer ($).",
+              "name": "material_cost",
+              "value": 0.0,
+              "value_type": "double"
+            },
+            {
+              "display_name": "Demolition Costs per Air Loop to Enable Economizer ($).",
+              "display_name_short": "Demolition Costs per Air Loop to Enable Economizer ($).",
+              "name": "demolition_cost",
+              "value": 0.0,
+              "value_type": "double"
+            },
+            {
+              "display_name": "Years Until Costs Start (whole years).",
+              "display_name_short": "Years Until Costs Start (whole years).",
+              "name": "years_until_costs_start",
+              "value": 0,
+              "value_type": "integer"
+            },
+            {
+              "display_name": "Demolition Costs Occur During Initial Construction?",
+              "display_name_short": "Demolition Costs Occur During Initial Construction?",
+              "name": "demo_cost_initial_const",
+              "value": false,
+              "value_type": "bool"
+            },
+            {
+              "display_name": "Expected Life (whole years).",
+              "display_name_short": "Expected Life (whole years).",
+              "name": "expected_life",
+              "value": 20,
+              "value_type": "integer"
+            },
+            {
+              "display_name": "O & M Costs per Air Loop for Economizer  ($).",
+              "display_name_short": "O & M Costs per Air Loop for Economizer  ($).",
+              "name": "om_cost",
+              "value": 0.0,
+              "value_type": "double"
+            },
+            {
+              "display_name": "O & M Frequency (whole years).",
+              "display_name_short": "O & M Frequency (whole years).",
+              "name": "om_frequency",
+              "value": 1,
+              "value_type": "integer"
+            }
+          ],
+          "display_name": "Enable Economizer Control",
+          "name": "enable_economizer_control",
+          "variables": [
+            {
+              "argument": {
+                "display_name": "Economizer Maximum Limit Dry-Bulb Temperature (F).",
+                "display_name_short": "Economizer Maximum Limit Dry-Bulb Temperature (F).",
+                "name": "econoMaxDryBulbTemp",
+                "value_type": "double"
+              },
+              "display_name": "Economizer Maximum Limit Dry-Bulb Temperature (F).",
+              "display_name_short": "Economizer Maximum Limit Dry-Bulb Temperature (F).",
+              "maximum": 80.0,
+              "minimum": 76.0,
+              "relation_to_output": "",
+              "static_value": 79.0,
+              "uncertainty_description": {
+                "attributes": [
+                  {
+                    "name": "lower_bounds",
+                    "value": 76.0
+                  },
+                  {
+                    "name": "upper_bounds",
+                    "value": 80.0
+                  },
+                  {
+                    "name": "stddev",
+                    "value": 0.6666666666666666
+                  },
+                  {
+                    "name": "delta_x",
+                    "value": null
+                  },
+                  {
+                    "name": "modes",
+                    "value": 78.0
+                  }
+                ],
+                "type": "triangle_uncertain"
+              },
+              "units": "",
+              "value_type": "double",
+              "variable": true,
+              "variable_type": "RubyContinuousVariable",
+              "uuid": "332f170f-e387-4b3c-b9e9-80e4fa9411e3",
+              "version_uuid": "86a18075-5fdd-4b8c-9766-3358543a8f8b"
+            }
+          ],
+          "workflow_index": 5,
+          "workflow_step_type": "Measure",
+          "uuid": "4d3a7637-adef-4db0-8772-e056d4204f4c",
+          "version_uuid": "cb997841-f732-4719-9960-32f35b848617"
+        },
+        {
+          "measure_definition_class_name": "SetBoilerThermalEfficiency",
+          "measure_definition_directory": "./measures/ExampleMeasure",
+          "measure_definition_display_name": "SetBoilerThermalEfficiency",
+          "measure_definition_uuid": "7c6293c0-2f2d-4549-ad46-1cbc3b1f8aeb",
+          "measure_definition_version_uuid": "34268c67-86a8-46d5-ab08-4747c3183a30",
+          "measure_type": "RubyMeasure",
+          "arguments": [
+            {
+              "display_name": "Apply the measure to",
+              "display_name_short": "Apply the measure to",
+              "name": "boiler_widget",
+              "value": "*All boilers*",
+              "value_type": "choice"
+            },
+            {
+              "display_name": "Option 1, set boiler nominal thermal efficiency to a user defined value",
+              "display_name_short": "Option 1, set boiler nominal thermal efficiency to a user defined value",
+              "name": "input_option_manual",
+              "value": true,
+              "value_type": "bool"
+            },
+            {
+              "display_name": "Option 2, set boiler nominal thermal efficiency based on ASHRAE Standard 90.1 requirement",
+              "display_name_short": "Option 2, set boiler nominal thermal efficiency based on ASHRAE Standard 90.1 requirement",
+              "name": "input_option_standard",
+              "value": false,
+              "value_type": "bool"
+            },
+            {
+              "display_name": "Boiler nominal capacity [W]",
+              "display_name_short": "Boiler nominal capacity [W]",
+              "name": "nominal_capacity",
+              "value": 0.0,
+              "value_type": "double"
+            },
+            {
+              "display_name": "Fuel type",
+              "display_name_short": "Fuel type",
+              "name": "fuel_type_widget",
+              "value": 0.0,
+              "value_type": "choice"
+            },
+            {
+              "display_name": "ASHRAE Standards 90.1",
+              "display_name_short": "ASHRAE Standards 90.1",
+              "name": "standards_widget",
+              "value": 0.0,
+              "value_type": "choice"
+            }
+          ],
+          "display_name": "Set Boiler Thermal Efficiency",
+          "name": "set_boiler_thermal_efficiency",
+          "variables": [
+            {
+              "argument": {
+                "display_name": "Boiler nominal thermal efficiency (between 0 and 1)",
+                "display_name_short": "Boiler nominal thermal efficiency (between 0 and 1)",
+                "name": "boiler_thermal_efficiency",
+                "value_type": "double"
+              },
+              "display_name": "Boiler nominal thermal efficiency (between 0 and 1)",
+              "display_name_short": "Boiler nominal thermal efficiency (between 0 and 1)",
+              "maximum": 0.9,
+              "minimum": 0.5,
+              "relation_to_output": "",
+              "static_value": 0.8,
+              "uncertainty_description": {
+                "attributes": [
+                  {
+                    "name": "lower_bounds",
+                    "value": 0.5
+                  },
+                  {
+                    "name": "upper_bounds",
+                    "value": 0.9
+                  },
+                  {
+                    "name": "stddev",
+                    "value": 0.06666666666666667
+                  },
+                  {
+                    "name": "delta_x",
+                    "value": null
+                  },
+                  {
+                    "name": "modes",
+                    "value": 0.75
+                  }
+                ],
+                "type": "triangle_uncertain"
+              },
+              "units": "",
+              "value_type": "double",
+              "variable": true,
+              "variable_type": "RubyContinuousVariable",
+              "uuid": "cc62195c-bd9a-47a1-a6ec-40fc45ca25e4",
+              "version_uuid": "d5ab9ad5-b6db-4ecd-b776-287656540f2d"
+            }
+          ],
+          "workflow_index": 6,
+          "workflow_step_type": "Measure",
+          "uuid": "f91a554a-f34d-4155-ab5b-c71f6bcf3cf0",
+          "version_uuid": "bba5d6a4-a5ce-4483-be18-f05986de605a"
+        },
+        {
+          "measure_definition_class_name": "IncreaseInsulationRValueForExteriorWalls",
+          "measure_definition_directory": "./measures/ExampleMeasure",
+          "measure_definition_display_name": "IncreaseInsulationRValueForExteriorWalls",
+          "measure_definition_uuid": "356fddea-4c53-414c-9793-c813e9094ac2",
+          "measure_definition_version_uuid": "e27612aa-7127-49ed-bfdd-d1f2ed169482",
+          "measure_type": "RubyMeasure",
+          "arguments": [
+            {
+              "display_name": "Allow both increase and decrease in R-value to reach requested target?",
+              "display_name_short": "Allow both increase and decrease in R-value to reach requested target?",
+              "name": "allow_reduction",
+              "value": true,
+              "value_type": "bool"
+            },
+            {
+              "display_name": "Increase in Material and Installation Costs for Construction per Area Used ($/ft^2).",
+              "display_name_short": "Increase in Material and Installation Costs for Construction per Area Used ($/ft^2).",
+              "name": "material_cost_increase_ip",
+              "value": 0.0,
+              "value_type": "double"
+            },
+            {
+              "display_name": "One Time Retrofit Cost to Add Insulation to Construction ($/ft^2).",
+              "display_name_short": "One Time Retrofit Cost to Add Insulation to Construction ($/ft^2).",
+              "name": "one_time_retrofit_cost_ip",
+              "value": 0.0,
+              "value_type": "double"
+            },
+            {
+              "display_name": "Year to Incur One Time Retrofit Cost (whole years).",
+              "display_name_short": "Year to Incur One Time Retrofit Cost (whole years).",
+              "name": "years_until_retrofit_cost",
+              "value": 0,
+              "value_type": "integer"
+            }
+          ],
+          "display_name": "Set R-value of Insulation for Exterior Walls to a Specific Value",
+          "name": "set_r_value_of_insulation_for_exterior_walls_to_a_specific_value",
+          "variables": [
+            {
+              "argument": {
+                "display_name": "Insulation R-value (ft^2*h*R/Btu).",
+                "display_name_short": "Insulation R-value (ft^2*h*R/Btu).",
+                "name": "r_value",
+                "value_type": "double"
+              },
+              "display_name": "Insulation R-value (ft^2*h*R/Btu).",
+              "display_name_short": "Insulation R-value (ft^2*h*R/Btu).",
+              "maximum": 5.0,
+              "minimum": 1.0,
+              "relation_to_output": "",
+              "static_value": 5.0,
+              "uncertainty_description": {
+                "attributes": [
+                  {
+                    "name": "lower_bounds",
+                    "value": 1.0
+                  },
+                  {
+                    "name": "upper_bounds",
+                    "value": 5.0
+                  },
+                  {
+                    "name": "stddev",
+                    "value": 0.6666666666666666
+                  },
+                  {
+                    "name": "delta_x",
+                    "value": null
+                  },
+                  {
+                    "name": "modes",
+                    "value": 2.5
+                  }
+                ],
+                "type": "triangle_uncertain"
+              },
+              "units": "",
+              "value_type": "double",
+              "variable": true,
+              "variable_type": "RubyContinuousVariable",
+              "uuid": "0daf9b35-98a3-4ef6-b978-c59257b49137",
+              "version_uuid": "df03c133-e6a6-4a18-9769-bc662fe72391"
+            }
+          ],
+          "workflow_index": 7,
+          "workflow_step_type": "Measure",
+          "uuid": "92972b4d-dc29-4051-86e5-650aeae05106",
+          "version_uuid": "7b176bee-9d6b-439c-8fd8-a231d7b5f225"
+        },
+        {
+          "measure_definition_class_name": "SetChillerCOP",
+          "measure_definition_directory": "./measures/ExampleMeasure",
+          "measure_definition_display_name": "SetChillerCOP",
+          "measure_definition_uuid": "e69df820-0a29-4c38-bba6-5abc7161bcd4",
+          "measure_definition_version_uuid": "76340fdd-a803-4bdd-9c47-db952e5063cb",
+          "measure_type": "RubyMeasure",
+          "arguments": [
+            {
+              "display_name": "Apply the measure to",
+              "display_name_short": "Apply the measure to",
+              "name": "chiller_widget",
+              "value": "*All chillers*",
+              "value_type": "choice"
+            }
+          ],
+          "display_name": "SetChillerCOP",
+          "name": "setchillercop",
+          "variables": [
+            {
+              "argument": {
+                "display_name": "Chiller Rated COP (more than 0)",
+                "display_name_short": "Chiller Rated COP (more than 0)",
+                "name": "chiller_thermal_efficiency",
+                "value_type": "double"
+              },
+              "display_name": "Chiller Rated COP (more than 0)",
+              "display_name_short": "Chiller Rated COP (more than 0)",
+              "maximum": 5.5,
+              "minimum": 2.5,
+              "relation_to_output": "",
+              "static_value": 3.0,
+              "uncertainty_description": {
+                "attributes": [
+                  {
+                    "name": "lower_bounds",
+                    "value": 2.5
+                  },
+                  {
+                    "name": "upper_bounds",
+                    "value": 5.5
+                  },
+                  {
+                    "name": "stddev",
+                    "value": 0.5
+                  },
+                  {
+                    "name": "delta_x",
+                    "value": null
+                  },
+                  {
+                    "name": "modes",
+                    "value": 3.5
+                  }
+                ],
+                "type": "triangle_uncertain"
+              },
+              "units": "",
+              "value_type": "double",
+              "variable": true,
+              "variable_type": "RubyContinuousVariable",
+              "uuid": "d69d78c5-006e-4cc1-a920-8b7d8c9b5d32",
+              "version_uuid": "f15aeea5-6534-4ac0-86bd-d8cdada870d4"
+            }
+          ],
+          "workflow_index": 8,
+          "workflow_step_type": "Measure",
+          "uuid": "0ccafa55-22aa-404f-a789-76bb5f739bbf",
+          "version_uuid": "8594d9b8-3f77-4b9b-918c-ae69084b321b"
+        },
+        {
+          "measure_definition_class_name": "SetHeatingandCoolingSizingFactors",
+          "measure_definition_directory": "./measures/ExampleMeasure",
+          "measure_definition_display_name": "SetHeatingandCoolingSizingFactors",
+          "measure_definition_uuid": "3629d240-2361-4070-83a6-133f267fe5c6",
+          "measure_definition_version_uuid": "50f08d62-d169-4cc0-849f-f6f5718c7246",
+          "measure_type": "RubyMeasure",
+          "arguments": [
+
+          ],
+          "display_name": "Set Heating and Cooling Sizing Factors",
+          "name": "set_heating_and_cooling_sizing_factors",
+          "variables": [
+            {
+              "argument": {
+                "display_name": "Heating Sizing Factor (eg 1.25 = 125% of required heating capacity.",
+                "display_name_short": "Heating Sizing Factor (eg 1.25 = 125% of required heating capacity.",
+                "name": "htg_sz_factor",
+                "value_type": "double"
+              },
+              "display_name": "Heating Sizing Factor (eg 1.25 = 125% of required heating capacity.",
+              "display_name_short": "Heating Sizing Factor (eg 1.25 = 125% of required heating capacity.",
+              "maximum": 1.5,
+              "minimum": 1.0,
+              "relation_to_output": "",
+              "static_value": 1.25,
+              "uncertainty_description": {
+                "attributes": [
+                  {
+                    "name": "lower_bounds",
+                    "value": 1.0
+                  },
+                  {
+                    "name": "upper_bounds",
+                    "value": 1.5
+                  },
+                  {
+                    "name": "stddev",
+                    "value": 0.08333333333333333
+                  },
+                  {
+                    "name": "delta_x",
+                    "value": null
+                  },
+                  {
+                    "name": "modes",
+                    "value": 1.25
+                  }
+                ],
+                "type": "triangle_uncertain"
+              },
+              "units": "",
+              "value_type": "double",
+              "variable": true,
+              "variable_type": "RubyContinuousVariable",
+              "uuid": "ed4a7442-4b9c-434c-b688-465b8819888c",
+              "version_uuid": "ef70bb30-a4cb-4c72-8aea-ec6935dda7f2"
+            },
+            {
+              "argument": {
+                "display_name": "Coolinig Sizing Factor (eg 1.15 = 115% of required cooling capacity.",
+                "display_name_short": "Coolinig Sizing Factor (eg 1.15 = 115% of required cooling capacity.",
+                "name": "clg_sz_factor",
+                "value_type": "double"
+              },
+              "display_name": "Coolinig Sizing Factor (eg 1.15 = 115% of required cooling capacity.",
+              "display_name_short": "Coolinig Sizing Factor (eg 1.15 = 115% of required cooling capacity.",
+              "maximum": 1.5,
+              "minimum": 1.0,
+              "relation_to_output": "",
+              "static_value": 1.15,
+              "uncertainty_description": {
+                "attributes": [
+                  {
+                    "name": "lower_bounds",
+                    "value": 1.0
+                  },
+                  {
+                    "name": "upper_bounds",
+                    "value": 1.5
+                  },
+                  {
+                    "name": "stddev",
+                    "value": 0.08333333333333333
+                  },
+                  {
+                    "name": "delta_x",
+                    "value": null
+                  },
+                  {
+                    "name": "modes",
+                    "value": 1.15
+                  }
+                ],
+                "type": "triangle_uncertain"
+              },
+              "units": "",
+              "value_type": "double",
+              "variable": true,
+              "variable_type": "RubyContinuousVariable",
+              "uuid": "0b63ae9c-927f-435e-872b-97b5c3dfb9e4",
+              "version_uuid": "29884056-0bc0-4a59-b6a5-14b748f3a129"
+            }
+          ],
+          "workflow_index": 9,
+          "workflow_step_type": "Measure",
+          "uuid": "f4204855-345a-40ec-be3c-d5519a612738",
+          "version_uuid": "cb3aa526-221b-4f4c-8ac6-479e83c5e1b4"
+        },
+        {
+          "measure_definition_class_name": "SetChilledWaterLoopTemperature",
+          "measure_definition_directory": "./measures/ExampleMeasure",
+          "measure_definition_display_name": "SetChilledWaterLoopTemperature",
+          "measure_definition_uuid": "378ab374-75d6-4d45-bc04-9e7c17854cfa",
+          "measure_definition_version_uuid": "c37941d2-ab23-4b4f-b610-33af668ffbe3",
+          "measure_type": "RubyMeasure",
+          "arguments": [
+
+          ],
+          "display_name": "Set Chilled Water Loop Temperature",
+          "name": "set_chilled_water_loop_temperature",
+          "variables": [
+            {
+              "argument": {
+                "display_name": "Desired chilled water setpoint (F)",
+                "display_name_short": "Desired chilled water setpoint (F)",
+                "name": "cw_temp_f",
+                "value_type": "double"
+              },
+              "display_name": "Desired chilled water setpoint (F)",
+              "display_name_short": "Desired chilled water setpoint (F)",
+              "maximum": 46.0,
+              "minimum": 42.0,
+              "relation_to_output": "",
+              "static_value": 44.0,
+              "uncertainty_description": {
+                "attributes": [
+                  {
+                    "name": "lower_bounds",
+                    "value": 42.0
+                  },
+                  {
+                    "name": "upper_bounds",
+                    "value": 46.0
+                  },
+                  {
+                    "name": "stddev",
+                    "value": 0.6666666666666666
+                  },
+                  {
+                    "name": "delta_x",
+                    "value": null
+                  },
+                  {
+                    "name": "modes",
+                    "value": 44.0
+                  }
+                ],
+                "type": "triangle_uncertain"
+              },
+              "units": "",
+              "value_type": "double",
+              "variable": true,
+              "variable_type": "RubyContinuousVariable",
+              "uuid": "d917ebb5-3160-41c3-a560-8dbeea722511",
+              "version_uuid": "19cb3fd6-e17d-458a-b1d0-b2ac8cceaf63"
+            }
+          ],
+          "workflow_index": 10,
+          "workflow_step_type": "Measure",
+          "uuid": "d39090b6-fac2-4894-8bd9-d67c59dc24fe",
+          "version_uuid": "38cefdf1-aa99-4160-a1d6-43e8a4c16e92"
+        },
+        {
+          "measure_definition_class_name": "SetHotWaterLoopTemperature",
+          "measure_definition_directory": "./measures/ExampleMeasure",
+          "measure_definition_display_name": "SetHotWaterLoopTemperature",
+          "measure_definition_uuid": "419fb3d5-b8e5-4624-988a-36eda836d037",
+          "measure_definition_version_uuid": "6c4dfed3-8338-4ada-b7aa-8098236e9443",
+          "measure_type": "RubyMeasure",
+          "arguments": [
+
+          ],
+          "display_name": "Set Hot Water Loop Temperature",
+          "name": "set_hot_water_loop_temperature",
+          "variables": [
+            {
+              "argument": {
+                "display_name": "Desired hot water setpoint (F)",
+                "display_name_short": "Desired hot water setpoint (F)",
+                "name": "hw_temp_f",
+                "value_type": "double"
+              },
+              "display_name": "Desired hot water setpoint (F)",
+              "display_name_short": "Desired hot water setpoint (F)",
+              "maximum": 122.0,
+              "minimum": 118.0,
+              "relation_to_output": "",
+              "static_value": 120.0,
+              "uncertainty_description": {
+                "attributes": [
+                  {
+                    "name": "lower_bounds",
+                    "value": 118.0
+                  },
+                  {
+                    "name": "upper_bounds",
+                    "value": 122.0
+                  },
+                  {
+                    "name": "stddev",
+                    "value": 0.6666666666666666
+                  },
+                  {
+                    "name": "delta_x",
+                    "value": null
+                  },
+                  {
+                    "name": "modes",
+                    "value": 120.0
+                  }
+                ],
+                "type": "triangle_uncertain"
+              },
+              "units": "",
+              "value_type": "double",
+              "variable": true,
+              "variable_type": "RubyContinuousVariable",
+              "uuid": "1e41be98-c35b-46dd-98eb-66b70c91874b",
+              "version_uuid": "29015a16-2a4d-400e-9c01-a4c7a8843240"
+            }
+          ],
+          "workflow_index": 11,
+          "workflow_step_type": "Measure",
+          "uuid": "389b39fe-172b-4b41-a2e5-031c16b0d5ad",
+          "version_uuid": "3d6a817b-8e0f-4bb0-9f71-7f1e8e6616bc"
+        },
+        {
+          "measure_definition_class_name": "SetMinimumVAVTerminalFlowFraction",
+          "measure_definition_directory": "./measures/ExampleMeasure",
+          "measure_definition_display_name": "SetMinimumVAVTerminalFlowFraction",
+          "measure_definition_uuid": "65e6b544-5841-4b3b-b037-0d5fe5c30e52",
+          "measure_definition_version_uuid": "cb262aca-c838-459f-9cbf-c199e1c564cf",
+          "measure_type": "RubyMeasure",
+          "arguments": [
+
+          ],
+          "display_name": "Set Minimum VAV Terminal Flow Fraction",
+          "name": "set_minimum_vav_terminal_flow_fraction",
+          "variables": [
+            {
+              "argument": {
+                "display_name": "Minimum VAV Terminal Flow Fraction (%)",
+                "display_name_short": "Minimum VAV Terminal Flow Fraction (%)",
+                "name": "min_vav_frac",
+                "value_type": "double"
+              },
+              "display_name": "Minimum VAV Terminal Flow Fraction (%)",
+              "display_name_short": "Minimum VAV Terminal Flow Fraction (%)",
+              "maximum": 60.0,
+              "minimum": 0.0,
+              "relation_to_output": "",
+              "static_value": 30.0,
+              "uncertainty_description": {
+                "attributes": [
+                  {
+                    "name": "lower_bounds",
+                    "value": 0.0
+                  },
+                  {
+                    "name": "upper_bounds",
+                    "value": 60.0
+                  },
+                  {
+                    "name": "stddev",
+                    "value": 10.0
+                  },
+                  {
+                    "name": "delta_x",
+                    "value": null
+                  },
+                  {
+                    "name": "modes",
+                    "value": 30.0
+                  }
+                ],
+                "type": "triangle_uncertain"
+              },
+              "units": "",
+              "value_type": "double",
+              "variable": true,
+              "variable_type": "RubyContinuousVariable",
+              "uuid": "6f538fb1-b61b-499a-b68b-84948cf9a728",
+              "version_uuid": "ccc8fa3a-ce6b-461d-a91a-c3039cc94b27"
+            }
+          ],
+          "workflow_index": 12,
+          "workflow_step_type": "Measure",
+          "uuid": "fdf8593c-6970-40c5-8f9b-f9619b06e104",
+          "version_uuid": "97230b31-2ba0-4236-831d-aecf333dcf43"
+        },
+        {
+          "measure_definition_class_name": "ModifyEnergyPlusFanVariableVolumeObjects",
+          "measure_definition_directory": "./measures/ExampleMeasure",
+          "measure_definition_display_name": "ModifyEnergyPlusFanVariableVolumeObjects",
+          "measure_definition_uuid": "891bb8cd-f91e-43a9-887c-ff9a18a060be",
+          "measure_definition_version_uuid": "f8a8fb48-6b94-4bed-9da3-c65783efa30c",
+          "measure_type": "EnergyPlusMeasure",
+          "arguments": [
+
+          ],
+          "display_name": "Modify EnergyPlus Fan Varaible Volume Objects",
+          "name": "modify_energyplus_fan_varaible_volume_objects",
+          "variables": [
+            {
+              "argument": {
+                "display_name": "Pressure Rise (Pa).",
+                "display_name_short": "Pressure Rise (Pa).",
+                "name": "pressureRise",
+                "value_type": "double"
+              },
+              "display_name": "Pressure Rise (Pa).",
+              "display_name_short": "Pressure Rise (Pa).",
+              "maximum": 700.0,
+              "minimum": 400.0,
+              "relation_to_output": "",
+              "static_value": 500.0,
+              "uncertainty_description": {
+                "attributes": [
+                  {
+                    "name": "lower_bounds",
+                    "value": 400.0
+                  },
+                  {
+                    "name": "upper_bounds",
+                    "value": 700.0
+                  },
+                  {
+                    "name": "stddev",
+                    "value": 50.0
+                  },
+                  {
+                    "name": "delta_x",
+                    "value": null
+                  },
+                  {
+                    "name": "modes",
+                    "value": 500.0
+                  }
+                ],
+                "type": "triangle_uncertain"
+              },
+              "units": "",
+              "value_type": "double",
+              "variable": true,
+              "variable_type": "RubyContinuousVariable",
+              "uuid": "d9a1450c-7155-42d8-9f94-30654819c90d",
+              "version_uuid": "d778c6de-c294-4a39-b8b3-d9f5d98a02c2"
+            }
+          ],
+          "workflow_index": 13,
+          "workflow_step_type": "Measure",
+          "uuid": "e932ceef-e90b-4be9-93a9-738141f6f54f",
+          "version_uuid": "285c8edb-93ee-441f-ad8c-1444cfe3327b"
+        }
+      ],
+      "analysis_type": "rgenoud"
+    },
+    "seed": {
+      "file_type": "OSM",
+      "path": "./seed/small_seed.osm"
+    },
+    "weather_file": {
+      "file_type": "EPW",
+      "path": "./weather/partial_weather.epw"
+    }
+  }
+}

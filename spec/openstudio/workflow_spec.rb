@@ -20,7 +20,6 @@ describe OpenStudio::Analysis::Workflow do
     expect(m).to be_a OpenStudio::Analysis::WorkflowStep
     expect(m.measure_definition_class_name).to eq 'RotateBuilding'
 
-
     puts @w.to_json
 
     puts
@@ -31,7 +30,5 @@ describe OpenStudio::Analysis::Workflow do
     m = @w.add_measure_from_path('insulation', 'Increase Insulation', p)
     expect(m).to be_an OpenStudio::Analysis::WorkflowStep
     expect(m.measure_definition_directory).to eq 'spec/files/measures/IncreaseInsulationRValueForRoofs'
-
-
   end
 end
