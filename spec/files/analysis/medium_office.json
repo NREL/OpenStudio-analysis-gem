@@ -364,8 +364,8 @@
           "measure_definition_class_name": "ReduceLightingLoadsByPercentage",
           "measure_definition_directory": "./measures/ReduceLightingLoadsByPercentage",
           "measure_definition_display_name": "ReduceLightingLoadsByPercentage",
-          "measure_definition_uuid": "70d81aaf-ceb1-44d9-883f-fe6f31ed6431",
-          "measure_definition_version_uuid": "73cf008c-1092-4b96-b4f5-388518a7b57c",
+          "measure_definition_uuid": "455b7953-3499-4347-9ee1-50a0a6d47858",
+          "measure_definition_version_uuid": "354e9231-3942-4de0-932a-da9fb3f56d39",
           "measure_type": "RubyMeasure",
           "arguments": [
             {
@@ -470,21 +470,21 @@
               "value_type": "double",
               "variable": true,
               "variable_type": "RubyContinuousVariable",
-              "uuid": "0417e025-b81d-4142-89d3-4bcea81ba677",
-              "version_uuid": "01aea456-afb3-4c42-95b5-f1554e4ab0a1"
+              "uuid": "39506549-5e13-44d6-b52f-f98691d1ac79",
+              "version_uuid": "4d62b107-5fc7-4747-9aa6-768681a1b8de"
             }
           ],
           "workflow_index": 0,
           "workflow_step_type": "Measure",
-          "uuid": "145e49c2-59ec-440f-973b-e1f800965449",
-          "version_uuid": "92139e06-7f15-404b-bcb3-128a6bb9c1c7"
+          "uuid": "ffef20b0-110b-434e-b9b5-71db9d1ea644",
+          "version_uuid": "bed777e7-1819-4ef1-945a-bb354f1c0a7e"
         },
         {
           "measure_definition_class_name": "ReduceElectricEquipmentLoadsByPercentage",
           "measure_definition_directory": "./measures/ExampleMeasure",
           "measure_definition_display_name": "ReduceElectricEquipmentLoadsByPercentage",
-          "measure_definition_uuid": "2263d0d6-4d03-452a-a165-31512f5ac0e7",
-          "measure_definition_version_uuid": "8589f2ab-528e-4be6-a828-5c3d048743a5",
+          "measure_definition_uuid": "e231ce39-1bb2-4435-990c-d3131b09d563",
+          "measure_definition_version_uuid": "e5018607-ff0e-4a95-b862-6e5af7d64bed",
           "measure_type": "RubyMeasure",
           "arguments": [
             {
@@ -589,21 +589,21 @@
               "value_type": "double",
               "variable": true,
               "variable_type": "RubyContinuousVariable",
-              "uuid": "b72a5975-9f8d-4795-8f18-e4f36df5f433",
-              "version_uuid": "1a2d8b66-ec53-48a7-91e2-4aad95eec5a6"
+              "uuid": "0b159b51-87db-43d4-9794-c293804ef0e5",
+              "version_uuid": "f2783024-c6b4-4223-b854-1d449ee4dbd6"
             }
           ],
           "workflow_index": 1,
           "workflow_step_type": "Measure",
-          "uuid": "cff505f9-7dfc-4cff-8be8-9c58968a3484",
-          "version_uuid": "4ebb618a-1dfc-4b9f-b91b-c10b5632c336"
+          "uuid": "85f0d574-c255-4dcc-a202-b368c1c50762",
+          "version_uuid": "7bdf3fa3-968d-4d85-9ba6-062aa0f002e9"
         },
         {
           "measure_definition_class_name": "ReduceSpaceInfiltrationByPercentage",
           "measure_definition_directory": "./measures/ExampleMeasure",
           "measure_definition_display_name": "ReduceSpaceInfiltrationByPercentage",
-          "measure_definition_uuid": "b0dfa783-74c7-40d8-9952-435d26781874",
-          "measure_definition_version_uuid": "787e84e8-dfd0-467a-93d7-6b4c7cb0a928",
+          "measure_definition_uuid": "139b75ae-b2f2-4287-a949-c0785c8bf3e2",
+          "measure_definition_version_uuid": "f70f4f7b-a898-4b7f-b8c0-b7cf9b0e3bec",
           "measure_type": "RubyMeasure",
           "arguments": [
             {
@@ -680,21 +680,21 @@
               "value_type": "double",
               "variable": true,
               "variable_type": "RubyContinuousVariable",
-              "uuid": "f6629aff-a8de-4e01-aa47-19938487b6b8",
-              "version_uuid": "967729e6-61c9-4cdd-9dc1-1626db62d72f"
+              "uuid": "865ca0ce-15af-405a-a7e2-69c8a70159dd",
+              "version_uuid": "6be21cdb-bb05-4118-8342-7a7bb0f0117d"
             }
           ],
           "workflow_index": 2,
           "workflow_step_type": "Measure",
-          "uuid": "37133d27-e617-420f-9012-1e43548cccb8",
-          "version_uuid": "20b4856a-86d6-4b71-87ed-078bdf68a1dc"
+          "uuid": "c25e37fd-b3b6-4aa7-9ca2-9ce2c3d905c2",
+          "version_uuid": "5da2dfba-e947-4090-a0ac-74b85b3bb679"
         },
         {
           "measure_definition_class_name": "AdjustTheromstatSetpointsByDegrees",
           "measure_definition_directory": "./measures/ExampleMeasure",
           "measure_definition_display_name": "AdjustTheromstatSetpointsByDegrees",
-          "measure_definition_uuid": "92e3ad75-5ca0-48f1-82e5-919014713ace",
-          "measure_definition_version_uuid": "530fd25c-a8df-4093-bf17-0918a97ebbae",
+          "measure_definition_uuid": "367ece40-4e35-4b27-ade1-342e547be8ff",
+          "measure_definition_version_uuid": "c44cc662-e2af-4a7f-9327-b33cefdbc248",
           "measure_type": "RubyMeasure",
           "arguments": [
             {
@@ -750,8 +750,8 @@
               "value_type": "double",
               "variable": true,
               "variable_type": "RubyContinuousVariable",
-              "uuid": "24d95b3a-23b0-40ce-b039-c5c7c4e0d1b2",
-              "version_uuid": "860dd873-1b60-4b13-a3de-4305c20cc958"
+              "uuid": "666d8cf5-4785-475a-abeb-4b1d353cc80d",
+              "version_uuid": "599bf9f6-5f32-47dc-be5e-de8f86744fd5"
             },
             {
               "argument": {
@@ -795,21 +795,21 @@
               "value_type": "double",
               "variable": true,
               "variable_type": "RubyContinuousVariable",
-              "uuid": "19ca7fe1-34e5-40ec-8a14-8a67b13edf97",
-              "version_uuid": "fe354e57-932a-4265-823f-c32fdb035e71"
+              "uuid": "41da2ee0-2341-430d-b72b-3d7d8c5ce8bb",
+              "version_uuid": "2ca020d4-caec-4e28-aef7-317c5b8d34ef"
             }
           ],
           "workflow_index": 3,
           "workflow_step_type": "Measure",
-          "uuid": "5bb8849e-d161-4629-8845-fb9fda0a209e",
-          "version_uuid": "294d8722-2fe7-417a-9d50-f5b02a469280"
+          "uuid": "ae4c9e6f-7055-4c65-8f98-b0048d249372",
+          "version_uuid": "7e421ff5-ea75-4d37-ac32-00d5bc33918a"
         },
         {
           "measure_definition_class_name": "ReduceVentilationByPercentage",
           "measure_definition_directory": "./measures/ExampleMeasure",
           "measure_definition_display_name": "ReduceVentilationByPercentage",
-          "measure_definition_uuid": "0c80717a-0bf0-4110-9790-8332d17ed9d9",
-          "measure_definition_version_uuid": "e1ad4275-3952-490e-9382-740818c698fd",
+          "measure_definition_uuid": "e86037cb-f0da-438f-80c4-404b55424c54",
+          "measure_definition_version_uuid": "b602f0fd-6b8b-439f-a973-b1f4be4bbb38",
           "measure_type": "RubyMeasure",
           "arguments": [
             {
@@ -865,21 +865,21 @@
               "value_type": "double",
               "variable": true,
               "variable_type": "RubyContinuousVariable",
-              "uuid": "8d0eca1c-f69e-4acc-b7e9-0bd286080744",
-              "version_uuid": "40db2051-3466-47b1-9578-097e7e9277ec"
+              "uuid": "62738dec-719d-4ace-88a5-e2e9098d02de",
+              "version_uuid": "18786396-ff82-4b3e-ab27-487d4cc54663"
             }
           ],
           "workflow_index": 4,
           "workflow_step_type": "Measure",
-          "uuid": "4d39bfaa-6e82-4881-94a4-5ad4953ff4b5",
-          "version_uuid": "2ad91db7-02f4-498a-9ccd-efb1f2602538"
+          "uuid": "01967e53-e90f-4dd2-957e-0472ddd75d2e",
+          "version_uuid": "563011c0-6eba-48c4-b6ce-3018964d95b3"
         },
         {
           "measure_definition_class_name": "EnableEconomizerControl",
           "measure_definition_directory": "./measures/ExampleMeasure",
           "measure_definition_display_name": "EnableEconomizerControl",
-          "measure_definition_uuid": "bdfb2884-dd6b-49b4-a460-66bdbacb4c16",
-          "measure_definition_version_uuid": "8f87983c-ed5e-4921-a0db-134dee9c3c22",
+          "measure_definition_uuid": "b5b6bd4c-7247-449b-b85b-7b6143887beb",
+          "measure_definition_version_uuid": "11833088-5d58-48fa-b47a-cec920abe21a",
           "measure_type": "RubyMeasure",
           "arguments": [
             {
@@ -1019,21 +1019,21 @@
               "value_type": "double",
               "variable": true,
               "variable_type": "RubyContinuousVariable",
-              "uuid": "332f170f-e387-4b3c-b9e9-80e4fa9411e3",
-              "version_uuid": "86a18075-5fdd-4b8c-9766-3358543a8f8b"
+              "uuid": "be66ba5a-1b17-4b13-8a17-e2d266499915",
+              "version_uuid": "5cc54f1f-81ec-4b44-8987-b9d4d21b00d6"
             }
           ],
           "workflow_index": 5,
           "workflow_step_type": "Measure",
-          "uuid": "4d3a7637-adef-4db0-8772-e056d4204f4c",
-          "version_uuid": "cb997841-f732-4719-9960-32f35b848617"
+          "uuid": "df052bc6-fdf5-4ae4-a4f2-cc56cf1bda62",
+          "version_uuid": "5f0d206f-44f1-43a3-b066-7c67fb696957"
         },
         {
           "measure_definition_class_name": "SetBoilerThermalEfficiency",
           "measure_definition_directory": "./measures/ExampleMeasure",
           "measure_definition_display_name": "SetBoilerThermalEfficiency",
-          "measure_definition_uuid": "7c6293c0-2f2d-4549-ad46-1cbc3b1f8aeb",
-          "measure_definition_version_uuid": "34268c67-86a8-46d5-ab08-4747c3183a30",
+          "measure_definition_uuid": "c9f7059a-0f59-482c-b16d-d35503f55179",
+          "measure_definition_version_uuid": "732b0dec-f117-4f44-8faf-ae299c51ee48",
           "measure_type": "RubyMeasure",
           "arguments": [
             {
@@ -1124,21 +1124,21 @@
               "value_type": "double",
               "variable": true,
               "variable_type": "RubyContinuousVariable",
-              "uuid": "cc62195c-bd9a-47a1-a6ec-40fc45ca25e4",
-              "version_uuid": "d5ab9ad5-b6db-4ecd-b776-287656540f2d"
+              "uuid": "96e5c4f1-982b-4497-a79d-cb25f0679132",
+              "version_uuid": "df85009c-a599-4da5-9308-8f0056f212d2"
             }
           ],
           "workflow_index": 6,
           "workflow_step_type": "Measure",
-          "uuid": "f91a554a-f34d-4155-ab5b-c71f6bcf3cf0",
-          "version_uuid": "bba5d6a4-a5ce-4483-be18-f05986de605a"
+          "uuid": "ff89ba0d-a36a-48d6-a618-d72d10ae0ee5",
+          "version_uuid": "0cf936df-afe6-4d51-8ee4-5d39e15e4e8b"
         },
         {
           "measure_definition_class_name": "IncreaseInsulationRValueForExteriorWalls",
           "measure_definition_directory": "./measures/ExampleMeasure",
           "measure_definition_display_name": "IncreaseInsulationRValueForExteriorWalls",
-          "measure_definition_uuid": "356fddea-4c53-414c-9793-c813e9094ac2",
-          "measure_definition_version_uuid": "e27612aa-7127-49ed-bfdd-d1f2ed169482",
+          "measure_definition_uuid": "eb9cef94-c5da-408f-a31c-662f97583771",
+          "measure_definition_version_uuid": "1e9c01fb-8080-42f8-93f3-cf928322ba9a",
           "measure_type": "RubyMeasure",
           "arguments": [
             {
@@ -1215,21 +1215,21 @@
               "value_type": "double",
               "variable": true,
               "variable_type": "RubyContinuousVariable",
-              "uuid": "0daf9b35-98a3-4ef6-b978-c59257b49137",
-              "version_uuid": "df03c133-e6a6-4a18-9769-bc662fe72391"
+              "uuid": "dbcd5432-746f-40bd-9186-ae955d31cd5f",
+              "version_uuid": "30a02a62-134b-47e8-b1b4-cd4aad67996d"
             }
           ],
           "workflow_index": 7,
           "workflow_step_type": "Measure",
-          "uuid": "92972b4d-dc29-4051-86e5-650aeae05106",
-          "version_uuid": "7b176bee-9d6b-439c-8fd8-a231d7b5f225"
+          "uuid": "99be7c12-e046-43c5-b1b3-a1bb812d0426",
+          "version_uuid": "b90a970a-fe01-408e-a51a-93be56d14619"
         },
         {
           "measure_definition_class_name": "SetChillerCOP",
           "measure_definition_directory": "./measures/ExampleMeasure",
           "measure_definition_display_name": "SetChillerCOP",
-          "measure_definition_uuid": "e69df820-0a29-4c38-bba6-5abc7161bcd4",
-          "measure_definition_version_uuid": "76340fdd-a803-4bdd-9c47-db952e5063cb",
+          "measure_definition_uuid": "8f27cd64-601d-4750-9b18-2139767bdd41",
+          "measure_definition_version_uuid": "f04020bf-ed79-4a74-94a9-8e99e9338871",
           "measure_type": "RubyMeasure",
           "arguments": [
             {
@@ -1285,21 +1285,21 @@
               "value_type": "double",
               "variable": true,
               "variable_type": "RubyContinuousVariable",
-              "uuid": "d69d78c5-006e-4cc1-a920-8b7d8c9b5d32",
-              "version_uuid": "f15aeea5-6534-4ac0-86bd-d8cdada870d4"
+              "uuid": "0160f5d6-213d-4ab8-a90c-5444e4104832",
+              "version_uuid": "0e47ea5c-4b6a-449d-8d5f-ec3a39a94361"
             }
           ],
           "workflow_index": 8,
           "workflow_step_type": "Measure",
-          "uuid": "0ccafa55-22aa-404f-a789-76bb5f739bbf",
-          "version_uuid": "8594d9b8-3f77-4b9b-918c-ae69084b321b"
+          "uuid": "06bc2dda-589d-4067-a85b-f487c4ddf016",
+          "version_uuid": "02069bfd-6089-4177-a43a-0e9a391c2355"
         },
         {
           "measure_definition_class_name": "SetHeatingandCoolingSizingFactors",
           "measure_definition_directory": "./measures/ExampleMeasure",
           "measure_definition_display_name": "SetHeatingandCoolingSizingFactors",
-          "measure_definition_uuid": "3629d240-2361-4070-83a6-133f267fe5c6",
-          "measure_definition_version_uuid": "50f08d62-d169-4cc0-849f-f6f5718c7246",
+          "measure_definition_uuid": "fbda689c-b5a7-44cf-9a5e-1cf75437bc6d",
+          "measure_definition_version_uuid": "dc463464-6f4b-4d5d-bd6d-f67a9179b552",
           "measure_type": "RubyMeasure",
           "arguments": [
 
@@ -1349,8 +1349,8 @@
               "value_type": "double",
               "variable": true,
               "variable_type": "RubyContinuousVariable",
-              "uuid": "ed4a7442-4b9c-434c-b688-465b8819888c",
-              "version_uuid": "ef70bb30-a4cb-4c72-8aea-ec6935dda7f2"
+              "uuid": "6a5cf466-b0fc-4ce4-850f-c665db41728f",
+              "version_uuid": "2ae10d46-487b-44de-bb76-726f04be4b93"
             },
             {
               "argument": {
@@ -1394,21 +1394,21 @@
               "value_type": "double",
               "variable": true,
               "variable_type": "RubyContinuousVariable",
-              "uuid": "0b63ae9c-927f-435e-872b-97b5c3dfb9e4",
-              "version_uuid": "29884056-0bc0-4a59-b6a5-14b748f3a129"
+              "uuid": "82558aec-2f15-4b08-b87e-c24e7f5699a7",
+              "version_uuid": "2ef0063f-78f0-4c40-9e69-52f71b944afd"
             }
           ],
           "workflow_index": 9,
           "workflow_step_type": "Measure",
-          "uuid": "f4204855-345a-40ec-be3c-d5519a612738",
-          "version_uuid": "cb3aa526-221b-4f4c-8ac6-479e83c5e1b4"
+          "uuid": "5cf6a608-5917-4a63-ac75-ab97fcaa2a68",
+          "version_uuid": "1ef7ac42-7631-4e84-a105-6648ef0f4fe4"
         },
         {
           "measure_definition_class_name": "SetChilledWaterLoopTemperature",
           "measure_definition_directory": "./measures/ExampleMeasure",
           "measure_definition_display_name": "SetChilledWaterLoopTemperature",
-          "measure_definition_uuid": "378ab374-75d6-4d45-bc04-9e7c17854cfa",
-          "measure_definition_version_uuid": "c37941d2-ab23-4b4f-b610-33af668ffbe3",
+          "measure_definition_uuid": "76c880ec-7674-44a0-9e49-fe8658e2c4d1",
+          "measure_definition_version_uuid": "74fe610a-1ea4-4e50-8a6a-27de0092d7fb",
           "measure_type": "RubyMeasure",
           "arguments": [
 
@@ -1458,21 +1458,21 @@
               "value_type": "double",
               "variable": true,
               "variable_type": "RubyContinuousVariable",
-              "uuid": "d917ebb5-3160-41c3-a560-8dbeea722511",
-              "version_uuid": "19cb3fd6-e17d-458a-b1d0-b2ac8cceaf63"
+              "uuid": "9c1427c7-3445-4797-bd81-611cf3389843",
+              "version_uuid": "9983db42-c7df-4986-bd95-487a2f851fdc"
             }
           ],
           "workflow_index": 10,
           "workflow_step_type": "Measure",
-          "uuid": "d39090b6-fac2-4894-8bd9-d67c59dc24fe",
-          "version_uuid": "38cefdf1-aa99-4160-a1d6-43e8a4c16e92"
+          "uuid": "2e1d91d7-fc83-48fd-bd34-6a45774f8c75",
+          "version_uuid": "ff9de041-608b-41a4-83c9-6d30ec25059d"
         },
         {
           "measure_definition_class_name": "SetHotWaterLoopTemperature",
           "measure_definition_directory": "./measures/ExampleMeasure",
           "measure_definition_display_name": "SetHotWaterLoopTemperature",
-          "measure_definition_uuid": "419fb3d5-b8e5-4624-988a-36eda836d037",
-          "measure_definition_version_uuid": "6c4dfed3-8338-4ada-b7aa-8098236e9443",
+          "measure_definition_uuid": "a2b331ed-64f4-43db-9816-c41bcea875e5",
+          "measure_definition_version_uuid": "e56e3dab-ce12-4912-999f-e0c924becb4b",
           "measure_type": "RubyMeasure",
           "arguments": [
 
@@ -1522,21 +1522,21 @@
               "value_type": "double",
               "variable": true,
               "variable_type": "RubyContinuousVariable",
-              "uuid": "1e41be98-c35b-46dd-98eb-66b70c91874b",
-              "version_uuid": "29015a16-2a4d-400e-9c01-a4c7a8843240"
+              "uuid": "6f41d870-016a-483c-b317-65767011fbcf",
+              "version_uuid": "a9853255-72b8-4617-9546-c3287cb418d2"
             }
           ],
           "workflow_index": 11,
           "workflow_step_type": "Measure",
-          "uuid": "389b39fe-172b-4b41-a2e5-031c16b0d5ad",
-          "version_uuid": "3d6a817b-8e0f-4bb0-9f71-7f1e8e6616bc"
+          "uuid": "8a579785-5985-49f6-b473-e7ed9ddb2519",
+          "version_uuid": "9fd16f92-eede-4ac4-b90a-77df1dd991d6"
         },
         {
           "measure_definition_class_name": "SetMinimumVAVTerminalFlowFraction",
           "measure_definition_directory": "./measures/ExampleMeasure",
           "measure_definition_display_name": "SetMinimumVAVTerminalFlowFraction",
-          "measure_definition_uuid": "65e6b544-5841-4b3b-b037-0d5fe5c30e52",
-          "measure_definition_version_uuid": "cb262aca-c838-459f-9cbf-c199e1c564cf",
+          "measure_definition_uuid": "b6277595-7809-493c-b8db-fca7173208fd",
+          "measure_definition_version_uuid": "5ef85264-fb71-4f1d-8a35-6c1668d8de43",
           "measure_type": "RubyMeasure",
           "arguments": [
 
@@ -1586,21 +1586,21 @@
               "value_type": "double",
               "variable": true,
               "variable_type": "RubyContinuousVariable",
-              "uuid": "6f538fb1-b61b-499a-b68b-84948cf9a728",
-              "version_uuid": "ccc8fa3a-ce6b-461d-a91a-c3039cc94b27"
+              "uuid": "f216f251-86d3-4738-878d-1431351ae143",
+              "version_uuid": "67e08295-c98b-4eec-a177-0b4ddf348940"
             }
           ],
           "workflow_index": 12,
           "workflow_step_type": "Measure",
-          "uuid": "fdf8593c-6970-40c5-8f9b-f9619b06e104",
-          "version_uuid": "97230b31-2ba0-4236-831d-aecf333dcf43"
+          "uuid": "03d9cea4-d06b-436a-b2ac-f99cb0671e34",
+          "version_uuid": "446dfb17-7781-4b02-a324-a577b5c822ba"
         },
         {
           "measure_definition_class_name": "ModifyEnergyPlusFanVariableVolumeObjects",
           "measure_definition_directory": "./measures/ExampleMeasure",
           "measure_definition_display_name": "ModifyEnergyPlusFanVariableVolumeObjects",
-          "measure_definition_uuid": "891bb8cd-f91e-43a9-887c-ff9a18a060be",
-          "measure_definition_version_uuid": "f8a8fb48-6b94-4bed-9da3-c65783efa30c",
+          "measure_definition_uuid": "5b96b85f-1012-43c5-a4eb-21d0085fdd41",
+          "measure_definition_version_uuid": "f5c025e9-76d3-4346-bd5a-9d5c2850c69b",
           "measure_type": "EnergyPlusMeasure",
           "arguments": [
 
@@ -1650,14 +1650,14 @@
               "value_type": "double",
               "variable": true,
               "variable_type": "RubyContinuousVariable",
-              "uuid": "d9a1450c-7155-42d8-9f94-30654819c90d",
-              "version_uuid": "d778c6de-c294-4a39-b8b3-d9f5d98a02c2"
+              "uuid": "1d7c7efa-8306-4c4f-bd21-08eadf4853a8",
+              "version_uuid": "37dbe255-3187-438d-9f9a-87e3b146455a"
             }
           ],
           "workflow_index": 13,
           "workflow_step_type": "Measure",
-          "uuid": "e932ceef-e90b-4be9-93a9-738141f6f54f",
-          "version_uuid": "285c8edb-93ee-441f-ad8c-1444cfe3327b"
+          "uuid": "1b140b09-15e4-46ec-9ef1-209298fad321",
+          "version_uuid": "4047e4e4-b51c-4b39-8b38-399c985ace82"
         }
       ],
       "analysis_type": "rgenoud"

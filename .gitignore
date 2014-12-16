@@ -6,6 +6,8 @@
 *.gem
 ~$*
 tmp/*
+.yardoc
+doc/
 Gemfile.lock
 /spec/files/analysis/*.zip
 /spec/files/export

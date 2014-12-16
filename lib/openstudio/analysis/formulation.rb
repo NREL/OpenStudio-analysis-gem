@@ -25,6 +25,15 @@ module OpenStudio
       def workflow
         @workflow ||= OpenStudio::Analysis::Workflow.new
       end
+
+      # return the JSON.
+      #
+      # @param version [Integer] Version of the format to return
+      def to_hash(version = 1)
+        {
+            workflow: @workflow.to_hash
+        }
+      end
     end
   end
 end

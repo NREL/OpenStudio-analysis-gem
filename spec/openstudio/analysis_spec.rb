@@ -23,4 +23,12 @@ describe OpenStudio::Analysis::Formulation do
     file = File.join('spec/files/analysis/medium_office.json')
     expect(a.workflow = OpenStudio::Analysis::Workflow.from_file(file)).not_to be nil
   end
+
+  it 'should save a hash (version 1)' do
+    a = OpenStudio::Analysis.create('workflow 2')
+    file = File.join('spec/files/analysis/medium_office.json')
+    expect(a.workflow = OpenStudio::Analysis::Workflow.from_file(file)).not_to be nil
+    h = a.to_hash
+    #expect(h[:workflow].empty?).not_to eq true
+  end
 end

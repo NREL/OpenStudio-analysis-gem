@@ -62,11 +62,16 @@ module OpenStudio
         #@measures[""]
       end
 
-      # Save the workflow to JSON
+      # Save the workflow to a hash object
+      def to_hash
+        @items.map{|i| i.to_hash}
+      end
+
+      # Save the workflow to a JSON string
       #
       # @return [String] JSON formatted string
       def to_json
-        JSON.pretty_generate(@items.map{|i| i.to_hash})
+        JSON.pretty_generate(self.to_hash)
       end
 
       # Read the Workflow description from a persisted file. The format at the moment is the current analysis.json
