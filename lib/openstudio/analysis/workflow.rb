@@ -14,6 +14,11 @@ module OpenStudio
 
       end
 
+      # Remove all the items in the workflow
+      def clear
+        @items.clear
+      end
+
       # Add a measure to the workflow from a path. Inside the path it is expecting to have a measure.json file
       # if not, the BCL gem is used to create the measure.json file.
       #
@@ -43,7 +48,7 @@ module OpenStudio
                 instance_name,
                 instance_display_name,
                 path_to_measure,
-                JSON.parse(File.read(File.join(path_to_measure, 'measure.json')))
+                JSON.parse(File.read(File.join(path_to_measure, 'measure.json')), symbolize_names: true)
             )
           else
             fail "measure.json was not found and was not automatically created"
