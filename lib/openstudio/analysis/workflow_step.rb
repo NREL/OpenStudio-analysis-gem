@@ -88,6 +88,8 @@ module OpenStudio
           if distribution[:type] =~ /discrete/
             v[:weights] = distribution[:weights]
             v[:values] = distribution[:values]
+          elsif distribution[:type] =~ /uniform/
+            # all the data should be present
           elsif distribution[:type] =~ /triangle/
             v[:step_size] = distribution[:step_size] ? distribution[:step_size] : nil
           elsif distribution[:type] =~ /normal/
@@ -153,8 +155,16 @@ module OpenStudio
               v[:uncertainty_description][:attributes] << { name: 'lower_bounds', value: v[:minimum]}
               v[:uncertainty_description][:attributes] << { name: 'upper_bounds', value: v[:maximum]}
               v[:uncertainty_description][:attributes] << { name: 'modes', value: v[:mode]}
+            elsif v[:type] =~ /uniform/
+              v[:uncertainty_description][:attributes] << { name: 'lower_bounds', value: v[:minimum]}
+              v[:uncertainty_description][:attributes] << { name: 'upper_bounds', value: v[:maximum]}
+              v[:uncertainty_description][:attributes] << { name: 'modes', value: v[:mode]}
             else
-
+              v[:uncertainty_description][:attributes] << { name: 'lower_bounds', value: v[:minimum]}
+              v[:uncertainty_description][:attributes] << { name: 'upper_bounds', value: v[:maximum]}
+              v[:uncertainty_description][:attributes] << { name: 'modes', value: v[:mode]}
+              v[:uncertainty_description][:attributes] << { name: 'delta_x', value: v[:step_size] ? v[:step_size] : nil}
+              v[:uncertainty_description][:attributes] << { name: 'stddev', value: v[:standard_deviation] ? v[:standard_deviation] : nil}
             end
 
             v[:workflow_index] = index
@@ -162,7 +172,9 @@ module OpenStudio
 
             # remove some remaining items
             v.delete(:type)
-            v.delete(:mode) if v[:mode]
+            v.delete(:mode) if v.key?(:mode)
+            v.delete(:step_size) if v.key?(:step_size)
+            v.delete(:standard_deviation) if v.key?(:standard_deviation)
           end
           hash[:uuid] = SecureRandom.uuid
           hash[:version_uuid] = SecureRandom.uuid
@@ -239,7 +251,9 @@ module OpenStudio
         fail "No maximum defined for variable" unless d[:maximum]
         fail "No mean/mode defined for variable" unless d[:mode]
 
-        if d[:type] =~ /discrete/
+        if d[:type] =~ /uniform/
+          # Do we need to tell the user that we don't really need the mean/mode for uniform?
+        elsif d[:type] =~ /discrete/
           # require min, max, mode
           fail "No values passed for discrete distribution" unless d[:values] || d[:values].empty?
           if d[:weights]
