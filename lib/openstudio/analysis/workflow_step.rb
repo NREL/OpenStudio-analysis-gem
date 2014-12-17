@@ -43,12 +43,13 @@ module OpenStudio
       # @param variable_type [String] What type of variable. Currently only discrete or continuous.
       # @param distribution [Hash] Hash describing the distribution of the variable.
       # @option distribution [String] :type Type of distribution. `discrete`, `uniform`, `triangle`, `normal`, `lognormal`
+      # @option distribution [String] :units Units of the variable. This is legacy as previous OpenStudio measures did not specify units separately.
       # @option distribution [String] :minimum Minimum value of the distribution, required for all distributions
       # @option distribution [String] :maximum Maximum value of the distribution, required for all distributions
-      # @option distribution [String] :relation_to_output How is the variable correlates to the output of interest
       # @option distribution [String] :standard_deviation The standard deviation, if the distribution requires it.
       # @option distribution [String] :mode The mean/mode of the distribution (if required)
       # @option distribution [String] :mean Alias for the mode. If this is used it will override the mode
+      # @option distribution [String] :relation_to_output How is the variable correlates to the output of interest (for continuous distributions)
       # @option distribution [String] :step_size Minimum step size (delta_x) of the variable (for continuous distributions)
       # @option distribution [String] :values If discrete, then the values to run
       # @option distribution [String] :weights If discrete, then the weights for each of the discrete values, must be the same length as values, and sum to 1. If empty, then it will create this automatically to be uniform.
@@ -56,6 +57,7 @@ module OpenStudio
       # @param options [Hash] Values that define the variable.
       # @option options [String] :variable_type The type of variable, `variable` or `pivot`. By default this is a variable.
       # @option options [String] :variable_display_name_short The short display name of the variable. Will be defaulted to the variable_display_name if not passed
+      # @option options [String] :static_value Static/Default value of the variable. If not defined it will use the default value for the argument.
       # @return [Boolean] True / False if it was able to tag the measure argument
       def make_variable(argument_name, variable_display_name, distribution, options = {})
         options = {variable_type: 'variable'}.merge(options)
@@ -75,10 +77,13 @@ module OpenStudio
           v[:display_name_short] = options[:variable_display_name_short] ? options[:variable_display_name_short] : variable_display_name
 
           v[:type] = distribution[:type]
+          v[:units] = distribution[:units] ? distribution[:units] : nil
           v[:minimum] = distribution[:minimum]
           v[:maximum] = distribution[:maximum]
-          v[:relation_to_output] = distribution[:relation_to_output] if distribution[:relation_to_output]
+          v[:relation_to_output] = distribution[:relation_to_output] ? distribution[:relation_to_output] : nil
           v[:mode] = distribution[:mode]
+          v[:static_value] = distribution[:static_value] if distribution[:static_value]
+          # TODO: Static value should be named default value
 
           if distribution[:type] =~ /discrete/
             v[:weights] = distribution[:weights]
@@ -114,7 +119,7 @@ module OpenStudio
                 hash[:arguments] << a
               end
             elsif var.to_s == '@variables'
-              # skip until later
+              # skip until after looping over instance_variables
             else
               hash[var.to_s.delete("@")] = self.instance_variable_get(var)
             end
@@ -127,14 +132,37 @@ module OpenStudio
           hash[:variables] = @variables
 
           # Clean up the variables to match the legacy format
-          hash[:variables].each do |v|
-            v[:uncertainty_description] = {}
-            v[:type] =~ /uncertain/ ? v[:uncertainty_description][:type] = "#{v[:type]}" : v[:uncertainty_description][:type] = "#{v[:type]}_uncertain"
-            warn "Deprecation Warning. In Version 0.5 the _uncertain text will be removed from distribution types: #{v[:uncertainty_description][:type]}"
+          hash[:variables].each_with_index do |v, index|
+            v[:variable_type] == 'pivot' ? v[:pivot] = true : v[:variable] = true
+            v[:variable] = true
+            v[:static_value] = v[:argument][:default_value] unless v[:static_value]
 
-            #v.delete(:mode)
+            v[:uncertainty_description] = {}
+            v[:uncertainty_description][:type] = v[:type] =~ /uncertain/ ? "#{v[:type]}" : "#{v[:type]}_uncertain"
+            warn "Deprecation Warning. In Version 0.5 the _uncertain text will be removed from distribution types: #{v[:uncertainty_description][:type]}"
+            warn "Deprecation Warning. RubyContinuousVariable (OpenStudio called this the variable_type) is no longer persisted"
+
+            # This is not neatly coded. This should be a new object that knows how to write itself out.
             v[:uncertainty_description][:attributes] = []
-            v[:uncertainty_description][:attributes] << v.delete(:values).zip(v.delete(:weights))
+            if v[:type] =~ /discrete/
+              new_h = {}
+              new_h[:name] = 'discrete'
+              new_h[:values_and_weights] = v.delete(:values).zip(v.delete(:weights)).map{|w| {value: w[0], weight: w[1]}}
+              v[:uncertainty_description][:attributes] << new_h
+
+              v[:uncertainty_description][:attributes] << { name: 'lower_bounds', value: v[:minimum]}
+              v[:uncertainty_description][:attributes] << { name: 'upper_bounds', value: v[:maximum]}
+              v[:uncertainty_description][:attributes] << { name: 'modes', value: v[:mode]}
+            else
+
+            end
+
+            v[:workflow_index] = index
+            warn "Deprecation Warning. workflow_step_type is no longer persisted"
+
+            # remove some remaining items
+            v.delete(:type)
+            v.delete(:mode) if v[:mode]
           end
           hash[:uuid] = SecureRandom.uuid
           hash[:version_uuid] = SecureRandom.uuid
@@ -176,15 +204,24 @@ module OpenStudio
         s.measure_definition_uuid = hash[:uid]
         s.measure_definition_version_uuid = hash[:version_id]
 
+        # do not allow the choice variable_type
+
         s.type = hash[:measure_type] # this is actually the measure type
         if hash[:arguments]
           hash[:arguments].each do |arg|
+            var_type = arg[:variable_type].downcase
+            if var_type == 'choice'
+              # WARN the user that the measure had a "choice data type"
+              var_type = 'string'
+            end
+
             s.arguments << {
                 display_name: arg[:display_name],
                 display_name_short: arg[:display_name],
                 name: arg[:local_variable],
-                value_type: arg[:variable_type].downcase,
-                default_value: arg[:default_value]
+                value_type: var_type,
+                default_value: arg[:default_value],
+                value: arg[:default_value]
             }
           end
         end
