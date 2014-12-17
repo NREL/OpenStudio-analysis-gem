@@ -14,7 +14,8 @@ module OpenStudio
       attr_accessor :measure_definition_name_xml
       attr_accessor :measure_definition_uuid
       attr_accessor :measure_definition_version_uuid
-      attr_accessor :arguments
+      attr_reader :arguments
+      attr_reader :variables
 
       # Create an instance of the OpenStudio::Analysis::WorkflowStep
       #
@@ -34,13 +35,22 @@ module OpenStudio
         @measure_definition_uuid = nil
         @measure_definition_version_uuid = nil
         @arguments = []
+
+        # TODO: eventually the variables should be its own class. This would then be an array of Variable objects.
         @variables = []
+      end
+
+      # Return an array of the argument names
+      #
+      # @return [Array] Listing of argument names.
+      def argument_names
+        @arguments.map{ |a| a[:name]}
       end
 
       # Tag a measure's argument as a variable.
       #
       # @param argument_name [String] The instance_name of the measure argument that is to be tagged. This is the same name as the argument's variable in the measure.rb file.
-      # @param variable_type [String] What type of variable. Currently only discrete or continuous.
+      # @param variable_display_name [String] What the variable is called. It is best if the display name is self describing (i.e. does not need any other context). It can be the same as the argument display name.
       # @param distribution [Hash] Hash describing the distribution of the variable.
       # @option distribution [String] :type Type of distribution. `discrete`, `uniform`, `triangle`, `normal`, `lognormal`
       # @option distribution [String] :units Units of the variable. This is legacy as previous OpenStudio measures did not specify units separately.
@@ -178,6 +188,7 @@ module OpenStudio
           end
           hash[:uuid] = SecureRandom.uuid
           hash[:version_uuid] = SecureRandom.uuid
+
         else
           fail "Do not know how to create the Hash for Version #{version}"
         end

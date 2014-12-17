@@ -14,9 +14,6 @@ module OpenStudio
       # @return [Object] An OpenStudio::Analysis::Formulation object
       def initialize(display_name)
         @display_name = display_name
-
-        # TODO: convert to nice display name
-        @name = display_name
       end
 
       # Initialize or return the current workflow object
@@ -30,9 +27,20 @@ module OpenStudio
       #
       # @param version [Integer] Version of the format to return
       def to_hash(version = 1)
-        {
-            workflow: @workflow.to_hash
-        }
+        if version == 1
+          {
+              analysis: {
+                  name: @display_name.snake_case,
+                  display_name: @display_name,
+                  problem: {
+                      workflow: @workflow.to_hash
+                  },
+                  file_format_version: version
+              }
+          }
+        else
+          fail "Version #{version} not defined for #{self.class} and #{__method__}"
+        end
       end
     end
   end

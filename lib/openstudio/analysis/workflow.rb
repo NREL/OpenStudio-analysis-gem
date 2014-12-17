@@ -11,7 +11,6 @@ module OpenStudio
       # @return [Object] An OpenStudio::Analysis::Workflow object
       def initialize
         @items = []
-
       end
 
       # Remove all the items in the workflow
@@ -63,20 +62,41 @@ module OpenStudio
       # Find the measure by its instance name
       #
       # @params instance_name [String] instance name of the measure
+      # @return [Object] The WorkflowStep with the instance_name
       def find_measure(instance_name)
-        #@measures[""]
+        @items.find{ |i| i.name == instance_name}
+      end
+
+      # Return all the variables in the analysis as an array. The list that is returned is read only.
+      #
+      # @return [Array] All variables in the workflow
+      def all_variables
+        @items.map{|i| i.variables }.flatten
+
+
       end
 
       # Save the workflow to a hash object
-      def to_hash
-        @items.map{|i| i.to_hash}
+      def to_hash(version = 1)
+        h = nil
+        if version == 1
+          h = @items.map{|i| i.to_hash(version)}
+        else
+          fail "Version #{version} not yet implemented for to_hash"
+        end
+
+        h
       end
 
       # Save the workflow to a JSON string
       #
       # @return [String] JSON formatted string
-      def to_json
-        JSON.pretty_generate(self.to_hash)
+      def to_json(version = 1)
+        if version == 1
+          JSON.pretty_generate(self.to_hash(version))
+        else
+          fail "Version #{version} not yet implemented for to_json"
+        end
       end
 
       # Read the Workflow description from a persisted file. The format at the moment is the current analysis.json
@@ -86,7 +106,12 @@ module OpenStudio
       def self.from_file(filename)
         if File.exist? filename
           j = JSON.parse(File.read(filename), symbolize_names: true)
-          puts j
+
+          # get the version of the file
+          file_format_version = j[:file_format_version] ? j[:file_format_version] : 1
+
+          puts "Parsing file version #{file_format_version}"
+
         else
           fail "Could not find workflow file #{filename}"
         end

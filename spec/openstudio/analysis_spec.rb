@@ -31,4 +31,23 @@ describe OpenStudio::Analysis::Formulation do
     h = a.to_hash
     #expect(h[:workflow].empty?).not_to eq true
   end
+
+  it 'should create a new formulation' do
+    a = OpenStudio::Analysis.create('my analysis')
+    p = 'spec/files/measures/SetThermostatSchedules'
+
+    a.workflow.add_measure_from_path('thermostat', 'thermostat', p)
+    m = a.workflow.add_measure_from_path('thermostat_2', 'thermostat 2', p)
+
+    d = {
+        type: 'uniform',
+        minimum: 5,
+        maximum: 7,
+        mean: 6.2
+    }
+    m.make_variable('cooling_sch', 'Change the cooling schedule', d)
+
+    expect(a.workflow.measures.size).to eq 2
+    puts JSON.pretty_generate(a.to_hash)
+  end
 end
