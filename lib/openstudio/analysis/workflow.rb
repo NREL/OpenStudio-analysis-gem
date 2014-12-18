@@ -68,27 +68,92 @@ module OpenStudio
         @items.last
       end
 
+      # Add a measure from the format that Excel parses into. This is a helper method to map the excel data to the new
+      # programmatic interface format
+      #
+      # @params measure [Hash] The measure in the format of the Excel translator
+      # @return [Object] Returns the measure that was added as an OpenStudio::AnalysisWorkflowStep object
+      def add_measure_from_excel(measure)
+        hash = {}
+        hash[:classname] = measure['measure_file_name']
+        hash[:name] = measure['name']
+        hash[:display_name] = measure['display_name']
+        hash[:measure_type] = measure['measure_type']
+        hash[:uid] = measure['uid'] ? measure['uid'] : SecureRandom.uuid
+        hash[:version_id] = measure['version_id'] ? measure['version_id'] : SecureRandom.uuid
+
+        # map the arguments - this can be a variable or argument, add them all as arguments first
+        args = []
+        measure['variables'].each do |variable|
+          args << {
+              local_variable: variable['name'],
+              variable_type: variable['type'],
+              name: variable['name'],
+              display_name: variable['display_name'],
+              display_name_short: variable['display_name_short'],
+              units: variable['units'],
+              default_value: variable['distribution']['static_value'],
+              value: variable['distribution']['static_value']
+          }
+        end
+        hash[:arguments] = args
+
+
+        m = add_measure(measure['name'], measure['display_name'], "./spec/files/measures/#{measure['measure_file_name_directory']}", hash)
+
+        measure['variables'].each do |variable|
+          next unless variable['variable_type'] == 'variable'
+
+          dist = {
+              type: variable['distribution']['type'],
+              minimum: variable['distribution']['min'],
+              maximum: variable['distribution']['max'],
+              mean: variable['distribution']['mean'],
+              standard_deviation: variable['distribution']['stddev'],
+              values: variable['distribution']['discrete_values'],
+              weights: variable['distribution']['discrete_weights'],
+              step_size: variable['distribution']['delta_x']
+          }
+          opt = {
+              variable_type: variable['variable_type'],
+              variable_display_name_short: variable['display_name_short'],
+              static_value: variable['distribution']['static_value']
+          }
+
+          m.make_variable(variable['name'], variable['display_name'], dist, )
+        end
+      end
+
       # Find the measure by its instance name
       #
       # @params instance_name [String] instance name of the measure
       # @return [Object] The WorkflowStep with the instance_name
       def find_measure(instance_name)
-        @items.find{ |i| i.name == instance_name}
+        @items.find { |i| i.name == instance_name }
       end
+
       alias_method :find_workflow_step, :find_measure
 
       # Return all the variables in the analysis as an array. The list that is returned is read only.
       #
       # @return [Array] All variables in the workflow
       def all_variables
-        @items.map{|i| i.variables }.flatten
+        @items.map { |i| i.variables }.flatten
       end
 
       # Save the workflow to a hash object
       def to_hash(version = 1)
         h = nil
         if version == 1
-          h = @items.map{|i| i.to_hash(version)}
+          arr = []
+          @items.each_with_index do |item, index|
+            temp_h = item.to_hash(version)
+            temp_h[:workflow_index] = index
+
+            arr << temp_h
+          end
+
+          h = arr
         else
           fail "Version #{version} not yet implemented for to_hash"
         end

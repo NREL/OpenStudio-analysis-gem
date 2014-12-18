@@ -83,10 +83,10 @@ module OpenStudio
 
         def add_model(name, display_name, type, path)
           @models << {
-            name: name,
-            display_name: display_name,
-            type: type,
-            path: path
+              name: name,
+              display_name: display_name,
+              type: type,
+              path: path
           }
         end
 
@@ -179,7 +179,7 @@ module OpenStudio
                     if variable['distribution']['max'].nil? || variable['distribution']['max'] == ''
                       fail "Variable #{measure['name']}:#{variable['name']} must have a maximum"
                     end
-                    unless variable['type'] == 'string'
+                    unless variable['type'] == 'string' || variable['type'] =~ /bool/
                       if variable['distribution']['min'] > variable['distribution']['max']
                         fail "Variable min is greater than variable max for #{measure['name']}:#{variable['name']}"
                       end
@@ -205,6 +205,10 @@ module OpenStudio
           # the correct weather files or models
           @template_json = translate_to_analysis_json_template
 
+          # save the other format for now
+          translate_to_analysis
+
+
           @template_json
         end
 
@@ -223,7 +227,24 @@ module OpenStudio
           end
         end
 
-        # TODO: move this into a new class that helps construct this file
+        # New method that uses the objects to hold the analysis
+        def translate_to_analysis
+          # Use the programmatic interface to make the analysis json now
+          analysis = OpenStudio::Analysis.create(@analysis_name)
+
+          @variables['data'].each do |measure|
+            next unless measure['enabled']
+
+            # TODO: make this read the measure.rb file, then override any of the differences. That is call workflow.add_from_measure_path
+            analysis.workflow.add_measure_from_excel(measure)
+          end
+
+          # Temp save of the json file
+          analysis.save("spec/files/analysis/#{analysis.display_name}_api.json")
+
+          analysis
+        end
+
         def translate_to_analysis_json_template
           # Load in the templates for constructing the JSON file
           template_root = File.join(File.dirname(__FILE__), '../../templates')
@@ -267,21 +288,10 @@ module OpenStudio
 
                   # add this as an argument
                   case @variable['type'].downcase
-                    when 'double'
-                      @static_value = @variable['distribution']['static_value'].to_f
-                    when 'integer'
-                      @static_value = @variable['distribution']['static_value'].to_i
-                    # TODO: update openstudio export to write only Strings
                     when 'string', 'choice'
                       @static_value = @variable['distribution']['static_value'].inspect
-                    when 'bool'
-                      if @variable['distribution']['static_value'].downcase == 'true'
-                        @static_value = true
-                      else
-                        @static_value = false
-                      end
                     else
-                      fail "Unknown variable type of '#{@variable['type']}'"
+                      @static_value = @variable['distribution']['static_value']
                   end
                   ag = JSON.parse(argument_template.result(get_binding))
                   fail "Argument '#{@variable['name']}' did not process.  Most likely it did not have all parameters defined." if ag.nil?
@@ -290,47 +300,24 @@ module OpenStudio
                   vr = nil
                   # add this as an argument
                   case @variable['type'].downcase
-                    when 'double'
-                      @static_value = @variable['distribution']['static_value'].to_f
-                    when 'integer'
-                      @static_value = @variable['distribution']['static_value'].to_i
-                    # TODO: update openstudio export to write only Strings
                     when 'string', 'choice'
                       @static_value = @variable['distribution']['static_value'].inspect
-                    when 'bool'
-                      if @variable['distribution']['static_value'].downcase == 'true'
-                        @static_value = true
-                      else
-                        @static_value = false
-                      end
                     else
-                      fail "Unknown variable type of '#{@variable['type']}'"
+                      @static_value = @variable['distribution']['static_value']
                   end
 
                   # TODO: remove enum and choice as this is not the variable type
                   if @variable['type'] == 'enum' || @variable['type'].downcase == 'choice'
-                    @values_and_weights = @variable['distribution']['enumerations'].map { |v| { value: v } }.to_json
+                    @values_and_weights = @variable['distribution']['enumerations'].map { |v| {value: v} }.to_json
                     vr = JSON.parse(discrete_uncertain_variable_template.result(get_binding))
                   elsif @variable['distribution']['type'] == 'discrete_uncertain'
                     # puts @variable.inspect
-                    weights = nil
-                    if @variable['distribution']['discrete_weights'] && @variable['distribution']['discrete_weights'] != ''
-                      weights = eval(@variable['distribution']['discrete_weights'])
-                    end
-
-                    values = nil
-                    if variable['type'].downcase == 'bool'
-                      values = eval(@variable['distribution']['discrete_values'])
-                      values.map! { |v| v.to_s == 'true' }
+                    if @variable['distribution']['discrete_weights']
+                      fail "Discrete variable '#{@variable['name']}' does not have equal length of values and weights" if
+                          @variable['distribution']['discrete_values'].size != @variable['distribution']['discrete_weights'].size
+                      @values_and_weights = @variable['distribution']['discrete_values'].zip(@variable['distribution']['discrete_weights']).map { |v, w| {value: v, weight: w} }.to_json
                     else
-                      values = eval(@variable['distribution']['discrete_values'])
-                    end
-
-                    if weights
-                      fail "Discrete variable '#{@variable['name']}' does not have equal length of values and weights" if values.size != weights.size
-                      @values_and_weights = values.zip(weights).map { |v, w| { value: v, weight: w } }.to_json
-                    else
-                      @values_and_weights = values.map { |v| { value: v } }.to_json
+                      @values_and_weights = @variable['distribution']['discrete_values'].map { |v| {value: v} }.to_json
                     end
 
                     if @variable['variable_type'] == 'pivot'
@@ -390,7 +377,7 @@ module OpenStudio
 
             # Convert this into a hash which looks like {name: measure_name}. This will allow us to add more
             # fields to the measure, such as which directory is the measure.
-            required_measures = required_measures.map { |value| { name: value } }
+            required_measures = required_measures.map { |value| {name: value} }
 
             # first validate that all the measures exist
             errors = []
@@ -703,7 +690,7 @@ module OpenStudio
                 unless (Pathname.new model_path).absolute?
                   model_path = File.expand_path(File.join(@root_path, model_path))
                 end
-                @models << { name: tmp_m_name.snake_case, display_name: tmp_m_name, type: row[2], path: model_path }
+                @models << {name: tmp_m_name.snake_case, display_name: tmp_m_name, type: row[2], path: model_path}
               end
             elsif b_other_libs
               # determine if the path is relative
@@ -712,21 +699,21 @@ module OpenStudio
                 other_path = File.expand_path(File.join(@root_path, other_path))
               end
 
-              @other_files << { lib_zip_name: row[1], path: other_path }
+              @other_files << {lib_zip_name: row[1], path: other_path}
             elsif b_worker_init
               worker_init_path = row[1]
               unless (Pathname.new worker_init_path).absolute?
                 worker_init_path = File.expand_path(File.join(@root_path, worker_init_path))
               end
 
-              @worker_inits << { name: row[0], path: worker_init_path, args: row[2] }
+              @worker_inits << {name: row[0], path: worker_init_path, args: row[2]}
             elsif b_worker_final
               worker_final_path = row[1]
               unless (Pathname.new worker_final_path).absolute?
                 worker_final_path = File.expand_path(File.join(@root_path, worker_final_path))
               end
 
-              @worker_finals << { name: row[0], path: worker_final_path, args: row[2] }
+              @worker_finals << {name: row[0], path: worker_final_path, args: row[2]}
             end
 
             next
@@ -903,7 +890,7 @@ module OpenStudio
 
             # check if we are a measure - nil means that the cell was blank
             if row[:enabled].nil?
-              unless measure_name.nil?
+              if measure_name && data['data'][measure_index]['enabled']
                 variable_index += 1
 
                 var = {}
@@ -912,7 +899,7 @@ module OpenStudio
                 var['display_name_short'] = row[:display_name_short] ? row[:display_name_short] : var['display_name']
                 var['name'] = row[:measure_type_or_parameter_name_in_measure]
                 var['index'] = variable_index # order of the variable (not sure of its need)
-                var['type'] = row[:variable_type] ? row[:variable_type].downcase : row[:variable_type]
+                var['type'] = row[:variable_type].downcase
                 var['units'] = row[:units]
                 var['distribution'] = {}
 
@@ -925,6 +912,7 @@ module OpenStudio
                   var['distribution']['enumerations'] << 'false'
                 end
 
+
                 var['distribution']['min'] = row[:min]
                 var['distribution']['max'] = row[:max]
                 var['distribution']['mean'] = row[:mode]
@@ -933,6 +921,33 @@ module OpenStudio
                 var['distribution']['discrete_weights'] = row[:discrete_weights]
                 var['distribution']['type'] = row[:distribution]
                 var['distribution']['static_value'] = row[:default_value]
+                var['distribution']['delta_x'] = row[:delta_x]
+
+                # type various values correctly
+                var['distribution']['min'] = typecast_value(var['type'], var['distribution']['min'])
+                var['distribution']['max'] = typecast_value(var['type'], var['distribution']['max'])
+                var['distribution']['mean'] = typecast_value(var['type'], var['distribution']['mean'])
+                var['distribution']['stddev'] = typecast_value(var['type'], var['distribution']['stddev'])
+                var['distribution']['static_value'] = typecast_value(var['type'], var['distribution']['static_value'])
+
+                # eval the discrete value and weight arrays
+                case var['type']
+                  when 'bool', 'boolean'
+                    if var['distribution']['discrete_values']
+                      var['distribution']['discrete_values'] = eval(var['distribution']['discrete_values']).map { |v| v.to_s == 'true' }
+                    end
+                    if var['distribution']['discrete_weights'] && var['distribution']['discrete_weights'] != ''
+                      var['distribution']['discrete_weights'] = eval(var['distribution']['discrete_weights'])
+                    end
+                  else
+                    if var['distribution']['discrete_values']
+                      var['distribution']['discrete_values'] = eval(var['distribution']['discrete_values'])
+                    end
+                    if var['distribution']['discrete_weights'] && var['distribution']['discrete_weights'] != ''
+                      var['distribution']['discrete_weights'] = eval(var['distribution']['discrete_weights'])
+                    end
+                end
+
 
                 var['distribution']['source'] = row[:source]
                 var['notes'] = row[:notes]

@@ -181,8 +181,8 @@ describe OpenStudio::Analysis::Translator::Excel do
           if var['name'] == 'alter_design_days'
             puts var.inspect
             expect(var['type']).to eq 'bool'
-            expect(eval(var['distribution']['discrete_values'])).to match_array %w(true false)
-            expect(eval(var['distribution']['discrete_weights'])).to match_array [0.8, 0.2]
+            expect(var['distribution']['discrete_values']).to match_array [true, false]
+            expect(var['distribution']['discrete_weights']).to match_array [0.8, 0.2]
           end
         end
       end
@@ -536,12 +536,18 @@ describe OpenStudio::Analysis::Translator::Excel do
 
   context 'version 0.3.7 and worker init-final scripts' do
     before :all do
-      @excel = OpenStudio::Analysis::Translator::Excel.new('spec/files/0_3_7_unique_measure_names.xlsx')
+      @excel = OpenStudio::Analysis::Translator::Excel.new('spec/files/0_4_0_lhs_discrete_continuous.xlsx')
     end
 
     it 'should fail to process' do
-      expect { @excel.process }.to raise_error("Measure Display Names are not unique for 'Rotate Building Relative to Current Orientation', 'Nothing Important'")
+      @excel.process
+      #expect { @excel.process }.to raise_error("Measure Display Names are not unique for 'Rotate Building Relative to Current Orientation', 'Nothing Important'")
+
+      @excel.save_analysis
     end
+  end
+
+  context 'version 0.4.0 full spreadsheet example' do
 
   end
 

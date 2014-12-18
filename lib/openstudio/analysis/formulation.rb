@@ -32,9 +32,10 @@ module OpenStudio
 
       end
 
-      # return the JSON.
+      # return a hash.
       #
       # @param version [Integer] Version of the format to return
+      # @return [Hash]
       def to_hash(version = 1)
         if version == 1
           {
@@ -51,6 +52,16 @@ module OpenStudio
           fail "Version #{version} not defined for #{self.class} and #{__method__}"
         end
       end
+
+      # save the file to JSON. Will overwrite the file if it already exists
+      #
+      # @param version [Integer] Version of the format to return
+      # @return [Hash]
+      def save(filename, version = 1)
+        puts "saving"
+        File.open(filename, 'w') {|f| f << JSON.pretty_generate(self.to_hash(version))}
+      end
+
     end
   end
 end

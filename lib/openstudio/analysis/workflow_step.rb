@@ -72,10 +72,10 @@ module OpenStudio
       def make_variable(argument_name, variable_display_name, distribution, options = {})
         options = {variable_type: 'variable'}.merge(options)
         a = @arguments.find_all { |a| a[:name] == argument_name }
-        distribution[:mode] = distribution[:mean] if distribution[:mean]
+        distribution[:mode] = distribution[:mean] if distribution.key? :mean
         fail "could not find argument_name of #{argument_name} in measure #{self.name}" if a.empty?
         fail "more than one argument with the same name of #{argument_name} in measure #{self.name}" if a.size > 1
-
+        
         if distribution_valid?(distribution)
           # grab the argument hash
           a = a.first
@@ -102,6 +102,7 @@ module OpenStudio
             # all the data should be present
           elsif distribution[:type] =~ /triangle/
             v[:step_size] = distribution[:step_size] ? distribution[:step_size] : nil
+            # stddev is not saves when triangular
           elsif distribution[:type] =~ /normal/
             v[:step_size] = distribution[:step_size] ? distribution[:step_size] : nil
             v[:standard_deviation] = distribution[:standard_deviation]
@@ -225,6 +226,7 @@ module OpenStudio
         s.measure_definition_directory = path_to_measure
         s.measure_definition_display_name = hash[:display_name]
         s.measure_definition_name = hash[:name]
+        # name_xml is not used right now but eventually should be used to compare the hash[:name] and the hash[:name_xml]
         s.measure_definition_name_xml = hash[:name_xml]
         s.measure_definition_uuid = hash[:uid]
         s.measure_definition_version_uuid = hash[:version_id]
@@ -259,10 +261,10 @@ module OpenStudio
       # validate the arguments of the distribution
       def distribution_valid?(d)
         # regardless of uncertainty description the following must be defined
-        fail "No distribution defined for variable" unless d[:type]
-        fail "No minimum defined for variable" unless d[:minimum]
-        fail "No maximum defined for variable" unless d[:maximum]
-        fail "No mean/mode defined for variable" unless d[:mode]
+        fail "No distribution defined for variable" unless d.key? :type
+        fail "No minimum defined for variable" unless d.key? :minimum
+        fail "No maximum defined for variable" unless d.key? :maximum
+        fail "No mean/mode defined for variable" unless d.key? :mode
 
         if d[:type] =~ /uniform/
           # Do we need to tell the user that we don't really need the mean/mode for uniform?
@@ -271,10 +273,10 @@ module OpenStudio
           fail "No values passed for discrete distribution" unless d[:values] || d[:values].empty?
           if d[:weights]
             fail "Weights are not the same length as values" unless d[:values].size == d[:weights].size
-            fail "Weights do not sum up to one" unless d[:weights].reduce(:+) == 1
+            fail "Weights do not sum up to one" unless d[:weights].reduce(:+).between?(0.99, 1.01) # allow a small error for now
           else
             fraction = 1 / d[:values].size.to_f
-            d[:weights] = [fraction] * d[:values.size]
+            d[:weights] = [fraction] * d[:values].size
           end
         elsif d[:type] =~ /triangle/
           # requires min, max, mode
