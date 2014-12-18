@@ -47,7 +47,12 @@ describe OpenStudio::Analysis::Formulation do
     }
     m.make_variable('cooling_sch', 'Change the cooling schedule', d)
 
+    #a.workflow.
+    #a.workflow.add_measure()
+
     expect(a.workflow.measures.size).to eq 2
     puts JSON.pretty_generate(a.to_hash)
+
+
   end
 end

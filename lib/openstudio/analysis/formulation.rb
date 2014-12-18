@@ -7,6 +7,8 @@ module OpenStudio
       attr_accessor :display_name
 
       attr_accessor :workflow
+      attr_accessor :algorithm
+
 
       # Create an instance of the OpenStudio::Analysis::Formulation
       #
@@ -21,6 +23,13 @@ module OpenStudio
       # @return [Object] An OpenStudio::Analysis::Workflow object
       def workflow
         @workflow ||= OpenStudio::Analysis::Workflow.new
+      end
+
+      # Initialize or return the current algorithm
+      #
+      # @return [Oobject] An OpenStudio::Analysis::Algoritm
+      def algorithm
+
       end
 
       # return the JSON.

@@ -200,11 +200,13 @@ module OpenStudio
       #
       # @param instance_name [String] Machine name of the instance
       # @param instance_display_name [String] Display name of the instance
-      # @param path_to_measure [String] The path to the measure, not the measure itself
-      # @param hash [Hash] Measure hash in the form of the measure.json format (from the Analysis Spreadsheet project)
+      # @param path_to_measure [String] This is the local path to the measure directroy, relative or absolute. It is used when zipping up all the measures.
+      # @param hash [Hash] Measure hash in the format of the measure.json (from the Analysis Spreadsheet project)
+
       # @return [Object] Returns the OpenStudio::Analysis::WorkflowStep
       def self.from_measure_hash(instance_name, instance_display_name, path_to_measure, hash)
         # TODO: Validate the hash
+        # TODO: validate that the measure exists?
 
         # verify that the path to the measure is a path and not a file.
         if File.exist?(path_to_measure) && File.file?(path_to_measure)

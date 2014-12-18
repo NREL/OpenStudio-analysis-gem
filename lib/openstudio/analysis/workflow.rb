@@ -22,8 +22,9 @@ module OpenStudio
       # if not, the BCL gem is used to create the measure.json file.
       #
       # @params instance_name [String] The name of the instance. This allows for multiple measures to be added to the worklow with unique names
-      # @params path_to_measure [String] The path to the measure to load
-      # @return [Boolean] true/false on weather the measure was added
+      # @params instance_display_name [String] The display name of the instance. This allows for multiple measures to be added to the worklow with unique names
+      # @param path_to_measure [String] This is the local path to the measure directory, relative or absolute. It is used when zipping up all the measures.
+      # @return [Object] Returns the measure that was added as an OpenStudio::AnalysisWorkflowStep object
       def add_measure_from_path(instance_name, instance_display_name, path_to_measure)
         measure_filename = 'measure.rb'
         if File.exist?(path_to_measure) && File.file?(path_to_measure)
@@ -37,24 +38,32 @@ module OpenStudio
           unless File.exist?(File.join(path_to_measure, 'measure.json'))
             measure_hash = b.parse_measure_file(nil, File.join(path_to_measure, measure_filename))
             File.open(File.join(path_to_measure, 'measure.json'), 'w') { |f| f << JSON.pretty_generate(measure_hash) }
-            warn("#{path_to_measure}: measure.json not found, will parse measure file using Bcl bem")
+            warn("measure.json not found in #{path_to_measure}, will parse measure file using BCL gem")
           end
 
-          if measure_hash
-            @items << OpenStudio::Analysis::WorkflowStep.from_measure_hash(instance_name, instance_display_name, path_to_measure, measure_hash)
-          elsif File.exist?(File.join(path_to_measure, 'measure.json'))
-            @items << OpenStudio::Analysis::WorkflowStep.from_measure_hash(
-                instance_name,
-                instance_display_name,
-                path_to_measure,
-                JSON.parse(File.read(File.join(path_to_measure, 'measure.json')), symbolize_names: true)
-            )
-          else
+          if measure_hash.nil? && File.exist?(File.join(path_to_measure, 'measure.json'))
+            measure_hash = JSON.parse(File.read(File.join(path_to_measure, 'measure.json')), symbolize_names: true)
+          elsif measure_hash.nil?
             fail "measure.json was not found and was not automatically created"
           end
+
+          add_measure(instance_name, instance_display_name, path_to_measure, measure_hash)
         else
           fail "could not find measure to add to workflow #{path_to_measure}"
         end
+
+        @items.last
+      end
+
+      # Add a measure from the custom hash format without reading the measure.rb or measure.json file
+      #
+      # @params instance_name [String] The name of the instance. This allows for multiple measures to be added to the worklow with unique names
+      # @params instance_display_name [String] The display name of the instance. This allows for multiple measures to be added to the worklow with unique names
+      # @param path_to_measure [String] This is the local path to the measure directory, relative or absolute. It is used when zipping up all the measures.
+      # @param measure_metadata [Hash] Format of the measure.json
+      # @return [Object] Returns the measure that was added as an OpenStudio::AnalysisWorkflowStep object
+      def add_measure(instance_name, instance_display_name, path_to_measure, measure_metadata)
+        @items << OpenStudio::Analysis::WorkflowStep.from_measure_hash(instance_name, instance_display_name, path_to_measure, measure_metadata)
 
         @items.last
       end
@@ -66,14 +75,13 @@ module OpenStudio
       def find_measure(instance_name)
         @items.find{ |i| i.name == instance_name}
       end
+      alias_method :find_workflow_step, :find_measure
 
       # Return all the variables in the analysis as an array. The list that is returned is read only.
       #
       # @return [Array] All variables in the workflow
       def all_variables
         @items.map{|i| i.variables }.flatten
-
-
       end
 
       # Save the workflow to a hash object
