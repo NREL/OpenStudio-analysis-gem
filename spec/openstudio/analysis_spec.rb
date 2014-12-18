@@ -51,8 +51,27 @@ describe OpenStudio::Analysis::Formulation do
     #a.workflow.add_measure()
 
     expect(a.workflow.measures.size).to eq 2
+
+    a.analysis_type = 'single_run'
+    a.algorithm.set_attribute('sample_method', 'all_variables')
+
+    o = {
+        display_name: "Total Natural Gas",
+        display_name_short: "Total Natural Gas",
+        metadata_id: nil,
+        name: "total_natural_gas",
+        units: "MJ/m2",
+        objective_function: true,
+        objective_function_index: 0,
+        objective_function_target: 330.7,
+        scaling_factor: nil,
+        objective_function_group: nil
+    }
+    a.add_output(o)
+
     puts JSON.pretty_generate(a.to_hash)
 
-
+    expect(a.to_hash[:analysis][:problem][:algorithm][:objective_functions]).to match ['total_natural_gas']
+    expect(a.analysis_type).to eq 'single_run'
   end
 end
