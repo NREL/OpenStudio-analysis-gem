@@ -96,7 +96,7 @@ module OpenStudio
 
           # This is a hack right now, but after the initial hash is created go back and add in the objective functions
           # to the the algorithm as defined in the output_variables list
-          ofs = @outputs.map { |i| i[:name] if i[:objective_function] }
+          ofs = @outputs.map { |i| i[:name] if i[:objective_function] }.compact
           if h[:analysis][:problem][:algorithm]
             h[:analysis][:problem][:algorithm][:objective_functions] = ofs
           end

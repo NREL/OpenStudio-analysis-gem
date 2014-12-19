@@ -1,11 +1,6 @@
 require 'spec_helper'
 
 describe OpenStudio::Analysis::Formulation do
-  before :all do
-
-
-  end
-
   it 'should create an analysis' do
     a = OpenStudio::Analysis.create("Name of an analysis")
     expect(a).not_to be nil
@@ -46,16 +41,13 @@ describe OpenStudio::Analysis::Formulation do
         mean: 6.2
     }
     m.make_variable('cooling_sch', 'Change the cooling schedule', d)
-
     m.argument_value('heating_sch', 'some-string')
 
     expect(a.workflow.measures.size).to eq 2
-
     expect(a.workflow.measures[1].arguments[2][:value]).to eq 'some-string'
 
     a.analysis_type = 'single_run'
     a.algorithm.set_attribute('sample_method', 'all_variables')
-
     o = {
         display_name: "Total Natural Gas",
         display_name_short: "Total Natural Gas",

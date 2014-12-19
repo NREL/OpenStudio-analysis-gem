@@ -139,7 +139,7 @@ module OpenStudio
             fail "Measure Display Names are not unique for '#{measure_display_names_mult.join('\', \'')}'"
           end
 
-          # verify that all continuous variables have all the data needed and create a name maps
+          # verify that all continuous variables have all the data needed and create a name map
           variable_names = []
           @variables['data'].each do |measure|
             if measure['enabled']
@@ -239,6 +239,14 @@ module OpenStudio
             analysis.workflow.add_measure_from_excel(measure)
           end
 
+          # Add in the outputs
+
+          @outputs['output_variables'].each do |o|
+            o = Hash[o.map{ |k, v| [k.to_sym, v] }]
+            analysis.add_output(o)
+          end
+
+
           # Temp save of the json file
           analysis.save("spec/files/analysis/#{analysis.display_name}_api.json")
 
@@ -313,8 +321,7 @@ module OpenStudio
                   elsif @variable['distribution']['type'] == 'discrete_uncertain'
                     # puts @variable.inspect
                     if @variable['distribution']['discrete_weights']
-                      fail "Discrete variable '#{@variable['name']}' does not have equal length of values and weights" if
-                          @variable['distribution']['discrete_values'].size != @variable['distribution']['discrete_weights'].size
+                      fail "Discrete variable '#{@variable['name']}' does not have equal length of values and weights" if @variable['distribution']['discrete_values'].size != @variable['distribution']['discrete_weights'].size
                       @values_and_weights = @variable['distribution']['discrete_values'].zip(@variable['distribution']['discrete_weights']).map { |v, w| {value: v, weight: w} }.to_json
                     else
                       @values_and_weights = @variable['distribution']['discrete_values'].map { |v| {value: v} }.to_json
@@ -1043,7 +1050,7 @@ module OpenStudio
             var['units'] = row[:units]
             var['visualize'] = row[:visualize].downcase == 'true' ? true : false if row[:visualize]
             var['export'] = row[:export].downcase == 'true' ? true : false if row[:export]
-            var['variable_type'] = row[:variable_type] if row[:variable_type]
+            var['variable_type'] = row[:variable_type].downcase if row[:variable_type]
             var['objective_function'] = row[:objective_function].downcase == 'true' ? true : false
             if var['objective_function']
               @algorithm['objective_functions'] << var['name']
