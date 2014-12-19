@@ -47,6 +47,22 @@ module OpenStudio
         @arguments.map{ |a| a[:name]}
       end
 
+      # Set the value of an argument to `value`. The user is required to know the data type and pass it in accordingly
+      #
+      # @param argument_name [String] The machine name of the argument that you want to set the value to
+      # @param value [] The value to assign the argument
+      # @return [Boolean] True/false if it assigned it
+      def argument_value(argument_name, value)
+        a = @arguments.find_all { |a| a[:name] == argument_name }
+        fail "could not find argument_name of #{argument_name} in measure #{self.name}" if a.empty?
+        fail "more than one argument with the same name of #{argument_name} in measure #{self.name}" if a.size > 1
+
+        a = a.first
+
+        a[:value] = value
+
+        a[:value] == value
+      end
       # Tag a measure's argument as a variable.
       #
       # @param argument_name [String] The instance_name of the measure argument that is to be tagged. This is the same name as the argument's variable in the measure.rb file.
@@ -67,15 +83,16 @@ module OpenStudio
       # @param options [Hash] Values that define the variable.
       # @option options [String] :variable_type The type of variable, `variable` or `pivot`. By default this is a variable.
       # @option options [String] :variable_display_name_short The short display name of the variable. Will be defaulted to the variable_display_name if not passed
-      # @option options [String] :static_value Static/Default value of the variable. If not defined it will use the default value for the argument.
+      # @option options [String] :static_value Static/Default value of the variable. If not defined it will use the default value for the argument. This can be set later as well using the `argument_value` method.
       # @return [Boolean] True / False if it was able to tag the measure argument
       def make_variable(argument_name, variable_display_name, distribution, options = {})
         options = {variable_type: 'variable'}.merge(options)
-        a = @arguments.find_all { |a| a[:name] == argument_name }
         distribution[:mode] = distribution[:mean] if distribution.key? :mean
+
+        a = @arguments.find_all { |a| a[:name] == argument_name }
         fail "could not find argument_name of #{argument_name} in measure #{self.name}" if a.empty?
         fail "more than one argument with the same name of #{argument_name} in measure #{self.name}" if a.size > 1
-        
+
         if distribution_valid?(distribution)
           # grab the argument hash
           a = a.first
@@ -93,7 +110,7 @@ module OpenStudio
           v[:relation_to_output] = distribution[:relation_to_output] ? distribution[:relation_to_output] : nil
           v[:mode] = distribution[:mode]
           v[:static_value] = distribution[:static_value] if distribution[:static_value]
-          # TODO: Static value should be named default value
+          # TODO: Static value should be named default value or just value
 
           if distribution[:type] =~ /discrete/
             v[:weights] = distribution[:weights]

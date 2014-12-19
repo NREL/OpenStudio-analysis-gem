@@ -12,6 +12,6 @@ Gemfile.lock
 /spec/files/analysis/*.zip
 /spec/files/export
 /spec/reports
+/spec/files/analysis/*.json
 /*.log
-
 spec/files/measures/ActualMeasureNoJson/measure.json

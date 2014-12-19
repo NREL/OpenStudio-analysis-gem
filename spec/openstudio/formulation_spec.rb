@@ -20,13 +20,13 @@ describe OpenStudio::Analysis::Formulation do
 
   it 'should load the workflow from a file' do
     a = OpenStudio::Analysis.create('workflow')
-    file = File.join('spec/files/analysis/medium_office.json')
+    file = File.join('spec/files/analysis/examples/medium_office_example.json')
     expect(a.workflow = OpenStudio::Analysis::Workflow.from_file(file)).not_to be nil
   end
 
   it 'should save a hash (version 1)' do
     a = OpenStudio::Analysis.create('workflow 2')
-    file = File.join('spec/files/analysis/medium_office.json')
+    file = File.join('spec/files/analysis/examples/medium_office_example.json')
     expect(a.workflow = OpenStudio::Analysis::Workflow.from_file(file)).not_to be nil
     h = a.to_hash
     #expect(h[:workflow].empty?).not_to eq true
@@ -47,10 +47,11 @@ describe OpenStudio::Analysis::Formulation do
     }
     m.make_variable('cooling_sch', 'Change the cooling schedule', d)
 
-    #a.workflow.
-    #a.workflow.add_measure()
+    m.argument_value('heating_sch', 'some-string')
 
     expect(a.workflow.measures.size).to eq 2
+
+    expect(a.workflow.measures[1].arguments[2][:value]).to eq 'some-string'
 
     a.analysis_type = 'single_run'
     a.algorithm.set_attribute('sample_method', 'all_variables')
@@ -69,7 +70,7 @@ describe OpenStudio::Analysis::Formulation do
     }
     a.add_output(o)
 
-    puts JSON.pretty_generate(a.to_hash)
+    #puts JSON.pretty_generate(a.to_hash)
 
     expect(a.to_hash[:analysis][:problem][:algorithm][:objective_functions]).to match ['total_natural_gas']
     expect(a.analysis_type).to eq 'single_run'
