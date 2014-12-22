@@ -38,6 +38,28 @@ describe OpenStudio::Analysis::Formulation do
     expect(a.save "#{run_dir}/analysis.json").to eq true
   end
 
+  it 'should increment objective functions' do
+    a = OpenStudio::Analysis.create('my analysis')
+
+    a.add_output({
+                     display_name: "Total Natural Gas",
+                     name: "standard_report_legacy.total_natural_gas",
+                     units: "MJ/m2",
+                     objective_function: true
+                 })
+
+    expect(a.to_hash[:analysis][:output_variables].first[:objective_function_index]).to eq 0
+
+
+    a.add_output({
+                     display_name: "Another Output",
+                     name: "standard_report_legacy.output_2",
+                     units: "MJ/m2",
+                     objective_function: true
+                 })
+    expect(a.to_hash[:analysis][:output_variables].last[:objective_function_index]).to eq 1
+  end
+
   it 'should create a new formulation' do
     a = OpenStudio::Analysis.create('my analysis')
     p = 'spec/files/measures/SetThermostatSchedules'
@@ -77,13 +99,10 @@ describe OpenStudio::Analysis::Formulation do
     a.seed_model('spec/files/small_seed.osm')
     a.weather_file('spec/files/partial_weather.epw')
 
-
-
     expect(a.to_hash[:analysis][:problem][:algorithm][:objective_functions]).to match ['total_natural_gas']
     expect(a.analysis_type).to eq 'single_run'
 
     dp_hash = a.to_static_data_point_hash
-    puts JSON.pretty_generate(dp_hash)
-    puts JSON.pretty_generate(a.to_hash)
+    expect(dp_hash[:data_point][:set_variable_values].values).to eq ['*No Change*']
   end
 end

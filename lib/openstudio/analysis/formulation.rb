@@ -86,6 +86,14 @@ module OpenStudio
             scaling_factor: nil
         }.merge(output_hash)
 
+        # if the objective_function index is nil and the variable is an objective function, then increment and
+        # assign and objective function index
+
+        unless output_hash[:objective_function_index]
+          values = @outputs.map{|o| o[:objective_function_index]}
+          output_hash[:objective_function_index] = values.empty? ? 0 : values.max + 1
+        end
+
         @outputs << output_hash
       end
 
