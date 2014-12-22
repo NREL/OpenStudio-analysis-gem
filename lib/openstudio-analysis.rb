@@ -23,7 +23,7 @@ require 'openstudio/analysis'
 require 'openstudio/analysis/formulation'
 require 'openstudio/analysis/workflow'
 require 'openstudio/analysis/workflow_step'
-require 'openstudio/analysis/algorithm'
+require 'openstudio/analysis/algorithm_attributes'
 
 # translators
 require 'openstudio/analysis/translator/excel'

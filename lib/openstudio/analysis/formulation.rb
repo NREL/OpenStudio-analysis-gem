@@ -5,7 +5,6 @@ module OpenStudio
 
       attr_accessor :seed_model
       attr_accessor :display_name
-
       attr_accessor :workflow
       attr_accessor :algorithm
 
@@ -19,7 +18,8 @@ module OpenStudio
         @display_name = display_name
         @analysis_type = nil
         @outputs = []
-        @algorithm = OpenStudio::Analysis::Algorithm.new
+
+        @algorithm = OpenStudio::Analysis::AlgorithmAttributes.new
       end
 
       # Initialize or return the current workflow object

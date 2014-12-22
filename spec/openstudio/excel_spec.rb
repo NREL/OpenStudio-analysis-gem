@@ -372,7 +372,7 @@ describe OpenStudio::Analysis::Translator::Excel do
       expect(h['analysis']['output_variables']).to be_an Array
       h['analysis']['output_variables'].each do |o|
         if o['name'] == 'standard_report_legacy.total_energy'
-          expect(o['variable_type']).to eq 'Double'
+          expect(o['variable_type']).to eq 'double'
           expect(o['objective_function']).to eq true
           expect(o['objective_function_index']).to eq 0
           expect(o['objective_function_target']).to eq nil
@@ -380,7 +380,7 @@ describe OpenStudio::Analysis::Translator::Excel do
           expect(o['objective_function_group']).to eq 1
         end
         if o['name'] == 'standard_report_legacy.total_source_energy'
-          expect(o['variable_type']).to eq 'Double'
+          expect(o['variable_type']).to eq 'double'
           expect(o['objective_function']).to eq true
           expect(o['objective_function_index']).to eq 1
           expect(o['objective_function_target']).to eq 25.1

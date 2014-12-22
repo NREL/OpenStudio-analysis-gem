@@ -1,7 +1,7 @@
 # OpenStudio::Analysis::Algorithm to define the algorithm parameters
 module OpenStudio
   module Analysis
-    class Algorithm
+    class AlgorithmAttributes
 
       # Create a new instance of an algorithm
       #
