@@ -6,7 +6,6 @@ module OpenStudio
     WeatherFile = Struct.new(:path)
 
     class Formulation
-
       attr_reader :seed_model
       attr_reader :weather_file
       attr_accessor :display_name
@@ -14,7 +13,6 @@ module OpenStudio
       attr_accessor :algorithm
 
       attr_reader :analysis_type
-
 
       # Create an instance of the OpenStudio::Analysis::Formulation
       #
@@ -88,7 +86,6 @@ module OpenStudio
 
         # if the objective_function index is nil and the variable is an objective function, then increment and
         # assign and objective function index
-
         unless output_hash[:objective_function_index]
           values = @outputs.map{|o| o[:objective_function_index]}
           output_hash[:objective_function_index] = values.empty? ? 0 : values.max + 1
