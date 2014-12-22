@@ -125,6 +125,9 @@ module OpenStudio
             v[:standard_deviation] = distribution[:standard_deviation]
           end
 
+          # assign uuid and version id to the variable
+          v[:uuid] = SecureRandom.uuid
+          v[:version_uuid] = SecureRandom.uuid
           @variables << v
         end
         true
@@ -150,6 +153,8 @@ module OpenStudio
               end
             elsif var.to_s == '@variables'
               # skip until after looping over instance_variables
+            elsif var.to_s == '@__swigtype__'
+              # skip the swig variables caused by using the same namespace as OpenStudio
             else
               hash[var.to_s.delete("@")] = self.instance_variable_get(var)
             end
@@ -204,8 +209,7 @@ module OpenStudio
             v.delete(:step_size) if v.key?(:step_size)
             v.delete(:standard_deviation) if v.key?(:standard_deviation)
           end
-          hash[:uuid] = SecureRandom.uuid
-          hash[:version_uuid] = SecureRandom.uuid
+
 
         else
           fail "Do not know how to create the Hash for Version #{version}"
@@ -302,7 +306,6 @@ module OpenStudio
           # require min, max, mode, stddev
           fail "No standard deviation for variable" unless d[:standard_deviation]
         end
-
 
         true
       end

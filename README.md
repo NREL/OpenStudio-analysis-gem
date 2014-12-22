@@ -56,4 +56,12 @@ This gem used RSpec for testing.  To test simply run `rspec` at the command line
 In the programmatic interface there are still several items that need to be checked
 
 * verify that the measure.xml file exists
+* Check the type of measure being added and make sure that it is in the right workflow (e.g. no energyplus measures before rubymeasures)
+* add reverse translator from existing analysis.jsons
+* more explicit run workflows. For example, add workflow steps for running energyplus, openstudio translator, radiance, etc
+* more explicit assignment of the analyses that can run. This would be nice:
+    ```
+    a = OpenStudio::Analysis.create("new analysis")
+    a.analysis_type('single_run')
+    ```
 

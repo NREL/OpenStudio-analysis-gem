@@ -1,14 +1,20 @@
 # OpenStudio formulation class handles the generation of the OpenStudio Analysis format.
 module OpenStudio
   module Analysis
+
+    SeedModel = Struct.new(:path)
+    WeatherFile = Struct.new(:path)
+
     class Formulation
 
-      attr_accessor :seed_model
+      attr_reader :seed_model
+      attr_reader :weather_file
       attr_accessor :display_name
       attr_accessor :workflow
       attr_accessor :algorithm
 
       attr_reader :analysis_type
+
 
       # Create an instance of the OpenStudio::Analysis::Formulation
       #
@@ -19,6 +25,9 @@ module OpenStudio
         @analysis_type = nil
         @outputs = []
 
+        # Initialize child objects (expect workflow)
+        @weather_file = WeatherFile.new
+        @seed_model = SeedModel.new
         @algorithm = OpenStudio::Analysis::AlgorithmAttributes.new
       end
 
@@ -34,6 +43,21 @@ module OpenStudio
       # @param name [String] Name of the algorithm/analysis. (e.g. rgenoud, lhs, single_run)
       def analysis_type=(name)
         @analysis_type = name
+      end
+
+      # Path to the seed model
+      #
+      # @param path [String] Path to the seed model. This should be relative.
+      def seed_model(path)
+        @seed_model = SeedModel.new(path: path)
+      end
+
+      # Path to the weather file (or folder). If it is a folder, then the measures will look for the weather file
+      # by name in that folder.
+      #
+      # @param path [String] Path to the weather file or folder.
+      def weather_file(path)
+        @weather_file = WeatherFile.new(path: path)
       end
 
       # Add an output of interest to the problem formulation
@@ -82,8 +106,8 @@ module OpenStudio
                       algorithm: algorithm.to_hash(version),
                       workflow: workflow.to_hash(version)
                   },
-                  seed: {},
-                  weather_file: {},
+                  seed: @seed_model[:path],
+                  weather_file: @weather_file[:path],
                   file_format_version: version
               }
           }
@@ -101,13 +125,45 @@ module OpenStudio
         end
       end
 
-      # save the file to JSON. Will overwrite the file if it already exists
+      # return a hash of the data point with the static variables set
       #
       # @param version [Integer] Version of the format to return
       # @return [Hash]
+      def to_static_data_point_hash(version = 1)
+        if version == 1
+          static_hash = {}
+          # TODO: this method should be on the workflow step and bubbled up to this interface
+          @workflow.items.map do |item|
+            item.variables.map { |v| static_hash[v[:uuid]] = v[:static_value] }
+          end
+
+          h = {
+              data_point: {
+                  set_variable_values: static_hash,
+                  status: 'na',
+                  uuid: SecureRandom.uuid
+              }
+          }
+          h
+        end
+      end
+
+      # save the file to JSON. Will overwrite the file if it already exists
+      #
+      # @param version [Integer] Version of the format to return
+      # @return [Boolean]
       def save(filename, version = 1)
-        puts "saving"
         File.open(filename, 'w') { |f| f << JSON.pretty_generate(self.to_hash(version)) }
+
+        true
+      end
+
+      # save the data point JSON with the variables set to the static values. Will overwrite the file if it already exists
+      #
+      # @param version [Integer] Version of the format to return
+      # @return [Boolean]
+      def save_static_data_point(filename, version = 1)
+        File.open(filename, 'w') { |f| f << JSON.pretty_generate(self.to_static_data_point_hash(version)) }
 
         true
       end

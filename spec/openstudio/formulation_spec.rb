@@ -36,8 +36,6 @@ describe OpenStudio::Analysis::Formulation do
     h = a.to_hash
     expect(h[:analysis][:problem][:analysis_type]).to eq nil
     expect(a.save "#{run_dir}/analysis.json").to eq true
-
-
   end
 
   it 'should create a new formulation' do
@@ -58,6 +56,7 @@ describe OpenStudio::Analysis::Formulation do
 
     expect(a.workflow.measures.size).to eq 2
     expect(a.workflow.measures[1].arguments[2][:value]).to eq 'some-string'
+    expect(a.workflow.measures[1].variables[0][:uuid]).to match /[\w]{8}(-[\w]{4}){3}-[\w]{12}/
 
     a.analysis_type = 'single_run'
     a.algorithm.set_attribute('sample_method', 'all_variables')
@@ -75,9 +74,16 @@ describe OpenStudio::Analysis::Formulation do
     }
     a.add_output(o)
 
-    #puts JSON.pretty_generate(a.to_hash)
+    a.seed_model('spec/files/small_seed.osm')
+    a.weather_file('spec/files/partial_weather.epw')
+
+
 
     expect(a.to_hash[:analysis][:problem][:algorithm][:objective_functions]).to match ['total_natural_gas']
     expect(a.analysis_type).to eq 'single_run'
+
+    dp_hash = a.to_static_data_point_hash
+    puts JSON.pretty_generate(dp_hash)
+    puts JSON.pretty_generate(a.to_hash)
   end
 end

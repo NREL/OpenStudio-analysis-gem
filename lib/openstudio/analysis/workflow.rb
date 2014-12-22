@@ -33,7 +33,8 @@ module OpenStudio
         end
 
         if Dir.exist?(path_to_measure) && File.directory?(path_to_measure)
-          b = BCL::ComponentMethods.new
+          # Watch out for namespace conflicts (use ::BCL)
+          b = ::BCL::ComponentMethods.new
           measure_hash = nil
           unless File.exist?(File.join(path_to_measure, 'measure.json'))
             measure_hash = b.parse_measure_file(nil, File.join(path_to_measure, measure_filename))
@@ -120,7 +121,7 @@ module OpenStudio
               static_value: variable['distribution']['static_value']
           }
 
-          m.make_variable(variable['name'], variable['display_name'], dist, )
+          m.make_variable(variable['name'], variable['display_name'], dist,)
         end
       end
 
@@ -131,7 +132,6 @@ module OpenStudio
       def find_measure(instance_name)
         @items.find { |i| i.name == instance_name }
       end
-
       alias_method :find_workflow_step, :find_measure
 
       # Return all the variables in the analysis as an array. The list that is returned is read only.
