@@ -3,7 +3,7 @@ module OpenStudio
   module Analysis
     class Algorithm
 
-      # Create a new instance of an alogrithm
+      # Create a new instance of an algorithm
       #
       def initialize
         @attributes = {}

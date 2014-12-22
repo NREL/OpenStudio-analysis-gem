@@ -19,6 +19,7 @@ module OpenStudio
         @display_name = display_name
         @analysis_type = nil
         @outputs = []
+        @algorithm = OpenStudio::Analysis::Algorithm.new
       end
 
       # Initialize or return the current workflow object
@@ -33,13 +34,6 @@ module OpenStudio
       # @param name [String] Name of the algorithm/analysis. (e.g. rgenoud, lhs, single_run)
       def analysis_type=(name)
         @analysis_type = name
-      end
-
-      # Initialize or return the current algorithm
-      #
-      # @return [Oobject] An OpenStudio::Analysis::Algorithm
-      def algorithm
-        @algorithm ||= OpenStudio::Analysis::Algorithm.new
       end
 
       # Add an output of interest to the problem formulation
@@ -114,6 +108,8 @@ module OpenStudio
       def save(filename, version = 1)
         puts "saving"
         File.open(filename, 'w') { |f| f << JSON.pretty_generate(self.to_hash(version)) }
+
+        true
       end
 
     end

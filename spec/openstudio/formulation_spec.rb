@@ -27,6 +27,19 @@ describe OpenStudio::Analysis::Formulation do
     #expect(h[:workflow].empty?).not_to eq true
   end
 
+  it 'should create a save an empty analysis' do
+    a = OpenStudio::Analysis.create('workflow')
+    run_dir = 'spec/files/export/workflow'
+
+    FileUtils.mkdir_p run_dir
+
+    h = a.to_hash
+    expect(h[:analysis][:problem][:analysis_type]).to eq nil
+    expect(a.save "#{run_dir}/analysis.json").to eq true
+
+
+  end
+
   it 'should create a new formulation' do
     a = OpenStudio::Analysis.create('my analysis')
     p = 'spec/files/measures/SetThermostatSchedules'
