@@ -15,3 +15,4 @@ Gemfile.lock
 /spec/files/analysis/*.json
 /*.log
 spec/files/measures/ActualMeasureNoJson/measure.json
+rubocop-results.xml

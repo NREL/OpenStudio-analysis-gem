@@ -83,10 +83,10 @@ module OpenStudio
 
         def add_model(name, display_name, type, path)
           @models << {
-              name: name,
-              display_name: display_name,
-              type: type,
-              path: path
+            name: name,
+            display_name: display_name,
+            type: type,
+            path: path
           }
         end
 
@@ -144,7 +144,6 @@ module OpenStudio
           @variables['data'].each do |measure|
             if measure['enabled']
               measure['variables'].each do |variable|
-
                 # Determine if row is suppose to be an argument or a variable to be perturbed.
                 if variable['variable_type'] == 'variable'
                   variable_names << variable['display_name']
@@ -208,7 +207,6 @@ module OpenStudio
           # save the other format for now
           translate_to_analysis
 
-
           @template_json
         end
 
@@ -242,10 +240,9 @@ module OpenStudio
           # Add in the outputs
 
           @outputs['output_variables'].each do |o|
-            o = Hash[o.map{ |k, v| [k.to_sym, v] }]
+            o = Hash[o.map { |k, v| [k.to_sym, v] }]
             analysis.add_output(o)
           end
-
 
           # Temp save of the json file
           analysis.save("spec/files/analysis/#{analysis.display_name}_api.json")
@@ -316,15 +313,15 @@ module OpenStudio
 
                   # TODO: remove enum and choice as this is not the variable type
                   if @variable['type'] == 'enum' || @variable['type'].downcase == 'choice'
-                    @values_and_weights = @variable['distribution']['enumerations'].map { |v| {value: v} }.to_json
+                    @values_and_weights = @variable['distribution']['enumerations'].map { |v| { value: v } }.to_json
                     vr = JSON.parse(discrete_uncertain_variable_template.result(get_binding))
                   elsif @variable['distribution']['type'] == 'discrete_uncertain'
                     # puts @variable.inspect
                     if @variable['distribution']['discrete_weights']
                       fail "Discrete variable '#{@variable['name']}' does not have equal length of values and weights" if @variable['distribution']['discrete_values'].size != @variable['distribution']['discrete_weights'].size
-                      @values_and_weights = @variable['distribution']['discrete_values'].zip(@variable['distribution']['discrete_weights']).map { |v, w| {value: v, weight: w} }.to_json
+                      @values_and_weights = @variable['distribution']['discrete_values'].zip(@variable['distribution']['discrete_weights']).map { |v, w| { value: v, weight: w } }.to_json
                     else
-                      @values_and_weights = @variable['distribution']['discrete_values'].map { |v| {value: v} }.to_json
+                      @values_and_weights = @variable['distribution']['discrete_values'].map { |v| { value: v } }.to_json
                     end
 
                     if @variable['variable_type'] == 'pivot'
@@ -384,7 +381,7 @@ module OpenStudio
 
             # Convert this into a hash which looks like {name: measure_name}. This will allow us to add more
             # fields to the measure, such as which directory is the measure.
-            required_measures = required_measures.map { |value| {name: value} }
+            required_measures = required_measures.map { |value| { name: value } }
 
             # first validate that all the measures exist
             errors = []
@@ -697,7 +694,7 @@ module OpenStudio
                 unless (Pathname.new model_path).absolute?
                   model_path = File.expand_path(File.join(@root_path, model_path))
                 end
-                @models << {name: tmp_m_name.snake_case, display_name: tmp_m_name, type: row[2], path: model_path}
+                @models << { name: tmp_m_name.snake_case, display_name: tmp_m_name, type: row[2], path: model_path }
               end
             elsif b_other_libs
               # determine if the path is relative
@@ -706,21 +703,21 @@ module OpenStudio
                 other_path = File.expand_path(File.join(@root_path, other_path))
               end
 
-              @other_files << {lib_zip_name: row[1], path: other_path}
+              @other_files << { lib_zip_name: row[1], path: other_path }
             elsif b_worker_init
               worker_init_path = row[1]
               unless (Pathname.new worker_init_path).absolute?
                 worker_init_path = File.expand_path(File.join(@root_path, worker_init_path))
               end
 
-              @worker_inits << {name: row[0], path: worker_init_path, args: row[2]}
+              @worker_inits << { name: row[0], path: worker_init_path, args: row[2] }
             elsif b_worker_final
               worker_final_path = row[1]
               unless (Pathname.new worker_final_path).absolute?
                 worker_final_path = File.expand_path(File.join(@root_path, worker_final_path))
               end
 
-              @worker_finals << {name: row[0], path: worker_final_path, args: row[2]}
+              @worker_finals << { name: row[0], path: worker_final_path, args: row[2] }
             end
 
             next
@@ -919,7 +916,6 @@ module OpenStudio
                   var['distribution']['enumerations'] << 'false'
                 end
 
-
                 var['distribution']['min'] = row[:min]
                 var['distribution']['max'] = row[:max]
                 var['distribution']['mean'] = row[:mode]
@@ -954,7 +950,6 @@ module OpenStudio
                       var['distribution']['discrete_weights'] = eval(var['distribution']['discrete_weights'])
                     end
                 end
-
 
                 var['distribution']['source'] = row[:source]
                 var['notes'] = row[:notes]

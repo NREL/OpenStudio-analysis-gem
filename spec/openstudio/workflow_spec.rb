@@ -63,21 +63,21 @@ describe OpenStudio::Analysis::Workflow do
     @w.add_measure_from_path('thermostat_2', 'thermostat 2', p)
 
     m = @w.find_measure('thermostat_2')
-    expect(m.argument_names).to eq ['zones','cooling_sch','heating_sch','material_cost']
+    expect(m.argument_names).to eq %w(zones cooling_sch heating_sch material_cost)
 
     d = {
-        type: 'uniform',
-        minimum: 5,
-        maximum: 7,
-        mean: 6.2
+      type: 'uniform',
+      minimum: 5,
+      maximum: 7,
+      mean: 6.2
     }
     m.make_variable('cooling_sch', 'Change the cooling schedule', d)
 
     d = {
-        type: 'uniform',
-        minimum: 5,
-        maximum: 7,
-        mean: 6.2
+      type: 'uniform',
+      minimum: 5,
+      maximum: 7,
+      mean: 6.2
     }
     m.make_variable('heating_sch', 'Change the heating schedule', d)
 

@@ -44,7 +44,7 @@ module OpenStudio
       #
       # @return [Array] Listing of argument names.
       def argument_names
-        @arguments.map{ |a| a[:name]}
+        @arguments.map { |a| a[:name] }
       end
 
       # Set the value of an argument to `value`. The user is required to know the data type and pass it in accordingly
@@ -54,8 +54,8 @@ module OpenStudio
       # @return [Boolean] True/false if it assigned it
       def argument_value(argument_name, value)
         a = @arguments.find_all { |a| a[:name] == argument_name }
-        fail "could not find argument_name of #{argument_name} in measure #{self.name}" if a.empty?
-        fail "more than one argument with the same name of #{argument_name} in measure #{self.name}" if a.size > 1
+        fail "could not find argument_name of #{argument_name} in measure #{name}" if a.empty?
+        fail "more than one argument with the same name of #{argument_name} in measure #{name}" if a.size > 1
 
         a = a.first
 
@@ -86,12 +86,12 @@ module OpenStudio
       # @option options [String] :static_value Static/Default value of the variable. If not defined it will use the default value for the argument. This can be set later as well using the `argument_value` method.
       # @return [Boolean] True / False if it was able to tag the measure argument
       def make_variable(argument_name, variable_display_name, distribution, options = {})
-        options = {variable_type: 'variable'}.merge(options)
+        options = { variable_type: 'variable' }.merge(options)
         distribution[:mode] = distribution[:mean] if distribution.key? :mean
 
         a = @arguments.find_all { |a| a[:name] == argument_name }
-        fail "could not find argument_name of #{argument_name} in measure #{self.name}" if a.empty?
-        fail "more than one argument with the same name of #{argument_name} in measure #{self.name}" if a.size > 1
+        fail "could not find argument_name of #{argument_name} in measure #{name}" if a.empty?
+        fail "more than one argument with the same name of #{argument_name} in measure #{name}" if a.size > 1
 
         if distribution_valid?(distribution)
           # grab the argument hash
@@ -133,16 +133,15 @@ module OpenStudio
         true
       end
 
-
       # Convert the class into a hash. TODO: Make this smart based on the :type eventually
       #
       # @return [Hash] Returns the hash
       def to_hash(version = 1, *a)
         hash = {}
         if version == 1
-          self.instance_variables.each do |var|
+          instance_variables.each do |var|
             if var.to_s == '@type'
-              hash[:measure_type] = self.instance_variable_get(var)
+              hash[:measure_type] = instance_variable_get(var)
             elsif var.to_s == '@arguments'
               hash[:arguments] = []
               @arguments.each do |a|
@@ -156,7 +155,7 @@ module OpenStudio
             elsif var.to_s == '@__swigtype__'
               # skip the swig variables caused by using the same namespace as OpenStudio
             else
-              hash[var.to_s.delete("@")] = self.instance_variable_get(var)
+              hash[var.to_s.delete('@')] = instance_variable_get(var)
             end
 
             # TODO: warn that we are no longer writing out "variable_type": "RubyContinuousVariable",
@@ -175,33 +174,33 @@ module OpenStudio
             v[:uncertainty_description] = {}
             v[:uncertainty_description][:type] = v[:type] =~ /uncertain/ ? "#{v[:type]}" : "#{v[:type]}_uncertain"
             warn "Deprecation Warning. In Version 0.5 the _uncertain text will be removed from distribution types: #{v[:uncertainty_description][:type]}"
-            warn "Deprecation Warning. RubyContinuousVariable (OpenStudio called this the variable_type) is no longer persisted"
+            warn 'Deprecation Warning. RubyContinuousVariable (OpenStudio called this the variable_type) is no longer persisted'
 
             # This is not neatly coded. This should be a new object that knows how to write itself out.
             v[:uncertainty_description][:attributes] = []
             if v[:type] =~ /discrete/
               new_h = {}
               new_h[:name] = 'discrete'
-              new_h[:values_and_weights] = v.delete(:values).zip(v.delete(:weights)).map{|w| {value: w[0], weight: w[1]}}
+              new_h[:values_and_weights] = v.delete(:values).zip(v.delete(:weights)).map { |w| { value: w[0], weight: w[1] } }
               v[:uncertainty_description][:attributes] << new_h
 
-              v[:uncertainty_description][:attributes] << { name: 'lower_bounds', value: v[:minimum]}
-              v[:uncertainty_description][:attributes] << { name: 'upper_bounds', value: v[:maximum]}
-              v[:uncertainty_description][:attributes] << { name: 'modes', value: v[:mode]}
+              v[:uncertainty_description][:attributes] << { name: 'lower_bounds', value: v[:minimum] }
+              v[:uncertainty_description][:attributes] << { name: 'upper_bounds', value: v[:maximum] }
+              v[:uncertainty_description][:attributes] << { name: 'modes', value: v[:mode] }
             elsif v[:type] =~ /uniform/
-              v[:uncertainty_description][:attributes] << { name: 'lower_bounds', value: v[:minimum]}
-              v[:uncertainty_description][:attributes] << { name: 'upper_bounds', value: v[:maximum]}
-              v[:uncertainty_description][:attributes] << { name: 'modes', value: v[:mode]}
+              v[:uncertainty_description][:attributes] << { name: 'lower_bounds', value: v[:minimum] }
+              v[:uncertainty_description][:attributes] << { name: 'upper_bounds', value: v[:maximum] }
+              v[:uncertainty_description][:attributes] << { name: 'modes', value: v[:mode] }
             else
-              v[:uncertainty_description][:attributes] << { name: 'lower_bounds', value: v[:minimum]}
-              v[:uncertainty_description][:attributes] << { name: 'upper_bounds', value: v[:maximum]}
-              v[:uncertainty_description][:attributes] << { name: 'modes', value: v[:mode]}
-              v[:uncertainty_description][:attributes] << { name: 'delta_x', value: v[:step_size] ? v[:step_size] : nil}
-              v[:uncertainty_description][:attributes] << { name: 'stddev', value: v[:standard_deviation] ? v[:standard_deviation] : nil}
+              v[:uncertainty_description][:attributes] << { name: 'lower_bounds', value: v[:minimum] }
+              v[:uncertainty_description][:attributes] << { name: 'upper_bounds', value: v[:maximum] }
+              v[:uncertainty_description][:attributes] << { name: 'modes', value: v[:mode] }
+              v[:uncertainty_description][:attributes] << { name: 'delta_x', value: v[:step_size] ? v[:step_size] : nil }
+              v[:uncertainty_description][:attributes] << { name: 'stddev', value: v[:standard_deviation] ? v[:standard_deviation] : nil }
             end
 
             v[:workflow_index] = index
-            warn "Deprecation Warning. workflow_step_type is no longer persisted"
+            warn 'Deprecation Warning. workflow_step_type is no longer persisted'
 
             # remove some remaining items
             v.delete(:type)
@@ -209,7 +208,6 @@ module OpenStudio
             v.delete(:step_size) if v.key?(:step_size)
             v.delete(:standard_deviation) if v.key?(:standard_deviation)
           end
-
 
         else
           fail "Do not know how to create the Hash for Version #{version}"
@@ -264,12 +262,12 @@ module OpenStudio
             end
 
             s.arguments << {
-                display_name: arg[:display_name],
-                display_name_short: arg[:display_name],
-                name: arg[:local_variable],
-                value_type: var_type,
-                default_value: arg[:default_value],
-                value: arg[:default_value]
+              display_name: arg[:display_name],
+              display_name_short: arg[:display_name],
+              name: arg[:local_variable],
+              value_type: var_type,
+              default_value: arg[:default_value],
+              value: arg[:default_value]
             }
           end
         end
@@ -282,19 +280,19 @@ module OpenStudio
       # validate the arguments of the distribution
       def distribution_valid?(d)
         # regardless of uncertainty description the following must be defined
-        fail "No distribution defined for variable" unless d.key? :type
-        fail "No minimum defined for variable" unless d.key? :minimum
-        fail "No maximum defined for variable" unless d.key? :maximum
-        fail "No mean/mode defined for variable" unless d.key? :mode
+        fail 'No distribution defined for variable' unless d.key? :type
+        fail 'No minimum defined for variable' unless d.key? :minimum
+        fail 'No maximum defined for variable' unless d.key? :maximum
+        fail 'No mean/mode defined for variable' unless d.key? :mode
 
         if d[:type] =~ /uniform/
           # Do we need to tell the user that we don't really need the mean/mode for uniform?
         elsif d[:type] =~ /discrete/
           # require min, max, mode
-          fail "No values passed for discrete distribution" unless d[:values] || d[:values].empty?
+          fail 'No values passed for discrete distribution' unless d[:values] || d[:values].empty?
           if d[:weights]
-            fail "Weights are not the same length as values" unless d[:values].size == d[:weights].size
-            fail "Weights do not sum up to one" unless d[:weights].reduce(:+).between?(0.99, 1.01) # allow a small error for now
+            fail 'Weights are not the same length as values' unless d[:values].size == d[:weights].size
+            fail 'Weights do not sum up to one' unless d[:weights].reduce(:+).between?(0.99, 1.01) # allow a small error for now
           else
             fraction = 1 / d[:values].size.to_f
             d[:weights] = [fraction] * d[:values].size
@@ -304,13 +302,11 @@ module OpenStudio
 
         elsif d[:type] =~ /normal/ # both normal and lognormal
           # require min, max, mode, stddev
-          fail "No standard deviation for variable" unless d[:standard_deviation]
+          fail 'No standard deviation for variable' unless d[:standard_deviation]
         end
 
         true
       end
-
     end
   end
 end
-

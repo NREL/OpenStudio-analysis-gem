@@ -104,7 +104,6 @@ describe OpenStudio::Analysis::Translator::Excel do
       expect(File).to exist('spec/files/export/analysis/small_seed.zip')
 
       expect(JSON.parse(File.read('spec/files/export/analysis/small_seed.json'))).not_to be_nil
-
     end
   end
 
@@ -129,7 +128,6 @@ describe OpenStudio::Analysis::Translator::Excel do
       expect(@excel.algorithm['number_of_generations']).to be_a Integer
       expect(@excel.algorithm['tolerance']).to eq(0.115)
       expect(@excel.algorithm['tolerance']).to be_a Float
-
     end
 
     it 'should create a valid hash' do
@@ -257,7 +255,6 @@ describe OpenStudio::Analysis::Translator::Excel do
       expect(@excel.algorithm['number_of_generations']).to be_a Integer
       # expect(@excel.algorithm["tolerance"]).to eq(0.115)
       # expect(@excel.algorithm["tolerance"]).to be_a Float
-
     end
 
     it 'should create a valid hash' do
@@ -530,7 +527,6 @@ describe OpenStudio::Analysis::Translator::Excel do
 
       expect(@excel.worker_finals.size).to eq 1
       expect(@excel.worker_inits[0][:ordered_file_name]).to eq '00_first_file.rb'
-
     end
   end
 
@@ -541,14 +537,12 @@ describe OpenStudio::Analysis::Translator::Excel do
 
     it 'should fail to process' do
       @excel.process
-      #expect { @excel.process }.to raise_error("Measure Display Names are not unique for 'Rotate Building Relative to Current Orientation', 'Nothing Important'")
+      # expect { @excel.process }.to raise_error("Measure Display Names are not unique for 'Rotate Building Relative to Current Orientation', 'Nothing Important'")
 
       @excel.save_analysis
     end
   end
 
   context 'version 0.4.0 full spreadsheet example' do
-
   end
-
 end

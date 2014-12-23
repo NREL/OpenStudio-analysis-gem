@@ -1,12 +1,10 @@
 # OpenStudio formulation class handles the generation of the OpenStudio Analysis format.
 module OpenStudio
   module Analysis
-
     SeedModel = Struct.new(:path)
     WeatherFile = Struct.new(:path)
 
     class Formulation
-
       attr_reader :seed_model
       attr_reader :weather_file
       attr_accessor :display_name
@@ -14,7 +12,6 @@ module OpenStudio
       attr_accessor :algorithm
 
       attr_reader :analysis_type
-
 
       # Create an instance of the OpenStudio::Analysis::Formulation
       #
@@ -41,9 +38,7 @@ module OpenStudio
       # Define the type of analysis that this is going to be running
       #
       # @param name [String] Name of the algorithm/analysis. (e.g. rgenoud, lhs, single_run)
-      def analysis_type=(name)
-        @analysis_type = name
-      end
+      attr_writer :analysis_type
 
       # Path to the seed model
       #
@@ -78,19 +73,19 @@ module OpenStudio
       # @option output_hash [Integer] :objective_function_group If grouping objective functions, then group ID. Default: nil
       def add_output(output_hash)
         output_hash = {
-            units: '',
-            objective_function: false,
-            objective_function_index: nil,
-            objective_function_target: nil,
-            objective_function_group: nil,
-            scaling_factor: nil
+          units: '',
+          objective_function: false,
+          objective_function_index: nil,
+          objective_function_target: nil,
+          objective_function_group: nil,
+          scaling_factor: nil
         }.merge(output_hash)
 
         # if the objective_function index is nil and the variable is an objective function, then increment and
         # assign and objective function index
 
         unless output_hash[:objective_function_index]
-          values = @outputs.map{|o| o[:objective_function_index]}
+          values = @outputs.map { |o| o[:objective_function_index] }
           output_hash[:objective_function_index] = values.empty? ? 0 : values.max + 1
         end
 
@@ -102,22 +97,22 @@ module OpenStudio
       # @param version [Integer] Version of the format to return
       # @return [Hash]
       def to_hash(version = 1)
-        #fail 'Must define an analysis type' unless @analysis_type
+        # fail 'Must define an analysis type' unless @analysis_type
         if version == 1
           h = {
-              analysis: {
-                  display_name: @display_name,
-                  name: @display_name.snake_case,
-                  output_variables: @outputs,
-                  problem: {
-                      analysis_type: @analysis_type,
-                      algorithm: algorithm.to_hash(version),
-                      workflow: workflow.to_hash(version)
-                  },
-                  seed: @seed_model[:path],
-                  weather_file: @weather_file[:path],
-                  file_format_version: version
-              }
+            analysis: {
+              display_name: @display_name,
+              name: @display_name.snake_case,
+              output_variables: @outputs,
+              problem: {
+                analysis_type: @analysis_type,
+                algorithm: algorithm.to_hash(version),
+                workflow: workflow.to_hash(version)
+              },
+              seed: @seed_model[:path],
+              weather_file: @weather_file[:path],
+              file_format_version: version
+            }
           }
 
           # This is a hack right now, but after the initial hash is created go back and add in the objective functions
@@ -146,11 +141,11 @@ module OpenStudio
           end
 
           h = {
-              data_point: {
-                  set_variable_values: static_hash,
-                  status: 'na',
-                  uuid: SecureRandom.uuid
-              }
+            data_point: {
+              set_variable_values: static_hash,
+              status: 'na',
+              uuid: SecureRandom.uuid
+            }
           }
           h
         end
@@ -161,7 +156,7 @@ module OpenStudio
       # @param version [Integer] Version of the format to return
       # @return [Boolean]
       def save(filename, version = 1)
-        File.open(filename, 'w') { |f| f << JSON.pretty_generate(self.to_hash(version)) }
+        File.open(filename, 'w') { |f| f << JSON.pretty_generate(to_hash(version)) }
 
         true
       end
@@ -171,11 +166,10 @@ module OpenStudio
       # @param version [Integer] Version of the format to return
       # @return [Boolean]
       def save_static_data_point(filename, version = 1)
-        File.open(filename, 'w') { |f| f << JSON.pretty_generate(self.to_static_data_point_hash(version)) }
+        File.open(filename, 'w') { |f| f << JSON.pretty_generate(to_static_data_point_hash(version)) }
 
         true
       end
-
     end
   end
 end

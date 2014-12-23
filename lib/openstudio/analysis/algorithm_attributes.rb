@@ -4,7 +4,6 @@
 module OpenStudio
   module Analysis
     class AlgorithmAttributes
-
       # Create a new instance of an algorithm
       #
       def initialize
@@ -15,7 +14,7 @@ module OpenStudio
         @attributes[attribute_name] = attribute_value
       end
 
-      def to_hash(version = 1)
+      def to_hash(_version = 1)
         @attributes
       end
     end

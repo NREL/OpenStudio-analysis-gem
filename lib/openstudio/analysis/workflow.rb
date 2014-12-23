@@ -4,7 +4,7 @@ module OpenStudio
     class Workflow
       attr_reader :items
       # allow users to access the items via the measures attribute accessor
-      alias :measures :items
+      alias_method :measures, :items
 
       # Create an instance of the OpenStudio::Analysis::Workflow
       #
@@ -45,7 +45,7 @@ module OpenStudio
           if measure_hash.nil? && File.exist?(File.join(path_to_measure, 'measure.json'))
             measure_hash = JSON.parse(File.read(File.join(path_to_measure, 'measure.json')), symbolize_names: true)
           elsif measure_hash.nil?
-            fail "measure.json was not found and was not automatically created"
+            fail 'measure.json was not found and was not automatically created'
           end
 
           add_measure(instance_name, instance_display_name, path_to_measure, measure_hash)
@@ -87,18 +87,17 @@ module OpenStudio
         args = []
         measure['variables'].each do |variable|
           args << {
-              local_variable: variable['name'],
-              variable_type: variable['type'],
-              name: variable['name'],
-              display_name: variable['display_name'],
-              display_name_short: variable['display_name_short'],
-              units: variable['units'],
-              default_value: variable['distribution']['static_value'],
-              value: variable['distribution']['static_value']
+            local_variable: variable['name'],
+            variable_type: variable['type'],
+            name: variable['name'],
+            display_name: variable['display_name'],
+            display_name_short: variable['display_name_short'],
+            units: variable['units'],
+            default_value: variable['distribution']['static_value'],
+            value: variable['distribution']['static_value']
           }
         end
         hash[:arguments] = args
-
 
         m = add_measure(measure['name'], measure['display_name'], "./spec/files/measures/#{measure['measure_file_name_directory']}", hash)
 
@@ -106,22 +105,22 @@ module OpenStudio
           next unless variable['variable_type'] == 'variable'
 
           dist = {
-              type: variable['distribution']['type'],
-              minimum: variable['distribution']['min'],
-              maximum: variable['distribution']['max'],
-              mean: variable['distribution']['mean'],
-              standard_deviation: variable['distribution']['stddev'],
-              values: variable['distribution']['discrete_values'],
-              weights: variable['distribution']['discrete_weights'],
-              step_size: variable['distribution']['delta_x']
+            type: variable['distribution']['type'],
+            minimum: variable['distribution']['min'],
+            maximum: variable['distribution']['max'],
+            mean: variable['distribution']['mean'],
+            standard_deviation: variable['distribution']['stddev'],
+            values: variable['distribution']['discrete_values'],
+            weights: variable['distribution']['discrete_weights'],
+            step_size: variable['distribution']['delta_x']
           }
           opt = {
-              variable_type: variable['variable_type'],
-              variable_display_name_short: variable['display_name_short'],
-              static_value: variable['distribution']['static_value']
+            variable_type: variable['variable_type'],
+            variable_display_name_short: variable['display_name_short'],
+            static_value: variable['distribution']['static_value']
           }
 
-          m.make_variable(variable['name'], variable['display_name'], dist,)
+          m.make_variable(variable['name'], variable['display_name'], dist)
         end
       end
 
@@ -138,7 +137,7 @@ module OpenStudio
       #
       # @return [Array] All variables in the workflow
       def all_variables
-        @items.map { |i| i.variables }.flatten
+        @items.map(&:variables).flatten
       end
 
       # Save the workflow to a hash object
@@ -166,7 +165,7 @@ module OpenStudio
       # @return [String] JSON formatted string
       def to_json(version = 1)
         if version == 1
-          JSON.pretty_generate(self.to_hash(version))
+          JSON.pretty_generate(to_hash(version))
         else
           fail "Version #{version} not yet implemented for to_json"
         end
@@ -196,4 +195,3 @@ module OpenStudio
     end
   end
 end
-

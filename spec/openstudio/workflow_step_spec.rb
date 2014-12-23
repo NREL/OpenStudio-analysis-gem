@@ -27,12 +27,12 @@ describe OpenStudio::Analysis::WorkflowStep do
 
     expect(measure.name).to eq 'my_instance'
     v = {
-        type: 'discrete',
-        minimum: 'low string',
-        maximum: 'high string',
-        mean: 'middle string',
-        values: ['a','b','c','d'],
-        weights: [0.25, 0.25, 0.25, 0.25]
+      type: 'discrete',
+      minimum: 'low string',
+      maximum: 'high string',
+      mean: 'middle string',
+      values: %w(a b c d),
+      weights: [0.25, 0.25, 0.25, 0.25]
     }
     r = measure.make_variable('cooling_sch', 'my variable', v)
     expect(r).to eq true
@@ -48,16 +48,15 @@ describe OpenStudio::Analysis::WorkflowStep do
 
     expect(measure.name).to eq 'my_instance'
     v = {
-        type: 'triangle',
-        minimum: 0.5,
-        maximum: 20,
-        mean: 10,
-        static_value: 24601
+      type: 'triangle',
+      minimum: 0.5,
+      maximum: 20,
+      mean: 10,
+      static_value: 24601
     }
     r = measure.make_variable('cooling_sch', 'my variable', v)
 
     h = measure.to_hash
-
 
     expect(h[:variables].first[:static_value]).to eq 24601
     expect(h[:variables].first.key?(:step_size)).to eq false
@@ -75,11 +74,11 @@ describe OpenStudio::Analysis::WorkflowStep do
 
     expect(measure.name).to eq 'my_instance'
     v = {
-        type: 'normal',
-        minimum: 0.5,
-        maximum: 20,
-        mean: 10,
-        standard_deviation: 2
+      type: 'normal',
+      minimum: 0.5,
+      maximum: 20,
+      mean: 10,
+      standard_deviation: 2
     }
     r = measure.make_variable('cooling_sch', 'my variable', v)
 
@@ -100,16 +99,16 @@ describe OpenStudio::Analysis::WorkflowStep do
 
     expect(measure.name).to eq 'my_instance'
     v = {
-        type: 'uniform',
-        minimum: 0.5,
-        maximum: 20,
-        mean: 10
+      type: 'uniform',
+      minimum: 0.5,
+      maximum: 20,
+      mean: 10
     }
     r = measure.make_variable('cooling_sch', 'my variable', v)
 
     h = measure.to_hash
 
-    #puts JSON.pretty_generate(h)
+    # puts JSON.pretty_generate(h)
     expect(h[:variables].first.key?(:step_size)).to eq false
 
     expect(r).to eq true
