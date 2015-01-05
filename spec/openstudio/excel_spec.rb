@@ -104,7 +104,6 @@ describe OpenStudio::Analysis::Translator::Excel do
       expect(File).to exist('spec/files/export/analysis/small_seed.zip')
 
       expect(JSON.parse(File.read('spec/files/export/analysis/small_seed.json'))).not_to be_nil
-
     end
   end
 
@@ -129,7 +128,6 @@ describe OpenStudio::Analysis::Translator::Excel do
       expect(@excel.algorithm['number_of_generations']).to be_a Integer
       expect(@excel.algorithm['tolerance']).to eq(0.115)
       expect(@excel.algorithm['tolerance']).to be_a Float
-
     end
 
     it 'should create a valid hash' do
@@ -181,8 +179,8 @@ describe OpenStudio::Analysis::Translator::Excel do
           if var['name'] == 'alter_design_days'
             puts var.inspect
             expect(var['type']).to eq 'bool'
-            expect(eval(var['distribution']['discrete_values'])).to match_array %w(true false)
-            expect(eval(var['distribution']['discrete_weights'])).to match_array [0.8, 0.2]
+            expect(var['distribution']['discrete_values']).to match_array [true, false]
+            expect(var['distribution']['discrete_weights']).to match_array [0.8, 0.2]
           end
         end
       end
@@ -257,7 +255,6 @@ describe OpenStudio::Analysis::Translator::Excel do
       expect(@excel.algorithm['number_of_generations']).to be_a Integer
       # expect(@excel.algorithm["tolerance"]).to eq(0.115)
       # expect(@excel.algorithm["tolerance"]).to be_a Float
-
     end
 
     it 'should create a valid hash' do
@@ -372,7 +369,7 @@ describe OpenStudio::Analysis::Translator::Excel do
       expect(h['analysis']['output_variables']).to be_an Array
       h['analysis']['output_variables'].each do |o|
         if o['name'] == 'standard_report_legacy.total_energy'
-          expect(o['variable_type']).to eq 'Double'
+          expect(o['variable_type']).to eq 'double'
           expect(o['objective_function']).to eq true
           expect(o['objective_function_index']).to eq 0
           expect(o['objective_function_target']).to eq nil
@@ -380,7 +377,7 @@ describe OpenStudio::Analysis::Translator::Excel do
           expect(o['objective_function_group']).to eq 1
         end
         if o['name'] == 'standard_report_legacy.total_source_energy'
-          expect(o['variable_type']).to eq 'Double'
+          expect(o['variable_type']).to eq 'double'
           expect(o['objective_function']).to eq true
           expect(o['objective_function_index']).to eq 1
           expect(o['objective_function_target']).to eq 25.1
@@ -530,19 +527,22 @@ describe OpenStudio::Analysis::Translator::Excel do
 
       expect(@excel.worker_finals.size).to eq 1
       expect(@excel.worker_inits[0][:ordered_file_name]).to eq '00_first_file.rb'
-
     end
   end
 
   context 'version 0.3.7 and worker init-final scripts' do
     before :all do
-      @excel = OpenStudio::Analysis::Translator::Excel.new('spec/files/0_3_7_unique_measure_names.xlsx')
+      @excel = OpenStudio::Analysis::Translator::Excel.new('spec/files/0_4_0_lhs_discrete_continuous.xlsx')
     end
 
     it 'should fail to process' do
-      expect { @excel.process }.to raise_error("Measure Display Names are not unique for 'Rotate Building Relative to Current Orientation', 'Nothing Important'")
-    end
+      @excel.process
+      # expect { @excel.process }.to raise_error("Measure Display Names are not unique for 'Rotate Building Relative to Current Orientation', 'Nothing Important'")
 
+      @excel.save_analysis
+    end
   end
 
+  context 'version 0.4.0 full spreadsheet example' do
+  end
 end

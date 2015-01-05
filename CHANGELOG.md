@@ -1,6 +1,10 @@
 OpenStudio Analysis Gem Change Log
 ==================================
 
+Version 0.4.0 (Unreleased)
+-------------
+* Add programmatic interface
+
 Version 0.3.7 (Unreleased)
 -------------
 * Worker initialization and finalization scripts

@@ -6,8 +6,13 @@
 *.gem
 ~$*
 tmp/*
+.yardoc
+doc/
 Gemfile.lock
-/spec/files/analysis
+/spec/files/analysis/*.zip
 /spec/files/export
 /spec/reports
+/spec/files/analysis/*.json
 /*.log
+spec/files/measures/ActualMeasureNoJson/measure.json
+rubocop-results.xml
