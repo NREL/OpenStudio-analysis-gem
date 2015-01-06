@@ -1,6 +1,10 @@
 OpenStudio Analysis Gem Change Log
 ==================================
 
+Version 0.4.1
+-------------
+* Bug fix to address the spec/files directory being prepended to the measures
+
 Version 0.4.0
 -------------
 * Add programmatic interface. This is now used when translating the Excel file into the JSON.

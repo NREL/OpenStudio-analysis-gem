@@ -245,7 +245,7 @@ module OpenStudio
           end
 
           # Temp save of the json file
-          analysis.save("spec/files/analysis/#{analysis.display_name}_api.json")
+          # analysis.save("#{analysis.display_name}_api.json")
 
           analysis
         end

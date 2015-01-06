@@ -99,7 +99,7 @@ module OpenStudio
         end
         hash[:arguments] = args
 
-        m = add_measure(measure['name'], measure['display_name'], "./spec/files/measures/#{measure['measure_file_name_directory']}", hash)
+        m = add_measure(measure['name'], measure['display_name'], measure['measure_file_name_directory'], hash)
 
         measure['variables'].each do |variable|
           next unless variable['variable_type'] == 'variable'
