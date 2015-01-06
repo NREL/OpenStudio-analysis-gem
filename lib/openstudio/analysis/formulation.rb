@@ -155,6 +155,7 @@ module OpenStudio
       # @param version [Integer] Version of the format to return
       # @return [Boolean]
       def save(filename, version = 1)
+        FileUtils.mkdir_p File.dirname(filename) unless Dir.exist? File.dirname(filename)
         File.open(filename, 'w') { |f| f << JSON.pretty_generate(to_hash(version)) }
 
         true
