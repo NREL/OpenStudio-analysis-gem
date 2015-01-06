@@ -3,7 +3,6 @@ AllCops:
     - 'spec/files/measures/**/*'
     - 'spec/files/measures_second_path/**/*'
     - 'spec/files/worker_init/*'
-    - 'Vagrantfile'
 
 # ==================== Linters ====================
 Lint/AmbiguousOperator:
