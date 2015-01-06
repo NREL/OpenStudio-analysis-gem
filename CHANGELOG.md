@@ -1,6 +1,10 @@
 OpenStudio Analysis Gem Change Log
 ==================================
 
+Version 0.4.2 (Unreleased)
+-------------
+* Bug fix when adding measure from path, this now sets the correct argument name.
+
 Version 0.4.1
 -------------
 * Bug fix to address the spec/files directory being prepended to the measures

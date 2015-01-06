@@ -264,7 +264,7 @@ module OpenStudio
             s.arguments << {
               display_name: arg[:display_name],
               display_name_short: arg[:display_name],
-              name: arg[:local_variable],
+              name: arg[:name],
               value_type: var_type,
               default_value: arg[:default_value],
               value: arg[:default_value]
