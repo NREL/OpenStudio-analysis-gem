@@ -1,11 +1,11 @@
 OpenStudio Analysis Gem Change Log
 ==================================
 
-Version 0.4.0 (Unreleased)
+Version 0.4.0
 -------------
-* Add programmatic interface
+* Add programmatic interface. This is now used when translating the Excel file into the JSON.
 
-Version 0.3.7 (Unreleased)
+Version 0.3.7
 -------------
 * Worker initialization and finalization scripts
 * Do not allow the file to process if the Measure Display Names are not unique
