@@ -54,7 +54,7 @@ module OpenStudio
       # @return [Boolean] True/false if it assigned it
       def argument_value(argument_name, value)
         a = @arguments.find_all { |a| a[:name] == argument_name }
-        fail "could not find argument_name of #{argument_name} in measure #{name}" if a.empty?
+        fail "could not find argument_name of #{argument_name} in measure #{name}. Valid argument names are #{argument_names}." if a.empty?
         fail "more than one argument with the same name of #{argument_name} in measure #{name}" if a.size > 1
 
         a = a.first
@@ -90,7 +90,7 @@ module OpenStudio
         distribution[:mode] = distribution[:mean] if distribution.key? :mean
 
         a = @arguments.find_all { |a| a[:name] == argument_name }
-        fail "could not find argument_name of #{argument_name} in measure #{name}" if a.empty?
+        fail "could not find argument_name of #{argument_name} in measure #{name}. Valid argument names are #{argument_names}." if a.empty?
         fail "more than one argument with the same name of #{argument_name} in measure #{name}" if a.size > 1
 
         if distribution_valid?(distribution)
