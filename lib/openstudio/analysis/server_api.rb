@@ -8,7 +8,7 @@ module OpenStudio
       def initialize(options = {})
         defaults = { hostname: 'http://localhost:8080' }
         options = defaults.merge(options)
-        @logger = Logger.new('faraday.log')
+        @logger = ::Logger.new('faraday.log')
 
         @hostname = options[:hostname]
 
@@ -79,7 +79,7 @@ module OpenStudio
       end
 
       def new_project(options = {})
-        defaults = { project_name: "Project #{Time.now.strftime('%Y-%m-%d %H:%M:%S')}" }
+        defaults = { project_name: "Project #{::Time.now.strftime('%Y-%m-%d %H:%M:%S')}" }
         options = defaults.merge(options)
         project_id = nil
 
