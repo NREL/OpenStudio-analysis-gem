@@ -1,4 +1,4 @@
-# OpenStudio::Analysis::Algorithm to define the algorithm parameters. The module and class names start to conflict
+# OpenStudio::Analysis::Algorithm define the algorithm parameters. The module and class names start to conflict
 # with OpenStudio's namespace. Be careful adding new classes without first making sure that the namespace conflict
 # is clear.
 module OpenStudio

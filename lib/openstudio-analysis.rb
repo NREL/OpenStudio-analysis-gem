@@ -20,6 +20,7 @@ require 'openstudio/analysis/version'
 
 # analysis classes
 require 'openstudio/analysis'
+require 'openstudio/analysis/support_files'
 require 'openstudio/analysis/formulation'
 require 'openstudio/analysis/workflow'
 require 'openstudio/analysis/workflow_step'
