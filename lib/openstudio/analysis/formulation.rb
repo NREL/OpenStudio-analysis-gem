@@ -122,11 +122,25 @@ module OpenStudio
                       algorithm: algorithm.to_hash(version),
                       workflow: workflow.to_hash(version)
                   },
-                  seed: @seed_model[:file],
-                  weather_file: @weather_file[:file],
                   file_format_version: version
               }
           }
+
+          if @seed_model[:file]
+            h[:analysis][:seed] = {
+                file_type: File.extname(@seed_model[:file]).gsub('.', '').upcase,
+                path: "./seed/#{File.basename(@seed_model[:file])}"
+            }
+          else
+            h[:analysis][:seed] = nil
+          end
+
+          if @weather_file[:file]
+            h[:analysis][:weather] = {
+                file_type: File.extname(@weather_file[:file]).gsub('.', '').upcase,
+                path: "./weather/#{File.basename(@weather_file[:file])}"
+            }
+          end
 
           # This is a hack right now, but after the initial hash is created go back and add in the objective functions
           # to the the algorithm as defined in the output_variables list

@@ -1,6 +1,10 @@
 OpenStudio Analysis Gem Change Log
 ==================================
 
+Unreleased Version
+------------------
+* Add defaults to the OpenStudio::Analysis::ServerApi .run method
+
 Version 0.4.2
 -------------
 * Bug fix when adding measure from path, this now sets the correct argument name.

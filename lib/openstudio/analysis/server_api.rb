@@ -410,7 +410,7 @@ module OpenStudio
           analysis_id = SecureRandom.uuid
           formulation_json[:analysis][:uuid] = analysis_id
         end
-        fail "No analysis id defined in analyis.json #{options[:formulation_file]}" if analysis_id.nil?
+        fail "No analysis id defined in analysis.json #{options[:formulation_file]}" if analysis_id.nil?
 
         # save out this file to compare
         # File.open('formulation_merge.json', 'w') { |f| f << JSON.pretty_generate(formulation_json) }
@@ -503,7 +503,9 @@ module OpenStudio
         end
       end
 
+      # TODO: this should be called 'start analysis'
       def run_analysis(analysis_id, options)
+        warn 'In 0.5.0, OpenStudio::Analysis::ServerApi run_analysis will be renamed to start_analysis'
         defaults = { analysis_action: 'start', without_delay: false }
         options = defaults.merge(options)
 
@@ -689,6 +691,7 @@ module OpenStudio
       def run_analysis_detailed(formulation_filename, analysis_zip_filename, analysis_type,
                                 allow_multiple_jobs = true, server_as_worker = true,
                                 run_data_point_filename = 'run_openstudio_workflow_monthly.rb')
+        warn 'run_analysis_detailed will be deprecated in 0.5.0. Use run(...)'
         project_options = {}
         project_id = new_project(project_options)
 
@@ -728,6 +731,7 @@ module OpenStudio
 
         analysis_id
       end
+      alias_method :run, :run_analysis_detailed
     end
   end
 end
