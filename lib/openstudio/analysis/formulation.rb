@@ -121,8 +121,7 @@ module OpenStudio
                       analysis_type: @analysis_type,
                       algorithm: algorithm.to_hash(version),
                       workflow: workflow.to_hash(version)
-                  },
-                  file_format_version: version
+                  }
               }
           }
 
@@ -141,6 +140,8 @@ module OpenStudio
                 path: "./weather/#{File.basename(@weather_file[:file])}"
             }
           end
+
+          h[:analysis][:file_format_version] = version
 
           # This is a hack right now, but after the initial hash is created go back and add in the objective functions
           # to the the algorithm as defined in the output_variables list
