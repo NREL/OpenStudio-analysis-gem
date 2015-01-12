@@ -686,8 +686,9 @@ module OpenStudio
         analysis_id
       end
 
-      def run_analysis_detailed(formulation_filename, analysis_zip_filename,
-                                analysis_type, allow_multiple_jobs, server_as_worker, run_data_point_filename)
+      def run_analysis_detailed(formulation_filename, analysis_zip_filename, analysis_type,
+                                allow_multiple_jobs = true, server_as_worker = true,
+                                run_data_point_filename = 'run_openstudio_workflow_monthly.rb')
         project_options = {}
         project_id = new_project(project_options)
 
