@@ -505,7 +505,7 @@ module OpenStudio
 
       # TODO: this should be called 'start analysis'
       def run_analysis(analysis_id, options)
-        warn 'In 0.5.0, OpenStudio::Analysis::ServerApi run_analysis will be renamed to start_analysis'
+        warn 'In 0.5.0, OpenStudio::Analysis::ServerApi run_analysis will be renamed to start_analysis. Use start_analysis.'
         defaults = { analysis_action: 'start', without_delay: false }
         options = defaults.merge(options)
 
@@ -523,6 +523,7 @@ module OpenStudio
           fail 'Could not start the analysis'
         end
       end
+      alias_method :start_analysis, :run_analysis
 
       def kill_analysis(analysis_id)
         analysis_action = { analysis_action: 'stop' }
@@ -610,7 +611,7 @@ module OpenStudio
           simulate_data_point_filename: 'simulate_data_point.rb',
           run_data_point_filename: run_data_point_filename
         }
-        run_analysis(analysis_id, run_options)
+        start_analysis(analysis_id, run_options)
 
         run_options = {
           analysis_action: 'start',
@@ -621,7 +622,7 @@ module OpenStudio
           simulate_data_point_filename: 'simulate_data_point.rb',
           run_data_point_filename: run_data_point_filename
         }
-        run_analysis(analysis_id, run_options)
+        start_analysis(analysis_id, run_options)
 
         analysis_id
       end
@@ -647,7 +648,7 @@ module OpenStudio
           simulate_data_point_filename: 'simulate_data_point.rb',
           run_data_point_filename: 'run_openstudio_workflow_monthly.rb'
         }
-        run_analysis(analysis_id, run_options)
+        start_analysis(analysis_id, run_options)
 
         analysis_id
       end
@@ -672,7 +673,7 @@ module OpenStudio
           simulate_data_point_filename: 'simulate_data_point.rb',
           run_data_point_filename: 'run_openstudio_workflow_monthly.rb'
         }
-        run_analysis(analysis_id, run_options)
+        start_analysis(analysis_id, run_options)
 
         run_options = {
           analysis_action: 'start',
@@ -683,7 +684,7 @@ module OpenStudio
           simulate_data_point_filename: 'simulate_data_point.rb',
           run_data_point_filename: 'run_openstudio_workflow_monthly.rb'
         }
-        run_analysis(analysis_id, run_options)
+        start_analysis(analysis_id, run_options)
 
         analysis_id
       end
@@ -712,7 +713,7 @@ module OpenStudio
           simulate_data_point_filename: 'simulate_data_point.rb',
           run_data_point_filename: run_data_point_filename
         }
-        run_analysis(analysis_id, run_options)
+        start_analysis(analysis_id, run_options)
 
         # If the analysis is LHS, then go ahead and run batch run because there is
         # no explicit way to tell the system to do it
@@ -726,7 +727,7 @@ module OpenStudio
             simulate_data_point_filename: 'simulate_data_point.rb',
             run_data_point_filename: run_data_point_filename
           }
-          run_analysis(analysis_id, run_options)
+          start_analysis(analysis_id, run_options)
         end
 
         analysis_id
