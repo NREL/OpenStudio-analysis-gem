@@ -135,7 +135,7 @@ module OpenStudio
           end
 
           if @weather_file[:file]
-            h[:analysis][:weather] = {
+            h[:analysis][:weather_file] = {
                 file_type: File.extname(@weather_file[:file]).gsub('.', '').upcase,
                 path: "./weather/#{File.basename(@weather_file[:file])}"
             }
@@ -311,7 +311,7 @@ module OpenStudio
           added_measures = []
           # The list of the measures should always be there, but make sure they are uniq
           @workflow.each do |measure|
-            measure_dir_to_add = measure.measure_definition_directory
+            measure_dir_to_add = measure.measure_definition_directory_local
 
             next if added_measures.include? measure_dir_to_add
 
@@ -319,14 +319,13 @@ module OpenStudio
             Dir[File.join(measure_dir_to_add, '**')].each do |file|
               if File.directory?(file)
                 if File.basename(file) == 'resources' || File.basename(file) == 'lib'
-                  add_directory_to_zip(zf, file, "./measures/#{measure.name}/#{File.basename(file)}")
+                  add_directory_to_zip(zf, file, "#{measure.measure_definition_directory}/#{File.basename(file)}")
                 else
                   # puts "Skipping Directory #{File.basename(file)}"
                 end
               else
                 # puts "Adding File #{file}"
-                # added_measures << measure_dir unless added_measures.include? measure_dir
-                zf.add(file.sub(measure_dir_to_add, "./measures/#{measure.name}/"), file)
+                zf.add(file.sub(measure_dir_to_add, "#{measure.measure_definition_directory}/"), file)
               end
             end
 

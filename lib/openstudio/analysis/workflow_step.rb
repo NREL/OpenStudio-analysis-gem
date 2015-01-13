@@ -9,6 +9,7 @@ module OpenStudio
 
       attr_accessor :measure_definition_class_name
       attr_accessor :measure_definition_directory
+      attr_accessor :measure_definition_directory_local
       attr_accessor :measure_definition_display_name
       attr_accessor :measure_definition_name
       attr_accessor :measure_definition_name_xml
@@ -29,6 +30,7 @@ module OpenStudio
 
         @measure_definition_class_name = nil
         @measure_definition_directory = nil
+        @measure_definition_directory_local = nil
         @measure_definition_display_name = nil
         @measure_definition_name = nil
         @measure_definition_name_xml = nil
@@ -228,10 +230,14 @@ module OpenStudio
         # TODO: Validate the hash
         # TODO: validate that the measure exists?
 
-        # verify that the path to the measure is a path and not a file.
+        # verify that the path to the measure is a path and not a file. If it is make it a path
         if File.exist?(path_to_measure) && File.file?(path_to_measure)
           path_to_measure = File.dirname(path_to_measure)
         end
+
+        # Extract the directo
+        path_to_measure_local = path_to_measure
+        path_to_measure = "./measures/#{File.basename(path_to_measure)}"
 
         # map the BCL hash format into the OpenStudio WorkflowStep format
         s = OpenStudio::Analysis::WorkflowStep.new
@@ -243,6 +249,7 @@ module OpenStudio
         # definition of the measure
         s.measure_definition_class_name = hash[:classname]
         s.measure_definition_directory = path_to_measure
+        s.measure_definition_directory_local = path_to_measure_local
         s.measure_definition_display_name = hash[:display_name]
         s.measure_definition_name = hash[:name]
         # name_xml is not used right now but eventually should be used to compare the hash[:name] and the hash[:name_xml]

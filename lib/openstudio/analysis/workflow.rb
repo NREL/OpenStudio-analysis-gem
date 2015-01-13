@@ -21,36 +21,36 @@ module OpenStudio
       # Add a measure to the workflow from a path. Inside the path it is expecting to have a measure.json file
       # if not, the BCL gem is used to create the measure.json file.
       #
-      # @params instance_name [String] The name of the instance. This allows for multiple measures to be added to the worklow with unique names
-      # @params instance_display_name [String] The display name of the instance. This allows for multiple measures to be added to the worklow with unique names
-      # @param path_to_measure [String] This is the local path to the measure directory, relative or absolute. It is used when zipping up all the measures.
+      # @params instance_name [String] The name of the instance. This allows for multiple measures to be added to the workflow with unique names
+      # @params instance_display_name [String] The display name of the instance. This allows for multiple measures to be added to the workflow with unique names
+      # @param local_path_to_measure [String] This is the local path to the measure directory, relative or absolute. It is used when zipping up all the measures.
       # @return [Object] Returns the measure that was added as an OpenStudio::AnalysisWorkflowStep object
-      def add_measure_from_path(instance_name, instance_display_name, path_to_measure)
+      def add_measure_from_path(instance_name, instance_display_name, local_path_to_measure)
         measure_filename = 'measure.rb'
-        if File.exist?(path_to_measure) && File.file?(path_to_measure)
-          measure_filename = File.basename(path_to_measure)
-          path_to_measure = File.dirname(path_to_measure)
+        if File.exist?(local_path_to_measure) && File.file?(local_path_to_measure)
+          measure_filename = File.basename(local_path_to_measure)
+          local_path_to_measure = File.dirname(local_path_to_measure)
         end
 
-        if Dir.exist?(path_to_measure) && File.directory?(path_to_measure)
+        if Dir.exist?(local_path_to_measure) && File.directory?(local_path_to_measure)
           # Watch out for namespace conflicts (use ::BCL)
           b = ::BCL::ComponentMethods.new
           measure_hash = nil
-          unless File.exist?(File.join(path_to_measure, 'measure.json'))
-            measure_hash = b.parse_measure_file(nil, File.join(path_to_measure, measure_filename))
-            File.open(File.join(path_to_measure, 'measure.json'), 'w') { |f| f << JSON.pretty_generate(measure_hash) }
-            warn("measure.json not found in #{path_to_measure}, will parse measure file using BCL gem")
+          unless File.exist?(File.join(local_path_to_measure, 'measure.json'))
+            measure_hash = b.parse_measure_file(nil, File.join(local_path_to_measure, measure_filename))
+            File.open(File.join(local_path_to_measure, 'measure.json'), 'w') { |f| f << JSON.pretty_generate(measure_hash) }
+            warn("measure.json not found in #{local_path_to_measure}, will parse measure file using BCL gem")
           end
 
-          if measure_hash.nil? && File.exist?(File.join(path_to_measure, 'measure.json'))
-            measure_hash = JSON.parse(File.read(File.join(path_to_measure, 'measure.json')), symbolize_names: true)
+          if measure_hash.nil? && File.exist?(File.join(local_path_to_measure, 'measure.json'))
+            measure_hash = JSON.parse(File.read(File.join(local_path_to_measure, 'measure.json')), symbolize_names: true)
           elsif measure_hash.nil?
             fail 'measure.json was not found and was not automatically created'
           end
 
-          add_measure(instance_name, instance_display_name, path_to_measure, measure_hash)
+          add_measure(instance_name, instance_display_name, local_path_to_measure, measure_hash)
         else
-          fail "could not find measure to add to workflow #{path_to_measure}"
+          fail "could not find measure to add to workflow #{local_path_to_measure}"
         end
 
         @items.last
@@ -58,13 +58,13 @@ module OpenStudio
 
       # Add a measure from the custom hash format without reading the measure.rb or measure.json file
       #
-      # @params instance_name [String] The name of the instance. This allows for multiple measures to be added to the worklow with unique names
-      # @params instance_display_name [String] The display name of the instance. This allows for multiple measures to be added to the worklow with unique names
-      # @param path_to_measure [String] This is the local path to the measure directory, relative or absolute. It is used when zipping up all the measures.
+      # @params instance_name [String] The name of the instance. This allows for multiple measures to be added to the workflow with unique names
+      # @params instance_display_name [String] The display name of the instance. This allows for multiple measures to be added to the workflow with unique names
+      # @param local_path_to_measure [String] This is the local path to the measure directory, relative or absolute. It is used when zipping up all the measures.
       # @param measure_metadata [Hash] Format of the measure.json
       # @return [Object] Returns the measure that was added as an OpenStudio::AnalysisWorkflowStep object
-      def add_measure(instance_name, instance_display_name, path_to_measure, measure_metadata)
-        @items << OpenStudio::Analysis::WorkflowStep.from_measure_hash(instance_name, instance_display_name, path_to_measure, measure_metadata)
+      def add_measure(instance_name, instance_display_name, local_path_to_measure, measure_metadata)
+        @items << OpenStudio::Analysis::WorkflowStep.from_measure_hash(instance_name, instance_display_name, local_path_to_measure, measure_metadata)
 
         @items.last
       end

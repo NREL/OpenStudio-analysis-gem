@@ -25,7 +25,8 @@ describe OpenStudio::Analysis::Workflow do
     p = 'spec/files/measures/IncreaseInsulationRValueForRoofs/measure.rb'
     m = @w.add_measure_from_path('insulation', 'Increase Insulation', p)
     expect(m).to be_an OpenStudio::Analysis::WorkflowStep
-    expect(m.measure_definition_directory).to eq 'spec/files/measures/IncreaseInsulationRValueForRoofs'
+    expect(m.measure_definition_directory).to eq './measures/IncreaseInsulationRValueForRoofs'
+    expect(m.measure_definition_directory_local).to eq 'spec/files/measures/IncreaseInsulationRValueForRoofs'
   end
 
   it 'should clear out a workflow' do

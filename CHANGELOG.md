@@ -3,7 +3,9 @@ OpenStudio Analysis Gem Change Log
 
 Unreleased Version
 ------------------
-* Add defaults to the OpenStudio::Analysis::ServerApi .run method
+* Add defaults to the OpenStudio::Analysis::ServerApi .run method.
+* Bug fix for path to the measure if there was more than one depth of the directory.
+* Add measure_definition_directory_local to store where the path to the original measure.
 
 Version 0.4.2
 -------------
