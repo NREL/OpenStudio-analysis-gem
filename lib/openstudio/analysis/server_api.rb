@@ -733,6 +733,61 @@ module OpenStudio
         analysis_id
       end
       alias_method :run, :run_analysis_detailed
+
+      def queue_single_run(formulation_filename, analysis_zip_filename, analysis_type,
+                           allow_multiple_jobs = true, server_as_worker = true,
+                           run_data_point_filename = 'run_openstudio_workflow_monthly.rb')
+        project_options = {}
+        project_id = new_project(project_options)
+
+        analysis_options = {
+            formulation_file: formulation_filename,
+            upload_file: analysis_zip_filename,
+            reset_uuids: true
+        }
+        analysis_id = new_analysis(project_id, analysis_options)
+
+        server_as_worker = true if analysis_type == 'optim' || analysis_type == 'rgenoud'
+        run_options = {
+            analysis_action: 'start',
+            without_delay: false,
+            analysis_type: analysis_type,
+            allow_multiple_jobs: allow_multiple_jobs,
+            use_server_as_worker: server_as_worker,
+            simulate_data_point_filename: 'simulate_data_point.rb',
+            run_data_point_filename: run_data_point_filename
+        }
+        start_analysis(analysis_id, run_options)
+      end
+
+      def run_batch_run_across_analyses(formulation_filename, analysis_zip_filename, analysis_type,
+                                        allow_multiple_jobs = true, server_as_worker = true,
+                                        run_data_point_filename = 'run_openstudio_workflow_monthly.rb')
+        project_options = {}
+        project_id = new_project(project_options)
+
+        analysis_options = {
+            formulation_file: nil,
+            upload_file: nil,
+            reset_uuids: true,
+            #{ analysis: { name: 'something', display_name: 'something else' }}
+        }
+        analysis_id = new_analysis(project_id, analysis_options)
+
+        run_options = {
+            analysis_action: 'start',
+            without_delay: false,
+            analysis_type: 'batch_run_analyses',
+            allow_multiple_jobs: allow_multiple_jobs,
+            use_server_as_worker: server_as_worker,
+            simulate_data_point_filename: 'simulate_data_point.rb',
+            run_data_point_filename: run_data_point_filename
+        }
+        start_analysis(analysis_id, run_options)
+      end
+
+
+
     end
   end
 end
