@@ -758,9 +758,12 @@ module OpenStudio
             run_data_point_filename: run_data_point_filename
         }
         start_analysis(analysis_id, run_options)
+
+        analysis_id
       end
 
-      def run_batch_run_across_analyses(formulation_filename, analysis_zip_filename, analysis_type,
+      # TODO: this should take no arguments
+      def run_batch_run_across_analyses(formulation_filename, analysis_zip_filename,
                                         allow_multiple_jobs = true, server_as_worker = true,
                                         run_data_point_filename = 'run_openstudio_workflow_monthly.rb')
         project_options = {}
@@ -784,6 +787,8 @@ module OpenStudio
             run_data_point_filename: run_data_point_filename
         }
         start_analysis(analysis_id, run_options)
+
+        analysis_id
       end
 
 

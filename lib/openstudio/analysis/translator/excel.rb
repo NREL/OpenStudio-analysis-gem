@@ -741,7 +741,7 @@ module OpenStudio
             if @version >= '0.3.3'.to_version
               rows = @xls.sheet('Variables').parse(enabled: '# variable',
                                                    measure_name_or_var_type: 'type',
-                                                   measure_file_name_or_var_display_name: 'parameter display name.*',
+                                                   measure_file_name_or_var_display_name: 'parameter display name*',
                                                    measure_file_name_directory: 'measure directory',
                                                    measure_type_or_parameter_name_in_measure: 'parameter name in measure',
                                                    display_name_short: 'parameter short display name',
@@ -765,7 +765,7 @@ module OpenStudio
             elsif @version >= '0.3.0'.to_version
               rows = @xls.sheet('Variables').parse(enabled: '# variable',
                                                    measure_name_or_var_type: 'type',
-                                                   measure_file_name_or_var_display_name: 'parameter display name.*',
+                                                   measure_file_name_or_var_display_name: 'parameter display name*',
                                                    measure_file_name_directory: 'measure directory',
                                                    measure_type_or_parameter_name_in_measure: 'parameter name in measure',
                                                    # sampling_method: 'sampling method',
@@ -788,7 +788,7 @@ module OpenStudio
             elsif @version >= '0.2.0'.to_version
               rows = @xls.sheet('Variables').parse(enabled: '# variable',
                                                    measure_name_or_var_type: 'type',
-                                                   measure_file_name_or_var_display_name: 'parameter display name.*',
+                                                   measure_file_name_or_var_display_name: 'parameter display name*',
                                                    measure_file_name_directory: 'measure directory',
                                                    measure_type_or_parameter_name_in_measure: 'parameter name in measure',
                                                    sampling_method: 'sampling method',
@@ -811,7 +811,7 @@ module OpenStudio
             elsif @version >= '0.1.12'.to_version
               rows = @xls.sheet('Variables').parse(enabled: '# variable',
                                                    measure_name_or_var_type: 'type',
-                                                   measure_file_name_or_var_display_name: 'parameter display name.*',
+                                                   measure_file_name_or_var_display_name: 'parameter display name*',
                                                    measure_type_or_parameter_name_in_measure: 'parameter name in measure',
                                                    sampling_method: 'sampling method',
                                                    variable_type: 'Variable Type',
@@ -833,7 +833,7 @@ module OpenStudio
             elsif @version >= '0.1.11'.to_version
               rows = @xls.sheet('Variables').parse(enabled: '# variable',
                                                    measure_name_or_var_type: 'type',
-                                                   measure_file_name_or_var_display_name: 'parameter display name.*',
+                                                   measure_file_name_or_var_display_name: 'parameter display name*',
                                                    measure_type_or_parameter_name_in_measure: 'parameter name in measure',
                                                    sampling_method: 'sampling method',
                                                    variable_type: 'Variable Type',
@@ -855,7 +855,7 @@ module OpenStudio
             else
               rows = @xls.sheet('Variables').parse(enabled: '# variable',
                                                    measure_name_or_var_type: 'type',
-                                                   measure_file_name_or_var_display_name: 'parameter display name.*',
+                                                   measure_file_name_or_var_display_name: 'parameter display name*',
                                                    measure_type_or_parameter_name_in_measure: 'parameter name in measure',
                                                    sampling_method: 'sampling method',
                                                    variable_type: 'Variable Type',
@@ -876,7 +876,7 @@ module OpenStudio
                                                    clean: true)
             end
           rescue => e
-            raise "#{e.message} with Spreadsheet #{@xls_filename} with Version #{@version}  "
+            raise "Unable to parse spreadsheet #{@xls_filename} with version #{@version} due to error: #{e.message}"
           end
 
           fail "Could not find the sheet name 'Variables' in excel file #{@root_path}" unless rows
@@ -909,7 +909,9 @@ module OpenStudio
 
                 # parse the choices/enums
                 if var['type'] == 'enum' || var['type'] == 'choice' # this is now a choice
-                  var['distribution']['enumerations'] = row[:enums].gsub('|', '').split(',').map(&:strip)
+                  if row[:enums]
+                    var['distribution']['enumerations'] = row[:enums].gsub('|', '').split(',').map(&:strip)
+                  end
                 elsif var['type'] == 'bool'
                   var['distribution']['enumerations'] = []
                   var['distribution']['enumerations'] << 'true' # TODO: should this be a real bool?
