@@ -555,6 +555,27 @@ module OpenStudio
         end
       end
 
+      # Get a list of analyses and the data points
+      # @param analysis_id [String] An analysis ID
+      def data_point_status(analysis_id = nil)
+        data_points = nil
+        call_string = nil
+        if analysis_id
+          call_string = "analyses/#{analysis_id}/status.json"
+        else
+          call_string = "analyses/status.json"
+        end
+
+        resp = @conn.get call_string, {version: 2}
+        if resp.status == 200
+          data_points = JSON.parse(resp.body, symbolize_names: true)[:analyses]
+        end
+
+        data_points
+      end
+
+      # This is the former version of get data point status. The new version is preferred and allows for
+      # checking data points across all analyses.
       def get_datapoint_status(analysis_id, filter = nil)
         data_points = nil
         # get the status of all the entire analysis
@@ -565,7 +586,7 @@ module OpenStudio
               data_points = JSON.parse(resp.body, symbolize_names: true)[:data_points]
             end
           else
-            resp = @conn.get "#{@hostname}/analyses/#{analysis_id}/status.json", jobs: filter
+            resp = @conn.get "analyses/#{analysis_id}/status.json", jobs: filter
             if resp.status == 200
               data_points = JSON.parse(resp.body, symbolize_names: true)[:data_points]
             end
