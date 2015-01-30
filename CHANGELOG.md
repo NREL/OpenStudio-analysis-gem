@@ -9,6 +9,7 @@ Unreleased Version
 * run_analysis will be deprecated in 0.5.0. Use start_analysis instead of run_analysis.
 * Less stringent check on column names in Excel which caused errors at times.
 * Do not error out when a measure argument is a String or Choice and does not contain Enumerations.
+* New data point status API helper to list all the data points across all the analyses if desired.
 
 Version 0.4.2
 -------------
