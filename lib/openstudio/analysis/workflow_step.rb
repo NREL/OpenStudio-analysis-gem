@@ -160,7 +160,6 @@ module OpenStudio
               hash[var.to_s.delete('@')] = instance_variable_get(var)
             end
 
-            # TODO: warn that we are no longer writing out "variable_type": "RubyContinuousVariable",
             # TODO: iterate over the variables and create UUIDs, or not?
           end
 
