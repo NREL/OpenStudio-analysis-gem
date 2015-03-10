@@ -65,6 +65,7 @@ module OpenStudio
 
         a[:value] == value
       end
+
       # Tag a measure's argument as a variable.
       #
       # @param argument_name [String] The instance_name of the measure argument that is to be tagged. This is the same name as the argument's variable in the measure.rb file.
@@ -88,7 +89,7 @@ module OpenStudio
       # @option options [String] :static_value Static/Default value of the variable. If not defined it will use the default value for the argument. This can be set later as well using the `argument_value` method.
       # @return [Boolean] True / False if it was able to tag the measure argument
       def make_variable(argument_name, variable_display_name, distribution, options = {})
-        options = { variable_type: 'variable' }.merge(options)
+        options = {variable_type: 'variable'}.merge(options)
         distribution[:mode] = distribution[:mean] if distribution.key? :mean
 
         a = @arguments.find_all { |a| a[:name] == argument_name }
@@ -114,18 +115,12 @@ module OpenStudio
           v[:static_value] = distribution[:static_value] if distribution[:static_value]
           # TODO: Static value should be named default value or just value
 
-          if distribution[:type] =~ /discrete/
-            v[:weights] = distribution[:weights]
-            v[:values] = distribution[:values]
-          elsif distribution[:type] =~ /uniform/
-            # all the data should be present
-          elsif distribution[:type] =~ /triangle/
-            v[:step_size] = distribution[:step_size] ? distribution[:step_size] : nil
-            # stddev is not saves when triangular
-          elsif distribution[:type] =~ /normal/
-            v[:step_size] = distribution[:step_size] ? distribution[:step_size] : nil
-            v[:standard_deviation] = distribution[:standard_deviation]
-          end
+          # Always look for these attributes even if the distribution does not need them
+          v[:weights] = distribution[:weights] if distribution[:weights]
+          v[:values] = distribution[:values] if distribution[:values]
+          v[:standard_deviation] = distribution[:standard_deviation] if distribution[:standard_deviation]
+          v[:step_size] = distribution[:step_size] ? distribution[:step_size] : nil
+          v[:step_size] = distribution[:step_size] ? distribution[:step_size] : nil
 
           # assign uuid and version id to the variable
           v[:uuid] = SecureRandom.uuid
@@ -182,23 +177,16 @@ module OpenStudio
             if v[:type] =~ /discrete/
               new_h = {}
               new_h[:name] = 'discrete'
-              new_h[:values_and_weights] = v.delete(:values).zip(v.delete(:weights)).map { |w| { value: w[0], weight: w[1] } }
+              new_h[:values_and_weights] = v.delete(:values).zip(v.delete(:weights)).map { |w| {value: w[0], weight: w[1]} }
               v[:uncertainty_description][:attributes] << new_h
-
-              v[:uncertainty_description][:attributes] << { name: 'lower_bounds', value: v[:minimum] }
-              v[:uncertainty_description][:attributes] << { name: 'upper_bounds', value: v[:maximum] }
-              v[:uncertainty_description][:attributes] << { name: 'modes', value: v[:mode] }
-            elsif v[:type] =~ /uniform/
-              v[:uncertainty_description][:attributes] << { name: 'lower_bounds', value: v[:minimum] }
-              v[:uncertainty_description][:attributes] << { name: 'upper_bounds', value: v[:maximum] }
-              v[:uncertainty_description][:attributes] << { name: 'modes', value: v[:mode] }
-            else
-              v[:uncertainty_description][:attributes] << { name: 'lower_bounds', value: v[:minimum] }
-              v[:uncertainty_description][:attributes] << { name: 'upper_bounds', value: v[:maximum] }
-              v[:uncertainty_description][:attributes] << { name: 'modes', value: v[:mode] }
-              v[:uncertainty_description][:attributes] << { name: 'delta_x', value: v[:step_size] ? v[:step_size] : nil }
-              v[:uncertainty_description][:attributes] << { name: 'stddev', value: v[:standard_deviation] ? v[:standard_deviation] : nil }
             end
+
+            # always write out these attributes
+            v[:uncertainty_description][:attributes] << {name: 'lower_bounds', value: v[:minimum]}
+            v[:uncertainty_description][:attributes] << {name: 'upper_bounds', value: v[:maximum]}
+            v[:uncertainty_description][:attributes] << {name: 'modes', value: v[:mode]}
+            v[:uncertainty_description][:attributes] << {name: 'delta_x', value: v[:step_size] ? v[:step_size] : nil}
+            v[:uncertainty_description][:attributes] << {name: 'stddev', value: v[:standard_deviation] ? v[:standard_deviation] : nil}
 
             v[:workflow_index] = index
             warn 'Deprecation Warning. workflow_step_type is no longer persisted'
@@ -268,12 +256,12 @@ module OpenStudio
             end
 
             s.arguments << {
-              display_name: arg[:display_name],
-              display_name_short: arg[:display_name],
-              name: arg[:name],
-              value_type: var_type,
-              default_value: arg[:default_value],
-              value: arg[:default_value]
+                display_name: arg[:display_name],
+                display_name_short: arg[:display_name],
+                name: arg[:name],
+                value_type: var_type,
+                default_value: arg[:default_value],
+                value: arg[:default_value]
             }
           end
         end
