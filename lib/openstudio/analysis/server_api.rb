@@ -610,6 +610,21 @@ module OpenStudio
 
       ## here are a bunch of runs that really don't belong here.
 
+      # Submit a generic analysis. This will use the options that are configured in the JSON file including
+      # the analysis type and options. Note that this may not work for all cases were multiple analyses need to run
+      # (e.g. single_run, queue_model, lhs)
+      #
+      # @params formaluation_filename [String] FQP to the formulation file
+      # @params analysis_zip_filename [String] FQP to the zip file with the supporting files
+      def run_file(formulation_filename, analysis_zip_filename)
+        # parse the JSON file to grab the analysis type
+        j = JSON.parse(formulation_filename, symbolize_names: true)
+        analysis_type = j[:analysis][:problem][:analysis_type]
+
+        run(formulation_filename, analysis_zip_filename, analysis_type)
+      end
+
+
       # create a new analysis and run a single model
       def run_single_model(formulation_filename, analysis_zip_filename, run_data_point_filename = 'run_openstudio_workflow_monthly.rb')
         project_options = {}
