@@ -172,6 +172,30 @@ module OpenStudio
         status
       end
 
+      # Check if the machine is alive
+      #
+      # return [Boolean] True if the machine has an awake value set
+      def alive?
+        m = machine_status
+
+        !m[:status][:awake].nil?
+      end
+
+      # Retrieve the machine status
+      #
+      # return [Hash]
+      def machine_status
+        status = nil
+
+        resp = @conn.get "status.json"
+        if resp.status == 200
+          j = JSON.parse resp.body, symbolize_names: true
+          status = j if j
+        end
+
+        status
+      end
+
       def get_analysis_status_and_json(analysis_id, analysis_type)
         status = nil
         j = nil
@@ -556,6 +580,7 @@ module OpenStudio
       end
 
       # Get a list of analyses and the data points
+      #
       # @param analysis_id [String] An analysis ID
       def data_point_status(analysis_id = nil)
         data_points = nil
