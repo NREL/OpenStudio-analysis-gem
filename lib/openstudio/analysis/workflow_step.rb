@@ -89,7 +89,7 @@ module OpenStudio
       # @option options [String] :static_value Static/Default value of the variable. If not defined it will use the default value for the argument. This can be set later as well using the `argument_value` method.
       # @return [Boolean] True / False if it was able to tag the measure argument
       def make_variable(argument_name, variable_display_name, distribution, options = {})
-        options = {variable_type: 'variable'}.merge(options)
+        options = { variable_type: 'variable' }.merge(options)
         distribution[:mode] = distribution[:mean] if distribution.key? :mean
 
         a = @arguments.find_all { |a| a[:name] == argument_name }
@@ -177,16 +177,16 @@ module OpenStudio
             if v[:type] =~ /discrete/
               new_h = {}
               new_h[:name] = 'discrete'
-              new_h[:values_and_weights] = v.delete(:values).zip(v.delete(:weights)).map { |w| {value: w[0], weight: w[1]} }
+              new_h[:values_and_weights] = v.delete(:values).zip(v.delete(:weights)).map { |w| { value: w[0], weight: w[1] } }
               v[:uncertainty_description][:attributes] << new_h
             end
 
             # always write out these attributes
-            v[:uncertainty_description][:attributes] << {name: 'lower_bounds', value: v[:minimum]}
-            v[:uncertainty_description][:attributes] << {name: 'upper_bounds', value: v[:maximum]}
-            v[:uncertainty_description][:attributes] << {name: 'modes', value: v[:mode]}
-            v[:uncertainty_description][:attributes] << {name: 'delta_x', value: v[:step_size] ? v[:step_size] : nil}
-            v[:uncertainty_description][:attributes] << {name: 'stddev', value: v[:standard_deviation] ? v[:standard_deviation] : nil}
+            v[:uncertainty_description][:attributes] << { name: 'lower_bounds', value: v[:minimum] }
+            v[:uncertainty_description][:attributes] << { name: 'upper_bounds', value: v[:maximum] }
+            v[:uncertainty_description][:attributes] << { name: 'modes', value: v[:mode] }
+            v[:uncertainty_description][:attributes] << { name: 'delta_x', value: v[:step_size] ? v[:step_size] : nil }
+            v[:uncertainty_description][:attributes] << { name: 'stddev', value: v[:standard_deviation] ? v[:standard_deviation] : nil }
 
             v[:workflow_index] = index
             warn 'Deprecation Warning. workflow_step_type is no longer persisted'
@@ -256,12 +256,12 @@ module OpenStudio
             end
 
             s.arguments << {
-                display_name: arg[:display_name],
-                display_name_short: arg[:display_name],
-                name: arg[:name],
-                value_type: var_type,
-                default_value: arg[:default_value],
-                value: arg[:default_value]
+              display_name: arg[:display_name],
+              display_name_short: arg[:display_name],
+              name: arg[:name],
+              value_type: var_type,
+              default_value: arg[:default_value],
+              value: arg[:default_value]
             }
           end
         end

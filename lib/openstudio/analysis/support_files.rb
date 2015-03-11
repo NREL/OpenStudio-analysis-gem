@@ -4,7 +4,6 @@
 module OpenStudio
   module Analysis
     class SupportFiles
-
       attr_reader :files
 
       # Create a new instance of the support file class
@@ -24,7 +23,7 @@ module OpenStudio
 
         # only add if it isn't allready in the list
         if @files.find_all { |f| f[:file] == path_or_filename }.empty?
-          @files << {file: path_or_filename, metadata: metadata}
+          @files << { file: path_or_filename, metadata: metadata }
         end
 
         true
@@ -70,7 +69,6 @@ module OpenStudio
       def clear
         @files.clear
       end
-
     end
   end
 end

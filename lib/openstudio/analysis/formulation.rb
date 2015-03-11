@@ -39,7 +39,7 @@ module OpenStudio
         @worker_inits = SupportFiles.new
         @worker_finalizes = SupportFiles.new
         @libraries = SupportFiles.new
-        #@initialization_scripts = SupportFiles.new
+        # @initialization_scripts = SupportFiles.new
       end
 
       # Initialize or return the current workflow object
@@ -87,12 +87,12 @@ module OpenStudio
       # @option output_hash [Integer] :objective_function_group If grouping objective functions, then group ID. Default: nil
       def add_output(output_hash)
         output_hash = {
-            units: '',
-            objective_function: false,
-            objective_function_index: nil,
-            objective_function_target: nil,
-            objective_function_group: nil,
-            scaling_factor: nil
+          units: '',
+          objective_function: false,
+          objective_function_index: nil,
+          objective_function_target: nil,
+          objective_function_group: nil,
+          scaling_factor: nil
         }.merge(output_hash)
 
         # if the objective_function index is nil and the variable is an objective function, then increment and
@@ -113,22 +113,22 @@ module OpenStudio
         # fail 'Must define an analysis type' unless @analysis_type
         if version == 1
           h = {
-              analysis: {
-                  display_name: @display_name,
-                  name: @display_name.snake_case,
-                  output_variables: @outputs,
-                  problem: {
-                      analysis_type: @analysis_type,
-                      algorithm: algorithm.to_hash(version),
-                      workflow: workflow.to_hash(version)
-                  }
+            analysis: {
+              display_name: @display_name,
+              name: @display_name.snake_case,
+              output_variables: @outputs,
+              problem: {
+                analysis_type: @analysis_type,
+                algorithm: algorithm.to_hash(version),
+                workflow: workflow.to_hash(version)
               }
+            }
           }
 
           if @seed_model[:file]
             h[:analysis][:seed] = {
-                file_type: File.extname(@seed_model[:file]).gsub('.', '').upcase,
-                path: "./seed/#{File.basename(@seed_model[:file])}"
+              file_type: File.extname(@seed_model[:file]).gsub('.', '').upcase,
+              path: "./seed/#{File.basename(@seed_model[:file])}"
             }
           else
             h[:analysis][:seed] = nil
@@ -136,8 +136,8 @@ module OpenStudio
 
           if @weather_file[:file]
             h[:analysis][:weather_file] = {
-                file_type: File.extname(@weather_file[:file]).gsub('.', '').upcase,
-                path: "./weather/#{File.basename(@weather_file[:file])}"
+              file_type: File.extname(@weather_file[:file]).gsub('.', '').upcase,
+              path: "./weather/#{File.basename(@weather_file[:file])}"
             }
           end
 
@@ -169,11 +169,11 @@ module OpenStudio
           end
 
           h = {
-              data_point: {
-                  set_variable_values: static_hash,
-                  status: 'na',
-                  uuid: SecureRandom.uuid
-              }
+            data_point: {
+              set_variable_values: static_hash,
+              status: 'na',
+              uuid: SecureRandom.uuid
+            }
           }
           h
         end
@@ -227,13 +227,12 @@ module OpenStudio
         FileUtils.rm_f(filename) if File.exist?(filename)
 
         Zip::File.open(filename, Zip::File::CREATE) do |zf|
-
           ## Weather files
           # TODO: eventually remove the @weather_file attribute and grab the weather file out
           # of the @weather_files
-          puts "Adding Support Files: Weather"
+          puts 'Adding Support Files: Weather'
           if @weather_file[:file] && !@weather_files.files.find { |f| @weather_file[:file] == f[:file] }
-            #manually add the weather file
+            # manually add the weather file
             puts "  Adding #{@weather_file[:file]}"
             zf.add("./weather/#{File.basename(@weather_file[:file])}", @weather_file[:file])
           end
@@ -243,9 +242,9 @@ module OpenStudio
           end
 
           ## Seed files
-          puts "Adding Support Files: Seed Models"
+          puts 'Adding Support Files: Seed Models'
           if @seed_model[:file] && !@seed_models.files.find { |f| @seed_model[:file] == f[:file] }
-            #manually add the weather file
+            # manually add the weather file
             puts "  Adding #{@seed_model[:file]}"
             zf.add("./seed/#{File.basename(@seed_model[:file])}", @seed_model[:file])
           end
@@ -254,7 +253,7 @@ module OpenStudio
             zf.add("./seed/#{File.basename(f[:file])}", f[:file])
           end
 
-          puts "Adding Support Files: Libraries"
+          puts 'Adding Support Files: Libraries'
           @libraries.each do |lib|
             fail "Libraries must specify their 'library_name' as metadata which becomes the directory upon zip" unless lib[:metadata][:library_name]
 
@@ -270,7 +269,7 @@ module OpenStudio
             end
           end
 
-          puts "Adding Support Files: Worker Initialization Scripts"
+          puts 'Adding Support Files: Worker Initialization Scripts'
           index = 0
           @worker_inits.each do |f|
             ordered_file_name = "#{index.to_s.rjust(2, '0')}_#{File.basename(f[:file])}"
@@ -288,7 +287,7 @@ module OpenStudio
             index += 1
           end
 
-          puts "Adding Support Files: Worker Finalization Scripts"
+          puts 'Adding Support Files: Worker Finalization Scripts'
           index = 0
           @worker_finalizes.each do |f|
             ordered_file_name = "#{index.to_s.rjust(2, '0')}_#{File.basename(f[:file])}"
@@ -307,7 +306,7 @@ module OpenStudio
           end
 
           ## Measures
-          puts "Adding Measures"
+          puts 'Adding Measures'
           added_measures = []
           # The list of the measures should always be there, but make sure they are uniq
           @workflow.each do |measure|

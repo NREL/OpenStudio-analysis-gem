@@ -178,7 +178,9 @@ module OpenStudio
       def alive?
         m = machine_status
 
-        !m[:status][:awake].nil?
+        m = !m[:status][:awake].nil? if m
+
+        m
       end
 
       # Retrieve the machine status
@@ -187,15 +189,20 @@ module OpenStudio
       def machine_status
         status = nil
 
-        resp = @conn.get  do |req|
-          req.url "status.json"
-          req.options.timeout = 5
-          req.options.open_timeout = 2
-        end
+        begin
+          resp = @conn.get do |req|
+            req.url 'status.json'
+            req.options.timeout = 5
+            req.options.open_timeout = 2
+          end
 
-        if resp.status == 200
-          j = JSON.parse resp.body, symbolize_names: true
-          status = j if j
+          if resp.status == 200
+            j = JSON.parse resp.body, symbolize_names: true
+            status = j if j
+          end
+
+        rescue Faraday::ConnectionFailed
+
         end
 
         status
@@ -552,6 +559,7 @@ module OpenStudio
           fail 'Could not start the analysis'
         end
       end
+
       alias_method :start_analysis, :run_analysis
 
       def kill_analysis(analysis_id)
@@ -593,10 +601,10 @@ module OpenStudio
         if analysis_id
           call_string = "analyses/#{analysis_id}/status.json"
         else
-          call_string = "analyses/status.json"
+          call_string = 'analyses/status.json'
         end
 
-        resp = @conn.get call_string, {version: 2}
+        resp = @conn.get call_string, version: 2
         if resp.status == 200
           data_points = JSON.parse(resp.body, symbolize_names: true)[:analyses]
         end
@@ -653,7 +661,6 @@ module OpenStudio
 
         run(formulation_filename, analysis_zip_filename, analysis_type)
       end
-
 
       # create a new analysis and run a single model
       def run_single_model(formulation_filename, analysis_zip_filename, run_data_point_filename = 'run_openstudio_workflow_monthly.rb')
@@ -798,6 +805,7 @@ module OpenStudio
 
         analysis_id
       end
+
       alias_method :run, :run_analysis_detailed
 
       def queue_single_run(formulation_filename, analysis_zip_filename, analysis_type,
@@ -807,21 +815,21 @@ module OpenStudio
         project_id = new_project(project_options)
 
         analysis_options = {
-            formulation_file: formulation_filename,
-            upload_file: analysis_zip_filename,
-            reset_uuids: true
+          formulation_file: formulation_filename,
+          upload_file: analysis_zip_filename,
+          reset_uuids: true
         }
         analysis_id = new_analysis(project_id, analysis_options)
 
         server_as_worker = true if analysis_type == 'optim' || analysis_type == 'rgenoud'
         run_options = {
-            analysis_action: 'start',
-            without_delay: false,
-            analysis_type: analysis_type,
-            allow_multiple_jobs: allow_multiple_jobs,
-            use_server_as_worker: server_as_worker,
-            simulate_data_point_filename: 'simulate_data_point.rb',
-            run_data_point_filename: run_data_point_filename
+          analysis_action: 'start',
+          without_delay: false,
+          analysis_type: analysis_type,
+          allow_multiple_jobs: allow_multiple_jobs,
+          use_server_as_worker: server_as_worker,
+          simulate_data_point_filename: 'simulate_data_point.rb',
+          run_data_point_filename: run_data_point_filename
         }
         start_analysis(analysis_id, run_options)
 
@@ -836,29 +844,26 @@ module OpenStudio
         project_id = new_project(project_options)
 
         analysis_options = {
-            formulation_file: nil,
-            upload_file: nil,
-            reset_uuids: true,
-            #{ analysis: { name: 'something', display_name: 'something else' }}
+          formulation_file: nil,
+          upload_file: nil,
+          reset_uuids: true,
+          # { analysis: { name: 'something', display_name: 'something else' }}
         }
         analysis_id = new_analysis(project_id, analysis_options)
 
         run_options = {
-            analysis_action: 'start',
-            without_delay: false,
-            analysis_type: 'batch_run_analyses',
-            allow_multiple_jobs: allow_multiple_jobs,
-            use_server_as_worker: server_as_worker,
-            simulate_data_point_filename: 'simulate_data_point.rb',
-            run_data_point_filename: run_data_point_filename
+          analysis_action: 'start',
+          without_delay: false,
+          analysis_type: 'batch_run_analyses',
+          allow_multiple_jobs: allow_multiple_jobs,
+          use_server_as_worker: server_as_worker,
+          simulate_data_point_filename: 'simulate_data_point.rb',
+          run_data_point_filename: run_data_point_filename
         }
         start_analysis(analysis_id, run_options)
 
         analysis_id
       end
-
-
-
     end
   end
 end

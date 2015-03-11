@@ -36,7 +36,7 @@ describe OpenStudio::Analysis::SupportFiles do
 
   it 'should add a directory' do
     @s.clear
-    @s.add_files('spec/files/measures/**/*.rb', {d: 'new'})
+    @s.add_files('spec/files/measures/**/*.rb', d: 'new')
 
     expect(@s.size).to eq 7
     expect(@s[0][:metadata][:d]).to eq 'new'
