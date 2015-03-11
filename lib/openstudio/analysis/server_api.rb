@@ -187,7 +187,12 @@ module OpenStudio
       def machine_status
         status = nil
 
-        resp = @conn.get "status.json"
+        resp = @conn.get  do |req|
+          req.url "status.json"
+          req.options.timeout = 5
+          req.options.open_timeout = 2
+        end
+
         if resp.status == 200
           j = JSON.parse resp.body, symbolize_names: true
           status = j if j
