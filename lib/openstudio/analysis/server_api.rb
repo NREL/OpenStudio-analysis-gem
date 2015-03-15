@@ -192,8 +192,8 @@ module OpenStudio
         begin
           resp = @conn.get do |req|
             req.url 'status.json'
-            req.options.timeout = 5
-            req.options.open_timeout = 2
+            req.options.timeout = 10
+            req.options.open_timeout = 10
           end
 
           if resp.status == 200
@@ -203,7 +203,10 @@ module OpenStudio
 
         rescue Faraday::ConnectionFailed
 
+        rescue Net::ReadTimeout
+
         end
+
 
         status
       end
