@@ -793,7 +793,7 @@ module OpenStudio
 
         # If the analysis is LHS, then go ahead and run batch run because there is
         # no explicit way to tell the system to do it
-        if analysis_type == 'lhs' || analysis_type == 'preflight' || analysis_type == 'single_run'
+        if analysis_type == 'lhs' || analysis_type == 'preflight' || analysis_type == 'single_run' || analysis_type == 'doe'
           run_options = {
             analysis_action: 'start',
             without_delay: false,
