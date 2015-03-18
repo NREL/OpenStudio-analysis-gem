@@ -207,7 +207,6 @@ module OpenStudio
 
         end
 
-
         status
       end
 

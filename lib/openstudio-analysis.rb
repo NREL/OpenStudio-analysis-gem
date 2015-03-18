@@ -3,6 +3,7 @@ require 'json'
 require 'securerandom'
 require 'logger'
 require 'pathname'
+require 'csv'
 
 # gems to always include
 require 'faraday'
@@ -32,3 +33,6 @@ require 'openstudio/analysis/translator/excel'
 # helpers / core_ext
 require 'openstudio/helpers/string'
 require 'openstudio/helpers/hash'
+
+# weather file parsing
+require 'openstudio/weather/epw'

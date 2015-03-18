@@ -42,19 +42,19 @@ describe OpenStudio::Analysis::Formulation do
     a = OpenStudio::Analysis.create('my analysis')
 
     a.add_output(
-                     display_name: 'Total Natural Gas',
-                     name: 'standard_report_legacy.total_natural_gas',
-                     units: 'MJ/m2',
-                     objective_function: true
+      display_name: 'Total Natural Gas',
+      name: 'standard_report_legacy.total_natural_gas',
+      units: 'MJ/m2',
+      objective_function: true
                  )
 
     expect(a.to_hash[:analysis][:output_variables].first[:objective_function_index]).to eq 0
 
     a.add_output(
-                     display_name: 'Another Output',
-                     name: 'standard_report_legacy.output_2',
-                     units: 'MJ/m2',
-                     objective_function: true
+      display_name: 'Another Output',
+      name: 'standard_report_legacy.output_2',
+      units: 'MJ/m2',
+      objective_function: true
                  )
     expect(a.to_hash[:analysis][:output_variables].last[:objective_function_index]).to eq 1
   end
