@@ -42,5 +42,4 @@ describe OpenStudio::Weather::Epw do
     f = 'spec/files/export/weather/weather_out_appended.epw'
     epw.save_as(f)
   end
-
 end
