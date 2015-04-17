@@ -32,7 +32,7 @@ module OpenStudio
       # Add a glob path with the same metadata for all the items
       #
       # @param pattern [String] Pattern to glob. example: /home/user1/files/**/*.rb
-      # @return [Boolean] Returns false if the file does not exist
+      # @return [Boolean] Always returns true
       def add_files(pattern, metadata = {})
         Dir[pattern].each do |f|
           add(f, metadata)
@@ -68,6 +68,11 @@ module OpenStudio
       # remove all the items
       def clear
         @files.clear
+      end
+
+      # find the first object. There has to be a better way to do this. Can I just inherit an array?
+      def find
+        @files.find { |i| yield i }
       end
     end
   end
