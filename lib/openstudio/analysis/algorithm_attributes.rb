@@ -14,6 +14,10 @@ module OpenStudio
         @attributes[attribute_name] = attribute_value
       end
 
+      def [](name)
+        @attributes[name]
+      end
+
       def to_hash(_version = 1)
         @attributes
       end
