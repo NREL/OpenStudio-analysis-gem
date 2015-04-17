@@ -65,6 +65,11 @@ module OpenStudio
         @files.each { |i| yield i }
       end
 
+      # Iterate over the files with index
+      def each_with_index
+        @files.each_with_index { |d, index| yield [i, index] }
+      end
+
       # remove all the items
       def clear
         @files.clear
