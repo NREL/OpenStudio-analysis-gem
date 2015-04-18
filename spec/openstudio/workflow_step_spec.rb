@@ -51,10 +51,10 @@ describe OpenStudio::Analysis::WorkflowStep do
       type: 'triangle',
       minimum: 0.5,
       maximum: 20,
-      mean: 10,
+      mean: 10
     }
     o = {
-       static_value: 24601
+      static_value: 24601
     }
     r = measure.make_variable('cooling_sch', 'my variable', v, o)
 

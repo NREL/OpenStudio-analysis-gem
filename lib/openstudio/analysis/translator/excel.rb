@@ -84,10 +84,10 @@ module OpenStudio
 
         def add_model(name, display_name, type, path)
           @models << {
-              name: name,
-              display_name: display_name,
-              type: type,
-              path: path
+            name: name,
+            display_name: display_name,
+            type: type,
+            path: path
           }
         end
 
@@ -200,7 +200,7 @@ module OpenStudio
           if @analysis
             return @analysis
           else
-            # Use the programmatic interface to make the analysis            
+            # Use the programmatic interface to make the analysis
             @analysis = OpenStudio::Analysis.create(@name)
 
             @variables['data'].each do |measure|
@@ -218,7 +218,7 @@ module OpenStudio
                 end
               end
 
-              fail "Could not find measure '#{measure['name']}' in directory named '#{measure['measure_file_name_directory']}' in the measure paths '#{@measure_paths.join(", ")}'" unless measure['local_path_to_measure']
+              fail "Could not find measure '#{measure['name']}' in directory named '#{measure['measure_file_name_directory']}' in the measure paths '#{@measure_paths.join(', ')}'" unless measure['local_path_to_measure']
 
               @analysis.workflow.add_measure_from_excel(measure)
             end
@@ -242,8 +242,8 @@ module OpenStudio
             end
 
             @analysis.analysis_type = @problem['analysis_type']
-            @algorithm.each do |k,v|
-              @analysis.algorithm.set_attribute(k,v)
+            @algorithm.each do |k, v|
+              @analysis.algorithm.set_attribute(k, v)
             end
 
             @analysis
@@ -263,12 +263,11 @@ module OpenStudio
         end
 
         # Save a single data point instance -- placeholder
-        def save_single_data_point(filename='')
+        def save_single_data_point(filename = '')
         end
 
         # New method that uses the OpenStudio::Analysis class to hold the analysis
         def translate_to_analysis
-
         end
 
         protected
@@ -490,7 +489,7 @@ module OpenStudio
                 unless (Pathname.new model_path).absolute?
                   model_path = File.expand_path(File.join(@root_path, model_path))
                 end
-                @models << {name: tmp_m_name.snake_case, display_name: tmp_m_name, type: row[2], path: model_path}
+                @models << { name: tmp_m_name.snake_case, display_name: tmp_m_name, type: row[2], path: model_path }
               end
             elsif b_other_libs
               # determine if the path is relative
@@ -499,21 +498,21 @@ module OpenStudio
                 other_path = File.expand_path(File.join(@root_path, other_path))
               end
 
-              @other_files << {lib_zip_name: row[1], path: other_path}
+              @other_files << { lib_zip_name: row[1], path: other_path }
             elsif b_worker_init
               worker_init_path = row[1]
               unless (Pathname.new worker_init_path).absolute?
                 worker_init_path = File.expand_path(File.join(@root_path, worker_init_path))
               end
 
-              @worker_inits << {name: row[0], path: worker_init_path, args: row[2]}
+              @worker_inits << { name: row[0], path: worker_init_path, args: row[2] }
             elsif b_worker_final
               worker_final_path = row[1]
               unless (Pathname.new worker_final_path).absolute?
                 worker_final_path = File.expand_path(File.join(@root_path, worker_final_path))
               end
 
-              @worker_finals << {name: row[0], path: worker_final_path, args: row[2]}
+              @worker_finals << { name: row[0], path: worker_final_path, args: row[2] }
             end
 
             next
@@ -681,7 +680,6 @@ module OpenStudio
           # map the data to another hash that is more easily processed
           data = {}
           data['data'] = []
-
 
           measure_index = -1
           variable_index = -1

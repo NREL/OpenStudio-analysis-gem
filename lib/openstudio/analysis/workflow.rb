@@ -116,7 +116,7 @@ module OpenStudio
             standard_deviation: variable['distribution']['stddev'],
             values: variable['distribution']['discrete_values'],
             weights: variable['distribution']['discrete_weights'],
-            step_size: variable['distribution']['delta_x'],
+            step_size: variable['distribution']['delta_x']
           }
           opt = {
             variable_type: variable['variable_type'],

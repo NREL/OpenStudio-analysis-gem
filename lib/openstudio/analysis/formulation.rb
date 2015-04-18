@@ -151,7 +151,7 @@ module OpenStudio
             }
           else
             # log: could not find weather file
-            warn 'Could not resolve a valid weather file. Check paths to weather files' 
+            warn 'Could not resolve a valid weather file. Check paths to weather files'
           end
 
           h[:analysis][:file_format_version] = version

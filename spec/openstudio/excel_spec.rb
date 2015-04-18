@@ -523,7 +523,7 @@ describe OpenStudio::Analysis::Translator::Excel do
 
       expect(File.basename(@excel.analysis.worker_inits.first[:file])).to eq 'first_file.rb'
       expect(File.basename(@excel.analysis.worker_inits.last[:file])).to eq 'second_file.rb'
-      
+
       expect(@excel.analysis.worker_finalizes.size).to eq 1
       expect(File.basename(@excel.analysis.worker_finalizes.first[:file])).to eq 'first_file.rb'
     end
