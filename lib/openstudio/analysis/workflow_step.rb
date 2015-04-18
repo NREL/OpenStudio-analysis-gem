@@ -86,11 +86,12 @@ module OpenStudio
       # @param options [Hash] Values that define the variable.
       # @option options [String] :variable_type The type of variable, `variable` or `pivot`. By default this is a variable.
       # @option options [String] :variable_display_name_short The short display name of the variable. Will be defaulted to the variable_display_name if not passed
-      # @option options [String] :static_value Static/Default value of the variable. If not defined it will use the default value for the argument. This can be set later as well using the `argument_value` method.
       # @return [Boolean] True / False if it was able to tag the measure argument
       def make_variable(argument_name, variable_display_name, distribution, options = {})
         options = { variable_type: 'variable' }.merge(options)
         distribution[:mode] = distribution[:mean] if distribution.key? :mean
+
+        fail "Set the static value in the options 'options[:static_value]', not the distribution" if distribution[:static_value]
 
         a = @arguments.find_all { |a| a[:name] == argument_name }
         fail "could not find argument_name of #{argument_name} in measure #{name}. Valid argument names are #{argument_names}." if a.empty?
@@ -100,6 +101,7 @@ module OpenStudio
           # grab the argument hash
           a = a.first
 
+          puts "here"
           # add more information to the argument
           v = {}
           v[:argument] = a
@@ -112,7 +114,7 @@ module OpenStudio
           v[:maximum] = distribution[:maximum]
           v[:relation_to_output] = distribution[:relation_to_output] ? distribution[:relation_to_output] : nil
           v[:mode] = distribution[:mode]
-          v[:static_value] = distribution[:static_value] if distribution[:static_value]
+          v[:static_value] = options[:static_value] if options[:static_value]
           # TODO: Static value should be named default value or just value
 
           # Always look for these attributes even if the distribution does not need them
@@ -127,6 +129,7 @@ module OpenStudio
           v[:version_uuid] = SecureRandom.uuid
           @variables << v
         end
+
         true
       end
 
@@ -163,6 +166,7 @@ module OpenStudio
 
           # Clean up the variables to match the legacy format
           hash[:variables].each_with_index do |v, index|
+            puts v.inspect
             v[:variable_type] == 'pivot' ? v[:pivot] = true : v[:variable] = true
             v[:variable] = true
             v[:static_value] = v[:argument][:default_value] unless v[:static_value]
@@ -170,7 +174,6 @@ module OpenStudio
             v[:uncertainty_description] = {}
             v[:uncertainty_description][:type] = v[:type] =~ /uncertain/ ? "#{v[:type]}" : "#{v[:type]}_uncertain"
             warn "Deprecation Warning. In Version 0.5 the _uncertain text will be removed from distribution types: #{v[:uncertainty_description][:type]}"
-            warn 'Deprecation Warning. RubyContinuousVariable (OpenStudio called this the variable_type) is no longer persisted'
 
             # This is not neatly coded. This should be a new object that knows how to write itself out.
             v[:uncertainty_description][:attributes] = []
@@ -189,7 +192,6 @@ module OpenStudio
             v[:uncertainty_description][:attributes] << { name: 'stddev', value: v[:standard_deviation] ? v[:standard_deviation] : nil }
 
             v[:workflow_index] = index
-            warn 'Deprecation Warning. workflow_step_type is no longer persisted'
 
             # remove some remaining items
             v.delete(:type)
@@ -211,15 +213,22 @@ module OpenStudio
       # @param instance_display_name [String] Display name of the instance
       # @param path_to_measure [String] This is the local path to the measure directroy, relative or absolute. It is used when zipping up all the measures.
       # @param hash [Hash] Measure hash in the format of the measure.json (from the Analysis Spreadsheet project)
-
+      # @param options [Hash] Optional arguments
+      # @option options [Boolean] :ignore_not_found Do not raise an exception if the measure could not be found on the machine
       # @return [Object] Returns the OpenStudio::Analysis::WorkflowStep
-      def self.from_measure_hash(instance_name, instance_display_name, path_to_measure, hash)
+      def self.from_measure_hash(instance_name, instance_display_name, path_to_measure, hash, options = {})
         # TODO: Validate the hash
         # TODO: validate that the measure exists?
+
+        if File.directory? path_to_measure
+          path_to_measure = File.join(path_to_measure, 'measure.rb')
+        end
 
         # verify that the path to the measure is a path and not a file. If it is make it a path
         if File.exist?(path_to_measure) && File.file?(path_to_measure)
           path_to_measure = File.dirname(path_to_measure)
+        else
+          fail "Could not find measure '#{instance_name}' in '#{path_to_measure}'" unless options[:ignore_not_found]
         end
 
         # Extract the directo
@@ -257,7 +266,7 @@ module OpenStudio
 
             s.arguments << {
               display_name: arg[:display_name],
-              display_name_short: arg[:display_name],
+              display_name_short: arg[:display_name_short],
               name: arg[:name],
               value_type: var_type,
               default_value: arg[:default_value],
@@ -280,7 +289,7 @@ module OpenStudio
         fail 'No mean/mode defined for variable' unless d.key? :mode
 
         if d[:type] =~ /uniform/
-          # Do we need to tell the user that we don't really need the mean/mode for uniform?
+          # Do we need to tell the user that we don't really need the mean/mode for uniform ?
         elsif d[:type] =~ /discrete/
           # require min, max, mode
           fail 'No values passed for discrete distribution' unless d[:values] || d[:values].empty?
@@ -293,7 +302,6 @@ module OpenStudio
           end
         elsif d[:type] =~ /triangle/
           # requires min, max, mode
-
         elsif d[:type] =~ /normal/ # both normal and lognormal
           # require min, max, mode, stddev
           fail 'No standard deviation for variable' unless d[:standard_deviation]

@@ -12,6 +12,7 @@ Unreleased Version
 * New data point status API helper to list all the data points across all the analyses if desired.
 * If the user sets a std dev or delta x on a uniform or discrete variable, allow it to persist. This allows certain algorithms (e.g. rgenoud) to use the data.
 * New class OpenStudio::Weather::Epw to handle pulling data out of weather files.
+* Deprecate the old ERB templates for creating the analysis.json via the Excel translator
 
 Version 0.4.2
 -------------

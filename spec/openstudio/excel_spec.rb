@@ -122,21 +122,23 @@ describe OpenStudio::Analysis::Translator::Excel do
     end
 
     it 'should have algorithm setup' do
-      expect(@excel.algorithm['number_of_samples']).to eq(100)
-      expect(@excel.algorithm['number_of_generations']).to eq(20)
-      expect(@excel.algorithm['sample_method']).to eq('all_variables')
-      expect(@excel.algorithm['number_of_generations']).to be_a Integer
-      expect(@excel.algorithm['tolerance']).to eq(0.115)
-      expect(@excel.algorithm['tolerance']).to be_a Float
+      h = @excel.analysis
+
+      expect(h.algorithm['number_of_samples']).to eq(100)
+      expect(h.algorithm['number_of_generations']).to eq(20)
+      expect(h.algorithm['sample_method']).to eq('all_variables')
+      expect(h.algorithm['number_of_generations']).to be_a Integer
+      expect(h.algorithm['tolerance']).to eq(0.115)
+      expect(h.algorithm['tolerance']).to be_a Float
     end
 
     it 'should create a valid hash' do
-      h = @excel.create_analysis_hash
+      h = @excel.analysis
 
-      expect(h['analysis']['problem']['analysis_type']).to eq('lhs')
-      expect(h['analysis']['problem']['algorithm']).not_to be_nil
-      expect(h['analysis']['problem']['algorithm']['number_of_samples']).to eq(100)
-      expect(h['analysis']['problem']['algorithm']['sample_method']).to eq('all_variables')
+      expect(h.analysis_type).to eq('lhs')
+      expect(h.algorithm).to be_a OpenStudio::Analysis::AlgorithmAttributes
+      expect(h.algorithm['number_of_samples']).to eq(100)
+      expect(h.algorithm['sample_method']).to eq('all_variables')
     end
   end
 
@@ -258,12 +260,12 @@ describe OpenStudio::Analysis::Translator::Excel do
     end
 
     it 'should create a valid hash' do
-      h = @excel.create_analysis_hash
+      h = @excel.analysis
 
-      expect(h['analysis']['problem']['analysis_type']).to eq('nsga')
-      expect(h['analysis']['problem']['algorithm']).not_to be_nil
-      expect(h['analysis']['problem']['algorithm']['number_of_samples']).to eq(100)
-      expect(h['analysis']['problem']['algorithm']['sample_method']).to eq('all_variables')
+      expect(h.analysis_type).to eq('nsga')
+      expect(h.algorithm).to be_a OpenStudio::Analysis::AlgorithmAttributes
+      expect(h.algorithm['number_of_samples']).to eq(100)
+      expect(h.algorithm['sample_method']).to eq('all_variables')
     end
 
     it 'should write a json' do
@@ -351,9 +353,6 @@ describe OpenStudio::Analysis::Translator::Excel do
   context 'version 0.3.0 objective functions' do
     before(:all) do
       @excel = OpenStudio::Analysis::Translator::Excel.new('spec/files/0_3_0_outputs.xlsx')
-    end
-
-    it 'should process' do
       expect(@excel.process).to eq(true)
     end
 
@@ -365,9 +364,10 @@ describe OpenStudio::Analysis::Translator::Excel do
     end
 
     it 'should have typed outputs' do
-      h = @excel.create_analysis_hash
-      expect(h['analysis']['output_variables']).to be_an Array
-      h['analysis']['output_variables'].each do |o|
+      h = @excel.analysis
+
+      expect(h.outputs).to be_an Array
+      h.outputs.each do |o|
         if o['name'] == 'standard_report_legacy.total_energy'
           expect(o['variable_type']).to eq 'double'
           expect(o['objective_function']).to eq true
@@ -419,11 +419,10 @@ describe OpenStudio::Analysis::Translator::Excel do
   context 'version 0.3.0 dynamic uuid assignments' do
     before(:all) do
       @excel = OpenStudio::Analysis::Translator::Excel.new('spec/files/0_3_0_dynamic_uuids.xlsx')
+      expect(@excel.process).to eq(true)
     end
 
     it 'should process' do
-      expect(@excel.process).to eq(true)
-
       model_uuid = @excel.models.first[:name]
       expect(model_uuid).to match /[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/
     end
@@ -439,16 +438,17 @@ describe OpenStudio::Analysis::Translator::Excel do
   context 'version 0.3.3 and short display names' do
     before :all do
       @excel = OpenStudio::Analysis::Translator::Excel.new('spec/files/0_3_3_short_names.xlsx')
+      expect(@excel.process).to eq(true)
     end
 
     it 'should process' do
-      expect(@excel.process).to eq(true)
-
       model_uuid = @excel.models.first[:name]
       expect(model_uuid).to match /[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/
     end
 
     it 'should process and save short display names' do
+      @excel = OpenStudio::Analysis::Translator::Excel.new('spec/files/0_3_3_short_names.xlsx')
+      expect(@excel.process).to eq(true)
       @excel.save_analysis
       model_uuid = @excel.models.first[:name]
       expect(File.exist?("spec/files/export/analysis/#{model_uuid}.json")).to eq true
@@ -460,7 +460,9 @@ describe OpenStudio::Analysis::Translator::Excel do
       end
 
       # Check the JSON
+      puts "Checking file 'spec/files/export/analysis/#{model_uuid}.json'"
       j = JSON.parse(File.read("spec/files/export/analysis/#{model_uuid}.json"))
+
       expect(j['analysis']['output_variables'].first['display_name']).to eq 'Total Site Energy Intensity'
       expect(j['analysis']['output_variables'].first['display_name_short']).to eq 'Site EUI'
       expect(j['analysis']['problem']['workflow'][0]['variables'][0]['argument']['display_name']).to eq 'Orientation'
@@ -498,9 +500,6 @@ describe OpenStudio::Analysis::Translator::Excel do
   context 'version 0.3.7 and worker init-final scripts' do
     before :all do
       @excel = OpenStudio::Analysis::Translator::Excel.new('spec/files/0_3_7_worker_init_final.xlsx')
-    end
-
-    it 'should process' do
       expect(@excel.process).to eq(true)
     end
 
@@ -515,18 +514,18 @@ describe OpenStudio::Analysis::Translator::Excel do
       expect(@excel.worker_inits[0][:name]).to eq 'initialize me'
       expect(@excel.worker_inits[0][:args]).to eq "[\"first_arg\",2,{a_hash: \"input\"}]"
 
-      # test the evaling of the args
-      a = eval(@excel.worker_inits[0][:args])
+      # test the eval'ing of the args
+      a = eval(@excel.analysis.worker_inits.first[:metadata][:args])
       expect(a[0]).to eq 'first_arg'
       expect(a[1]).to eq 2
       expect(a[2]).to be_a Hash
       expect(a[2][:a_hash]).to eq 'input'
 
-      expect(@excel.worker_inits[0][:ordered_file_name]).to eq '00_first_file.rb'
-      expect(@excel.worker_inits[1][:ordered_file_name]).to eq '01_second_file.rb'
-
-      expect(@excel.worker_finals.size).to eq 1
-      expect(@excel.worker_inits[0][:ordered_file_name]).to eq '00_first_file.rb'
+      expect(File.basename(@excel.analysis.worker_inits.first[:file])).to eq 'first_file.rb'
+      expect(File.basename(@excel.analysis.worker_inits.last[:file])).to eq 'second_file.rb'
+      
+      expect(@excel.analysis.worker_finalizes.size).to eq 1
+      expect(File.basename(@excel.analysis.worker_finalizes.first[:file])).to eq 'first_file.rb'
     end
   end
 

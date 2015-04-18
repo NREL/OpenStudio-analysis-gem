@@ -41,6 +41,16 @@ module OpenStudio
         true
       end
 
+      # Return the first
+      def first
+        @files.first
+      end
+
+      # Return the last
+      def last
+        @files.last
+      end
+
       # Access a file by an index
       def [](index)
         @files[index]
@@ -67,7 +77,7 @@ module OpenStudio
 
       # Iterate over the files with index
       def each_with_index
-        @files.each_with_index { |d, index| yield [i, index] }
+        @files.each_with_index { |d, index| yield d, index }
       end
 
       # remove all the items

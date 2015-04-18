@@ -21,12 +21,13 @@ module OpenStudio
       # Add a measure to the workflow from a path. Inside the path it is expecting to have a measure.json file
       # if not, the BCL gem is used to create the measure.json file.
       #
-      # @params instance_name [String] The name of the instance. This allows for multiple measures to be added to the workflow with unique names
+      # @params instance_name [String] The name of the instance. This allows for multiple measures to be added to the workflow with uni que names
       # @params instance_display_name [String] The display name of the instance. This allows for multiple measures to be added to the workflow with unique names
       # @param local_path_to_measure [String] This is the local path to the measure directory, relative or absolute. It is used when zipping up all the measures.
       # @return [Object] Returns the measure that was added as an OpenStudio::AnalysisWorkflowStep object
       def add_measure_from_path(instance_name, instance_display_name, local_path_to_measure)
         measure_filename = 'measure.rb'
+
         if File.exist?(local_path_to_measure) && File.file?(local_path_to_measure)
           measure_filename = File.basename(local_path_to_measure)
           local_path_to_measure = File.dirname(local_path_to_measure)
@@ -83,8 +84,11 @@ module OpenStudio
         hash[:uid] = measure['uid'] ? measure['uid'] : SecureRandom.uuid
         hash[:version_id] = measure['version_id'] ? measure['version_id'] : SecureRandom.uuid
 
-        # map the arguments - this can be a variable or argument, add them all as arguments first
+        # map the arguments - this can be a variable or argument, add them all as arguments first,
+        # the make_variable will remove from arg and place into variables
         args = []
+
+        pp measure
         measure['variables'].each do |variable|
           args << {
             local_variable: variable['name'],
@@ -99,7 +103,7 @@ module OpenStudio
         end
         hash[:arguments] = args
 
-        m = add_measure(measure['name'], measure['display_name'], measure['measure_file_name_directory'], hash)
+        m = add_measure(measure['name'], measure['display_name'], measure['local_path_to_measure'], hash)
 
         measure['variables'].each do |variable|
           next unless variable['variable_type'] == 'variable'
@@ -112,7 +116,7 @@ module OpenStudio
             standard_deviation: variable['distribution']['stddev'],
             values: variable['distribution']['discrete_values'],
             weights: variable['distribution']['discrete_weights'],
-            step_size: variable['distribution']['delta_x']
+            step_size: variable['distribution']['delta_x'],
           }
           opt = {
             variable_type: variable['variable_type'],
@@ -120,7 +124,7 @@ module OpenStudio
             static_value: variable['distribution']['static_value']
           }
 
-          m.make_variable(variable['name'], variable['display_name'], dist)
+          m.make_variable(variable['name'], variable['display_name'], dist, opt)
         end
       end
 

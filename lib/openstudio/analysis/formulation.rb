@@ -8,6 +8,7 @@ module OpenStudio
       attr_reader :seed_model
       attr_reader :weather_file
       attr_reader :analysis_type
+      attr_reader :outputs
       attr_accessor :display_name
       attr_accessor :workflow
       attr_accessor :algorithm
@@ -134,11 +135,23 @@ module OpenStudio
             h[:analysis][:seed] = nil
           end
 
+          # silly catch for if weather_file is not set
+          wf = nil
           if @weather_file[:file]
+            wf = @weather_file
+          elsif @weather_files.size > 0
+            # get the first EPW file (not the first file)
+            wf = @weather_files.find { |w| File.extname(w[:file]).downcase == '.epw' }
+          end
+
+          if wf
             h[:analysis][:weather_file] = {
-              file_type: File.extname(@weather_file[:file]).gsub('.', '').upcase,
-              path: "./weather/#{File.basename(@weather_file[:file])}"
+              file_type: File.extname(wf[:file]).gsub('.', '').upcase,
+              path: "./weather/#{File.basename(wf[:file])}"
             }
+          else
+            # log: could not find weather file
+            warn 'Could not resolve a valid weather file. Check paths to weather files' 
           end
 
           h[:analysis][:file_format_version] = version
@@ -270,8 +283,7 @@ module OpenStudio
           end
 
           puts 'Adding Support Files: Worker Initialization Scripts'
-          index = 0
-          @worker_inits.each do |f|
+          @worker_inits.each_with_index do |f, index|
             ordered_file_name = "#{index.to_s.rjust(2, '0')}_#{File.basename(f[:file])}"
             puts "  Adding #{f[:file]} as #{ordered_file_name}"
             zf.add(f[:file].sub(f[:file], "./lib/worker_initialize/#{ordered_file_name}"), f[:file])
@@ -283,13 +295,10 @@ module OpenStudio
               zf.add("./lib/worker_initialize/#{arg_file}", file)
               file.close
             end
-
-            index += 1
           end
 
           puts 'Adding Support Files: Worker Finalization Scripts'
-          index = 0
-          @worker_finalizes.each do |f|
+          @worker_finalizes.each_with_index do |f, index|
             ordered_file_name = "#{index.to_s.rjust(2, '0')}_#{File.basename(f[:file])}"
             puts "  Adding #{f[:file]} as #{ordered_file_name}"
             zf.add(f[:file].sub(f[:file], "./lib/worker_finalize/#{ordered_file_name}"), f[:file])
@@ -301,8 +310,6 @@ module OpenStudio
               zf.add("./lib/worker_finalize/#{arg_file}", file)
               file.close
             end
-
-            index += 1
           end
 
           ## Measures

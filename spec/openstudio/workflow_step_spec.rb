@@ -52,9 +52,11 @@ describe OpenStudio::Analysis::WorkflowStep do
       minimum: 0.5,
       maximum: 20,
       mean: 10,
-      static_value: 24601
     }
-    r = measure.make_variable('cooling_sch', 'my variable', v)
+    o = {
+       static_value: 24601
+    }
+    r = measure.make_variable('cooling_sch', 'my variable', v, o)
 
     h = measure.to_hash
 

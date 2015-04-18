@@ -38,7 +38,7 @@ describe OpenStudio::Analysis::SupportFiles do
     @s.clear
     @s.add_files('spec/files/measures/**/*.rb', d: 'new')
 
-    expect(@s.size).to eq 7
+    expect(@s.size).to eq 10
     expect(@s[0][:metadata][:d]).to eq 'new'
   end
 end

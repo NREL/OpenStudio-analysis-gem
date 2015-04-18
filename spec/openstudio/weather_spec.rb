@@ -12,14 +12,14 @@ describe OpenStudio::Weather::Epw do
     expect(epw.city).to eq 'Denver Intl Ap'
     expect(epw.state).to eq 'CO'
     expect(epw.country).to eq 'USA'
-    expect(epw.file_type).to eq 'TMY3'
-    expect(epw.wmo).to eq '725650'
+    expect(epw.data_type).to eq 'TMY3'
+    expect(epw.wmo).to eq 725650
     expect(epw.lat).to eq 39.83
     expect(epw.lon).to eq -104.65
     expect(epw.gmt).to eq -7.0
     expect(epw.elevation).to eq 1650.0
 
-    expect(epw.header_data.size).to eq 8
+    expect(epw.header_data.size).to eq 7
     expect(epw.weather_data.size).to eq 24
   end
 

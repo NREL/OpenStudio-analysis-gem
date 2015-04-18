@@ -9,6 +9,7 @@ module OpenStudio
         attr_reader :models
         attr_reader :weather_files
         attr_reader :measure_paths
+        attr_reader :weather_paths
         attr_reader :worker_inits
         attr_reader :worker_finals
         attr_reader :export_path
@@ -22,7 +23,6 @@ module OpenStudio
         # remove these once we have classes to construct the JSON file
         attr_accessor :name
         attr_reader :analysis_name
-        attr_reader :template_json
 
         # methods to override instance variables
 
@@ -41,11 +41,13 @@ module OpenStudio
 
           # Initialize some other instance variables
           @version = '0.0.1'
+          @analysis = nil # the OpenStudio::Analysis. Use method to access
           @name = nil
           @analysis_name = nil
           @cluster_name = nil
           @settings = {}
-          @weather_files = []
+          @weather_files = [] # remove this from excel!
+          @weather_paths = []
           @models = []
           @other_files = []
           @worker_inits = []
@@ -55,7 +57,6 @@ module OpenStudio
           @number_of_samples = 0 # todo: remove this
           @problem = {}
           @algorithm = {}
-          @template_json = nil
           @outputs = {}
           @run_setup = {}
           @aws_tags = []
@@ -83,17 +84,11 @@ module OpenStudio
 
         def add_model(name, display_name, type, path)
           @models << {
-            name: name,
-            display_name: display_name,
-            type: type,
-            path: path
+              name: name,
+              display_name: display_name,
+              type: type,
+              path: path
           }
-        end
-
-        # Save off the legacy format of the JSON file
-        def save_variable_json(filename)
-          FileUtils.rm_f(filename) if File.exist?(filename)
-          File.open(filename, 'w') { |f| f << JSON.pretty_generate(@variables) }
         end
 
         def validate_analysis
@@ -199,307 +194,107 @@ module OpenStudio
           true
         end
 
-        def create_analysis_hash
-          # save the format in the OpenStudio analysis json format template without
-          # the correct weather files or models
-          @template_json = translate_to_analysis_json_template
+        # convert the data in excel's parsed data into an OpenStudio Analysis Object
+        # @return [Object] An OpenStudio::Analysis
+        def analysis
+          if @analysis
+            return @analysis
+          else
+            # Use the programmatic interface to make the analysis            
+            @analysis = OpenStudio::Analysis.create(@name)
 
-          # save the other format for now
-          translate_to_analysis
+            @variables['data'].each do |measure|
+              next unless measure['enabled']
 
-          @template_json
+              @measure_paths.each do |measure_path|
+                measure_dir_to_add = "#{measure_path}/#{measure['measure_file_name_directory']}"
+                if Dir.exist? measure_dir_to_add
+                  if File.exist? "#{measure_dir_to_add}/measure.rb"
+                    measure['local_path_to_measure'] = "#{measure_dir_to_add}/measure.rb"
+                    break
+                  else
+                    fail "Measure in directory '#{measure_dir_to_add}' did not contain a measure.rb file"
+                  end
+                end
+              end
+
+              fail "Could not find measure '#{measure['name']}' in directory named '#{measure['measure_file_name_directory']}' in the measure paths '#{@measure_paths.join(", ")}'" unless measure['local_path_to_measure']
+
+              @analysis.workflow.add_measure_from_excel(measure)
+            end
+
+            @other_files.each do |library|
+              @analysis.libraries.add(library[:path], library_name: library[:lib_zip_name])
+            end
+
+            @worker_inits.each do |w|
+              @analysis.worker_inits.add(w[:path],  args: w[:args])
+            end
+
+            @worker_finals.each do |w|
+              @analysis.worker_finalizes.add(w[:path], args: w[:args])
+            end
+
+            # Add in the outputs
+            @outputs['output_variables'].each do |o|
+              o = Hash[o.map { |k, v| [k.to_sym, v] }]
+              @analysis.add_output(o)
+            end
+
+            @analysis.analysis_type = @problem['analysis_type']
+            @algorithm.each do |k,v|
+              @analysis.algorithm.set_attribute(k,v)
+            end
+
+            @analysis
+          end
+
+          @analysis
         end
 
         # save_analysis will iterate over each model that is defined in the spreadsheet and save the
         # zip and json file.
         def save_analysis
-          @template_json = create_analysis_hash
-
-          # validate_template_json
-
           # iterate over each model and save the zip and json
           @models.each do |model|
             puts "Creating JSON and ZIP file for #{@name}:#{model[:display_name]}"
-            save_analysis_zip(model)
-            analysis_json = create_analysis_json(@template_json, model, @models.count > 1)
+            save_analysis_impl(model, @models.count > 1)
           end
         end
 
-        # New method that uses the objects to hold the analysis
+        # Save a single data point instance -- placeholder
+        def save_single_data_point(filename='')
+        end
+
+        # New method that uses the OpenStudio::Analysis class to hold the analysis
         def translate_to_analysis
-          # Use the programmatic interface to make the analysis json now
-          analysis = OpenStudio::Analysis.create(@analysis_name)
 
-          @variables['data'].each do |measure|
-            next unless measure['enabled']
-
-            # TODO: make this read the measure.rb file, then override any of the differences. That is call workflow.add_from_measure_path
-            analysis.workflow.add_measure_from_excel(measure)
-          end
-
-          # Add in the outputs
-
-          @outputs['output_variables'].each do |o|
-            o = Hash[o.map { |k, v| [k.to_sym, v] }]
-            analysis.add_output(o)
-          end
-
-          # Temp save of the json file
-          # analysis.save("#{analysis.display_name}_api.json")
-
-          analysis
-        end
-
-        def translate_to_analysis_json_template
-          # Load in the templates for constructing the JSON file
-          template_root = File.join(File.dirname(__FILE__), '../../templates')
-          analysis_template = ERB.new(File.open("#{template_root}/analysis.json.erb", 'r').read)
-          workflow_template = ERB.new(File.open("#{template_root}/workflow_item.json.erb", 'r').read)
-          uncertain_variable_template = ERB.new(File.open("#{template_root}/uncertain_variable.json.erb", 'r').read)
-          discrete_uncertain_variable_template = ERB.new(File.open("#{template_root}/discrete_uncertain_variable.json.erb", 'r').read)
-          pivot_variable_template = ERB.new(File.open("#{template_root}/pivot_variable.json.erb", 'r').read)
-          argument_template = ERB.new(File.read("#{template_root}/argument.json.erb"))
-
-          # Templated analysis json file (this is what is returned)
-          openstudio_analysis_json = JSON.parse(analysis_template.result(get_binding))
-
-          openstudio_analysis_json['analysis']['problem'].merge!(@problem)
-          openstudio_analysis_json['analysis']['problem']['algorithm'].merge!(@algorithm)
-          openstudio_analysis_json['analysis'].merge!(@outputs)
-
-          @measure_index = -1
-          @variables['data'].each do |measure|
-            # With OpenStudio server we need to create the workflow with all the measure instances
-            if measure['enabled']
-              @measure_index += 1
-
-              # puts "  Adding measure item '#{measure['name']}' to analysis.json"
-              @measure = measure
-              @measure['measure_file_name_dir'] = @measure['measure_file_name'].underscore
-
-              # Grab the measure json file out of the right directory
-              wf = JSON.parse(workflow_template.result(get_binding))
-
-              # add in the variables
-              measure['variables'].each do |variable|
-                @variable = variable
-                # Determine if row is suppose to be an argument or a variable to be perturbed.
-                if @variable['variable_type'] == 'argument'
-                  ag = nil
-                  if @variable['distribution']['static_value'].nil? || @variable['distribution']['static_value'] == 'null'
-                    puts "    Warning: '#{measure['name']}:#{@variable['name']}' static value was empty or null, assuming optional and skipping"
-                    next
-                  end
-
-                  # add this as an argument
-                  case @variable['type'].downcase
-                    when 'string', 'choice'
-                      @static_value = @variable['distribution']['static_value'].inspect
-                    else
-                      @static_value = @variable['distribution']['static_value']
-                  end
-                  ag = JSON.parse(argument_template.result(get_binding))
-                  fail "Argument '#{@variable['name']}' did not process.  Most likely it did not have all parameters defined." if ag.nil?
-                  wf['arguments'] << ag
-                else # must be a variable [either pivot or normal variable]
-                  vr = nil
-                  # add this as an argument
-                  case @variable['type'].downcase
-                    when 'string', 'choice'
-                      @static_value = @variable['distribution']['static_value'].inspect
-                    else
-                      @static_value = @variable['distribution']['static_value']
-                  end
-
-                  # TODO: remove enum and choice as this is not the variable type
-                  if @variable['type'] == 'enum' || @variable['type'].downcase == 'choice'
-                    @values_and_weights = @variable['distribution']['enumerations'].map { |v| { value: v } }.to_json
-                    vr = JSON.parse(discrete_uncertain_variable_template.result(get_binding))
-                  elsif @variable['distribution']['type'] == 'discrete_uncertain'
-                    # puts @variable.inspect
-                    if @variable['distribution']['discrete_weights']
-                      fail "Discrete variable '#{@variable['name']}' does not have equal length of values and weights" if @variable['distribution']['discrete_values'].size != @variable['distribution']['discrete_weights'].size
-                      @values_and_weights = @variable['distribution']['discrete_values'].zip(@variable['distribution']['discrete_weights']).map { |v, w| { value: v, weight: w } }.to_json
-                    else
-                      @values_and_weights = @variable['distribution']['discrete_values'].map { |v| { value: v } }.to_json
-                    end
-
-                    if @variable['variable_type'] == 'pivot'
-
-                      vr = JSON.parse(pivot_variable_template.result(get_binding))
-                    else
-                      vr = JSON.parse(discrete_uncertain_variable_template.result(get_binding))
-                    end
-                  else
-                    if @variable['variable_type'] == 'pivot'
-                      fail 'Currently unable to pivot on continuous variables... stay tuned.'
-                    else
-                      vr = JSON.parse(uncertain_variable_template.result(get_binding))
-                    end
-                  end
-                  fail 'variable was nil after processing' if vr.nil?
-                  wf['variables'] << vr
-                end
-              end
-
-              openstudio_analysis_json['analysis']['problem']['workflow'] << wf
-            end
-          end
-
-          openstudio_analysis_json
         end
 
         protected
 
-        # helper method for ERB
-        def get_binding
-          binding
-        end
-
-        # Package up the seed, weather files, and measures
-        def save_analysis_zip(model)
-          def add_directory_to_zip(zipfile, local_directory, relative_zip_directory)
-            # puts "Add Directory #{local_directory}"
-            Dir[File.join("#{local_directory}", '**', '**')].each do |file|
-              # puts "Adding File #{file}"
-              zipfile.add(file.sub(local_directory, relative_zip_directory), file)
-            end
-            zipfile
-          end
-
-          zipfile_name = "#{@export_path}/#{model[:name]}.zip"
-          FileUtils.rm_f(zipfile_name) if File.exist?(zipfile_name)
-
-          Zip::File.open(zipfile_name, Zip::File::CREATE) do |zipfile|
-            @weather_files.each do |filename|
-              # puts "  Adding #{filename}"
-              zipfile.add("./weather/#{File.basename(filename)}", filename)
-            end
-
-            # Add only the measures that are defined in the spreadsheet
-            required_measures = @variables['data'].map { |v| v['measure_file_name_directory'] if v['enabled'] }.compact.uniq
-
-            # Convert this into a hash which looks like {name: measure_name}. This will allow us to add more
-            # fields to the measure, such as which directory is the measure.
-            required_measures = required_measures.map { |value| { name: value } }
-
-            # first validate that all the measures exist
-            errors = []
-            required_measures.each do |measure|
-              next if measure.key? :path
-
-              @measure_paths.each do |measure_path|
-                measure_dir_to_add = "#{measure_path}/#{measure[:name]}"
-                if Dir.exist? measure_dir_to_add
-                  if File.exist? "#{measure_dir_to_add}/measure.rb"
-                    measure[:path] = measure_path
-                    break
-                  else
-                    errors << "Measure in directory '#{@measure_path}/#{measure}' did not contain a measure.rb file"
-                  end
-                end
-              end
-            end
-
-            # validate that all measures were found
-            required_measures.each do |measure|
-              unless measure.key? :path
-                errors << "Could not find measure '#{measure}' in directory '#{@measure_path}'"
-              end
-            end
-
-            fail errors.join("\n") unless errors.empty?
-
-            required_measures.each do |measure|
-              measure_dir_to_add = "#{measure[:path]}/#{measure[:name]}"
-              puts "  Adding measure #{measure_dir_to_add} to zip file"
-              Dir[File.join(measure_dir_to_add, '**')].each do |file|
-                if File.directory?(file)
-                  if File.basename(file) == 'resources' || File.basename(file) == 'lib'
-                    add_directory_to_zip(zipfile, file, "./measures/#{measure[:name]}/#{File.basename(file)}")
-                  else
-                    # puts "Skipping Directory #{File.basename(file)}"
-                  end
-                else
-                  # puts "Adding File #{file}"
-                  # added_measures << measure_dir unless added_measures.include? measure_dir
-                  zipfile.add(file.sub(measure_dir_to_add, "./measures/#{measure[:name]}/"), file)
-                end
-              end
-            end
-
-            # puts "Adding #{model[:path]}"
-            zipfile.add("./seed/#{File.basename(model[:path])}", model[:path])
-
-            # puts "Adding in other files #{@other_files.inspect}"
-            @other_files.each do |others|
-              Dir[File.join(others[:path], '**', '**')].each do |file|
-                zipfile.add(file.sub(others[:path], "./lib/#{others[:lib_zip_name]}/"), file)
-              end
-            end
-
-            # puts "Adding in Worker initialize scripts #{@worker_inits}"
-            @worker_inits.each_with_index do |f, index|
-              # this is ordered
-              f[:ordered_file_name] = "#{index.to_s.rjust(2, '0')}_#{File.basename(f[:path])}"
-              f[:index] = index
-
-              zipfile.add(f[:path].sub(f[:path], "./lib/worker_initialize/#{f[:ordered_file_name]}"), f[:path])
-              arg_file = "#{File.basename(f[:ordered_file_name], '.*')}.args"
-              file = Tempfile.new('arg')
-              file.write(f[:args])
-              zipfile.add("./lib/worker_initialize/#{arg_file}", file)
-              file.close
-            end
-
-            # puts "Adding in Worker finalize scripts #{@worker_finals}"
-            @worker_finals.each_with_index do |f, index|
-              # this is ordered
-              f[:ordered_file_name] = "#{index.to_s.rjust(2, '0')}_#{File.basename(f[:path])}"
-              f[:index] = index
-
-              zipfile.add(f[:path].sub(f[:path], "./lib/worker_finalize/#{f[:ordered_file_name]}"), f[:path])
-              arg_file = "#{File.basename(f[:ordered_file_name], '.*')}.args"
-              file = Tempfile.new('arg')
-              file.write(f[:args])
-              zipfile.add("./lib/worker_finalize/#{arg_file}", file)
-              file.close
-            end
-          end
-        end
-
-        def create_analysis_json(analysis_json, model, append_model_name)
-          def deep_copy(o)
-            Marshal.load(Marshal.dump(o))
-          end
-
-          # append the model name to the analysis name if requested (normally if there are more than
-          # 1 models in the spreadsheet)
-          new_analysis_json = deep_copy(analysis_json)
+        # This method creates the OpenStudio::Analysis object
+        def save_analysis_impl(model, append_model_name)
+          # append the model name to the analysis name if requested (normally if there are more than 1 models in the spreadsheet)
           if append_model_name
-            new_analysis_json['analysis']['display_name'] = new_analysis_json['analysis']['display_name'] + ' - ' + model[:display_name]
-            new_analysis_json['analysis']['name'] = new_analysis_json['analysis']['name'] + '_' + model[:name]
+            analysis.display_name = analysis.display_name + ' - ' + model[:display_name]
           end
 
-          # Set the seed model in the analysis_json
-          new_analysis_json['analysis']['seed']['file_type'] = model[:type]
-          # This is the path that will be seen on the server when this runs
-          new_analysis_json['analysis']['seed']['path'] = "./seed/#{File.basename(model[:path])}"
+          # clear out the seed files before adding new ones
+          analysis.seed_model model[:path]
 
-          # Set the weather file as the first in the list -- this is optional
-          new_analysis_json['analysis']['weather_file']['file_type'].downcase == 'epw'
-          if File.extname(@weather_files.first) =~ /.zip/i
-            new_analysis_json['analysis']['weather_file']['path'] = "./weather/#{File.basename(@weather_files.first, '.zip')}.epw"
-          else
-            # get the first EPW file (not the first file)
-            weather = @weather_files.find { |w| File.extname(w).downcase == '.epw' }
-            fail "Could not find a weather file (*.epw) in weather directory #{File.dirname(@weather_files.first)}" unless weather
-            new_analysis_json['analysis']['weather_file']['path'] = "./weather/#{File.basename(weather)}"
+          # clear out the weather files before adding new ones
+          analysis.weather_files.clear
+          @weather_paths.each do |wp|
+            analysis.weather_files.add_files(wp)
           end
 
           json_file_name = "#{@export_path}/#{model[:name]}.json"
           FileUtils.rm_f(json_file_name) if File.exist?(json_file_name)
-          File.open(json_file_name, 'w') { |f| f << JSON.pretty_generate(new_analysis_json) }
+          # File.open(json_file_name, 'w') { |f| f << JSON.pretty_generate(new_analysis_json) }
+
+          analysis.save json_file_name
+          analysis.save_zip "#{File.dirname(json_file_name)}/#{File.basename(json_file_name, '.*')}.zip"
         end
 
         # parse_setup will pull out the data on the "setup" tab and store it in memory for later use
@@ -680,6 +475,7 @@ module OpenStudio
                 unless (Pathname.new weather_path).absolute?
                   weather_path = File.expand_path(File.join(@root_path, weather_path))
                 end
+                @weather_paths << weather_path
                 @weather_files += Dir.glob(weather_path)
               end
             elsif b_models
@@ -694,7 +490,7 @@ module OpenStudio
                 unless (Pathname.new model_path).absolute?
                   model_path = File.expand_path(File.join(@root_path, model_path))
                 end
-                @models << { name: tmp_m_name.snake_case, display_name: tmp_m_name, type: row[2], path: model_path }
+                @models << {name: tmp_m_name.snake_case, display_name: tmp_m_name, type: row[2], path: model_path}
               end
             elsif b_other_libs
               # determine if the path is relative
@@ -703,21 +499,21 @@ module OpenStudio
                 other_path = File.expand_path(File.join(@root_path, other_path))
               end
 
-              @other_files << { lib_zip_name: row[1], path: other_path }
+              @other_files << {lib_zip_name: row[1], path: other_path}
             elsif b_worker_init
               worker_init_path = row[1]
               unless (Pathname.new worker_init_path).absolute?
                 worker_init_path = File.expand_path(File.join(@root_path, worker_init_path))
               end
 
-              @worker_inits << { name: row[0], path: worker_init_path, args: row[2] }
+              @worker_inits << {name: row[0], path: worker_init_path, args: row[2]}
             elsif b_worker_final
               worker_final_path = row[1]
               unless (Pathname.new worker_final_path).absolute?
                 worker_final_path = File.expand_path(File.join(@root_path, worker_final_path))
               end
 
-              @worker_finals << { name: row[0], path: worker_final_path, args: row[2] }
+              @worker_finals << {name: row[0], path: worker_final_path, args: row[2]}
             end
 
             next
@@ -736,6 +532,7 @@ module OpenStudio
           # If you add a new column and you want that variable in the hash, then you must add it here.
           # rows = @xls.sheet('Variables').parse(:enabled => "# variable")
           # puts rows.inspect
+
           rows = nil
           begin
             if @version >= '0.3.3'.to_version
@@ -884,6 +681,7 @@ module OpenStudio
           # map the data to another hash that is more easily processed
           data = {}
           data['data'] = []
+
 
           measure_index = -1
           variable_index = -1
@@ -1034,7 +832,6 @@ module OpenStudio
 
           variable_index = -1
           group_index = 1
-          @algorithm['objective_functions'] = []
 
           rows.each_with_index do |row, icnt|
             next if icnt < 2 # skip the first 3 lines of the file
@@ -1049,13 +846,6 @@ module OpenStudio
             var['export'] = row[:export].downcase == 'true' ? true : false if row[:export]
             var['variable_type'] = row[:variable_type].downcase if row[:variable_type]
             var['objective_function'] = row[:objective_function].downcase == 'true' ? true : false
-            if var['objective_function']
-              @algorithm['objective_functions'] << var['name']
-              variable_index += 1
-              var['objective_function_index'] = variable_index
-            else
-              var['objective_function_index'] = nil
-            end
             var['objective_function_target'] = row[:objective_function_target]
             var['scaling_factor'] = row[:scaling_factor]
 
