@@ -105,7 +105,7 @@ module OpenStudio
         m = add_measure(measure['name'], measure['display_name'], measure['local_path_to_measure'], hash)
 
         measure['variables'].each do |variable|
-          next unless variable['variable_type'] == 'variable'
+          next unless ['variable', 'pivot'].include? variable['variable_type']
 
           dist = {
             type: variable['distribution']['type'],

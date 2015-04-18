@@ -106,6 +106,7 @@ module OpenStudio
           v[:argument] = a
           v[:display_name] = variable_display_name
           v[:display_name_short] = options[:variable_display_name_short] ? options[:variable_display_name_short] : variable_display_name
+          v[:variable_type] = options[:variable_type]
 
           v[:type] = distribution[:type]
           v[:units] = distribution[:units] ? distribution[:units] : nil
@@ -166,7 +167,6 @@ module OpenStudio
           # Clean up the variables to match the legacy format
           hash[:variables].each_with_index do |v, index|
             v[:variable_type] == 'pivot' ? v[:pivot] = true : v[:variable] = true
-            v[:variable] = true
             v[:static_value] = v[:argument][:default_value] unless v[:static_value]
 
             v[:uncertainty_description] = {}

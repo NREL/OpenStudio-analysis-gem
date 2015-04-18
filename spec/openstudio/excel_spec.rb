@@ -552,4 +552,32 @@ describe OpenStudio::Analysis::Translator::Excel do
       expect(@excel.aws_tags).to eq(['org=5500'])
     end
   end
+
+  context 'version 0.4.0 pivot test' do
+    before :all do
+      @excel = OpenStudio::Analysis::Translator::Excel.new('spec/files/0_4_0_pivot_test.xlsx')
+      expect(@excel.process).to eq(true)
+    end
+
+    it 'should save the analysis' do
+      a = @excel.analysis
+
+      @excel.save_analysis # this will save all the analyses
+
+      j = JSON.parse(File.read('spec/files/export/analysis/pivot_test.json'))
+
+      expect(j['analysis']['problem']['workflow'][0]['name']).to eq 'reduce_lighting_loads_by_percentage'
+      expect(j['analysis']['problem']['workflow'][0]['variables'][0]['variable_type']).to eq 'pivot'
+      expect(j['analysis']['problem']['workflow'][0]['variables'][0]['pivot']).to eq true
+      expect(j['analysis']['problem']['workflow'][1]['variables'][0]['variable']).to eq true
+      expect(j['analysis']['problem']['workflow'][1]['variables'][0]['pivot']).to eq nil
+
+
+      expect(@excel.settings['openstudio_server_version']).to eq('1.11.0-rc2')
+      expect(@excel.settings['spreadsheet_version']).to eq '0.3.7'
+      expect(@excel.settings['server_instance_type']).to eq 'm3.xlarge'
+      expect(@excel.settings['worker_instance_type']).to eq 'c3.4xlarge'
+      expect(@excel.aws_tags).to eq(['org=5500'])
+    end
+  end
 end
