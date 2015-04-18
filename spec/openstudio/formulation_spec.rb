@@ -48,8 +48,6 @@ describe OpenStudio::Analysis::Formulation do
       objective_function: true
     )
 
-    puts a.outputs
-
     expect(a.to_hash[:analysis][:output_variables].first[:objective_function_index]).to eq 0
 
     a.add_output(

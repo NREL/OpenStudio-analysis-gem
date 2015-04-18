@@ -106,6 +106,10 @@ module OpenStudio
         @outputs << output_hash
       end
 
+      # return the machine name of the analysis
+      def name
+        @display_name.snake_case
+      end
       # return a hash.
       #
       # @param version [Integer] Version of the format to return
@@ -116,7 +120,7 @@ module OpenStudio
           h = {
             analysis: {
               display_name: @display_name,
-              name: @display_name.snake_case,
+              name: name,
               output_variables: @outputs,
               problem: {
                 analysis_type: @analysis_type,
@@ -340,5 +344,7 @@ module OpenStudio
         end
       end
     end
+
+
   end
 end

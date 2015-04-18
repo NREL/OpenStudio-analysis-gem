@@ -17,7 +17,6 @@ describe OpenStudio::Analysis::Translator::Excel do
     end
 
     it 'should have excel data' do
-      puts @excel
       expect(@excel).not_to be_nil
     end
 
@@ -82,7 +81,6 @@ describe OpenStudio::Analysis::Translator::Excel do
 
     it 'should have a weather file' do
       expect(@excel.weather_files.first).not_to be_nil
-      puts @excel.weather_files.first
       expect(@excel.weather_files.first.include?('partial_weather')).to eq(true)
     end
 
@@ -100,10 +98,10 @@ describe OpenStudio::Analysis::Translator::Excel do
 
     it 'should write a json' do
       @excel.save_analysis
-      expect(File).to exist('spec/files/export/analysis/small_seed.json')
-      expect(File).to exist('spec/files/export/analysis/small_seed.zip')
+      expect(File).to exist('spec/files/export/analysis/example_analysis.json')
+      expect(File).to exist('spec/files/export/analysis/example_analysis.zip')
 
-      expect(JSON.parse(File.read('spec/files/export/analysis/small_seed.json'))).not_to be_nil
+      expect(JSON.parse(File.read('spec/files/export/analysis/example_analysis.json'))).not_to be_nil
     end
   end
 
@@ -179,7 +177,6 @@ describe OpenStudio::Analysis::Translator::Excel do
         measure['variables'].each do |var|
           # TODO: Add some tests!
           if var['name'] == 'alter_design_days'
-            puts var.inspect
             expect(var['type']).to eq 'bool'
             expect(var['distribution']['discrete_values']).to match_array [true, false]
             expect(var['distribution']['discrete_weights']).to match_array [0.8, 0.2]
@@ -190,8 +187,8 @@ describe OpenStudio::Analysis::Translator::Excel do
 
     it 'should save the file' do
       @excel.save_analysis
-      expect(File.exist?('spec/files/export/analysis/0_1_11_discrete_variables.json')).to eq true
-      expect(File.exist?('spec/files/export/analysis/0_1_11_discrete_variables.zip')).to eq true
+      expect(File.exist?('spec/files/export/analysis/example_analysis.json')).to eq true
+      expect(File.exist?('spec/files/export/analysis/example_analysis.zip')).to eq true
     end
   end
 
@@ -211,8 +208,8 @@ describe OpenStudio::Analysis::Translator::Excel do
 
     it 'should save the file' do
       @excel.save_analysis
-      expect(File.exist?('spec/files/export/analysis/0_1_12_discrete_dynamic_columns.json')).to eq true
-      expect(File.exist?('spec/files/export/analysis/0_1_12_discrete_dynamic_columns.zip')).to eq true
+      expect(File.exist?('spec/files/export/analysis/test_model.json')).to eq true
+      expect(File.exist?('spec/files/export/analysis/test_model.zip')).to eq true
     end
   end
 
@@ -229,7 +226,6 @@ describe OpenStudio::Analysis::Translator::Excel do
 
     it 'should have a weather file' do
       expect(@excel.weather_files.first).not_to be_nil
-      puts @excel.weather_files.first
       expect(@excel.weather_files.first.include?('partial_weather')).to eq(true)
     end
 
@@ -286,11 +282,9 @@ describe OpenStudio::Analysis::Translator::Excel do
     end
 
     it 'should have new setting variables' do
-      puts @excel.settings.inspect
       expect(@excel.settings['user_id']).to eq('new_user')
       expect(@excel.settings['openstudio_server_version']).to eq('1.3.2')
       expect(@excel.cluster_name).to eq('analysis_cluster')
-      puts @excel.run_setup.inspect
       expect(@excel.run_setup['analysis_name']).to eq('LHS Example Project')
     end
   end
@@ -304,12 +298,10 @@ describe OpenStudio::Analysis::Translator::Excel do
       expect(@excel.process).to eq(true)
     end
 
-    it 'should have new setting variables' do
-      puts @excel.settings.inspect
+    it 'should have new setting variables' do  
       expect(@excel.settings['user_id']).to eq('new_user')
       expect(@excel.settings['openstudio_server_version']).to eq('1.3.2')
       expect(@excel.cluster_name).to eq('analysis_cluster_name')
-      puts @excel.run_setup.inspect
       expect(@excel.run_setup['analysis_name']).to eq('Name goes here')
     end
 
@@ -331,11 +323,9 @@ describe OpenStudio::Analysis::Translator::Excel do
       expect(@excel.process).to eq(true)
     end
 
-    it 'should have new setting variables' do
-      puts @excel.settings.inspect
+    it 'should have new setting variables' do 
       expect(@excel.settings['user_id']).to eq('new_user')
       expect(@excel.settings['openstudio_server_version']).to eq('1.3.2')
-      puts @excel.run_setup.inspect
     end
 
     it 'should have the new measure directory column' do
@@ -345,8 +335,8 @@ describe OpenStudio::Analysis::Translator::Excel do
 
     it 'should write a json' do
       @excel.save_analysis
-      expect(File.exist?('spec/files/export/analysis/0_2_0_template_simpletest.json')).to eq true
-      expect(File.exist?('spec/files/export/analysis/0_2_0_template_simpletest.zip')).to eq true
+      expect(File.exist?('spec/files/export/analysis/simple_test.json')).to eq true
+      expect(File.exist?('spec/files/export/analysis/simple_test.zip')).to eq true
     end
   end
 
@@ -357,10 +347,8 @@ describe OpenStudio::Analysis::Translator::Excel do
     end
 
     it 'should have new setting variables' do
-      puts @excel.settings.inspect
       expect(@excel.settings['user_id']).to eq('new_user')
       expect(@excel.settings['openstudio_server_version']).to eq('1.6.1')
-      puts @excel.run_setup.inspect
     end
 
     it 'should have typed outputs' do
@@ -430,8 +418,8 @@ describe OpenStudio::Analysis::Translator::Excel do
     it 'should error out with missing measure information' do
       @excel.save_analysis
       model_uuid = @excel.models.first[:name]
-      expect(File.exist?("spec/files/export/analysis/#{model_uuid}.json")).to eq true
-      expect(File.exist?("spec/files/export/analysis/#{model_uuid}.zip")).to eq true
+      expect(File.exist?("spec/files/export/analysis/0_3_0_dynamic_uuids.json")).to eq true
+      expect(File.exist?("spec/files/export/analysis/0_3_0_dynamic_uuids.zip")).to eq true
     end
   end
 
@@ -451,8 +439,8 @@ describe OpenStudio::Analysis::Translator::Excel do
       expect(@excel.process).to eq(true)
       @excel.save_analysis
       model_uuid = @excel.models.first[:name]
-      expect(File.exist?("spec/files/export/analysis/#{model_uuid}.json")).to eq true
-      expect(File.exist?("spec/files/export/analysis/#{model_uuid}.zip")).to eq true
+      expect(File.exist?("spec/files/export/analysis/0_3_3_short_names.json")).to eq true
+      expect(File.exist?("spec/files/export/analysis/0_3_3_short_names.zip")).to eq true
 
       @excel.outputs['output_variables'].each do |o|
         expect(o['display_name_short']).to eq 'Site EUI' if o['name'] == 'standard_report_legacy.total_energy'
@@ -460,8 +448,7 @@ describe OpenStudio::Analysis::Translator::Excel do
       end
 
       # Check the JSON
-      puts "Checking file 'spec/files/export/analysis/#{model_uuid}.json'"
-      j = JSON.parse(File.read("spec/files/export/analysis/#{model_uuid}.json"))
+      j = JSON.parse(File.read("spec/files/export/analysis/0_3_3_short_names.json"))
 
       expect(j['analysis']['output_variables'].first['display_name']).to eq 'Total Site Energy Intensity'
       expect(j['analysis']['output_variables'].first['display_name_short']).to eq 'Site EUI'
@@ -475,18 +462,15 @@ describe OpenStudio::Analysis::Translator::Excel do
   context 'version 0.3.5 and measure paths' do
     before :all do
       @excel = OpenStudio::Analysis::Translator::Excel.new('spec/files/0_3_5_multiple_measure_paths.xlsx')
-    end
-
-    it 'should process' do
       expect(@excel.process).to eq(true)
     end
-
+ 
     it 'should save the analysis' do
       @excel.save_analysis
       model_uuid = @excel.models.first[:name]
 
-      expect(File.exist?("spec/files/export/analysis/#{model_uuid}.json")).to eq true
-      expect(File.exist?("spec/files/export/analysis/#{model_uuid}.zip")).to eq true
+      expect(File.exist?("spec/files/export/analysis/0_3_5_multiple_measure_paths.json")).to eq true
+      expect(File.exist?("spec/files/export/analysis/0_3_5_multiple_measure_paths.zip")).to eq true
 
       expect(@excel.settings['openstudio_server_version']).to eq('1.8.0')
       expect(@excel.settings['spreadsheet_version']).to eq '0.3.5'
@@ -507,8 +491,8 @@ describe OpenStudio::Analysis::Translator::Excel do
       @excel.save_analysis
       model_uuid = @excel.models.first[:name]
 
-      expect(File.exist?("spec/files/export/analysis/#{model_uuid}.json")).to eq true
-      expect(File.exist?("spec/files/export/analysis/#{model_uuid}.zip")).to eq true
+      expect(File.exist?("spec/files/export/analysis/0_3_7_worker_init_final.json")).to eq true
+      expect(File.exist?("spec/files/export/analysis/0_3_7_worker_init_final.zip")).to eq true
 
       expect(@excel.worker_inits.size).to eq 2
       expect(@excel.worker_inits[0][:name]).to eq 'initialize me'
@@ -542,6 +526,31 @@ describe OpenStudio::Analysis::Translator::Excel do
     end
   end
 
-  context 'version 0.4.0 full spreadsheet example' do
+  context 'version 0.4.0 multiple seed models' do
+    before :all do
+      @excel = OpenStudio::Analysis::Translator::Excel.new('spec/files/0_4_0_multiple_seeds.xlsx')
+      expect(@excel.process).to eq(true)
+    end
+
+    it 'should save the analysis' do
+      expect{@excel.analysis}.to raise_error /There are more than one seed models defined in the excel file. Call .analyses. to return the array/
+      model_uuid = "#{@excel.name.snake_case}_#{@excel.models.first[:name]}"
+
+      @excel.save_analysis # this will save all the analyses
+
+
+      @excel.models.each do |f|
+        model_uuid = "#{@excel.name.snake_case}_#{f[:name]}"
+        puts model_uuid
+        expect(File.exist?("spec/files/export/analysis/#{model_uuid}.json")).to eq true
+        expect(File.exist?("spec/files/export/analysis/#{model_uuid}.zip")).to eq true
+      end
+
+      expect(@excel.settings['openstudio_server_version']).to eq('1.11.0-rc2')
+      expect(@excel.settings['spreadsheet_version']).to eq '0.3.7'
+      expect(@excel.settings['server_instance_type']).to eq 'm3.xlarge'
+      expect(@excel.settings['worker_instance_type']).to eq 'c3.4xlarge'
+      expect(@excel.aws_tags).to eq(['org=5500'])
+    end
   end
 end

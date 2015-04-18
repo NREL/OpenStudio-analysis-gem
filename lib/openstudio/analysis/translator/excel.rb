@@ -41,7 +41,7 @@ module OpenStudio
 
           # Initialize some other instance variables
           @version = '0.0.1'
-          @analysis = nil # the OpenStudio::Analysis. Use method to access
+          @analyses = [] # Array o OpenStudio::Analysis. Use method to access
           @name = nil
           @analysis_name = nil
           @cluster_name = nil
@@ -195,70 +195,97 @@ module OpenStudio
         end
 
         # convert the data in excel's parsed data into an OpenStudio Analysis Object
+        # @seed_model [Hash] Seed model to set the new analysis to
+        # @append_model_name [Boolean] Append the name of the seed model to the display name
         # @return [Object] An OpenStudio::Analysis
-        def analysis
-          if @analysis
-            return @analysis
-          else
-            # Use the programmatic interface to make the analysis
-            @analysis = OpenStudio::Analysis.create(@name)
+        def analysis(seed_model=nil, append_model_name = false)
+          fail "There are no seed models defined in the excel file. Please add one." if @models.size == 0
+          fail "There are more than one seed models defined in the excel file. Call 'analyses' to return the array" if @models.size > 1 && seed_model.nil?
 
-            @variables['data'].each do |measure|
-              next unless measure['enabled']
+          seed_model = @models.first if seed_model.nil?
 
-              @measure_paths.each do |measure_path|
-                measure_dir_to_add = "#{measure_path}/#{measure['measure_file_name_directory']}"
-                if Dir.exist? measure_dir_to_add
-                  if File.exist? "#{measure_dir_to_add}/measure.rb"
-                    measure['local_path_to_measure'] = "#{measure_dir_to_add}/measure.rb"
-                    break
-                  else
-                    fail "Measure in directory '#{measure_dir_to_add}' did not contain a measure.rb file"
-                  end
+          # Use the programmatic interface to make the analysis
+          # append the model name to the analysis name if requested (normally if there are more than 1 models in the spreadsheet)
+          display_name = append_model_name ? @name + ' ' + seed_model[:display_name] : @name
+
+          a = OpenStudio::Analysis.create(display_name)
+
+          @variables['data'].each do |measure|
+            next unless measure['enabled']
+
+            @measure_paths.each do |measure_path|
+              measure_dir_to_add = "#{measure_path}/#{measure['measure_file_name_directory']}"
+              if Dir.exist? measure_dir_to_add
+                if File.exist? "#{measure_dir_to_add}/measure.rb"
+                  measure['local_path_to_measure'] = "#{measure_dir_to_add}/measure.rb"
+                  break
+                else
+                  fail "Measure in directory '#{measure_dir_to_add}' did not contain a measure.rb file"
                 end
               end
-
-              fail "Could not find measure '#{measure['name']}' in directory named '#{measure['measure_file_name_directory']}' in the measure paths '#{@measure_paths.join(', ')}'" unless measure['local_path_to_measure']
-
-              @analysis.workflow.add_measure_from_excel(measure)
             end
 
-            @other_files.each do |library|
-              @analysis.libraries.add(library[:path], library_name: library[:lib_zip_name])
-            end
+            fail "Could not find measure '#{measure['name']}' in directory named '#{measure['measure_file_name_directory']}' in the measure paths '#{@measure_paths.join(', ')}'" unless measure['local_path_to_measure']
 
-            @worker_inits.each do |w|
-              @analysis.worker_inits.add(w[:path],  args: w[:args])
-            end
-
-            @worker_finals.each do |w|
-              @analysis.worker_finalizes.add(w[:path], args: w[:args])
-            end
-
-            # Add in the outputs
-            @outputs['output_variables'].each do |o|
-              o = Hash[o.map { |k, v| [k.to_sym, v] }]
-              @analysis.add_output(o)
-            end
-
-            @analysis.analysis_type = @problem['analysis_type']
-            @algorithm.each do |k, v|
-              @analysis.algorithm.set_attribute(k, v)
-            end
-
-            @analysis
+            a.workflow.add_measure_from_excel(measure)
           end
 
-          @analysis
+          @other_files.each do |library|
+            a.libraries.add(library[:path], library_name: library[:lib_zip_name])
+          end
+
+          @worker_inits.each do |w|
+            a.worker_inits.add(w[:path],  args: w[:args])
+          end
+
+          @worker_finals.each do |w|
+            a.worker_finalizes.add(w[:path], args: w[:args])
+          end
+
+          # Add in the outputs
+          @outputs['output_variables'].each do |o|
+            o = Hash[o.map { |k, v| [k.to_sym, v] }]
+            a.add_output(o)
+          end
+
+          a.analysis_type = @problem['analysis_type']
+          @algorithm.each do |k, v|
+            a.algorithm.set_attribute(k, v)
+          end
+
+          # clear out the seed files before adding new ones
+          a.seed_model seed_model[:path]
+
+          # clear out the weather files before adding new ones
+          a.weather_files.clear
+          @weather_paths.each do |wp|
+            a.weather_files.add_files(wp)
+          end
+
+          a
+        end
+
+        # Return an array of analyses objects of OpenStudio::Analysis::Formulation
+        def analyses
+          as = []
+          @models.map do |model|
+            as << analysis(model, @models.count > 1)
+          end
+
+          as
         end
 
         # save_analysis will iterate over each model that is defined in the spreadsheet and save the
         # zip and json file.
         def save_analysis
-          # iterate over each model and save the zip and json
-          @models.each do |model|
-            puts "Creating JSON and ZIP file for #{@name}:#{model[:display_name]}"
-            save_analysis_impl(model, @models.count > 1)
+          analyses.each do |a|
+            puts "Saving JSON and ZIP file for #{@name}:#{a.display_name}"
+            json_file_name = "#{@export_path}/#{a.name}.json"
+            FileUtils.rm_f(json_file_name) if File.exist?(json_file_name)
+            # File.open(json_file_name, 'w') { |f| f << JSON.pretty_generate(new_analysis_json) }
+
+            a.save json_file_name
+            a.save_zip "#{File.dirname(json_file_name)}/#{File.basename(json_file_name, '.*')}.zip"
           end
         end
 
@@ -266,35 +293,7 @@ module OpenStudio
         def save_single_data_point(filename = '')
         end
 
-        # New method that uses the OpenStudio::Analysis class to hold the analysis
-        def translate_to_analysis
-        end
-
         protected
-
-        # This method creates the OpenStudio::Analysis object
-        def save_analysis_impl(model, append_model_name)
-          # append the model name to the analysis name if requested (normally if there are more than 1 models in the spreadsheet)
-          if append_model_name
-            analysis.display_name = analysis.display_name + ' - ' + model[:display_name]
-          end
-
-          # clear out the seed files before adding new ones
-          analysis.seed_model model[:path]
-
-          # clear out the weather files before adding new ones
-          analysis.weather_files.clear
-          @weather_paths.each do |wp|
-            analysis.weather_files.add_files(wp)
-          end
-
-          json_file_name = "#{@export_path}/#{model[:name]}.json"
-          FileUtils.rm_f(json_file_name) if File.exist?(json_file_name)
-          # File.open(json_file_name, 'w') { |f| f << JSON.pretty_generate(new_analysis_json) }
-
-          analysis.save json_file_name
-          analysis.save_zip "#{File.dirname(json_file_name)}/#{File.basename(json_file_name, '.*')}.zip"
-        end
 
         # parse_setup will pull out the data on the "setup" tab and store it in memory for later use
         def parse_setup

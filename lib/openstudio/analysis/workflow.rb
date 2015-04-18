@@ -88,7 +88,6 @@ module OpenStudio
         # the make_variable will remove from arg and place into variables
         args = []
 
-        pp measure
         measure['variables'].each do |variable|
           args << {
             local_variable: variable['name'],
