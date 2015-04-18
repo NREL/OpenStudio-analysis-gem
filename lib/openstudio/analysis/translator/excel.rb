@@ -198,8 +198,8 @@ module OpenStudio
         # @seed_model [Hash] Seed model to set the new analysis to
         # @append_model_name [Boolean] Append the name of the seed model to the display name
         # @return [Object] An OpenStudio::Analysis
-        def analysis(seed_model=nil, append_model_name = false)
-          fail "There are no seed models defined in the excel file. Please add one." if @models.size == 0
+        def analysis(seed_model = nil, append_model_name = false)
+          fail 'There are no seed models defined in the excel file. Please add one.' if @models.size == 0
           fail "There are more than one seed models defined in the excel file. Call 'analyses' to return the array" if @models.size > 1 && seed_model.nil?
 
           seed_model = @models.first if seed_model.nil?

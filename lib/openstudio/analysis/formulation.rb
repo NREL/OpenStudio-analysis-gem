@@ -344,7 +344,5 @@ module OpenStudio
         end
       end
     end
-
-
   end
 end
