@@ -289,10 +289,6 @@ module OpenStudio
           end
         end
 
-        # Save a single data point instance -- placeholder
-        def save_single_data_point(filename = '')
-        end
-
         protected
 
         # parse_setup will pull out the data on the "setup" tab and store it in memory for later use
