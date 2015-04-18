@@ -101,7 +101,6 @@ module OpenStudio
           # grab the argument hash
           a = a.first
 
-          puts "here"
           # add more information to the argument
           v = {}
           v[:argument] = a
@@ -166,7 +165,6 @@ module OpenStudio
 
           # Clean up the variables to match the legacy format
           hash[:variables].each_with_index do |v, index|
-            puts v.inspect
             v[:variable_type] == 'pivot' ? v[:pivot] = true : v[:variable] = true
             v[:variable] = true
             v[:static_value] = v[:argument][:default_value] unless v[:static_value]
