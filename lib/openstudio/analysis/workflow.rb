@@ -70,6 +70,19 @@ module OpenStudio
         @items.last
       end
 
+      # Add a measure from the analysis hash format
+      #
+      # @params instance_name [String] The name of the instance. This allows for multiple measures to be added to the workflow with unique names
+      # @params instance_display_name [String] The display name of the instance. This allows for multiple measures to be added to the workflow with unique names
+      # @param local_path_to_measure [String] This is the local path to the measure directory, relative or absolute. It is used when zipping up all the measures.
+      # @param measure_metadata [Hash] Format of the measure.json
+      # @return [Object] Returns the measure that was added as an OpenStudio::AnalysisWorkflowStep object
+      def add_measure_from_analysis_hash(instance_name, instance_display_name, local_path_to_measure, measure_metadata)
+        @items << OpenStudio::Analysis::WorkflowStep.from_analysis_hash(instance_name, instance_display_name, local_path_to_measure, measure_metadata)
+
+        @items.last
+      end
+
       # Add a measure from the format that Excel parses into. This is a helper method to map the excel data to the new
       # programmatic interface format
       #
@@ -105,7 +118,7 @@ module OpenStudio
         m = add_measure(measure['name'], measure['display_name'], measure['local_path_to_measure'], hash)
 
         measure['variables'].each do |variable|
-          next unless ['variable', 'pivot'].include? variable['variable_type']
+          next unless %w(variable pivot).include? variable['variable_type']
 
           dist = {
             type: variable['distribution']['type'],
@@ -178,25 +191,55 @@ module OpenStudio
         end
       end
 
+      # Load from a from a hash
+      #
+      # @param h [Hash or String] Path to file or hash
+      def self.load(h)
+        # get the version of the file
+        file_format_version = h[:file_format_version] ? h[:file_format_version] : 1
+        puts "Parsing file version #{file_format_version}"
+
+        o = OpenStudio::Analysis::Workflow.new
+
+        h[:workflow].each do |wf|
+          puts "Adding measure #{wf[:name]}"
+
+          # Go though the defined measure paths and try and find the local measure
+          local_measure_dir = nil
+          if wf[:measure_definition_directory_local] && Dir.exist?(wf[:measure_definition_directory_local])
+            local_measure_dir = wf[:measure_definition_directory_local]
+          else
+            # search in the measure paths for the measure
+            OpenStudio::Analysis.measure_paths.each do |p|
+              test_dir = File.join(p, File.basename(wf[:measure_definition_directory]))
+              if Dir.exist?(test_dir)
+                local_measure_dir = test_dir
+                break
+              end
+            end
+          end
+
+          fail "Could not find local measure when loading workflow for #{wf[:measure_definition_class_name]} in #{File.basename(wf[:measure_definition_directory])}. You may have to add measure paths to OpenStudio::Analysis.measure_paths" unless local_measure_dir
+
+          o.add_measure_from_analysis_hash(wf[:name], wf[:display_name], local_measure_dir, wf)
+        end
+
+        o
+      end
+
       # Read the Workflow description from a persisted file. The format at the moment is the current analysis.json
       #
       # @params filename [String] Path to file with the analysis.json to load
       # @return [Object] Return an instance of the workflow object
       def self.from_file(filename)
+        o = nil
         if File.exist? filename
           j = JSON.parse(File.read(filename), symbolize_names: true)
-
-          # get the version of the file
-          file_format_version = j[:file_format_version] ? j[:file_format_version] : 1
-
-          puts "Parsing file version #{file_format_version}"
-
+          o = OpenStudio::Analysis::Workflow.load(j)
         else
           fail "Could not find workflow file #{filename}"
         end
 
-        o = OpenStudio::Analysis::Workflow.new
-        # put the JSON into the right format
         o
       end
     end

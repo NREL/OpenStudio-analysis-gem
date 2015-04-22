@@ -4,6 +4,17 @@ module OpenStudio
     SeedModel = Struct.new(:file)
     WeatherFile = Struct.new(:file)
 
+    @@measure_paths = ['./measures']
+    # List of paths to look for measures when adding them. This currently only is used when loading an
+    # analysis hash file. It looks in the order of the measure_paths. As soon as it finds one, it stops.
+    def self.measure_paths
+      @@measure_paths
+    end
+
+    def self.measure_paths=(new_array)
+      @@measure_paths = new_array
+    end
+
     class Formulation
       attr_reader :seed_model
       attr_reader :weather_file
@@ -58,16 +69,16 @@ module OpenStudio
       # Path to the seed model
       #
       # @param path [String] Path to the seed model. This should be relative.
-      def seed_model(file)
-        @seed_model = SeedModel.new(file)
+      def seed_model=(file)
+        @seed_model[:file] = file
       end
 
       # Path to the weather file (or folder). If it is a folder, then the measures will look for the weather file
       # by name in that folder.
       #
       # @param path [String] Path to the weather file or folder.
-      def weather_file(file)
-        @weather_file = WeatherFile.new(file)
+      def weather_file=(file)
+        @weather_file[:file] = file
       end
 
       # Add an output of interest to the problem formulation
@@ -110,6 +121,7 @@ module OpenStudio
       def name
         @display_name.snake_case
       end
+
       # return a hash.
       #
       # @param version [Integer] Version of the format to return
@@ -171,6 +183,36 @@ module OpenStudio
         else
           fail "Version #{version} not defined for #{self.class} and #{__method__}"
         end
+      end
+
+      # Load the analysis JSON from a hash (with symbolized keys)
+      def self.from_hash(h, seed_dir = nil, weather_dir = nil)
+        o = OpenStudio::Analysis::Formulation.new(h[:analysis][:display_name])
+
+        version = 1
+        if version == 1
+          h[:analysis][:output_variables].each do |ov|
+            o.add_output(ov)
+          end
+
+          o.workflow = OpenStudio::Analysis::Workflow.load(workflow: h[:analysis][:problem][:workflow])
+
+          if weather_dir
+            o.weather_file "#{weather_path}/#{File.basename(h[:analysis][:weather_file][:path])}"
+          else
+            o.weather_file = h[:analysis][:weather_file][:path]
+          end
+
+          if seed_dir
+            o.seed_model "#{weather_path}/#{File.basename(h[:analysis][:seed][:path])}"
+          else
+            o.seed_model = h[:analysis][:seed][:path]
+          end
+        else
+          fail "Version #{version} not defined for #{self.class} and #{__method__}"
+        end
+
+        o
       end
 
       # return a hash of the data point with the static variables set

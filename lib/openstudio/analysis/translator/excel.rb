@@ -254,7 +254,7 @@ module OpenStudio
           end
 
           # clear out the seed files before adding new ones
-          a.seed_model seed_model[:path]
+          a.seed_model = seed_model[:path]
 
           # clear out the weather files before adding new ones
           a.weather_files.clear

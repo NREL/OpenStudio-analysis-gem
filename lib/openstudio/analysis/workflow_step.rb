@@ -256,7 +256,9 @@ module OpenStudio
         s.type = hash[:measure_type] # this is actually the measure type
         if hash[:arguments]
           hash[:arguments].each do |arg|
-            var_type = arg[:variable_type].downcase
+            # warn the user to we need to deprecate variable_type and use value_type (which is what os server uses)
+            var_type = arg[:variable_type] ? arg[:variable_type].downcase : arg[:value_type]
+
             if var_type == 'choice'
               # WARN the user that the measure had a "choice data type"
               var_type = 'string'
@@ -270,6 +272,117 @@ module OpenStudio
               default_value: arg[:default_value],
               value: arg[:default_value]
             }
+          end
+        end
+
+        # Load the arguments of variables, but do not make them variables. This format is more about arugments, than variables
+        if hash[:variables]
+          hash[:variables].each do |variable|
+            # add the arguments first
+            s.arguments << {
+              display_name: variable[:argument][:display_name],
+              display_name_short: variable[:argument][:display_name_short],
+              name: variable[:argument][:name],
+              value_type: variable[:argument][:value_type],
+              default_value: variable[:argument][:default_value],
+              value: variable[:argument][:default_value]
+            }
+          end
+        end
+
+        s
+      end
+
+      # Read the workflow item from a analysis hash. Can we combine measure hash and analysis hash?
+      #
+      # @param instance_name [String] Machine name of the instance
+      # @param instance_display_name [String] Display name of the instance
+      # @param path_to_measure [String] This is the local path to the measure directroy, relative or absolute. It is used when zipping up all the measures.
+      # @param hash [Hash] Measure hash in the format of the measure.json (from the Analysis Spreadsheet project)
+      # @param options [Hash] Optional arguments
+      # @option options [Boolean] :ignore_not_found Do not raise an exception if the measure could not be found on the machine
+      # @return [Object] Returns the OpenStudio::Analysis::WorkflowStep
+      def self.from_analysis_hash(instance_name, instance_display_name, path_to_measure, hash, options = {})
+        # TODO: Validate the hash
+        # TODO: validate that the measure exists?
+
+        if File.directory? path_to_measure
+          path_to_measure = File.join(path_to_measure, 'measure.rb')
+        end
+
+        # verify that the path to the measure is a path and not a file. If it is make it a path
+        if File.exist?(path_to_measure) && File.file?(path_to_measure)
+          path_to_measure = File.dirname(path_to_measure)
+        else
+          fail "Could not find measure '#{instance_name}' in '#{path_to_measure}'" unless options[:ignore_not_found]
+        end
+
+        # Extract the directo
+        path_to_measure_local = path_to_measure
+        path_to_measure = "./measures/#{File.basename(path_to_measure)}"
+
+        # map the BCL hash format into the OpenStudio WorkflowStep format
+        s = OpenStudio::Analysis::WorkflowStep.new
+
+        # add the instance and display name
+        s.name = instance_name
+        s.display_name = instance_display_name
+
+        # definition of the measure
+        s.measure_definition_class_name = hash[:measure_definition_class_name]
+        s.measure_definition_directory = path_to_measure
+        s.measure_definition_directory_local = path_to_measure_local
+        s.measure_definition_display_name = hash[:measure_definition_display_name]
+        s.measure_definition_name = hash[:measure_definition_name]
+        # name_xml is not used right now but eventually should be used to compare the hash[:name] and the hash[:name_xml]
+        s.measure_definition_name_xml = hash[:measure_definition_name_xml]
+        s.measure_definition_uuid = hash[:measure_definition_uuid]
+        s.measure_definition_version_uuid = hash[:measure_definition_version_uuid]
+
+        s.type = hash[:measure_type] # this is actually the measure type
+        if hash[:arguments]
+          hash[:arguments].each do |arg|
+            # warn the user to we need to deprecate variable_type and use value_type (which is what os server uses)
+            var_type = arg[:value_type]
+
+            if var_type == 'choice'
+              # WARN the user that the measure had a "choice data type"
+              var_type = 'string'
+            end
+
+            s.arguments << {
+              display_name: arg[:display_name],
+              display_name_short: arg[:display_name_short],
+              name: arg[:name],
+              value_type: var_type,
+              default_value: arg[:default_value],
+              value: arg[:value]
+            }
+          end
+        end
+
+        if hash[:variables]
+          hash[:variables].each do |variable|
+            # add the arguments first
+            s.arguments << {
+              display_name: variable[:argument][:display_name],
+              display_name_short: variable[:argument][:display_name_short],
+              name: variable[:argument][:name],
+              value_type: variable[:argument][:value_type],
+              default_value: variable[:argument][:default_value],
+              value: variable[:argument][:default_value]
+            }
+
+            var_options = {}
+            var_options[:variable_type] = variable[:variable_type]
+            var_options[:variable_display_name_short] = variable[:display_name_short]
+            distribution =  variable[:uncertainty_description]
+            distribution[:minimum] = variable[:minimum]
+            distribution[:mean] = distribution[:attributes].find { |a| a[:name] == 'modes' }[:value]
+            distribution[:maximum] = variable[:maximum]
+            distribution[:standard_deviation] = distribution[:attributes].find { |a| a[:name] == 'stddev' }[:value]
+            distribution[:step_size] = distribution[:attributes].find { |a| a[:name] == 'delta_x' }[:value]
+            s.make_variable(variable[:argument][:name], variable[:display_name], distribution, var_options)
           end
         end
 

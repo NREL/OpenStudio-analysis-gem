@@ -8,20 +8,32 @@ describe OpenStudio::Analysis::Formulation do
     expect(a).to be_a OpenStudio::Analysis::Formulation
   end
 
+  it 'should add measure paths' do
+    expect(OpenStudio::Analysis.measure_paths).to eq ['./measures']
+    OpenStudio::Analysis.measure_paths = %w(a b)
+    expect(OpenStudio::Analysis.measure_paths).to eq %w(a b)
+
+    # append a measure apth
+    OpenStudio::Analysis.measure_paths << 'c'
+    expect(OpenStudio::Analysis.measure_paths).to eq %w(a b c)
+  end
+
   it 'should have a workflow object' do
     a = OpenStudio::Analysis.create('workflow')
     expect(a.workflow).not_to be nil
   end
 
   it 'should load the workflow from a file' do
+    OpenStudio::Analysis.measure_paths << 'spec/files/measures'
     a = OpenStudio::Analysis.create('workflow')
-    file = File.join('spec/files/analysis/examples/medium_office_example.json')
+    file = File.join('spec/files/analysis/examples/medium_office_workflow.json')
     expect(a.workflow = OpenStudio::Analysis::Workflow.from_file(file)).not_to be nil
   end
 
   it 'should save a hash (version 1)' do
+    OpenStudio::Analysis.measure_paths << 'spec/files/measures'
     a = OpenStudio::Analysis.create('workflow 2')
-    file = File.join('spec/files/analysis/examples/medium_office_example.json')
+    file = File.join('spec/files/analysis/examples/medium_office_workflow.json')
     expect(a.workflow = OpenStudio::Analysis::Workflow.from_file(file)).not_to be nil
     h = a.to_hash
     # expect(h[:workflow].empty?).not_to eq true
@@ -95,8 +107,10 @@ describe OpenStudio::Analysis::Formulation do
     }
     a.add_output(o)
 
-    a.seed_model('spec/files/small_seed.osm')
-    a.weather_file('spec/files/partial_weather.epw')
+    a.seed_model = 'spec/files/small_seed.osm'
+    a.weather_file = 'spec/files/partial_weather.epw'
+
+    expect(a.seed_model.first).to eq 'spec/files/small_seed.osm'
 
     expect(a.to_hash[:analysis][:problem][:algorithm][:objective_functions]).to match ['total_natural_gas']
     expect(a.analysis_type).to eq 'single_run'

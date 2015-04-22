@@ -572,7 +572,6 @@ describe OpenStudio::Analysis::Translator::Excel do
       expect(j['analysis']['problem']['workflow'][1]['variables'][0]['variable']).to eq true
       expect(j['analysis']['problem']['workflow'][1]['variables'][0]['pivot']).to eq nil
 
-
       expect(@excel.settings['openstudio_server_version']).to eq('1.11.0-rc2')
       expect(@excel.settings['spreadsheet_version']).to eq '0.3.7'
       expect(@excel.settings['server_instance_type']).to eq 'm3.xlarge'
