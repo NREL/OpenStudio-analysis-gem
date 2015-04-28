@@ -66,6 +66,16 @@ module OpenStudio
         a[:value] == value
       end
 
+      # Return a variable by its name.
+      #
+      # @param name [String] Name of the arugment that makes the variable.
+      # @return [Object] The variable object
+      def find_variable_by_name(name)
+        v = @variables.find { |v| v[:argument][:name] == name }
+
+        v
+      end
+
       # Tag a measure's argument as a variable.
       #
       # @param argument_name [String] The instance_name of the measure argument that is to be tagged. This is the same name as the argument's variable in the measure.rb file.
@@ -178,6 +188,8 @@ module OpenStudio
             if v[:type] =~ /discrete/
               new_h = {}
               new_h[:name] = 'discrete'
+
+              # check the weights
               new_h[:values_and_weights] = v.delete(:values).zip(v.delete(:weights)).map { |w| { value: w[0], weight: w[1] } }
               v[:uncertainty_description][:attributes] << new_h
             end
