@@ -703,7 +703,7 @@ module OpenStudio
       end
 
       # creates a new analysis and runs rgenoud optimization - number of generations isn't used right now
-      def run_rgenoud(formulation_filename, analysis_zip_filename, _number_of_generations)
+      def run_rgenoud(formulation_filename, analysis_zip_filename)
         project_options = {}
         project_id = new_project(project_options)
 
@@ -790,9 +790,9 @@ module OpenStudio
         }
         start_analysis(analysis_id, run_options)
 
-        # If the analysis is LHS, then go ahead and run batch run because there is
+        # If the analysis is a staged analysis, then go ahead and run batch run because there is
         # no explicit way to tell the system to do it
-        if analysis_type == 'lhs' || analysis_type == 'preflight' || analysis_type == 'single_run' || analysis_type == 'doe'
+        if ['lhs', 'preflight', 'single_run', 'repeat_run',' doe'].include? analysis_type
           run_options = {
             analysis_action: 'start',
             without_delay: false,
