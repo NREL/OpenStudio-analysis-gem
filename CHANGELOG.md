@@ -1,11 +1,11 @@
 OpenStudio Analysis Gem Change Log
 ==================================
 
-Unreleased Version
+Version 0.4.3
 ------------------
 * Add defaults to the OpenStudio::Analysis::ServerApi .run method.
 * Bug fix for path to the measure if there was more than one depth of the directory.
-* Add measure_definition_directory_local to store where the path to the original measure.
+* Add measure_definition_directory_local to store the path to the original measure.
 * run_analysis will be deprecated in 0.5.0. Use start_analysis instead of run_analysis.
 * Less stringent check on column names in Excel which caused errors at times.
 * Do not error out when a measure argument is a String or Choice and does not contain Enumerations.
