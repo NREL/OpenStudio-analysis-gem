@@ -4,6 +4,7 @@ gemspec
 gem 'rake'
 
 group :test do
+  gem 'coveralls', require: false
   gem 'rspec', '~> 3.2.0'
   gem 'ci_reporter_rspec'
   gem 'rubocop', '~> 0.31'
