@@ -1,7 +1,6 @@
 source 'http://rubygems.org'
-gemspec
 
-gem 'rake'
+gemspec
 
 group :test do
   gem 'coveralls', require: false
