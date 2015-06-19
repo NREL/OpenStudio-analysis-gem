@@ -1,6 +1,11 @@
 OpenStudio Analysis Gem Change Log
 ==================================
 
+Version 0.4.4
+------------------
+* Increment objective function count only if they are true
+* Do not add an output if the variable name has already been added
+
 Version 0.4.3
 ------------------
 * Add defaults to the OpenStudio::Analysis::ServerApi .run method.

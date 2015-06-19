@@ -107,14 +107,23 @@ module OpenStudio
           scaling_factor: nil
         }.merge(output_hash)
 
-        # if the objective_function index is nil and the variable is an objective function, then increment and
-        # assign and objective function index
-        unless output_hash[:objective_function_index]
-          values = @outputs.map { |o| o[:objective_function_index] }
-          output_hash[:objective_function_index] = values.empty? ? 0 : values.max + 1
+        # Check if the name is already been added. Note that if the name is added again, it will not update any of
+        # the fields
+        exist = @outputs.select { |o| o[:name] == output_hash[:name] }
+        if exist.empty?
+          # if the variable is an objective_function, then increment and
+          # assign and objective function index
+          if output_hash[:objective_function]
+            values = @outputs.select { |o| o[:objective_function] }
+            output_hash[:objective_function_index] = values.size # size is already +1
+          else
+            output_hash[:objective_function] = false
+          end
+
+          @outputs << output_hash
         end
 
-        @outputs << output_hash
+        @outputs
       end
 
       # return the machine name of the analysis
@@ -372,8 +381,6 @@ module OpenStudio
               if File.directory?(file)
                 if File.basename(file) == 'resources' || File.basename(file) == 'lib'
                   add_directory_to_zip(zf, file, "#{measure.measure_definition_directory}/#{File.basename(file)}")
-                else
-                  # puts "Skipping Directory #{File.basename(file)}"
                 end
               else
                 # puts "Adding File #{file}"

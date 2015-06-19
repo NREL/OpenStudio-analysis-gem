@@ -69,6 +69,42 @@ describe OpenStudio::Analysis::Formulation do
       objective_function: true
     )
     expect(a.to_hash[:analysis][:output_variables].last[:objective_function_index]).to eq 1
+
+    a.add_output(
+      display_name: 'Another Output Not Objective Function',
+      name: 'standard_report_legacy.output_3',
+      units: 'MJ/m2',
+      objective_function: false
+    )
+
+    a.add_output(
+      display_name: 'Another Output 4',
+      name: 'standard_report_legacy.output_4',
+      units: 'MJ/m2',
+      objective_function: true
+    )
+    expect(a.to_hash[:analysis][:output_variables].last[:objective_function_index]).to eq 2
+  end
+
+  it 'should not add the same output' do
+    a = OpenStudio::Analysis.create('my analysis')
+
+    a.add_output(
+      display_name: 'Total Natural Gas',
+      name: 'standard_report_legacy.total_natural_gas',
+      units: 'MJ/m2',
+      objective_function: true
+    )
+
+    a.add_output(
+      display_name: 'Total Natural Gas',
+      name: 'standard_report_legacy.total_natural_gas',
+      units: 'MJ/m2',
+      objective_function: false # this doesn't do anything
+    )
+
+    expect(a.to_hash[:analysis][:output_variables].size).to eq 1
+    expect(a.to_hash[:analysis][:output_variables].last[:objective_function]).to eq true
   end
 
   it 'should create a new formulation' do

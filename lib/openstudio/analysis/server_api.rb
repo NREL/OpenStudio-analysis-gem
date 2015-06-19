@@ -14,7 +14,7 @@ module OpenStudio
 
         fail 'no host defined for server api class' if @hostname.nil?
 
-        # todo: add support for the proxy
+        # TODO: add support for the proxy
 
         # create connection with basic capabilities
         @conn = Faraday.new(url: @hostname) do |faraday|
@@ -575,8 +575,6 @@ module OpenStudio
 
         if response.status == 200
           puts "Killed analysis #{analysis_id}"
-        else
-          # raise "Could not kill the analysis with response of #{response.inspect}"
         end
       end
 
@@ -792,7 +790,7 @@ module OpenStudio
 
         # If the analysis is a staged analysis, then go ahead and run batch run because there is
         # no explicit way to tell the system to do it
-        if ['lhs', 'preflight', 'single_run', 'repeat_run','doe'].include? analysis_type
+        if %w(lhs preflight single_run repeat_run doe).include? analysis_type
           run_options = {
             analysis_action: 'start',
             without_delay: false,

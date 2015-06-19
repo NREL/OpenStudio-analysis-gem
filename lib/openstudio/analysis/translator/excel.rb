@@ -54,7 +54,7 @@ module OpenStudio
           @worker_finals = []
           @export_path = './export'
           @measure_paths = []
-          @number_of_samples = 0 # todo: remove this
+          @number_of_samples = 0 # TODO: remove this
           @problem = {}
           @algorithm = {}
           @outputs = {}
