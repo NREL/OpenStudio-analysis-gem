@@ -1,6 +1,10 @@
 OpenStudio Analysis Gem Change Log
 ==================================
 
+Version Unreleased 
+------------------
+* Add diag analysis type to server_api run method
+
 Version 0.4.4
 ------------------
 * Increment objective function count only if they are true
