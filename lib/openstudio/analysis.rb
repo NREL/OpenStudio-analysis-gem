@@ -20,5 +20,21 @@ module OpenStudio
       excel.process
       excel.analyses
     end
+
+    #Retrieve aws instance options from a project. This will return a hash
+    def self.aws_instance_options(filename)
+      excel = OpenStudio::Analysis::Translator::Excel.new(filename)
+      excel.process
+      options = {
+        :os_server_version => excel.settings['openstudio_server_version'],
+	   :server_instance_type => excel.settings['server_instance_type'],
+	   :worker_instance_type => excel.settings['worker_instance_type'],
+	   :user_id => excel.settings['user_id'],
+	   :aws_tags => excel.aws_tags,
+	   :analysis_type => excel.analyses.first.analysis_type
+      }
+
+      options
+    end
   end
 end
