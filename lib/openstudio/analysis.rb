@@ -29,7 +29,7 @@ module OpenStudio
         :os_server_version => excel.settings['openstudio_server_version'],
 	   :server_instance_type => excel.settings['server_instance_type'],
 	   :worker_instance_type => excel.settings['worker_instance_type'],
-           :worker_node_number => excel.settings['worker_nodes']to_i,
+           :worker_node_number => excel.settings['worker_nodes'].to_i,
 	   :user_id => excel.settings['user_id'],
 	   :aws_tags => excel.aws_tags,
 	   :analysis_type => excel.analyses.first.analysis_type
