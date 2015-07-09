@@ -32,7 +32,8 @@ module OpenStudio
            :worker_node_number => excel.settings['worker_nodes'].to_i,
 	   :user_id => excel.settings['user_id'],
 	   :aws_tags => excel.aws_tags,
-	   :analysis_type => excel.analyses.first.analysis_type
+	   :analysis_type => excel.analyses.first.analysis_type,
+           :cluster_name => excel.cluster_name
       }
 
       options
