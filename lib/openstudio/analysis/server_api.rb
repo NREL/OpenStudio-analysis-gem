@@ -5,6 +5,9 @@ module OpenStudio
     class ServerApi
       attr_reader :hostname
 
+      # Define set of anlaysis methods require batch_run to be queued after them
+      BATCH_RUN_METHODS = ['lhs', 'preflight', 'single_run', 'repeat_run', 'doe', 'diag', 'baseline_perturbation']
+
       def initialize(options = {})
         defaults = { hostname: 'http://localhost:8080' }
         options = defaults.merge(options)
@@ -826,7 +829,7 @@ module OpenStudio
 
         # If the analysis is a staged analysis, then go ahead and run batch run because there is
         # no explicit way to tell the system to do it
-        if %w(lhs preflight single_run repeat_run doe diag baseline_perturbation).include? analysis_type
+        if BATCH_RUN_METHODS.include? analysis_type
           run_options = {
             analysis_action: 'start',
             without_delay: false,
