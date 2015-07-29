@@ -6,7 +6,7 @@ module OpenStudio
       attr_reader :hostname
 
       # Define set of anlaysis methods require batch_run to be queued after them
-      BATCH_RUN_METHODS = ['lhs', 'preflight', 'single_run', 'repeat_run', 'doe', 'diag', 'baseline_perturbation']
+      BATCH_RUN_METHODS = ['lhs', 'preflight', 'single_run', 'repeat_run', 'doe', 'diag', 'baseline_perturbation', 'batch_datapoints']
 
       def initialize(options = {})
         defaults = { hostname: 'http://localhost:8080' }
