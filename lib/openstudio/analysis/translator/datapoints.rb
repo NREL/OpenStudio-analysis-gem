@@ -290,19 +290,19 @@ module OpenStudio
             @other_files << {lib_zip_name: library_name, path: config_hash[:library_path]}
           end
 
-          @run_setup['allow_multiple_jobs'] = config_hash[:allow_multiple_jobs].to_s.to_bool if config_hash[:allow_multiple_jobs]
-          @run_setup['use_server_as_worker'] = config_hash[:use_server_as_worker].to_s.to_bool if config_hash[:use_server_as_worker]
+          @run_setup[:allow_multiple_jobs] = config_hash[:allow_multiple_jobs].to_s.to_bool if config_hash[:allow_multiple_jobs]
+          @run_setup[:use_server_as_worker] = config_hash[:use_server_as_worker].to_s.to_bool if config_hash[:use_server_as_worker]
 
           # Assign AWS settings
-          @settings['proxy_port'] = config_hash[:proxy_port] if config_hash[:proxy_port]
-          @settings['cluster_name'] = config_hash[:cluster_name] if config_hash[:cluster_name]
-          @settings['user_id'] = config_hash[:user_id] if config_hash[:user_id]
-          @settings['os_server_version'] = config_hash[:os_server_version] if config_hash[:os_server_version]
-          @settings['server_instance_type'] = config_hash[:server_instance_type] if config_hash[:server_instance_type]
-          @settings['worker_instance_type'] = config_hash[:worker_instance_type] if config_hash[:worker_instance_type]
-          @settings['worker_node_number'] = config_hash[:worker_node_number].to_i if config_hash[:worker_node_number]
-          @settings['aws_tags'] = config_hash[:aws_tags] if config_hash[:aws_tags]
-          @settings['analysis_type'] = 'batch_datapoints'
+          @settings[:proxy_port] = config_hash[:proxy_port] if config_hash[:proxy_port]
+          @settings[:cluster_name] = config_hash[:cluster_name] if config_hash[:cluster_name]
+          @settings[:user_id] = config_hash[:user_id] if config_hash[:user_id]
+          @settings[:os_server_version] = config_hash[:os_server_version] if config_hash[:os_server_version]
+          @settings[:server_instance_type] = config_hash[:server_instance_type] if config_hash[:server_instance_type]
+          @settings[:worker_instance_type] = config_hash[:worker_instance_type] if config_hash[:worker_instance_type]
+          @settings[:worker_node_number] = config_hash[:worker_node_number].to_i if config_hash[:worker_node_number]
+          @settings[:aws_tags] = config_hash[:aws_tags] if config_hash[:aws_tags]
+          @settings[:analysis_type] = 'batch_datapoints'
         end
 
         def parse_rows
@@ -347,7 +347,7 @@ module OpenStudio
               var = var[0]
               var_hash = {}
               var_json = measure_json['arguments'].select{|hash| hash['local_variable'] == var.to_s}[0]
-              var_hash[:variable_type] = var_json['variable_type']
+              var_hash[:variable_type] = 'variable'
               var_hash[:display_name] = @csv[3][measure_map[measure][var]]
               var_hash[:display_name_short] = var_hash[:display_name]
               var_hash[:name] = var_json['local_variable']
