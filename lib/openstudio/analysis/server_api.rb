@@ -846,14 +846,11 @@ module OpenStudio
         project_options = {}
         project_id = new_project(project_options)
 
-        puts 'In run_analysis_detailed'
-        puts 'analysis_type'
         analysis_options = {
           formulation_file: formulation_filename,
           upload_file: analysis_zip_filename,
           reset_uuids: true
         }
-        pp analysis_options
 
         analysis_id = new_analysis(project_id, analysis_options)
 

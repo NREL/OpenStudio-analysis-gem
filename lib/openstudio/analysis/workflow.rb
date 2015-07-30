@@ -161,7 +161,7 @@ module OpenStudio
         m = add_measure(measure[:measure_data][:name], measure[:measure_data][:display_name], measure[:measure_data][:local_path_to_measure], hash)
 
         measure[:vars].each do |variable|
-          next unless %w(variable pivot).include? variable['variable_type']
+          next unless %w(variable pivot).include? variable[:variable_type]
 
           dist = variable[:distribution]
           opt = {

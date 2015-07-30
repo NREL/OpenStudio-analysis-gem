@@ -386,11 +386,11 @@ module OpenStudio
             data[measure_index][:args] = []
             measure_json['arguments'].each do |arg_json|
               arg = {}
-              arg[:value_type] = arg_json['variable_type'],
-              arg[:name] = arg_json['name'],
-              arg[:display_name] = arg_json['display_name'],
-              arg[:display_name_short] = arg_json['display_name'],
-              arg[:default_value] = arg_json['default_value'],
+              arg[:value_type] = arg_json['variable_type'].downcase
+              arg[:name] = arg_json['name']
+              arg[:display_name] = arg_json['display_name']
+              arg[:display_name_short] = arg_json['display_name']
+              arg[:default_value] = arg_json['default_value']
               arg[:value] = arg_json['default_value']
               data[measure_index][:args] << arg
             end          

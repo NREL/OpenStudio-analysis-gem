@@ -31,7 +31,7 @@ module OpenStudio
 
     #Retrieve aws instance options from a project. This will return a hash
     def self.aws_instance_options(filename)
-      if File.extname(filename) == ".xlsx"
+      if File.extname(filename) == '.xlsx'
         excel = OpenStudio::Analysis::Translator::Excel.new(filename)
         excel.process
         options = {
@@ -44,7 +44,7 @@ module OpenStudio
           :analysis_type => excel.analyses.first.analysis_type,
           :cluster_name => excel.cluster_name
         }
-      elsif File.extname(filename) == ".csv"
+      elsif File.extname(filename) == '.csv'
         csv = OpenStudio::Analysis::Translator::Datapoints.new(filename)
         csv.process
         options = csv.settings
