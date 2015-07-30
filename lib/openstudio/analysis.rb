@@ -24,7 +24,7 @@ module OpenStudio
     # Load an set of batch datapoints from a csv. This will create a analysis
     # of type 'batch_datapoints' which requires 'batch_run'
     def self.from_csv(filename)
-      csv = OpenStudio::Analysis::Translator::CSV.new(filename)
+      csv = OpenStudio::Analysis::Translator::Datapoints.new(filename)
       csv.process
       csv.analysis
     end
@@ -45,7 +45,7 @@ module OpenStudio
           :cluster_name => excel.cluster_name
         }
       elsif File.extname(filename) == ".csv"
-        csv = OpenStudio::Analysis::Translator::CSV.new(filename)
+        csv = OpenStudio::Analysis::Translator::Datapoints.new(filename)
         csv.process
         options = csv.settings
       else

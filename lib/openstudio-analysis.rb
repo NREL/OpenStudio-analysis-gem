@@ -29,7 +29,7 @@ require 'openstudio/analysis/algorithm_attributes'
 
 # translators
 require 'openstudio/analysis/translator/excel'
-require 'openstudio/analysis/translator/csv'
+require 'openstudio/analysis/translator/datapoints'
 
 # helpers / core_ext
 require 'openstudio/helpers/string'
