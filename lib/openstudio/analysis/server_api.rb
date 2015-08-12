@@ -6,6 +6,9 @@ module OpenStudio
       attr_reader :hostname
       BATCH_RUN_METHODS = ['lhs', 'preflight', 'single_run', 'repeat_run', 'doe', 'diag', 'baseline_perturbation', 'batch_datapoints']
 
+      # Define set of anlaysis methods require batch_run to be queued after them
+      BATCH_RUN_METHODS = ['lhs', 'preflight', 'single_run', 'repeat_run', 'doe', 'diag', 'baseline_perturbation', 'batch_datapoints']
+
       def initialize(options = {})
         defaults = { hostname: 'http://localhost:8080' }
         options = defaults.merge(options)
@@ -799,6 +802,44 @@ module OpenStudio
         analysis_id
       end
 
+      def run_batch_datapoints(formulation_filename, analysis_zip_filename)
+        project_options = {}
+        project_id = new_project(project_options)
+
+        puts "In run_batch_datapoints"
+
+        analysis_options = {
+          formulation_file: formulation_filename,
+          upload_file: analysis_zip_filename,
+          reset_uuids: true
+        }
+        analysis_id = new_analysis(project_id, analysis_options)
+
+        run_options = {
+          analysis_action: 'start',
+          without_delay: false,
+          analysis_type: 'batch_datapoints',
+          allow_multiple_jobs: true,
+          use_server_as_worker: true,
+          simulate_data_point_filename: 'simulate_data_point.rb',
+          run_data_point_filename: 'run_openstudio_workflow_monthly.rb'
+        }
+        start_analysis(analysis_id, run_options)
+
+        run_options = {
+          analysis_action: 'start',
+          without_delay: false, # run in background
+          analysis_type: 'batch_run',
+          allow_multiple_jobs: true,
+          use_server_as_worker: true,
+          simulate_data_point_filename: 'simulate_data_point.rb',
+          run_data_point_filename: 'run_openstudio_workflow_monthly.rb'
+        }
+        start_analysis(analysis_id, run_options)
+
+        analysis_id
+      end
+
       def run_analysis_detailed(formulation_filename, analysis_zip_filename, analysis_type,
                                 allow_multiple_jobs = true, server_as_worker = true,
                                 run_data_point_filename = 'run_openstudio_workflow_monthly.rb')
@@ -811,6 +852,7 @@ module OpenStudio
           upload_file: analysis_zip_filename,
           reset_uuids: true
         }
+
         analysis_id = new_analysis(project_id, analysis_options)
 
         server_as_worker = true if analysis_type == 'optim' || analysis_type == 'rgenoud'
@@ -827,7 +869,7 @@ module OpenStudio
 
         # If the analysis is a staged analysis, then go ahead and run batch run because there is
         # no explicit way to tell the system to do it
-        if %w(lhs preflight single_run repeat_run doe diag baseline_perturbation).include? analysis_type
+        if BATCH_RUN_METHODS.include? analysis_type
           run_options = {
             analysis_action: 'start',
             without_delay: false,

@@ -132,7 +132,6 @@ module OpenStudio
           v[:values] = distribution[:values] if distribution[:values]
           v[:standard_deviation] = distribution[:standard_deviation] if distribution[:standard_deviation]
           v[:step_size] = distribution[:step_size] ? distribution[:step_size] : nil
-          v[:step_size] = distribution[:step_size] ? distribution[:step_size] : nil
 
           # assign uuid and version id to the variable
           v[:uuid] = SecureRandom.uuid
@@ -241,7 +240,7 @@ module OpenStudio
           fail "Could not find measure '#{instance_name}' in '#{path_to_measure}'" unless options[:ignore_not_found]
         end
 
-        # Extract the directo
+        # Extract the directory
         path_to_measure_local = path_to_measure
         path_to_measure = "./measures/#{File.basename(path_to_measure)}"
 

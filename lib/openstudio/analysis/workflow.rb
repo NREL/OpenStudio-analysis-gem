@@ -140,6 +140,40 @@ module OpenStudio
         end
       end
 
+      # Add a measure from the format that CSV parses into. This is a helper method to map the csv data to the new
+      # programmatic interface format
+      #
+      # @params measure [Hash] The measure in the format of the CSV translator
+      # @return [Object] Returns the measure that was added as an OpenStudio::AnalysisWorkflowStep object
+      def add_measure_from_csv(measure)
+        hash = {}
+        hash[:classname] = measure[:measure_data][:classname]
+        hash[:name] = measure[:measure_data][:name]
+        hash[:display_name] = measure[:measure_data][:display_name]
+        hash[:measure_type] = measure[:measure_data][:measure_type]
+        hash[:uid] = measure[:measure_data][:uid] ? measure[:measure_data][:uid] : SecureRandom.uuid
+        hash[:version_id] = measure[:measure_data][:version_id] ? measure[:measure_data][:version_id] : SecureRandom.uuid
+
+        # map the arguments - this can be a variable or argument, add them all as arguments first,
+        # the make_variable will remove from arg and place into variables
+        hash[:arguments] = measure[:args]
+
+        m = add_measure(measure[:measure_data][:name], measure[:measure_data][:display_name], measure[:measure_data][:local_path_to_measure], hash)
+
+        measure[:vars].each do |variable|
+          next unless %w(variable pivot).include? variable[:variable_type]
+
+          dist = variable[:distribution]
+          opt = {
+            variable_type: variable[:variable_type],
+            variable_display_name_short: variable[:display_name_short],
+            static_value: variable[:distribution][:mode]
+          }
+
+          m.make_variable(variable[:name], variable[:display_name], dist, opt)
+        end
+      end
+
       # Iterate over all the WorkflowItems
       def each
         @items.each { |i| yield i }
