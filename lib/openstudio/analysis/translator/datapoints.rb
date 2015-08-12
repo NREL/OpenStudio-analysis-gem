@@ -41,7 +41,6 @@ module OpenStudio
           # Remove nil rows and check row length
           @csv.delete_if {|row| row.uniq.length == 1 && row.uniq[0].nil?}
 
-
           # Initialize some other instance variables
           @version = '0.0.1'
           @analyses = [] # Array o OpenStudio::Analysis. Use method to access
@@ -64,12 +63,23 @@ module OpenStudio
         end
 
         def process
-          @setup = parse_csv
+          # Seperate CSV into meta and measure groups
+          measure_tag_index = nil
+          @csv.each_with_index { |row, index| measure_tag_index = index if row[0] == 'BEGIN-MEASURES' }
+          fail "ERROR: No 'BEGIN-MEASURES' tag found in input csv file." unless measure_tag_index
+          meta_rows = []
+          measure_rows = []
+          @csv.each_with_index do |_, index|
+            meta_rows << @csv[index] if index < measure_tag_index
+            measure_rows << @csv[index] if index > measure_tag_index
+          end
+
+          @setup = parse_csv_meta(meta_rows)
 
           @version = Semantic::Version.new @version
-          fail "Csv interface version #{@version} is no longer supported.  Please upgrade your csv interface to at least 0.0.1" if @version < '0.0.0'
+          fail "CSV interface version #{@version} is no longer supported.  Please upgrade your csv interface to at least 0.0.1" if @version < '0.0.0'
 
-          @variables = parse_rows
+          @variables = parse_csv_measures(measure_rows)
 
           # call validate to make sure everything that is needed exists (i.e. directories)
           validate_analysis
@@ -210,16 +220,11 @@ module OpenStudio
 
         protected
 
-        def parse_csv
-          # Check that the configuration row is conferable to a hash
-          config_row = @csv[0]
-          config_row.select!{|elem| !elem.nil?}
-          fail "Wrong number of key value pairs in configuration line of #{filename}" if config_row.length%2 != 0
-
+        def parse_csv_meta(meta_rows)
           # Convert to hash
           config_hash = {}
-          for i in 0..(config_row.length/2 - 1)
-            config_hash[config_row[i*2].to_sym] = config_row[i*2 + 1]
+          meta_rows.each do |row|
+            config_hash[row[0].to_sym] = row[1]
           end
 
           # Assign required attributes
@@ -305,19 +310,19 @@ module OpenStudio
           @settings[:analysis_type] = 'batch_datapoints'
         end
 
-        def parse_rows
+        def parse_csv_measures(measure_rows)
           # Build metadata required for parsing
-          measures = @csv[1].uniq.select{|measure| !measure.nil?}.map{|measure| measure.to_sym}
+          measures = measure_rows[0].uniq.select{|measure| !measure.nil?}.map{|measure| measure.to_sym}
           measure_map = {}
           measure_var_list = []
           measures.each do |measure|
             measure_map[measure] = {}
-            col_ind = (0..(@csv[1].length-1)).to_a.select{|i| @csv[1][i] == measure.to_s}
+            col_ind = (0..(measure_rows[0].length-1)).to_a.select{|i| measure_rows[0][i] == measure.to_s}
             col_ind.each do |var_ind|
-              tuple = measure.to_s + @csv[2][var_ind]
-              fail "Multiple measure_variable tuples found for '#{measure.to_s}_#{@csv[2][var_ind]}'. These tuples must be unique." if measure_var_list.include? tuple
+              tuple = measure.to_s + measure_rows[1][var_ind]
+              fail "Multiple measure_variable tuples found for '#{measure.to_s}_#{measure_rows[1][var_ind]}'. These tuples must be unique." if measure_var_list.include? tuple
               measure_var_list << tuple
-              measure_map[measure][@csv[2][var_ind].to_sym] = var_ind
+              measure_map[measure][measure_rows[1][var_ind].to_sym] = var_ind
             end
           end
 
@@ -348,7 +353,7 @@ module OpenStudio
               var_hash = {}
               var_json = measure_json['arguments'].select{|hash| hash['local_variable'] == var.to_s}[0]
               var_hash[:variable_type] = 'variable'
-              var_hash[:display_name] = @csv[3][measure_map[measure][var]]
+              var_hash[:display_name] = measure_rows[2][measure_map[measure][var]]
               var_hash[:display_name_short] = var_hash[:display_name]
               var_hash[:name] = var_json['local_variable']
               var_hash[:type] = var_json['variable_type'].downcase
@@ -356,22 +361,22 @@ module OpenStudio
               var_hash[:distribution] = {}
               case var_hash[:type]
                 when 'bool', 'boolean' # is 'boolean' necessary? it's not in the enum catch
-                  var_hash[:distribution][:values] = (4..(@csv.length-1)).map{|value| @csv[value.to_i][measure_map[measure][var]].to_s == 'true'}
+                  var_hash[:distribution][:values] = (3..(measure_rows.length-1)).map{|value| measure_rows[value.to_i][measure_map[measure][var]].to_s == 'true'}
                   var_hash[:distribution][:maximum] = true
                   var_hash[:distribution][:minimum] = false
                   var_hash[:distribution][:mode] = var_hash[:distribution][:values].group_by{|i| i}.max{|x,y| x[1].length <=> y[1].length}[0]
                 when 'choice'
-                  var_hash[:distribution][:values] = (4..(@csv.length)-1).map{|value| @csv[value.to_i][measure_map[measure][var]].to_s}
+                  var_hash[:distribution][:values] = (3..(measure_rows.length)-1).map{|value| measure_rows[value.to_i][measure_map[measure][var]].to_s}
                   var_hash[:distribution][:minimum] = var_hash[:distribution][:values].min
                   var_hash[:distribution][:maximum] = var_hash[:distribution][:values].max
                   var_hash[:distribution][:mode] = var_hash[:distribution][:values].group_by{|i| i}.max{|x,y| x[1].length <=> y[1].length}[0]
                 else
-                  var_hash[:distribution][:values] = (4..(@csv.length-1)).map{|value| eval(@csv[value.to_i][measure_map[measure][var]])}
+                  var_hash[:distribution][:values] = (3..(measure_rows.length-1)).map{|value| eval(measure_rows[value.to_i][measure_map[measure][var]])}
                   var_hash[:distribution][:minimum] = var_hash[:distribution][:values].map{|value| value.to_i}.min
                   var_hash[:distribution][:maximum] = var_hash[:distribution][:values].map{|value| value.to_i}.max
                   var_hash[:distribution][:mode] = var_hash[:distribution][:values].group_by{|i| i}.max{|x,y| x[1].length <=> y[1].length}[0]
               end
-              var_hash[:distribution][:weights] = eval('[' + "#{1.0/(@csv.length-4)}," * (@csv.length-4) + ']')
+              var_hash[:distribution][:weights] = eval('[' + "#{1.0/(measure_rows.length-3)}," * (measure_rows.length-3) + ']')
               var_hash[:distribution][:type] = 'discrete'
               var_hash[:distribution][:units] = var_hash[:units]
               if var_hash[:type] == 'choice'
