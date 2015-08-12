@@ -4,6 +4,7 @@ module OpenStudio
   module Analysis
     class ServerApi
       attr_reader :hostname
+      BATCH_RUN_METHODS = ['lhs', 'preflight', 'single_run', 'repeat_run', 'doe', 'diag', 'baseline_perturbation', 'batch_datapoints']
 
       def initialize(options = {})
         defaults = { hostname: 'http://localhost:8080' }
