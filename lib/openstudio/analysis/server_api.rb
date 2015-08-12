@@ -4,7 +4,6 @@ module OpenStudio
   module Analysis
     class ServerApi
       attr_reader :hostname
-      BATCH_RUN_METHODS = ['lhs', 'preflight', 'single_run', 'repeat_run', 'doe', 'diag', 'baseline_perturbation', 'batch_datapoints']
 
       # Define set of anlaysis methods require batch_run to be queued after them
       BATCH_RUN_METHODS = ['lhs', 'preflight', 'single_run', 'repeat_run', 'doe', 'diag', 'baseline_perturbation', 'batch_datapoints']
