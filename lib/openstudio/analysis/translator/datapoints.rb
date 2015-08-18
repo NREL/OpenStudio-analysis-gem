@@ -288,7 +288,7 @@ module OpenStudio
           end
 
           if config_hash[:library_path]
-            library_name = File.basename(config_hash).split('.')[0]
+            library_name = File.basename(config_hash[:library_path]).split('.')[0]
             unless (Pathname.new config_hash[:library_path]).absolute?
               config_hash[:library_path] = File.expand_path(File.join(@root_path, config_hash[:library_path]))
             end
