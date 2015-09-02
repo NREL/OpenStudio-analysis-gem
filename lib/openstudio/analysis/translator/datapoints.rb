@@ -249,7 +249,7 @@ module OpenStudio
           end
 
           fail 'Required setting not found: weather_paths' unless config_hash[:weather_paths]
-          config_hash[:weather_paths] = [config_hash[:weather_paths]] unless config_hash[:weather_paths].respond_to?(:each)
+          config_hash[:weather_paths] = eval("#{config_hash[:weather_paths]}")
           config_hash[:weather_paths].each do |path|
             if (Pathname.new path).absolute?
               @weather_paths << path
@@ -352,6 +352,7 @@ module OpenStudio
               var = var[0]
               var_hash = {}
               var_json = measure_json['arguments'].select{|hash| hash['local_variable'] == var.to_s}[0]
+              fail "measure.json for measure #{measure} does not have an argument with local_variable == #{var.to_s}" if var_json == nil
               var_hash[:variable_type] = 'variable'
               var_hash[:display_name] = measure_rows[2][measure_map[measure][var]]
               var_hash[:display_name_short] = var_hash[:display_name]
@@ -359,13 +360,13 @@ module OpenStudio
               var_hash[:type] = var_json['variable_type'].downcase
               var_hash[:units] = var_json['units']
               var_hash[:distribution] = {}
-              case var_hash[:type]
+              case var_hash[:type].downcase
                 when 'bool', 'boolean' # is 'boolean' necessary? it's not in the enum catch
                   var_hash[:distribution][:values] = (3..(measure_rows.length-1)).map{|value| measure_rows[value.to_i][measure_map[measure][var]].to_s == 'true'}
                   var_hash[:distribution][:maximum] = true
                   var_hash[:distribution][:minimum] = false
                   var_hash[:distribution][:mode] = var_hash[:distribution][:values].group_by{|i| i}.max{|x,y| x[1].length <=> y[1].length}[0]
-                when 'choice'
+                when 'choice', 'string'
                   var_hash[:distribution][:values] = (3..(measure_rows.length)-1).map{|value| measure_rows[value.to_i][measure_map[measure][var]].to_s}
                   var_hash[:distribution][:minimum] = var_hash[:distribution][:values].min
                   var_hash[:distribution][:maximum] = var_hash[:distribution][:values].max
