@@ -168,7 +168,7 @@ module OpenStudio
           if row_count == 1
             @valid = true
 
-            @city = row[1].gsub('/', '-')
+            @city = row[1].tr('/', '-')
             @state = row[2]
             @country = row[3]
             @data_type = row[4]

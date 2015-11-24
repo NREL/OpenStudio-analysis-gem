@@ -19,30 +19,26 @@ There are two ways to create an OpenStudio Analysis description:
 * Programmatically
 
 ```
-analysis = OpenStudio::Analysis.create
-analysis.seed_model = "local/dir/seed.osm"
-analysis.name = "Analysis Name"
+analysis = OpenStudio::Analysis.create('Analysis Name')
+analysis.seed_model = 'local/dir/seed.osm'
+analysis.weather_file = 'local/dir/USA_CO_Golden-NREL.724666_TMY3.epw'
 
 # override existing workflow from a file by
 analysis.workflow = OpenStudio::Analysis::Workflow.load_from_file(...)
 
 # add measures to the workflow
 wf = analysis.workflow
-wf.add_measure_from_path("path_to_measure")
-wf.add_measure_from_path("path_to_measure_2")
-
-# or allow the system to search for the measure based on default_measure_paths
-OpenStudio::Analysis.measure_paths = ['measures', '../project_specific_measures']
-wf.add_measure_by_name('measure_name')
+def add_measure_from_path(instance_name, instance_display_name, local_path_to_measure)
+wf.add_measure_from_path('instance_name', 'Display name', 'path_to_measure')
+wf.add_measure_from_path('instance_name_2', 'Display name two', 'path_to_measure_2')
 
 # make a measure's argument a variable
-m = wf.add_measure("path_to_measure_3")
+m = wf.add_measure_from_path('instance_name_3', 'Display name three', 'path_to_measure_3')
 m.make_variable('variable_argument_name', 'discrete')
 
-m = wf.add_measure('path_to_measure_4')
+m = wf.add_measure_from_path('instance_name_4', 'Display name four', 'path_to_measure_4')
 m.make_variable('variable_argument_name', 'pivot')
-m.argument_static_value('variable_argument_name', value)
-
+m.argument_value('variable_argument_name', value)
 ```
 
 

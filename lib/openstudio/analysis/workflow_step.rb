@@ -388,7 +388,7 @@ module OpenStudio
             var_options[:variable_type] = variable[:variable_type]
             var_options[:variable_display_name_short] = variable[:display_name_short]
             var_options[:static_value] = variable[:static_value]
-            distribution =  variable[:uncertainty_description]
+            distribution = variable[:uncertainty_description]
             distribution[:minimum] = variable[:minimum]
             distribution[:mean] = distribution[:attributes].find { |a| a[:name] == 'modes' }[:value]
             distribution[:maximum] = variable[:maximum]

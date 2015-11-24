@@ -178,6 +178,7 @@ module OpenStudio
       def each
         @items.each { |i| yield i }
       end
+
       # Find the measure by its instance name
       #
       # @params instance_name [String] instance name of the measure

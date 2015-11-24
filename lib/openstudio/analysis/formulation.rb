@@ -153,7 +153,7 @@ module OpenStudio
 
           if @seed_model[:file]
             h[:analysis][:seed] = {
-              file_type: File.extname(@seed_model[:file]).gsub('.', '').upcase,
+              file_type: File.extname(@seed_model[:file]).delete('.').upcase,
               path: "./seed/#{File.basename(@seed_model[:file])}"
             }
           else
@@ -171,7 +171,7 @@ module OpenStudio
 
           if wf
             h[:analysis][:weather_file] = {
-              file_type: File.extname(wf[:file]).gsub('.', '').upcase,
+              file_type: File.extname(wf[:file]).delete('.').upcase,
               path: "./weather/#{File.basename(wf[:file])}"
             }
           else
@@ -249,10 +249,12 @@ module OpenStudio
 
       # save the file to JSON. Will overwrite the file if it already exists
       #
-      # @param filename [String] Name of file to create. It will create the directory and override the file if it exists.
+      # @param filename [String] Name of file to create. It will create the directory and override the file if it exists. If no file extension is past, then it will use .json.
       # @param version [Integer] Version of the format to return
       # @return [Boolean]
       def save(filename, version = 1)
+        filename += '.json' if File.extname(filename) == ''
+
         FileUtils.mkdir_p File.dirname(filename) unless Dir.exist? File.dirname(filename)
         File.open(filename, 'w') { |f| f << JSON.pretty_generate(to_hash(version)) }
 
