@@ -4,6 +4,7 @@ OpenStudio Analysis Gem Change Log
 Version Unreleased 
 ------------------
 * Add diag analysis type to server_api run method
+* Remove support for Rubies < 2.0.
 
 Version 0.4.4
 ------------------
