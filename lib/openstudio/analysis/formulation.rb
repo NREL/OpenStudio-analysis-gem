@@ -249,7 +249,7 @@ module OpenStudio
 
       # save the file to JSON. Will overwrite the file if it already exists
       #
-      # @param filename [String] Name of file to create. It will create the directory and override the file if it exists. If no file extension is past, then it will use .json.
+      # @param filename [String] Name of file to create. It will create the directory and override the file if it exists. If no file extension is given, then it will use .json.
       # @param version [Integer] Version of the format to return
       # @return [Boolean]
       def save(filename, version = 1)
@@ -263,9 +263,13 @@ module OpenStudio
 
       # save the data point JSON with the variables set to the static values. Will overwrite the file if it already exists
       #
+      # @param filename [String] Name of file to create. It will create the directory and override the file if it exists. If no file extension is given, then it will use .json.
       # @param version [Integer] Version of the format to return
       # @return [Boolean]
       def save_static_data_point(filename, version = 1)
+        filename += '.json' if File.extname(filename) == ''
+
+        FileUtils.mkdir_p File.dirname(filename) unless Dir.exist? File.dirname(filename)
         File.open(filename, 'w') { |f| f << JSON.pretty_generate(to_static_data_point_hash(version)) }
 
         true
@@ -273,9 +277,11 @@ module OpenStudio
 
       # save the analysis zip file which contains the measures, seed model, weather file, and init/final scripts
       #
-      # @param filename [String] Name of file to create. It will create the directory and override the file if it exists.
+      # @param filename [String] Name of file to create. It will create the directory and override the file if it exists. If no file extension is given, then it will use .json.
       # @return [Boolean]
       def save_zip(filename)
+        filename += '.zip' if File.extname(filename) == ''
+
         FileUtils.mkdir_p File.dirname(filename) unless Dir.exist? File.dirname(filename)
 
         save_analysis_zip(filename)

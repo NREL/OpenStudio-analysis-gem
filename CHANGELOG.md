@@ -6,6 +6,7 @@ Version Unreleased
 * Add diag analysis type to server_api run method
 * Remove support for Rubies < 2.0.
 * Add json extension to formulation name upon save if none exists
+* Add zip extension to formulation zip upon save if none exists
 
 Version 0.4.4
 ------------------

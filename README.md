@@ -39,11 +39,32 @@ m.make_variable('variable_argument_name', 'discrete')
 m = wf.add_measure_from_path('instance_name_4', 'Display name four', 'path_to_measure_4')
 m.make_variable('variable_argument_name', 'pivot')
 m.argument_value('variable_argument_name', value)
+
+# Save off the analysis files and a static data point
+run_dir = 'local/run'
+analysis.save("#{run_dir}/analysis.json")
+analysis.save_zip("#{run_dir}/analysis.zip")
+analysis.save_static_data_point("#{run_dir}/data_point.zip")
 ```
 
+If you would like to run the data point, then you can use the OpenStudio-workflow gem.
+
+```
+require 'openstudio-workflow'
+
+run_dir = 'local/run'
+OpenStudio::Workflow.extract_archive("#{run_dir}/analysis.zip", run_dir)
+
+options = {
+    problem_filename: 'analysis.json',
+    datapoint_filename: 'data_point.json',
+    analysis_root_path: run_dir
+}
+k = OpenStudio::Workflow.load 'Local', run_dir, options
+k.run
+```
 
 ## Testing
-
 
 This gem used RSpec for testing.  To test simply run `rspec` at the command line.
 
