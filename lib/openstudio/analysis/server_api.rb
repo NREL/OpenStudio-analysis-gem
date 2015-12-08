@@ -405,7 +405,7 @@ module OpenStudio
       end
 
       def new_analysis(project_id, options)
-        defaults = { analysis_name: nil, reset_uuids: false, push_to_dencity: false }
+        defaults = { analysis_name: nil, reset_uuids: false }
         options = defaults.merge(options)
 
         fail 'No project id passed' if project_id.nil?
@@ -466,6 +466,8 @@ module OpenStudio
           puts "asked to create analysis with #{analysis_id}"
           # puts resp.inspect
           analysis_id = JSON.parse(response.body)['_id']
+          puts "options[:push_to_dencity] = #{options[:push_to_dencity]}"
+          puts 'I should run' if options[:push_to_dencity]
           upload_to_dencity(analysis_id, formulation_json) if options[:push_to_dencity]
           puts "new analysis created with ID: #{analysis_id}"
         else
@@ -524,94 +526,27 @@ module OpenStudio
         end
         fail "Analysis with user_defined_id of #{analysis_uuid} found on DEnCity." if found_analysis_uuid
 
-        # Create the analysis hash to be uploaded to DEnCity.
-        dencity_hash = {}
-        a = analysis
-        prov_fields = %w(uuid created_at name display_name description)
-        provenance = a.select { |key, _| prov_fields.include? key }
-        provenance['user_defined_id'] = local_analysis_uuid
-        provenance['user_created_date'] = Time.now
-        provenance['analysis_types'] = a['problem']['analysis_type']
-        measure_metadata = []
-        if a['problem']
-
-          if a['problem']['algorithm']
-            provenance['analysis_information'] = a['problem']['algorithm']
-          else
-            fail 'No algorithm found in the analysis.json.'
-          end
-
-          if a['problem']['workflow']
-            a['problem']['workflow'].each do |wf|
-              new_wfi = {}
-              new_wfi['id'] = wf['measure_definition_uuid']
-              new_wfi['version_id'] = wf['measure_definition_version_uuid']
-
-              # Eventually all of this could be pulled directly from BCL
-              new_wfi['name'] = wf['measure_definition_class_name'] if wf['measure_definition_class_name']
-              new_wfi['display_name'] = wf['measure_definition_display_name'] if wf['measure_definition_display_name']
-              new_wfi['type'] = wf['measure_type'] if wf['measure_type']
-              new_wfi['modeler_description'] = wf['modeler_description'] if wf['modeler_description']
-              new_wfi['description'] = wf['description'] if wf['description']
-              new_wfi['arguments'] = []
-
-              if wf['arguments']
-                wf['arguments'].each do |arg|
-                  wfi_arg = {}
-                  wfi_arg['display_name'] = arg['display_name'] if arg['display_name']
-                  wfi_arg['display_name_short'] = arg['display_name_short'] if arg['display_name_short']
-                  wfi_arg['name'] = arg['name'] if arg['name']
-                  wfi_arg['data_type'] = arg['value_type'] if arg['value_type']
-                  wfi_arg['default_value'] = nil
-                  wfi_arg['description'] = ''
-                  wfi_arg['display_units'] = '' # should be haystack compatible unit strings
-                  wfi_arg['units'] = '' # should be haystack compatible unit strings
-
-                  new_wfi['arguments'] << wfi_arg
-                end
-              end
-
-              if wf['variables']
-                wf['variables'].each do |arg|
-                  wfi_var = {}
-                  wfi_var['display_name'] = arg['argument']['display_name'] if arg['argument']['display_name']
-                  wfi_var['display_name_short'] = arg['argument']['display_name_short'] if arg['argument']['display_name_short']
-                  wfi_var['name'] = arg['argument']['name'] if arg['argument']['name']
-                  wfi_var['default_value'] = nil
-                  wfi_var['data_type'] = arg['argument']['value_type'] if arg['argument']['value_type']
-                  wfi_var['description'] = ''
-                  wfi_var['display_units'] = arg['units'] if arg['units']
-                  wfi_var['units'] = '' # should be haystack compatible unit strings
-                  new_wfi['arguments'] << wfi_var
-                end
-              end
-
-              measure_metadata << new_wfi
-            end
-          else
-            fail 'No workflow found in the analysis.json'
-          end
-
-          dencity_hash['provenance'] = provenance
-          dencity_hash['measure_definitions'] = measure_metadata
-        else
-          fail 'No problem found in the analysis.json'
-        end
-
         # Write the analysis DEnCity hash to dencity_analysis.json
         f = File.new('dencity_analysis.json', 'wb')
-        f.write(JSON.pretty_generate(dencity_hash))
+        f.write(JSON.pretty_generate(analysis))
         f.close
 
         # Upload the processed analysis json.
-        analysis = conn.load_analysis 'dencity_analysis.json'
+        upload = conn.load_analysis 'dencity_analysis.json'
+        puts upload
         begin
-          analysis_response = analysis.push
-        rescue StandardError => e
+          upload_response = upload.push
+        rescue => e
           runner.registerError("Upload failure: #{e.message} in #{e.backtrace.join('/n')}")
         else
-          print 'Successfully uploaded processed analysis json file to the DEnCity server.'
-          puts analysis_response
+          puts upload_response
+          # if upload_response.status.to_s[0] == 2
+          #   print 'Successfully uploaded processed analysis json file to the DEnCity server.'
+          # else
+          #   print 'Server returned a non-200 status. Response below.'
+          #   print upload_response
+          #   fail
+          # end
         end
       end
 
@@ -967,6 +902,8 @@ module OpenStudio
                                 allow_multiple_jobs = true, server_as_worker = true, push_to_dencity = false,
                                 run_data_point_filename = 'run_openstudio_workflow_monthly.rb')
         warn 'run_analysis_detailed will be deprecated in 0.5.0. Use run(...)'
+        puts "push_to_dencity in server_api.rb: #{push_to_dencity}"
+        puts "server_as_worker: #{server_as_worker}"
         project_options = {}
         project_id = new_project(project_options)
 
