@@ -540,13 +540,13 @@ module OpenStudio
           runner.registerError("Upload failure: #{e.message} in #{e.backtrace.join('/n')}")
         else
           puts upload_response
-          # if upload_response.status.to_s[0] == 2
-          #   print 'Successfully uploaded processed analysis json file to the DEnCity server.'
-          # else
-          #   print 'Server returned a non-200 status. Response below.'
-          #   print upload_response
-          #   fail
-          # end
+          if upload_response.status.to_s[0] == 2
+            puts 'Successfully uploaded processed analysis json file to the DEnCity server.'
+          else
+            puts 'ERROR: Server returned a non-20x status. Response below.'
+            puts upload_response
+            fail
+          end
         end
       end
 
