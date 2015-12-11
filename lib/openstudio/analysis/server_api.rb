@@ -536,11 +536,14 @@ module OpenStudio
         puts upload
         begin
           upload_response = upload.push
+          puts upload_response
         rescue => e
           runner.registerError("Upload failure: #{e.message} in #{e.backtrace.join('/n')}")
         else
-          puts upload_response
-          if upload_response.status.to_s[0] == 2
+          if NoMethodError == upload_response.class
+            fail "ERROR: Server responded with a NoMethodError: #{upload_response}"
+          end
+          if upload_response.status.to_s[0] == '2'
             puts 'Successfully uploaded processed analysis json file to the DEnCity server.'
           else
             puts 'ERROR: Server returned a non-20x status. Response below.'
