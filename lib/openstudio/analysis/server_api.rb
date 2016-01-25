@@ -534,10 +534,8 @@ module OpenStudio
 
         # Upload the processed analysis json.
         upload = conn.load_analysis 'dencity_analysis.json'
-        puts upload.inspect
         begin
           upload_response = upload.push
-          puts upload_response
         rescue => e
           runner.registerError("Upload failure: #{e.message} in #{e.backtrace.join('/n')}")
         else
