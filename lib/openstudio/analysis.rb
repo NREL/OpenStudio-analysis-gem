@@ -63,7 +63,7 @@ module OpenStudio
       provenance = {}
       provenance[:user_defined_id] = analysis_uuid
       provenance[:user_created_date] = ::Time.now
-      provenance[:analysis_types] = a[:problem][:analysis_type]
+      provenance[:analysis_types] = [a[:problem][:analysis_type]]
       provenance[:name] = a[:name]
       provenance[:display_name] = a[:display_name]
       provenance[:description] = 'Auto-generated DEnCity analysis hash using the OpenStudio Analysis Gem'
