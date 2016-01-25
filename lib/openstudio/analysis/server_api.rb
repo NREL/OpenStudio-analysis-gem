@@ -525,15 +525,16 @@ module OpenStudio
           end
         end
         fail "Analysis with user_defined_id of #{analysis_uuid} found on DEnCity." if found_analysis_uuid
+        dencity_hash = OpenStudio::Analysis.to_dencity_analysis(analysis, analysis_uuid)
 
         # Write the analysis DEnCity hash to dencity_analysis.json
         f = File.new('dencity_analysis.json', 'wb')
-        f.write(JSON.pretty_generate(analysis))
+        f.write(JSON.pretty_generate(dencity_hash))
         f.close
 
         # Upload the processed analysis json.
         upload = conn.load_analysis 'dencity_analysis.json'
-        puts upload
+        puts upload.inspect
         begin
           upload_response = upload.push
           puts upload_response
