@@ -28,6 +28,7 @@ Gem::Specification.new do |s|
   s.add_dependency 'rubyzip', '~> 1.0' # don't update because of jruby
   s.add_dependency 'semantic', '~> 1.4'
   s.add_dependency 'bcl', '~> 0.5.5'
+  s.add_dependency 'dencity', '~> 0.1.0'
 
   s.add_development_dependency 'bundler', '~> 1.7'
   s.add_development_dependency 'rake', '~> 10.0'
