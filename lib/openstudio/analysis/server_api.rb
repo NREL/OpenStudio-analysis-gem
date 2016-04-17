@@ -466,7 +466,9 @@ module OpenStudio
           puts "asked to create analysis with #{analysis_id}"
           # puts resp.inspect
           analysis_id = JSON.parse(response.body)['_id']
-
+          puts "options[:push_to_dencity] = #{options[:push_to_dencity]}"
+          puts 'I should run' if options[:push_to_dencity]
+          upload_to_dencity(analysis_id, formulation_json) if options[:push_to_dencity]
           puts "new analysis created with ID: #{analysis_id}"
         else
           fail 'Could not create new analysis'
@@ -489,6 +491,65 @@ module OpenStudio
         end
 
         analysis_id
+      end
+
+      def upload_to_dencity(analysis_uuid, analysis)
+        require 'dencity'
+        puts "Attempting to connect to DEnCity server using settings at '~/.dencity/config.yml'"
+        conn = Dencity.connect
+        fail "Could not connect to DEnCity server at #{hostname}." unless conn.connected?
+        begin
+          r = conn.login
+        rescue Faraday::ParsingError => user_id_failure
+          fail "Error in user_id field: #{user_id_failure.message}"
+        rescue MultiJson::ParseError => authentication_failure
+          fail "Error in attempted authentication: #{authentication_failure.message}"
+        end
+        user_uuid = r.id
+
+        # Find the analysis.json file that SHOULD BE IN THE FOLDER THAT THIS SCRIPT IS IN (or change the below)
+        # Check that the analysis has not yet been registered with the DEnCity instance.
+        # TODO This should be simplified with a retrieve_analysis_by_user_defined_id' method in the future
+        user_analyses = []
+        r = conn.dencity_get 'analyses'
+        runner.registerError('Unable to retrieve analyses from DEnCity server') unless r['status'] == 200
+        r['data'].each do |dencity_analysis|
+          user_analyses << dencity_analysis['id'] if dencity_analysis['user_id'] == user_uuid
+        end
+        found_analysis_uuid = false
+        user_analyses.each do |dencity_analysis_id|
+          dencity_analysis = conn.retrieve_analysis_by_id(dencity_analysis_id)
+          if dencity_analysis['user_defined_id'] == analysis_uuid
+            found_analysis_uuid = true
+            break
+          end
+        end
+        fail "Analysis with user_defined_id of #{analysis_uuid} found on DEnCity." if found_analysis_uuid
+        dencity_hash = OpenStudio::Analysis.to_dencity_analysis(analysis, analysis_uuid)
+
+        # Write the analysis DEnCity hash to dencity_analysis.json
+        f = File.new('dencity_analysis.json', 'wb')
+        f.write(JSON.pretty_generate(dencity_hash))
+        f.close
+
+        # Upload the processed analysis json.
+        upload = conn.load_analysis 'dencity_analysis.json'
+        begin
+          upload_response = upload.push
+        rescue => e
+          runner.registerError("Upload failure: #{e.message} in #{e.backtrace.join('/n')}")
+        else
+          if NoMethodError == upload_response.class
+            fail "ERROR: Server responded with a NoMethodError: #{upload_response}"
+          end
+          if upload_response.status.to_s[0] == '2'
+            puts 'Successfully uploaded processed analysis json file to the DEnCity server.'
+          else
+            puts 'ERROR: Server returned a non-20x status. Response below.'
+            puts upload_response
+            fail
+          end
+        end
       end
 
       def upload_datapoint(analysis_id, options)
@@ -840,16 +901,19 @@ module OpenStudio
       end
 
       def run_analysis_detailed(formulation_filename, analysis_zip_filename, analysis_type,
-                                allow_multiple_jobs = true, server_as_worker = true,
+                                allow_multiple_jobs = true, server_as_worker = true, push_to_dencity = false,
                                 run_data_point_filename = 'run_openstudio_workflow_monthly.rb')
         warn 'run_analysis_detailed will be deprecated in 0.5.0. Use run(...)'
+        puts "push_to_dencity in server_api.rb: #{push_to_dencity}"
+        puts "server_as_worker: #{server_as_worker}"
         project_options = {}
         project_id = new_project(project_options)
 
         analysis_options = {
           formulation_file: formulation_filename,
           upload_file: analysis_zip_filename,
-          reset_uuids: true
+          reset_uuids: true,
+          push_to_dencity: push_to_dencity
         }
 
         analysis_id = new_analysis(project_id, analysis_options)

@@ -3,6 +3,7 @@ source 'http://rubygems.org'
 gemspec
 
 gem 'openstudio-aws', github: 'NREL/OpenStudio-aws-gem', branch: 'develop'
+gem 'dencity'
 gem 'colored', '~> 1.2'
 
 group :test do
