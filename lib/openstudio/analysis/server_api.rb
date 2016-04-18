@@ -467,7 +467,6 @@ module OpenStudio
           # puts resp.inspect
           analysis_id = JSON.parse(response.body)['_id']
           puts "options[:push_to_dencity] = #{options[:push_to_dencity]}"
-          puts 'I should run' if options[:push_to_dencity]
           upload_to_dencity(analysis_id, formulation_json) if options[:push_to_dencity]
           puts "new analysis created with ID: #{analysis_id}"
         else
