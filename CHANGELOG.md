@@ -1,10 +1,12 @@
 OpenStudio Analysis Gem Change Log
 ==================================
 
-Version Unreleased 
-------------------
+Version Unreleased (Version 0.5)
+--------------------------------
+* Remove uncertain strings from end of uncertainty distributions
+* Remove measures eval path for CSV import
 * Add diag analysis type to server_api run method
-* Remove support for Rubies < 2.0.
+* Remove support for Rubies < 2.0 and > 2.0.
 * Add json extension to formulation name upon save if none exists
 * Add zip extension to formulation zip upon save if none exists
 

@@ -22,6 +22,7 @@ module OpenStudio
 
         # remove these once we have classes to construct the JSON file
         attr_accessor :name
+        attr_accessor :cluster_name
         attr_reader :analysis_name
 
         # methods to override instance variables
@@ -44,7 +45,6 @@ module OpenStudio
           @analyses = [] # Array o OpenStudio::Analysis. Use method to access
           @name = nil
           @analysis_name = nil
-          @cluster_name = nil
           @settings = {}
           @weather_files = [] # remove this from excel!
           @weather_paths = []
@@ -195,6 +195,7 @@ module OpenStudio
         end
 
         # convert the data in excel's parsed data into an OpenStudio Analysis Object
+        #
         # @seed_model [Hash] Seed model to set the new analysis to
         # @append_model_name [Boolean] Append the name of the seed model to the display name
         # @return [Object] An OpenStudio::Analysis
@@ -273,6 +274,11 @@ module OpenStudio
           end
 
           as
+        end
+
+        # Method to return the cluster name for backwards compatibility
+        def cluster_name
+          @settings['cluster_name']
         end
 
         # save_analysis will iterate over each model that is defined in the spreadsheet and save the
@@ -411,7 +417,9 @@ module OpenStudio
             if b_settings
               @version = row[1].chomp if row[0] == 'Spreadsheet Version'
               @settings["#{row[0].snake_case}"] = row[1] if row[0]
-              @cluster_name = @settings['cluster_name'].snake_case if @settings['cluster_name']
+              if @settings['cluster_name']
+                @settings['cluster_name'] = @settings['cluster_name'].snake_case
+              end
 
               if row[0] == 'AWS Tag'
                 @aws_tags << row[1].strip

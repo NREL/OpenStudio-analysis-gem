@@ -165,6 +165,7 @@ module OpenStudio
           display_name = append_model_name ? @name + ' ' + seed_model[:display_name] : @name
 
           a = OpenStudio::Analysis.create(display_name)
+          a
 
           @variables.each do |measure|
             @measure_paths.each do |measure_path|
@@ -247,7 +248,7 @@ module OpenStudio
           end
 
           fail 'Required setting not found: weather_paths' unless config_hash[:weather_paths]
-          config_hash[:weather_paths] = eval("#{config_hash[:weather_paths]}")
+          config_hash[:weather_paths] = config_hash[:weather_paths].split(',')
           config_hash[:weather_paths].each do |path|
             if (Pathname.new path).absolute?
               @weather_paths << path

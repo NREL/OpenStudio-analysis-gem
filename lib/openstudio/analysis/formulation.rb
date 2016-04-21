@@ -61,7 +61,7 @@ module OpenStudio
         @workflow ||= OpenStudio::Analysis::Workflow.new
       end
 
-      # Define the type of analysis that this is going to be running
+      # Define the type of analysis which is going to be running
       #
       # @param name [String] Name of the algorithm/analysis. (e.g. rgenoud, lhs, single_run)
       attr_writer :analysis_type

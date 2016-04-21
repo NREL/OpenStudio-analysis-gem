@@ -179,8 +179,11 @@ module OpenStudio
             v[:static_value] = v[:argument][:default_value] unless v[:static_value]
 
             v[:uncertainty_description] = {}
-            v[:uncertainty_description][:type] = v[:type] =~ /uncertain/ ? "#{v[:type]}" : "#{v[:type]}_uncertain"
-            warn "Deprecation Warning. In Version 0.5 the _uncertain text will be removed from distribution types: #{v[:uncertainty_description][:type]}"
+            # In Version 0.5 the _uncertain text will be removed from distribution
+            if v[:type] =~ /uncertain/
+              v[:type].delete!('_uncertain')
+            end
+            v[:uncertainty_description][:type] = v[:type]
 
             # This is not neatly coded. This should be a new object that knows how to write itself out.
             v[:uncertainty_description][:attributes] = []
