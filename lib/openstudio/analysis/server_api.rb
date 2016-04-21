@@ -742,8 +742,6 @@ module OpenStudio
           analysis_action: 'start',
           without_delay: true, # run this in the foreground
           analysis_type: 'single_run',
-          allow_multiple_jobs: true,
-          use_server_as_worker: true,
           simulate_data_point_filename: 'simulate_data_point.rb',
           run_data_point_filename: run_data_point_filename
         }
@@ -753,8 +751,6 @@ module OpenStudio
           analysis_action: 'start',
           without_delay: false, # run in background
           analysis_type: 'batch_run',
-          allow_multiple_jobs: true,
-          use_server_as_worker: true,
           simulate_data_point_filename: 'simulate_data_point.rb',
           run_data_point_filename: run_data_point_filename
         }
@@ -779,8 +775,6 @@ module OpenStudio
           analysis_action: 'start',
           without_delay: false,
           analysis_type: 'rgenoud',
-          allow_multiple_jobs: true,
-          use_server_as_worker: true,
           simulate_data_point_filename: 'simulate_data_point.rb',
           run_data_point_filename: 'run_openstudio_workflow_monthly.rb'
         }
@@ -804,8 +798,6 @@ module OpenStudio
           analysis_action: 'start',
           without_delay: false,
           analysis_type: 'lhs',
-          allow_multiple_jobs: true,
-          use_server_as_worker: true,
           simulate_data_point_filename: 'simulate_data_point.rb',
           run_data_point_filename: 'run_openstudio_workflow_monthly.rb'
         }
@@ -815,8 +807,6 @@ module OpenStudio
           analysis_action: 'start',
           without_delay: false, # run in background
           analysis_type: 'batch_run',
-          allow_multiple_jobs: true,
-          use_server_as_worker: true,
           simulate_data_point_filename: 'simulate_data_point.rb',
           run_data_point_filename: 'run_openstudio_workflow_monthly.rb'
         }
@@ -840,8 +830,6 @@ module OpenStudio
           analysis_action: 'start',
           without_delay: false,
           analysis_type: 'baseline_perturbation',
-          allow_multiple_jobs: true,
-          use_server_as_worker: true,
           simulate_data_point_filename: 'simulate_data_point.rb',
           run_data_point_filename: 'run_openstudio_workflow_monthly.rb'
         }
@@ -851,8 +839,6 @@ module OpenStudio
           analysis_action: 'start',
           without_delay: false, # run in background
           analysis_type: 'batch_run',
-          allow_multiple_jobs: true,
-          use_server_as_worker: true,
           simulate_data_point_filename: 'simulate_data_point.rb',
           run_data_point_filename: 'run_openstudio_workflow_monthly.rb'
         }
@@ -878,8 +864,6 @@ module OpenStudio
           analysis_action: 'start',
           without_delay: false,
           analysis_type: 'batch_datapoints',
-          allow_multiple_jobs: true,
-          use_server_as_worker: true,
           simulate_data_point_filename: 'simulate_data_point.rb',
           run_data_point_filename: 'run_openstudio_workflow_monthly.rb'
         }
@@ -889,8 +873,6 @@ module OpenStudio
           analysis_action: 'start',
           without_delay: false, # run in background
           analysis_type: 'batch_run',
-          allow_multiple_jobs: true,
-          use_server_as_worker: true,
           simulate_data_point_filename: 'simulate_data_point.rb',
           run_data_point_filename: 'run_openstudio_workflow_monthly.rb'
         }
@@ -899,12 +881,9 @@ module OpenStudio
         analysis_id
       end
 
-      def run_analysis_detailed(formulation_filename, analysis_zip_filename, analysis_type,
-                                allow_multiple_jobs = true, server_as_worker = true, push_to_dencity = false,
+      def run(formulation_filename, analysis_zip_filename,
+                                analysis_type, push_to_dencity = false,
                                 run_data_point_filename = 'run_openstudio_workflow_monthly.rb')
-        warn 'run_analysis_detailed will be deprecated in 0.5.0. Use run(...)'
-        puts "push_to_dencity in server_api.rb: #{push_to_dencity}"
-        puts "server_as_worker: #{server_as_worker}"
         project_options = {}
         project_id = new_project(project_options)
 
@@ -917,13 +896,10 @@ module OpenStudio
 
         analysis_id = new_analysis(project_id, analysis_options)
 
-        server_as_worker = true if analysis_type == 'optim' || analysis_type == 'rgenoud'
         run_options = {
           analysis_action: 'start',
           without_delay: false,
           analysis_type: analysis_type,
-          allow_multiple_jobs: allow_multiple_jobs,
-          use_server_as_worker: server_as_worker,
           simulate_data_point_filename: 'simulate_data_point.rb',
           run_data_point_filename: run_data_point_filename
         }
@@ -936,8 +912,6 @@ module OpenStudio
             analysis_action: 'start',
             without_delay: false,
             analysis_type: 'batch_run',
-            allow_multiple_jobs: allow_multiple_jobs,
-            use_server_as_worker: server_as_worker,
             simulate_data_point_filename: 'simulate_data_point.rb',
             run_data_point_filename: run_data_point_filename
           }
@@ -947,10 +921,7 @@ module OpenStudio
         analysis_id
       end
 
-      alias_method :run, :run_analysis_detailed
-
       def queue_single_run(formulation_filename, analysis_zip_filename, analysis_type,
-                           allow_multiple_jobs = true, server_as_worker = true,
                            run_data_point_filename = 'run_openstudio_workflow_monthly.rb')
         project_options = {}
         project_id = new_project(project_options)
@@ -962,13 +933,10 @@ module OpenStudio
         }
         analysis_id = new_analysis(project_id, analysis_options)
 
-        server_as_worker = true if analysis_type == 'optim' || analysis_type == 'rgenoud'
         run_options = {
           analysis_action: 'start',
           without_delay: false,
           analysis_type: analysis_type,
-          allow_multiple_jobs: allow_multiple_jobs,
-          use_server_as_worker: server_as_worker,
           simulate_data_point_filename: 'simulate_data_point.rb',
           run_data_point_filename: run_data_point_filename
         }
@@ -979,7 +947,6 @@ module OpenStudio
 
       # TODO: this should take no arguments
       def run_batch_run_across_analyses(formulation_filename, analysis_zip_filename,
-                                        allow_multiple_jobs = true, server_as_worker = true,
                                         run_data_point_filename = 'run_openstudio_workflow_monthly.rb')
         project_options = {}
         project_id = new_project(project_options)
@@ -996,8 +963,6 @@ module OpenStudio
           analysis_action: 'start',
           without_delay: false,
           analysis_type: 'batch_run_analyses',
-          allow_multiple_jobs: allow_multiple_jobs,
-          use_server_as_worker: server_as_worker,
           simulate_data_point_filename: 'simulate_data_point.rb',
           run_data_point_filename: run_data_point_filename
         }

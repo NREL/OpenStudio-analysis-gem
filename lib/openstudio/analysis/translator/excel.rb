@@ -456,8 +456,12 @@ module OpenStudio
               @run_setup["#{row[0].snake_case}"] = row[1] if row[0]
 
               # type cast
-              @run_setup['allow_multiple_jobs'] = @run_setup['allow_multiple_jobs'].to_s.to_bool if @run_setup['allow_multiple_jobs']
-              @run_setup['use_server_as_worker'] = @run_setup['use_server_as_worker'].to_s.to_bool if @run_setup['use_server_as_worker']
+              if @run_setup['allow_multiple_jobs']
+                fail "allow_multiple_jobs is no longer a valid option in the Excel file, please delete the row and rerun"
+              end
+              if @run_setup['use_server_as_worker']
+                fail "use_server_as_worker is no longer a valid option in the Excel file, please delete the row and rerun"
+              end
             elsif b_problem_setup
               if row[0]
                 v = row[1]

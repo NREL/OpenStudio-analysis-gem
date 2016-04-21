@@ -241,11 +241,6 @@ describe OpenStudio::Analysis::Translator::Excel do
       end
     end
 
-    it 'should have typed booleans' do
-      expect(@excel.run_setup['use_server_as_worker']).to eq(true)
-      expect(@excel.run_setup['allow_multiple_jobs']).to eq(true)
-    end
-
     it 'should have algorithm setup' do
       expect(@excel.algorithm['number_of_samples']).to eq(100)
       expect(@excel.algorithm['number_of_generations']).to eq(20)

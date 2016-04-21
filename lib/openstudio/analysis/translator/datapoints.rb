@@ -295,8 +295,12 @@ module OpenStudio
             @other_files << { lib_zip_name: library_name, path: config_hash[:library_path] }
           end
 
-          @run_setup[:allow_multiple_jobs] = config_hash[:allow_multiple_jobs].to_s.to_bool if config_hash[:allow_multiple_jobs]
-          @run_setup[:use_server_as_worker] = config_hash[:use_server_as_worker].to_s.to_bool if config_hash[:use_server_as_worker]
+          if config_hash[:allow_multiple_jobs]
+            fail "allow_multiple_jobs is no longer a valid option in the CSV, please delete and rerun"
+          end
+          if config_hash[:use_server_as_worker]
+            fail "use_server_as_worker is no longer a valid option in the CSV, please delete and rerun"
+          end
 
           # Assign AWS settings
           @settings[:proxy_port] = config_hash[:proxy_port] if config_hash[:proxy_port]
