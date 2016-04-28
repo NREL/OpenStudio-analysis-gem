@@ -604,9 +604,7 @@ module OpenStudio
         end
       end
 
-      # TODO: this should be called 'start analysis'
-      def run_analysis(analysis_id, options)
-        warn 'In 0.5.0, OpenStudio::Analysis::ServerApi run_analysis will be renamed to start_analysis. Use start_analysis.'
+      def start_analysis(analysis_id, options)
         defaults = { analysis_action: 'start', without_delay: false }
         options = defaults.merge(options)
 
@@ -625,8 +623,8 @@ module OpenStudio
         end
       end
 
-      alias_method :start_analysis, :run_analysis
-
+      # Kill the analysis
+      # @param analysis [String] Analysis ID to stop
       def kill_analysis(analysis_id)
         analysis_action = { analysis_action: 'stop' }
 
@@ -709,8 +707,6 @@ module OpenStudio
         data_point
       end
 
-      ## here are a bunch of runs that really don't belong here.
-
       # Submit a generic analysis. This will use the options that are configured in the JSON file including
       # the analysis type and options. Note that this may not work for all cases were multiple analyses need to run
       # (e.g. single_run, queue_model, lhs)
@@ -725,165 +721,24 @@ module OpenStudio
         run(formulation_filename, analysis_zip_filename, analysis_type)
       end
 
-      # create a new analysis and run a single model
-      def run_single_model(formulation_filename, analysis_zip_filename, run_data_point_filename = 'run_openstudio_workflow_monthly.rb')
-        project_options = {}
-        project_id = new_project(project_options)
-
-        analysis_options = {
-          formulation_file: formulation_filename,
-          upload_file: analysis_zip_filename,
-          reset_uuids: true
+      # Submit the analysis for running via the API
+      #
+      # @param formulation_filename [String] Name of the analysis.json file
+      # @param analysis_zip_filename [String] Name of the analysis.zip file
+      # @param analysis_type [String] Type of analysis to run
+      # @param options [Hash] Hash of options
+      # @option options [String] :run_data_point_filename Name of ruby file that the server runs -- will be deprecated
+      # @option options [String] :push_to_dencity Whether or not to push to DEnCity
+      # @option options [String] :batch_run_method Which batch run method to use (batch_run or batch_run_local [no R])
+      def run(formulation_filename, analysis_zip_filename, analysis_type,
+              options = {})
+        defaults = {
+            run_data_point_filename: 'run_openstudio_workflow_monthly.rb',
+            push_to_dencity: false,
+            batch_run_method: 'batch_run'
         }
-        analysis_id = new_analysis(project_id, analysis_options)
+        options = defaults.merge(options)
 
-        # Force this to run in the foreground for now until we can deal with checing the 'analysis state of various anlaysis'
-        run_options = {
-          analysis_action: 'start',
-          without_delay: true, # run this in the foreground
-          analysis_type: 'single_run',
-          simulate_data_point_filename: 'simulate_data_point.rb',
-          run_data_point_filename: run_data_point_filename
-        }
-        start_analysis(analysis_id, run_options)
-
-        run_options = {
-          analysis_action: 'start',
-          without_delay: false, # run in background
-          analysis_type: 'batch_run',
-          simulate_data_point_filename: 'simulate_data_point.rb',
-          run_data_point_filename: run_data_point_filename
-        }
-        start_analysis(analysis_id, run_options)
-
-        analysis_id
-      end
-
-      # creates a new analysis and runs rgenoud optimization - number of generations isn't used right now
-      def run_rgenoud(formulation_filename, analysis_zip_filename)
-        project_options = {}
-        project_id = new_project(project_options)
-
-        analysis_options = {
-          formulation_file: formulation_filename,
-          upload_file: analysis_zip_filename,
-          reset_uuids: true
-        }
-        analysis_id = new_analysis(project_id, analysis_options)
-
-        run_options = {
-          analysis_action: 'start',
-          without_delay: false,
-          analysis_type: 'rgenoud',
-          simulate_data_point_filename: 'simulate_data_point.rb',
-          run_data_point_filename: 'run_openstudio_workflow_monthly.rb'
-        }
-        start_analysis(analysis_id, run_options)
-
-        analysis_id
-      end
-
-      def run_lhs(formulation_filename, analysis_zip_filename)
-        project_options = {}
-        project_id = new_project(project_options)
-
-        analysis_options = {
-          formulation_file: formulation_filename,
-          upload_file: analysis_zip_filename,
-          reset_uuids: true
-        }
-        analysis_id = new_analysis(project_id, analysis_options)
-
-        run_options = {
-          analysis_action: 'start',
-          without_delay: false,
-          analysis_type: 'lhs',
-          simulate_data_point_filename: 'simulate_data_point.rb',
-          run_data_point_filename: 'run_openstudio_workflow_monthly.rb'
-        }
-        start_analysis(analysis_id, run_options)
-
-        run_options = {
-          analysis_action: 'start',
-          without_delay: false, # run in background
-          analysis_type: 'batch_run',
-          simulate_data_point_filename: 'simulate_data_point.rb',
-          run_data_point_filename: 'run_openstudio_workflow_monthly.rb'
-        }
-        start_analysis(analysis_id, run_options)
-
-        analysis_id
-      end
-
-      def run_baseline_perturbation(formulation_filename, analysis_zip_filename)
-        project_options = {}
-        project_id = new_project(project_options)
-
-        analysis_options = {
-          formulation_file: formulation_filename,
-          upload_file: analysis_zip_filename,
-          reset_uuids: true
-        }
-        analysis_id = new_analysis(project_id, analysis_options)
-
-        run_options = {
-          analysis_action: 'start',
-          without_delay: false,
-          analysis_type: 'baseline_perturbation',
-          simulate_data_point_filename: 'simulate_data_point.rb',
-          run_data_point_filename: 'run_openstudio_workflow_monthly.rb'
-        }
-        start_analysis(analysis_id, run_options)
-
-        run_options = {
-          analysis_action: 'start',
-          without_delay: false, # run in background
-          analysis_type: 'batch_run',
-          simulate_data_point_filename: 'simulate_data_point.rb',
-          run_data_point_filename: 'run_openstudio_workflow_monthly.rb'
-        }
-        start_analysis(analysis_id, run_options)
-
-        analysis_id
-      end
-
-      def run_batch_datapoints(formulation_filename, analysis_zip_filename)
-        project_options = {}
-        project_id = new_project(project_options)
-
-        puts 'In run_batch_datapoints'
-
-        analysis_options = {
-          formulation_file: formulation_filename,
-          upload_file: analysis_zip_filename,
-          reset_uuids: true
-        }
-        analysis_id = new_analysis(project_id, analysis_options)
-
-        run_options = {
-          analysis_action: 'start',
-          without_delay: false,
-          analysis_type: 'batch_datapoints',
-          simulate_data_point_filename: 'simulate_data_point.rb',
-          run_data_point_filename: 'run_openstudio_workflow_monthly.rb'
-        }
-        start_analysis(analysis_id, run_options)
-
-        run_options = {
-          analysis_action: 'start',
-          without_delay: false, # run in background
-          analysis_type: 'batch_run',
-          simulate_data_point_filename: 'simulate_data_point.rb',
-          run_data_point_filename: 'run_openstudio_workflow_monthly.rb'
-        }
-        start_analysis(analysis_id, run_options)
-
-        analysis_id
-      end
-
-      def run(formulation_filename, analysis_zip_filename,
-                                analysis_type, push_to_dencity = false,
-                                run_data_point_filename = 'run_openstudio_workflow_monthly.rb')
         project_options = {}
         project_id = new_project(project_options)
 
@@ -891,7 +746,7 @@ module OpenStudio
           formulation_file: formulation_filename,
           upload_file: analysis_zip_filename,
           reset_uuids: true,
-          push_to_dencity: push_to_dencity
+          push_to_dencity: options[:push_to_dencity]
         }
 
         analysis_id = new_analysis(project_id, analysis_options)
@@ -900,20 +755,20 @@ module OpenStudio
           analysis_action: 'start',
           without_delay: false,
           analysis_type: analysis_type,
-          simulate_data_point_filename: 'simulate_data_point.rb',
-          run_data_point_filename: run_data_point_filename
+          simulate_data_point_filename: 'simulate_data_point.rb', # TODO: remove these from server?
+          run_data_point_filename: options[:run_data_point_filename]
         }
         start_analysis(analysis_id, run_options)
 
-        # If the analysis is a staged analysis, then go ahead and run batch run because there is
-        # no explicit way to tell the system to do it
+        # If the analysis is a staged analysis, then go ahead and run batch run
+        # because there is no explicit way to tell the system to do it
         if BATCH_RUN_METHODS.include? analysis_type
           run_options = {
             analysis_action: 'start',
             without_delay: false,
-            analysis_type: 'batch_run',
+            analysis_type: options[:batch_run_method],
             simulate_data_point_filename: 'simulate_data_point.rb',
-            run_data_point_filename: run_data_point_filename
+            run_data_point_filename: options[:run_data_point_filename]
           }
           start_analysis(analysis_id, run_options)
         end
@@ -945,9 +800,7 @@ module OpenStudio
         analysis_id
       end
 
-      # TODO: this should take no arguments
-      def run_batch_run_across_analyses(formulation_filename, analysis_zip_filename,
-                                        run_data_point_filename = 'run_openstudio_workflow_monthly.rb')
+      def run_batch_run_across_analyses
         project_options = {}
         project_id = new_project(project_options)
 
@@ -955,7 +808,6 @@ module OpenStudio
           formulation_file: nil,
           upload_file: nil,
           reset_uuids: true,
-          # { analysis: { name: 'something', display_name: 'something else' }}
         }
         analysis_id = new_analysis(project_id, analysis_options)
 
@@ -964,7 +816,7 @@ module OpenStudio
           without_delay: false,
           analysis_type: 'batch_run_analyses',
           simulate_data_point_filename: 'simulate_data_point.rb',
-          run_data_point_filename: run_data_point_filename
+          run_data_point_filename: 'run_openstudio_workflow_monthly.rb'
         }
         start_analysis(analysis_id, run_options)
 
