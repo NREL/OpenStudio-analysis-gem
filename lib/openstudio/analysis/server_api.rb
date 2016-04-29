@@ -621,7 +621,7 @@ module OpenStudio
         end
 
         if response.status == 200
-          puts "Recieved request to run analysis #{analysis_id}"
+          puts "Received request to run analysis #{analysis_id}"
         else
           fail 'Could not start the analysis'
         end
