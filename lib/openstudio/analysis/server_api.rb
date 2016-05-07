@@ -195,8 +195,8 @@ module OpenStudio
         begin
           resp = @conn.get do |req|
             req.url 'status.json'
-            req.options.timeout = 10
-            req.options.open_timeout = 10
+            req.options.timeout = 120
+            req.options.open_timeout = 120
           end
 
           if resp.status == 200
@@ -464,6 +464,7 @@ module OpenStudio
           req.url "projects/#{project_id}/analyses.json"
           req.headers['Content-Type'] = 'application/json'
           req.body = formulation_json.to_json
+          req.options[:timeout] = 600 # seconds
         end
 
         if response.status == 201
