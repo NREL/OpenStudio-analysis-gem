@@ -30,6 +30,7 @@ require 'openstudio/analysis/algorithm_attributes'
 # translators
 require 'openstudio/analysis/translator/excel'
 require 'openstudio/analysis/translator/datapoints'
+require 'openstudio/analysis/translator/workflow'
 
 # helpers / core_ext
 require 'openstudio/helpers/string'
