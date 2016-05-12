@@ -75,7 +75,6 @@ module OpenStudio
 
           # Save the OSW hash
           osw = {}
-          osw_filename = "./datapoint_#{osd[:_id]}/workflow.osw"
           created_at = ::Time.now
           osw[:seed_model] = @seed_file
           osw[:weather_file] = @weather_file
@@ -87,15 +86,14 @@ module OpenStudio
           osw[:file_paths] = @file_paths
           osw[:run_directory] = './..'
           osw[:steps] = osw_steps_instance
-          Dir.mkdir(File.dirname(osw_filename)) unless Dir.exist? File.dirname(osw_filename)
-          File.open(osw_filename, 'w') {|f| f << ::JSON.pretty_generate(osw)}
+          return osw
         end
 
         # Runs an array of OSD files
         def process_datapoints(osd_filename_array)
           osd_filename_array.each do |osd_file|
             begin
-              process_datapoint(osd_file)
+              yield process_datapoint(osd_file)
             rescue => e
               puts "Warning: Failed to processes datapoint #{osd_file} with error #{e.message} in #{e.backtrace.join('\n')}"
             end
