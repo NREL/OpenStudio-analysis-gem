@@ -55,7 +55,8 @@ module OpenStudio
         def process_datapoint(osd_filename)
           # Try to read the osd json file
           if File.exist?(osd_filename)
-            osd = ::JSON.parse(File.read(osd_filename), {symbolize_names: true})
+            warn('data_point selector in ods will be changed to datapoint in version 1.0')
+            osd = ::JSON.parse(File.read(osd_filename), {symbolize_names: true})[:data_point]
           else
             fail "File #{osd_filename} does not exist"
           end

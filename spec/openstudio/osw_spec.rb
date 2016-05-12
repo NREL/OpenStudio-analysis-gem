@@ -64,17 +64,17 @@ describe OpenStudio::Analysis::Translator::Workflow do
 
     it 'should not write a osd with a different osa id' do
       osd_path = 'datapoint_wrong_osa_id.osd'
-      expect{ @translator.process_datapoint(osd_path) }.to raise_error(RuntimeError)
+      expect{ @translator.process_datapoint(osd_path).first }.to raise_error(RuntimeError)
     end
 
     it 'should write several osds' do
       osd_paths = %w(datapoint_0.osd datapoint_1.osd datapoint_2.osd)
-      expect{ @translator.process_datapoints(osd_paths) }.not_to raise_error
+      expect{ @translator.process_datapoints(osd_paths).each {|_|} }.not_to raise_error
     end
 
     it 'should not fail when one osd is bad' do
       osd_paths = %w(datapoint_0.osd datapoint_1.osd datapoint_2.osd)
-      expect{ @translator.process_datapoints(osd_paths) }.not_to raise_error
+      expect{ @translator.process_datapoints(osd_paths).each {|_|} }.not_to raise_error
     end
   end
 =begin
