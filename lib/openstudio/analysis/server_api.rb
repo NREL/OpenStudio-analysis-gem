@@ -485,6 +485,7 @@ module OpenStudio
           payload = {file: Faraday::UploadIO.new(options[:upload_file], 'application/zip')}
           response = @conn_multipart.post "analyses/#{analysis_id}/upload.json", payload do |req|
             req.options[:timeout] = 1800 # seconds
+            req.options[:open_timeout] = 180 # seconds
           end
 
           if response.status == 201
