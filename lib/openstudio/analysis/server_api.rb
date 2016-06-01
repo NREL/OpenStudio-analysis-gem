@@ -556,6 +556,11 @@ module OpenStudio
         end
       end
 
+      # Upload a single datapoint
+      # @param analysis [String] Analysis ID to attach datapoint
+      # @param options [Hash] Options
+      # @option options [String] :datapoint_file Path to datapoint JSON to upload
+      # @option options [Boolean] :reset_uuids Flag on whether or not to reset the UUID in the datapoint JSON to a new random value.
       def upload_datapoint(analysis_id, options)
         defaults = {reset_uuids: false}
         options = defaults.merge(options)
@@ -584,12 +589,14 @@ module OpenStudio
 
         if response.status == 201
           puts "new datapoints created for analysis #{analysis_id}"
+          return JSON.parse(response.body, symbolize_names: true)
         else
           fail "could not create new datapoints #{response.body}"
         end
       end
 
       # Upload multiple data points to the server.
+      # @param analysis [String] Analysis ID to attach datapoint
       def upload_datapoints(analysis_id, options)
         defaults = {}
         options = defaults.merge(options)
