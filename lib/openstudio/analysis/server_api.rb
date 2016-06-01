@@ -565,8 +565,12 @@ module OpenStudio
 
         dp_hash = JSON.parse(File.open(options[:datapoint_file]).read, symbolize_names: true)
 
+        # There are two instances of the analysis ID. There is one in the file,
+        # and the other is in the POST url. Ideally remove the version in the
+        # file and support only the URL based analysis_id
+        dp_hash[:analysis_uuid] = analysis_id
+
         if options[:reset_uuids]
-          dp_hash[:analysis_uuid] = analysis_id
           dp_hash[:uuid] = SecureRandom.uuid
         end
 
@@ -584,6 +588,7 @@ module OpenStudio
         end
       end
 
+      # Upload multiple data points to the server.
       def upload_datapoints(analysis_id, options)
         defaults = {}
         options = defaults.merge(options)

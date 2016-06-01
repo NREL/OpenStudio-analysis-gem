@@ -10,6 +10,7 @@ Version Unreleased (Version 0.5)
 * Remove support for Rubies < 2.0 and > 2.0.
 * Add json extension to formulation name upon save if none exists
 * Add zip extension to formulation zip upon save if none exists
+* In upload_datapoint, allows set the analysis_id in the file to the one passed.
 
 Version 0.4.4
 ------------------
