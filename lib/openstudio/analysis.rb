@@ -29,6 +29,12 @@ module OpenStudio
       csv.analysis
     end
 
+    # Process an OSA with a set of OSDs into OSWs
+    def self.make_osws(osa_filename, osd_array)
+      translator = OpenStudio::Analysis::Translator::Workflow.new(osa_filename)
+      osd_array.each {|osd| translator.process_datapoints osd}
+    end
+
     # Retrieve aws instance options from a project. This will return a hash
     def self.aws_instance_options(filename)
       if File.extname(filename) == '.xlsx'
