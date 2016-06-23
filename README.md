@@ -47,7 +47,7 @@ There are two ways to create an OpenStudio Analysis description:
     analysis.save_static_data_point("#{run_dir}/data_point.zip")
     ```
 
-* Running Data Points with Workflow Gem
+* Running Datapoints with Workflow Gem
 
     ```
     require 'openstudio-workflow'
