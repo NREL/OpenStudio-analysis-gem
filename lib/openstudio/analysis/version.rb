@@ -1,5 +1,5 @@
 module OpenStudio
   module Analysis
-    VERSION = '1.0.0.pat0'
+    VERSION = '1.0.0.pat1'
   end
 end
