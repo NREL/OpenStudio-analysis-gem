@@ -66,6 +66,7 @@ module OpenStudio
           # @todo (rhorsey) Fix the spec so this line can be uncommented
           osw_steps_instance = @steps
           osw_steps_instance.each_with_index do |step, i|
+            next unless @osa[:problem][:workflow][i][:variables]
             @osa[:problem][:workflow][i][:variables].each do |var|
               var_name = var[:argument][:name]
               var_value_uuid = var[:uuid]
