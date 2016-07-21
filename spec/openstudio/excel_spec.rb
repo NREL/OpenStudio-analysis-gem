@@ -291,16 +291,10 @@ describe OpenStudio::Analysis::Translator::Excel do
 
     it 'should process' do
       expect(@excel.process).to eq(true)
-    end
-
-    it 'should have new setting variables' do
       expect(@excel.settings['user_id']).to eq('new_user')
       expect(@excel.settings['openstudio_server_version']).to eq('1.3.2')
       expect(@excel.cluster_name).to eq('analysis_cluster_name')
       expect(@excel.run_setup['analysis_name']).to eq('Name goes here')
-    end
-
-    it 'should have the new measure directory column' do
       expect(@excel.variables['data'][1]['measure_file_name_directory']).to eq('ReduceLightingLoadsByPercentage')
     end
 
@@ -541,7 +535,7 @@ describe OpenStudio::Analysis::Translator::Excel do
       end
 
       expect(@excel.settings['openstudio_server_version']).to eq('1.11.0-rc2')
-      expect(@excel.settings['spreadsheet_version']).to eq '0.3.7'
+      expect(@excel.settings['spreadsheet_version']).to eq '0.4.0'
       expect(@excel.settings['server_instance_type']).to eq 'm3.xlarge'
       expect(@excel.settings['worker_instance_type']).to eq 'c3.4xlarge'
       expect(@excel.aws_tags).to eq(['org=5500'])
