@@ -24,7 +24,7 @@ Gem::Specification.new do |s|
 
   s.add_dependency 'faraday', '~> 0.8'
   s.add_dependency 'nokogiri', '~> 1.6'
-  s.add_dependency 'roo', '~> 2.3'
+  s.add_dependency 'roo', '~> 2.4'
   s.add_dependency 'rubyzip', '~> 1.2' # Should be at 1.0 because of jruby
   s.add_dependency 'semantic', '~> 1.4'
   s.add_dependency 'bcl', '~> 0.5.5'

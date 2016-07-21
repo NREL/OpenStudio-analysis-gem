@@ -2,7 +2,7 @@ source 'http://rubygems.org'
 
 gemspec
 
-gem 'openstudio-aws', github: 'NREL/OpenStudio-aws-gem', branch: 'develop'
+gem 'openstudio-aws', '0.4.2'
 gem 'dencity'
 gem 'colored', '~> 1.2'
 

@@ -542,28 +542,28 @@ module OpenStudio
           rows = nil
           begin
             if @version >= '0.3.3'.to_version
-              rows = @xls.sheet('Variables').parse(enabled: '# variable',
-                                                   measure_name_or_var_type: 'type',
-                                                   measure_file_name_or_var_display_name: 'parameter display name*',
-                                                   measure_file_name_directory: 'measure directory',
-                                                   measure_type_or_parameter_name_in_measure: 'parameter name in measure',
-                                                   display_name_short: 'parameter short display name',
-                                                   # sampling_method: 'sampling method',
-                                                   variable_type: 'Variable Type',
-                                                   units: 'units',
-                                                   default_value: 'static.default value',
-                                                   enums: 'enumerations',
-                                                   min: 'min',
-                                                   max: 'max',
-                                                   mode: 'mean|mode',
-                                                   stddev: 'std dev',
-                                                   delta_x: 'delta.x',
-                                                   discrete_values: 'discrete values',
-                                                   discrete_weights: 'discrete weights',
-                                                   distribution: 'distribution',
-                                                   source: 'data source',
-                                                   notes: 'notes',
-                                                   relation_to_eui: 'typical var to eui relationship',
+              rows = @xls.sheet('Variables').parse(enabled: /# variable/i,
+                                                   measure_name_or_var_type: /type/i,
+                                                   measure_file_name_or_var_display_name: /parameter\sdisplay\sname.*/i,
+                                                   measure_file_name_directory: /measure\sdirectory/i,
+                                                   measure_type_or_parameter_name_in_measure: /parameter\sname\sin\smeasure/i,
+                                                   display_name_short: /parameter\sshort\sdisplay\sname/i,
+                                                   # sampling_method: /sampling\smethod/i,
+                                                   variable_type: /variable\stype/i,
+                                                   units: /units/i,
+                                                   default_value: /static.default\svalue/i,
+                                                   enums: /enumerations/i,
+                                                   min: /min/i,
+                                                   max: /max/i,
+                                                   mode: /mean|mode/i,
+                                                   stddev: /std\sdev/i,
+                                                   delta_x: /delta.x/i,
+                                                   discrete_values: /discrete\svalues/i,
+                                                   discrete_weights: /discrete\sweights/i,
+                                                   distribution: /distribution/i,
+                                                   source: /data\ssource/i,
+                                                   notes: /notes/i,
+                                                   relation_to_eui: /typical\svar\sto\seui\srelationship/i,
                                                    clean: true)
             elsif @version >= '0.3.0'.to_version
               rows = @xls.sheet('Variables').parse(enabled: '# variable',
@@ -773,7 +773,7 @@ module OpenStudio
               measure_name = display_name.downcase.strip.tr('-', '_').tr(' ', '_').gsub('__', '_')
               data['data'][measure_index]['display_name'] = display_name
               data['data'][measure_index]['name'] = measure_name
-              data['data'][measure_index]['enabled'] = row[:enabled] == 'TRUE' ? true : false
+              data['data'][measure_index]['enabled'] = row[:enabled]
               data['data'][measure_index]['measure_file_name'] = row[:measure_file_name_or_var_display_name]
               if row[:measure_file_name_directory]
                 data['data'][measure_index]['measure_file_name_directory'] = row[:measure_file_name_directory]
@@ -787,25 +787,24 @@ module OpenStudio
             end
           end
 
-          # puts data.inspect
           data
         end
 
         def parse_outputs
           rows = nil
           if @version >= '0.3.3'.to_version
-            rows = @xls.sheet('Outputs').parse(display_name: 'Variable Display Name',
-                                               display_name_short: 'Short Display Name',
-                                               metadata_id: 'Taxonomy Identifier',
-                                               name: '^Name$',
-                                               units: 'Units',
-                                               visualize: 'Visualize',
-                                               export: 'Export',
-                                               variable_type: 'Variable Type',
-                                               objective_function: 'Objective Function',
-                                               objective_function_target: 'Objective Function Target',
-                                               scaling_factor: 'Scale',
-                                               objective_function_group: 'Objective Function Group')
+            rows = @xls.sheet('Outputs').parse(display_name: /variable\sdisplay\sname/i,
+                                               display_name_short: /short\sdisplay\sname/i,
+                                               metadata_id: /taxonomy\sidentifier/i,
+                                               name: /^name$/i,
+                                               units: /units/i,
+                                               visualize: /visualize/i,
+                                               export: /export/i,
+                                               variable_type: /variable\stype/i,
+                                               objective_function: /objective\sfunction/i,
+                                               objective_function_target: /objective\sfunction\starget/i,
+                                               scaling_factor: /scale/i,
+                                               objective_function_group: /objective\sfunction\sgroup/i)
           elsif @version >= '0.3.0'.to_version
             rows = @xls.sheet('Outputs').parse(display_name: 'Variable Display Name',
                                                metadata_id: 'Taxonomy Identifier',
@@ -847,10 +846,10 @@ module OpenStudio
             var['metadata_id'] = row[:metadata_id]
             var['name'] = row[:name]
             var['units'] = row[:units]
-            var['visualize'] = row[:visualize].downcase == 'true' ? true : false if row[:visualize]
-            var['export'] = row[:export].downcase == 'true' ? true : false if row[:export]
+            var['visualize'] = row[:visualize]
+            var['export'] = row[:export]
             var['variable_type'] = row[:variable_type].downcase if row[:variable_type]
-            var['objective_function'] = row[:objective_function].downcase == 'true' ? true : false
+            var['objective_function'] = row[:objective_function]
             var['objective_function_target'] = row[:objective_function_target]
             var['scaling_factor'] = row[:scaling_factor]
 
