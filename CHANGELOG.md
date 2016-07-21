@@ -1,7 +1,7 @@
 OpenStudio Analysis Gem Change Log
 ==================================
 
-Version Unreleased (Version 0.5)
+Version Unreleased (Version X.Y)
 --------------------------------
 * Remove allow_multiple_jobs and server_as_worker options. These are by defaulted to true now.
 * Remove uncertain strings from end of uncertainty distributions
