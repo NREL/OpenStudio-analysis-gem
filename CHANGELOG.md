@@ -1,6 +1,11 @@
 OpenStudio Analysis Gem Change Log
 ==================================
 
+Version 1.0.0-PAT Pre-Releases
+------------------------------
+* Fixed bug in workflow translator which caused errors in server models
+* Updated gem versions to converge across the OpenStudio Analysis Framework platforms
+
 Version Unreleased (Version 0.5)
 --------------------------------
 * Remove allow_multiple_jobs and server_as_worker options. These are by defaulted to true now.
