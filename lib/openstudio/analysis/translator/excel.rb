@@ -155,6 +155,16 @@ module OpenStudio
                       if variable['distribution']['discrete_values'].nil? || variable['distribution']['discrete_values'] == ''
                         fail "Variable #{measure['name']}:#{variable['name']} needs discrete values"
                       end
+                    elsif variable['distribution']['type'] == 'integer_sequence'
+                      if variable['distribution']['mean'].nil? || variable['distribution']['mean'] == ''
+                        fail "Variable #{measure['name']}:#{variable['name']} must have a mean/mode"
+                      end
+                      if variable['distribution']['min'].nil? || variable['distribution']['min'] == ''
+                        fail "Variable #{measure['name']}:#{variable['name']} must have a minimum"
+                      end
+                      if variable['distribution']['max'].nil? || variable['distribution']['max'] == ''
+                        fail "Variable #{measure['name']}:#{variable['name']} must have a maximum"
+                      end 
                     else
                       if variable['distribution']['mean'].nil? || variable['distribution']['mean'] == ''
                         fail "Variable #{measure['name']}:#{variable['name']} must have a mean"

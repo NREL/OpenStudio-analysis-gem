@@ -81,7 +81,7 @@ module OpenStudio
       # @param argument_name [String] The instance_name of the measure argument that is to be tagged. This is the same name as the argument's variable in the measure.rb file.
       # @param variable_display_name [String] What the variable is called. It is best if the display name is self describing (i.e. does not need any other context). It can be the same as the argument display name.
       # @param distribution [Hash] Hash describing the distribution of the variable.
-      # @option distribution [String] :type Type of distribution. `discrete`, `uniform`, `triangle`, `normal`, `lognormal`
+      # @option distribution [String] :type Type of distribution. `discrete`, `uniform`, `triangle`, `normal`, `lognormal`, `integer_sequence`
       # @option distribution [String] :units Units of the variable. This is legacy as previous OpenStudio measures did not specify units separately.
       # @option distribution [String] :minimum Minimum value of the distribution, required for all distributions
       # @option distribution [String] :maximum Maximum value of the distribution, required for all distributions
@@ -426,6 +426,9 @@ module OpenStudio
             fraction = 1 / d[:values].size.to_f
             d[:weights] = [fraction] * d[:values].size
           end
+        elsif d[:type] =~ /integer_sequence/
+            d[:weights] = 1
+            d[:values] = 1
         elsif d[:type] =~ /triangle/
           # requires min, max, mode
         elsif d[:type] =~ /normal/ # both normal and lognormal
