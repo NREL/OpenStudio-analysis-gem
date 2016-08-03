@@ -23,7 +23,7 @@ module OpenStudio
         attr_accessor :name
         attr_reader :analysis_name
 
-        # Methods to override instance variables
+        require 'nokogiri'
 
         # Pass in the filename to read
         def initialize(csv_filename)
@@ -336,30 +336,33 @@ module OpenStudio
             data[measure_index] = {}
             measure_json = ''
             for i in 0..(@measure_paths.length - 1)
-              if File.exist? File.join(@measure_paths[i], measure.to_s, 'measure.json')
-                measure_json = MultiJson.load(File.read(File.join(@measure_paths[i], measure.to_s, 'measure.json')))
+              if File.exist? File.join(@measure_paths[i], measure.to_s, 'measure.xml')
+                measure_xml = Nokogiri::XML File.read(File.absolute_path('measure.xml'))
                 break
               end
             end
-            fail "Could not find measure json #{measure}.json in measure_paths: '#{@measure_paths.join("\n")}'" if measure_json == ''
+            fail "Could not find measure #{measure} xml in measure_paths: '#{@measure_paths.join("\n")}'" if measure_xml == ''
             measure_data = {}
-            measure_data[:classname] = measure_json['classname']
-            measure_data[:name] = measure_json['name']
-            measure_data[:display_name] = measure_json['display_name']
+            measure_data[:classname] = measure_xml.xpath('/measure/class_name').text
+            measure_data[:name] = measure_xml.xpath('/measure/name').text
+            measure_data[:display_name] = measure_xml.xpath('/measure/display_name').text
+            # TODO fix this line, prior art in WFG is in util/measure.rb lines 97-111
             measure_data[:measure_type] = measure_json['measure_type']
-            measure_data[:uid] = measure_json['uid']
-            measure_data[:version_id] = measure_json['version_id']
+            measure_data[:uid] = measure_xml.xpath('/measure/uid').text
+            measure_data[:version_id] = measure_xml.xpath('/measure/version_id').text
             data[measure_index][:measure_data] = measure_data
             data[measure_index][:vars] = []
             vars = measure_map[measure]
             vars.each do |var|
               var = var[0]
               var_hash = {}
+              # TODO fix this line, selector should be '/measure/arguments/argument' s.t. '//argument/name' == var
               var_json = measure_json['arguments'].select { |hash| hash['local_variable'] == var.to_s }[0]
-              fail "measure.json for measure #{measure} does not have an argument with local_variable == #{var}" if var_json.nil?
+              fail "measure.xml for measure #{measure} does not have an argument with local_variable == #{var}" if var_json.nil?
               var_hash[:variable_type] = 'variable'
               var_hash[:display_name] = measure_rows[2][measure_map[measure][var]]
               var_hash[:display_name_short] = var_hash[:display_name]
+              # TODO Update these once the correct node element has been selected
               var_hash[:name] = var_json['local_variable']
               var_hash[:type] = var_json['variable_type'].downcase
               var_hash[:units] = var_json['units']
