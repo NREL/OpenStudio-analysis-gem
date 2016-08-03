@@ -1,8 +1,9 @@
 OpenStudio Analysis Gem Change Log
 ==================================
 
-Version Unreleased (Version 1.0.0-rc1)
+Version 1.0.0.pre.rc2
 --------------------------------
+* Note that pre.rc1 was yanked from Rubygems.
 * Remove allow_multiple_jobs and server_as_worker options. These are by defaulted to true now.
 * Remove uncertain strings from end of uncertainty distributions
 * Remove measures eval path for CSV import
