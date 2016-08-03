@@ -11,6 +11,7 @@ Version Unreleased (Version 1.0.0-rc1)
 * Add json extension to formulation name upon save if none exists
 * Add zip extension to formulation zip upon save if none exists
 * In upload_datapoint, allows set the analysis_id in the file to the one passed.
+* Remove reading JSON from custom_csv method.
 
 Version 1.0.0-pat2
 ------------------------------
