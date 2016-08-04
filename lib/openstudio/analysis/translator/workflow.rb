@@ -2,9 +2,6 @@ module OpenStudio
   module Analysis
     module Translator
 
-      require 'json'
-      require 'securerandom'
-
       class Workflow
         attr_reader :osa_filename
         attr_reader :root_path
@@ -25,7 +22,7 @@ module OpenStudio
 
           # try to read the osa json file
           if File.exist?(@osa_filename)
-            @osa = ::JSON.parse(File.read(@osa_filename), {symbolize_names: true})[:analysis]
+            @osa = ::JSON.parse(File.read(@osa_filename), symbolize_names: true)[:analysis]
           else
             fail "File #{@osa_filename} does not exist"
           end
@@ -46,7 +43,7 @@ module OpenStudio
             step_hash[:measure_dir_name] = File.basename(step[:measure_definition_directory])
             step_hash[:arguments] = {}
             # Measures can have no arguments -- make sure to catch it
-            if @osa[:problem][:workflow][i][:arguments] 
+            if @osa[:problem][:workflow][i][:arguments]
               @osa[:problem][:workflow][i][:arguments].each do |arg|
                 step_hash[:arguments][arg[:name].to_sym] = arg[:value]
               end
@@ -55,12 +52,13 @@ module OpenStudio
           end
         end
 
+        # Convert a file in the form of an OSD into an OSW
         def process_datapoint(osd_filename)
           # Try to read the osd json file
           osd = nil
           if File.exist?(osd_filename)
             # warn('data_point selector in ods will be changed to datapoint in version 1.0') # NL this isn't true anymore.
-            osd = ::JSON.parse(File.read(osd_filename), {symbolize_names: true})[:data_point]
+            osd = ::JSON.parse(File.read(osd_filename), symbolize_names: true)[:data_point]
           else
             fail "File #{osd_filename} does not exist"
           end
@@ -82,7 +80,7 @@ module OpenStudio
           # Save the OSW hash
           osw = {}
           created_at = ::Time.now
-          osw[:seed_model] = @seed_file
+          osw[:seed_file] = @seed_file
           osw[:weather_file] = @weather_file
           osw[:file_format_version] = @osw_version
           osw[:osa_id] = @osa_id
@@ -101,7 +99,7 @@ module OpenStudio
             begin
               yield process_datapoint(osd_file)
             rescue => e
-              puts "Warning: Failed to processes datapoint #{osd_file} with error #{e.message} in #{e.backtrace.join('\n')}"
+              puts "Warning: Failed to process datapoint #{osd_file} with error #{e.message} in #{e.backtrace.join('\n')}"
             end
           end
         end
