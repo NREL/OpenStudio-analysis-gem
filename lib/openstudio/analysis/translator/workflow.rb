@@ -95,13 +95,17 @@ module OpenStudio
 
         # Runs an array of OSD files
         def process_datapoints(osd_filename_array)
+          r = []
           osd_filename_array.each do |osd_file|
             begin
-              yield process_datapoint(osd_file)
+              r << process_datapoint(osd_file)
             rescue => e
+              r << nil
               puts "Warning: Failed to process datapoint #{osd_file} with error #{e.message} in #{e.backtrace.join('\n')}"
             end
           end
+
+          return r
         end
       end
     end

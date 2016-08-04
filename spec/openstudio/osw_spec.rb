@@ -80,12 +80,15 @@ describe OpenStudio::Analysis::Translator::Workflow do
 
     it 'should write several osds' do
       osd_paths = %w(datapoint_0.osd datapoint_1.osd datapoint_2.osd)
-      expect{ @translator.process_datapoints(osd_paths).each {|_|} }.not_to raise_error
+      r = @translator.process_datapoints(osd_paths)
+      expect(r.size).to eq 3
     end
 
     it 'should not fail when one osd is bad' do
-      osd_paths = %w(datapoint_0.osd datapoint_1.osd datapoint_2.osd)
-      expect{ @translator.process_datapoints(osd_paths).each {|_|} }.not_to raise_error
+      osd_paths = %w(datapoint_0.osd datapoint_1.osd datapoint_wrong_osa_id.osd)
+      r = @translator.process_datapoints(osd_paths)
+      expect(r[0]).to be_a Hash
+      expect(r[2]).to eq nil
     end
   end
 end
