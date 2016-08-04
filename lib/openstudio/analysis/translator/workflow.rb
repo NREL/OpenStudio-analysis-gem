@@ -45,8 +45,11 @@ module OpenStudio
             step_hash = {}
             step_hash[:measure_dir_name] = File.basename(step[:measure_definition_directory])
             step_hash[:arguments] = {}
-            @osa[:problem][:workflow][i][:arguments].each do |arg|
-              step_hash[:arguments][arg[:name].to_sym] = arg[:value]
+            # Measures can have no arguments -- make sure to catch it
+            if @osa[:problem][:workflow][i][:arguments] 
+              @osa[:problem][:workflow][i][:arguments].each do |arg|
+                step_hash[:arguments][arg[:name].to_sym] = arg[:value]
+              end
             end
             @steps << step_hash
           end

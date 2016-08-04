@@ -1,6 +1,10 @@
 OpenStudio Analysis Gem Change Log
 ==================================
 
+Version 1.0.0.pre.rc3 (Unreleased)
+---------------------
+* Catch null arguments when translating from OSA/OSD to OSW
+
 Version 1.0.0.pre.rc2
 --------------------------------
 * Note that pre.rc1 was yanked from Rubygems.
