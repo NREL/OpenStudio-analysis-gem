@@ -1,6 +1,11 @@
 OpenStudio Analysis Gem Change Log
 ==================================
 
+Version 1.0.0.pre.rc4
+---------------------
+* Change seed_model to seed_file in OSWs generated from the translator
+* Add more unit tests
+
 Version 1.0.0.pre.rc3
 ---------------------
 * Catch null arguments when translating from OSA/OSD to OSW
