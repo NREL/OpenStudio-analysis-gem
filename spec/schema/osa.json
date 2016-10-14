@@ -171,6 +171,14 @@
 					"description": "Accepts values of 'Ruby' 'EnergyPlus' and 'Reporting'",
 					"type": "string"
 				},
+				"description": {
+					"description": "Measure description",
+					"type": "string"
+				},
+				"taxonomy": {
+					"description": "Measure taxonomy tag",
+					"type": "string"
+				},
 				"measure_definition_class_name": {
 					"description": "Class name of measure.rb file",
 					"type": "string"
@@ -265,6 +273,25 @@
 			"required": [
 				"type",
 				"attributes"
+			],
+			"additionalProperties": false
+		},
+		"Design Alternative": {
+			"description": "Individual design alternative instance",
+			"type": "object",
+			"properties": {
+				"name": {
+					"description": "Name of design alternative",
+					"type": "string"
+				},
+				"description" : {
+					"description": "Description of design alternative",
+					"type": "string"
+				}
+			},
+			"required": [
+				"name",
+				"description"
 			],
 			"additionalProperties": false
 		},
@@ -368,7 +395,7 @@
 						"doe",
 						"repeat_run",
 						"optim",
-						"baseline_purturbation",
+						"baseline_perturbation",
 						"preflight"
 					]
 				},
@@ -385,6 +412,13 @@
 				"name": {
 					"description": "??????",
 					"type": "string"
+				},
+				"Design Alternative Array": { 
+					"description": "Array of design alternative names and descriptions",
+					"type": "array",
+					"items": {
+						"$ref": "#/definitions/Design Alternative"
+					}
 				}
 			},
 			"required": [

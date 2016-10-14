@@ -334,10 +334,10 @@ module OpenStudio
           data = []
           measures.each_with_index do |measure, measure_index|
             data[measure_index] = {}
-            measure_json = ''
+            measure_xml = ''
             for i in 0..(@measure_paths.length - 1)
               if File.exist? File.join(@measure_paths[i], measure.to_s, 'measure.xml')
-                measure_xml = Nokogiri::XML File.read(File.absolute_path('measure.xml'))
+                measure_xml = Nokogiri::XML File.read(File.join(@measure_paths[i], measure.to_s, 'measure.xml'))
                 break
               end
             end
@@ -346,26 +346,34 @@ module OpenStudio
             measure_data[:classname] = measure_xml.xpath('/measure/class_name').text
             measure_data[:name] = measure_xml.xpath('/measure/name').text
             measure_data[:display_name] = measure_xml.xpath('/measure/display_name').text
-            # TODO fix this line, prior art in WFG is in util/measure.rb lines 97-111
-            measure_data[:measure_type] = measure_json['measure_type']
+            measure_data[:measure_type] = parse_measure_type(File.join(@measure_paths[i], measure.to_s, 'measure.rb'))
             measure_data[:uid] = measure_xml.xpath('/measure/uid').text
             measure_data[:version_id] = measure_xml.xpath('/measure/version_id').text
             data[measure_index][:measure_data] = measure_data
             data[measure_index][:vars] = []
             vars = measure_map[measure]
+
+            # construct the list of variables
             vars.each do |var|
               var = var[0]
               var_hash = {}
-              # TODO fix this line, selector should be '/measure/arguments/argument' s.t. '//argument/name' == var
-              var_json = measure_json['arguments'].select { |hash| hash['local_variable'] == var.to_s }[0]
-              fail "measure.xml for measure #{measure} does not have an argument with local_variable == #{var}" if var_json.nil?
+              found_arg = nil
+              measure_xml.xpath('/measure/arguments/argument').each do |arg|
+                if arg.xpath('name').text == var.to_s
+                  found_arg = arg
+                  break
+                end
+              end
+
+              # var_json = measure_json['arguments'].select { |hash| hash['local_variable'] == var.to_s }[0]
+              fail "measure.xml for measure #{measure} does not have an argument with argument == #{var}" unless found_arg
+              var_hash[:name] = var.to_s
               var_hash[:variable_type] = 'variable'
               var_hash[:display_name] = measure_rows[2][measure_map[measure][var]]
               var_hash[:display_name_short] = var_hash[:display_name]
-              # TODO Update these once the correct node element has been selected
-              var_hash[:name] = var_json['local_variable']
-              var_hash[:type] = var_json['variable_type'].downcase
-              var_hash[:units] = var_json['units']
+              # var_hash[:name] = var_json['local_variable']
+              var_hash[:type] = found_arg.xpath('type').text.downcase
+              var_hash[:units] = found_arg.xpath('units')
               var_hash[:distribution] = {}
               case var_hash[:type].downcase
                 when 'bool', 'boolean' # is 'boolean' necessary? it's not in the enum catch
@@ -388,28 +396,48 @@ module OpenStudio
               var_hash[:distribution][:type] = 'discrete'
               var_hash[:distribution][:units] = var_hash[:units]
               if var_hash[:type] == 'choice'
-                var_hash[:distribution][:enumerations] = var_json['choices']
+                var_hash[:distribution][:enumerations] = found_arg.xpath('choices/choice').map { |s| s.xpath('value').text }
               elsif var_hash[:type] == 'bool'
                 var_hash[:distribution][:enumerations] = []
-                var_hash[:distribution][:enumerations] << 'true' # TODO: should this be a real bool?
-                var_hash[:distribution][:enumerations] << 'false'
+                var_hash[:distribution][:enumerations] << true
+                var_hash[:distribution][:enumerations] << false
               end
               data[measure_index][:vars] << var_hash
             end
             data[measure_index][:args] = []
-            measure_json['arguments'].each do |arg_json|
+
+
+            measure_xml.xpath('/measure/arguments/argument').each do |arg_xml|
               arg = {}
-              arg[:value_type] = arg_json['variable_type'].downcase
-              arg[:name] = arg_json['name']
-              arg[:display_name] = arg_json['display_name']
-              arg[:display_name_short] = arg_json['display_name']
-              arg[:default_value] = arg_json['default_value']
-              arg[:value] = arg_json['default_value']
+              arg[:value_type] = arg_xml.xpath('type').text.downcase
+              arg[:name] = arg_xml.xpath('name').text.downcase
+              arg[:display_name] = arg_xml.xpath('display_name').text.downcase
+              arg[:display_name_short] = arg[:display_name]
+              arg[:default_value] = arg_xml.xpath('default_value').text.downcase
+              arg[:value] = arg[:default_value]
               data[measure_index][:args] << arg
             end
           end
 
           data
+        end
+
+        private
+
+        def parse_measure_type(measure_filename)
+          measure_string = File.read(measure_filename)
+
+          if measure_string =~ /OpenStudio::Ruleset::WorkspaceUserScript/
+            return 'EnergyPlusMeasure'
+          elsif measure_string =~ /OpenStudio::Ruleset::ModelUserScript/
+            return 'RubyMeasure'
+          elsif measure_string =~ /OpenStudio::Ruleset::ReportingUserScript/
+            return 'ReportingMeasure'
+          elsif measure_string =~ /OpenStudio::Ruleset::UtilityUserScript/
+            return 'UtilityUserScript'
+          else
+            fail "measure type is unknown with an inherited class in #{measure_filename}"
+          end
         end
       end
     end

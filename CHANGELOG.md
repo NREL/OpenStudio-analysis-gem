@@ -1,8 +1,18 @@
 OpenStudio Analysis Gem Change Log
 ==================================
 
-Version Unreleased (Version 1.0.0-rc1)
+Version 1.0.0.pre.rc4
+---------------------
+* Change seed_model to seed_file in OSWs generated from the translator
+* Add more unit tests
+
+Version 1.0.0.pre.rc3
+---------------------
+* Catch null arguments when translating from OSA/OSD to OSW
+
+Version 1.0.0.pre.rc2
 --------------------------------
+* Note that pre.rc1 was yanked from Rubygems.
 * Remove allow_multiple_jobs and server_as_worker options. These are by defaulted to true now.
 * Remove uncertain strings from end of uncertainty distributions
 * Remove measures eval path for CSV import
@@ -11,6 +21,7 @@ Version Unreleased (Version 1.0.0-rc1)
 * Add json extension to formulation name upon save if none exists
 * Add zip extension to formulation zip upon save if none exists
 * In upload_datapoint, allows set the analysis_id in the file to the one passed.
+* Remove reading JSON from custom_csv method.
 
 Version 1.0.0-pat2
 ------------------------------
