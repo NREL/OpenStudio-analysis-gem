@@ -48,6 +48,13 @@ module OpenStudio
                 step_hash[:arguments][arg[:name].to_sym] = arg[:value]
               end
             end
+            step_hash[:name] = step[:name] if step[:name]
+            step_hash[:measure_id] = step[:uuid] if step[:uuid]
+            step_hash[:version_id] = step[:version_uuid] if step[:version_uuid]
+            step_hash[:description] = step[:description] if step[:description]
+            step_hash[:taxonomy] = step[:taxonomy] if step[:taxonomy]
+            step_hash[:measure_type] = step[:measure_type]
+            step_hash[:measure_type] = 'ModelMeasure' if step_hash[:measure_type] == 'RubyMeasure'
             @steps << step_hash
           end
         end
@@ -90,6 +97,8 @@ module OpenStudio
           osw[:file_paths] = @file_paths
           osw[:run_directory] = './'
           osw[:steps] = osw_steps_instance
+          osw[:name] = osd[:name] if osd[:name]
+          osw[:description] = osd[:description] if osd[:description]
           return osw
         end
 
