@@ -716,7 +716,7 @@ module OpenStudio
       def get_datapoint(data_point_id)
         data_point = nil
 
-        resp = @conn.get "/data_points/#{data_point_id}/show_full.json"
+        resp = @conn.get "/data_points/#{data_point_id}.json"
         if resp.status == 200
           data_point = JSON.parse resp.body, symbolize_names: true
         end

@@ -1,6 +1,10 @@
 OpenStudio Analysis Gem Change Log
 ==================================
 
+Version 1.0.0.pre.rc5
+---------------------
+* fix get_datapoint method. show_full is no longer a valid endpoint in the new server code 
+
 Version 1.0.0.pre.rc4
 ---------------------
 * Change seed_model to seed_file in OSWs generated from the translator
