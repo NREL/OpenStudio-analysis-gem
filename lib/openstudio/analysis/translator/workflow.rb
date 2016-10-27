@@ -95,7 +95,7 @@ module OpenStudio
           osw[:created_at] = created_at
           osw[:measure_paths] = @measure_paths
           osw[:file_paths] = @file_paths
-          osw[:run_directory] = './'
+          osw[:run_directory] = './run'
           osw[:steps] = osw_steps_instance
           osw[:name] = osd[:name] if osd[:name]
           osw[:description] = osd[:description] if osd[:description]
