@@ -1,6 +1,10 @@
 OpenStudio Analysis Gem Change Log
 ==================================
 
+Version 1.0.0.pre.rc6
+---------------------
+* When creating OSWs from batch datapoints, set the default run_directory to ./run
+
 Version 1.0.0.pre.rc5
 ---------------------
 * fix get_datapoint method. show_full is no longer a valid endpoint in the new server code 
