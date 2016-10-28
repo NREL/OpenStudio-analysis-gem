@@ -52,6 +52,7 @@ module OpenStudio
             step_hash[:measure_id] = step[:uuid] if step[:uuid]
             step_hash[:version_id] = step[:version_uuid] if step[:version_uuid]
             step_hash[:description] = step[:description] if step[:description]
+            step_hash[:modeler_description] = step[:modeler_description] if step[:modeler_description]
             step_hash[:taxonomy] = step[:taxonomy] if step[:taxonomy]
             step_hash[:measure_type] = step[:measure_type]
             step_hash[:measure_type] = 'ModelMeasure' if step_hash[:measure_type] == 'RubyMeasure'
