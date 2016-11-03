@@ -128,7 +128,7 @@ module OpenStudio
 
       # return the machine name of the analysis
       def name
-        @display_name.snake_case
+        @display_name.to_underscore
       end
 
       # return a hash.

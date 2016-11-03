@@ -426,9 +426,9 @@ module OpenStudio
 
             if b_settings
               @version = row[1].chomp if row[0] == 'Spreadsheet Version'
-              @settings["#{row[0].snake_case}"] = row[1] if row[0]
+              @settings["#{row[0].to_underscore}"] = row[1] if row[0]
               if @settings['cluster_name']
-                @settings['cluster_name'] = @settings['cluster_name'].snake_case
+                @settings['cluster_name'] = @settings['cluster_name'].to_underscore
               end
 
               if row[0] == 'AWS Tag'
@@ -445,7 +445,7 @@ module OpenStudio
                 else
                   @name = SecureRandom.uuid
                 end
-                @analysis_name = @name.snake_case
+                @analysis_name = @name.to_underscore
               end
               if row[0] == 'Export Directory'
                 tmp_filepath = row[1]
@@ -463,7 +463,7 @@ module OpenStudio
                   @measure_paths << File.expand_path(File.join(@root_path, tmp_filepath))
                 end
               end
-              @run_setup["#{row[0].snake_case}"] = row[1] if row[0]
+              @run_setup["#{row[0].to_underscore}"] = row[1] if row[0]
 
               # type cast
               if @run_setup['allow_multiple_jobs']
@@ -476,14 +476,14 @@ module OpenStudio
               if row[0]
                 v = row[1]
                 v.to_i if v % 1 == 0
-                @problem["#{row[0].snake_case}"] = v
+                @problem["#{row[0].to_underscore}"] = v
               end
 
             elsif b_algorithm_setup
               if row[0] && !row[0].empty?
                 v = row[1]
                 v = v.to_i if v % 1 == 0
-                @algorithm["#{row[0].snake_case}"] = v
+                @algorithm["#{row[0].to_underscore}"] = v
               end
             elsif b_weather_files
               if row[0] == 'Weather File'
@@ -506,7 +506,7 @@ module OpenStudio
                 unless (Pathname.new model_path).absolute?
                   model_path = File.expand_path(File.join(@root_path, model_path))
                 end
-                @models << { name: tmp_m_name.snake_case, display_name: tmp_m_name, type: row[2], path: model_path }
+                @models << { name: tmp_m_name.to_underscore, display_name: tmp_m_name, type: row[2], path: model_path }
               end
             elsif b_other_libs
               # determine if the path is relative
@@ -788,7 +788,7 @@ module OpenStudio
               if row[:measure_file_name_directory]
                 data['data'][measure_index]['measure_file_name_directory'] = row[:measure_file_name_directory]
               else
-                data['data'][measure_index]['measure_file_name_directory'] = row[:measure_file_name_or_var_display_name].underscore
+                data['data'][measure_index]['measure_file_name_directory'] = row[:measure_file_name_or_var_display_name].to_underscore
               end
               data['data'][measure_index]['measure_type'] = row[:measure_type_or_parameter_name_in_measure]
               data['data'][measure_index]['version'] = @version_id

@@ -1,6 +1,10 @@
 OpenStudio Analysis Gem Change Log
 ==================================
 
+Version 1.0.0.rc7
+-----------------
+* Use more recent version of BCL gem for underscoring strings
+
 Version 1.0.0.pre.rc6
 ---------------------
 * When creating OSWs from batch datapoints, set the default run_directory to ./run

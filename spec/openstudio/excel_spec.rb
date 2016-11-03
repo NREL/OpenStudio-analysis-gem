@@ -401,7 +401,7 @@ describe OpenStudio::Analysis::Translator::Excel do
 
     it 'should process' do
       model_uuid = @excel.models.first[:name]
-      expect(model_uuid).to match /[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/
+      expect(model_uuid).to match /[0-9a-f]{8}_[0-9a-f]{4}_[0-9a-f]{4}_[0-9a-f]{4}_[0-9a-f]{12}/
     end
 
     it 'should error out with missing measure information' do
@@ -420,7 +420,7 @@ describe OpenStudio::Analysis::Translator::Excel do
 
     it 'should process' do
       model_uuid = @excel.models.first[:name]
-      expect(model_uuid).to match /[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/
+      expect(model_uuid).to match /[0-9a-f]{8}_[0-9a-f]{4}_[0-9a-f]{4}_[0-9a-f]{4}_[0-9a-f]{12}/
     end
 
     it 'should process and save short display names' do
@@ -523,12 +523,12 @@ describe OpenStudio::Analysis::Translator::Excel do
 
     it 'should save the analysis' do
       expect { @excel.analysis }.to raise_error /There are more than one seed models defined in the excel file. Call .analyses. to return the array/
-      model_uuid = "#{@excel.name.snake_case}_#{@excel.models.first[:name]}"
+      model_uuid = "#{@excel.name.to_underscore}_#{@excel.models.first[:name]}"
 
       @excel.save_analysis # this will save all the analyses
 
       @excel.models.each do |f|
-        model_uuid = "#{@excel.name.snake_case}_#{f[:name]}"
+        model_uuid = "#{@excel.name.to_underscore}_#{f[:name]}"
         puts model_uuid
         expect(File.exist?("spec/files/export/analysis/#{model_uuid}.json")).to eq true
         expect(File.exist?("spec/files/export/analysis/#{model_uuid}.zip")).to eq true

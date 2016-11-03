@@ -235,7 +235,7 @@ module OpenStudio
           else
             @name = SecureRandom.uuid
           end
-          @analysis_name = @name.snake_case
+          @analysis_name = @name.to_underscore
 
           fail 'Require setting not found: measure_path' unless config_hash[:measure_paths]
           config_hash[:measure_paths] = [config_hash[:measure_paths]] unless config_hash[:measure_paths].respond_to?(:each)
@@ -266,7 +266,7 @@ module OpenStudio
             unless (Pathname.new path).absolute?
               path = File.expand_path(File.join(@root_path, path))
             end
-            @models << { name: model_name.snake_case, display_name: model_name, type: type, path: path }
+            @models << { name: model_name.to_underscore, display_name: model_name, type: type, path: path }
           end
 
           # Assign optional attributes
