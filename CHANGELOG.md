@@ -1,6 +1,10 @@
 OpenStudio Analysis Gem Change Log
 ==================================
 
+Version 1.0.0.rc8
+-----------------
+* Allow "None" as an argument in batch datapoints. This will allow the measure to be added without setting any of the arguments. Useful for adding Reporting Measures to the workflow.
+
 Version 1.0.0.rc7
 -----------------
 * Use more recent version of BCL gem for underscoring strings
