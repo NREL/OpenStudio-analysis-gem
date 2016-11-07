@@ -165,7 +165,6 @@ module OpenStudio
           display_name = append_model_name ? @name + ' ' + seed_model[:display_name] : @name
 
           a = OpenStudio::Analysis.create(display_name)
-          a
 
           @variables.each do |measure|
             @measure_paths.each do |measure_path|
@@ -356,6 +355,7 @@ module OpenStudio
             # construct the list of variables
             vars.each do |var|
               var = var[0]
+              next if var.to_s == "None"
               var_hash = {}
               found_arg = nil
               measure_xml.xpath('/measure/arguments/argument').each do |arg|
@@ -405,7 +405,6 @@ module OpenStudio
               data[measure_index][:vars] << var_hash
             end
             data[measure_index][:args] = []
-
 
             measure_xml.xpath('/measure/arguments/argument').each do |arg_xml|
               arg = {}
