@@ -269,12 +269,12 @@ module OpenStudio
           end
 
           # Assign optional attributes
-          if config_hash[:output]
-            path = File.expand_path(File.join(@root_path, config_hash[:output].to_s))
+          if config_hash[:output_json]
+            path = File.expand_path(File.join(@root_path, config_hash[:output_json].to_s))
             if File.exist? path
               @outputs = MultiJson.load(File.read(path))
             else
-              fail "Could not find output json: #{config_hash[:output]}"
+              fail "Could not find output json: #{config_hash[:output_json]}"
             end
           end
 
