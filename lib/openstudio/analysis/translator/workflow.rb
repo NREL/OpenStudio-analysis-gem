@@ -35,6 +35,10 @@ module OpenStudio
 
           # Initialize static inputs from the OSA
           @seed_file = File.basename @osa[:seed][:path]
+          if @seed_file.is_a? Array
+            raise Exception('No datapoint_index specified in the datapoint options') unless options[:datapoint_index]
+            @seed_file = @seed_file[options[:datapoint_index]]
+          end
           @weather_file = File.basename @osa[:weather_file][:path]
           @osa_id = @osa[:_id]
           @steps = []
