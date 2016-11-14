@@ -287,6 +287,9 @@
         "description": {
           "description": "Description of design alternative",
           "type": "string"
+        },
+        "seed": {
+          "$ref": "#/definitions/Seed Object"
         }
       },
       "required": [
