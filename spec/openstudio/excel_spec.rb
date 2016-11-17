@@ -443,8 +443,8 @@ describe OpenStudio::Analysis::Translator::Excel do
       expect(j['analysis']['output_variables'].first['display_name_short']).to eq 'Site EUI'
       expect(j['analysis']['problem']['workflow'][0]['variables'][0]['argument']['display_name']).to eq 'Orientation'
       expect(j['analysis']['problem']['workflow'][0]['variables'][0]['argument']['display_name_short']).to eq 'Shorter Display Name'
-      expect(j['analysis']['problem']['workflow'][1]['arguments'][0]['display_name']).to eq 'unknown'
-      expect(j['analysis']['problem']['workflow'][1]['arguments'][0]['display_name_short']).to eq 'un'
+      expect(j['analysis']['problem']['workflow'][1]['arguments'][1]['display_name']).to eq 'unknown'
+      expect(j['analysis']['problem']['workflow'][1]['arguments'][1]['display_name_short']).to eq 'un'
     end
   end
 

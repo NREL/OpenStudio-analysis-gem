@@ -124,7 +124,7 @@ describe OpenStudio::Analysis::Formulation do
     m.argument_value('heating_sch', 'some-string')
 
     expect(a.workflow.measures.size).to eq 2
-    expect(a.workflow.measures[1].arguments[2][:value]).to eq 'some-string'
+    expect(a.workflow.measures[1].arguments[3][:value]).to eq 'some-string'
     expect(a.workflow.measures[1].variables[0][:uuid]).to match /[\w]{8}(-[\w]{4}){3}-[\w]{12}/
 
     a.analysis_type = 'single_run'
