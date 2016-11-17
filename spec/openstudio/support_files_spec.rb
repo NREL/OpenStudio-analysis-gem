@@ -38,13 +38,11 @@ describe OpenStudio::Analysis::SupportFiles do
     expect(@s.size).to eq 1
 
     f = 'non-existent.rb'
-    expect{@s.add(f)}.to raise_error /Path or file does not exist and cannot be added.*/
+    expect { @s.add(f) }.to raise_error /Path or file does not exist and cannot be added.*/
   end
 
   it 'should add metadata data' do
-
   end
-
 
   it 'should add a directory' do
     @s.clear

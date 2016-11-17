@@ -20,11 +20,11 @@ def typecast_value(variable_type, value, inspect_string = false)
           elsif value.downcase == 'false'
             out_value = false
           else
-            fail "Can't cast to a bool from a value of '#{value}' of class '#{value.class}'"
+            raise "Can't cast to a bool from a value of '#{value}' of class '#{value.class}'"
           end
         end
       else
-        fail "Unknown variable type of '#{@variable['type']}'"
+        raise "Unknown variable type of '#{@variable['type']}'"
     end
   end
 

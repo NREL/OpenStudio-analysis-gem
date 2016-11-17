@@ -190,7 +190,7 @@ module OpenStudio
 
           h
         else
-          fail "Version #{version} not defined for #{self.class} and #{__method__}"
+          raise "Version #{version} not defined for #{self.class} and #{__method__}"
         end
       end
 
@@ -218,7 +218,7 @@ module OpenStudio
             o.seed_model = h[:analysis][:seed][:path]
           end
         else
-          fail "Version #{version} not defined for #{self.class} and #{__method__}"
+          raise "Version #{version} not defined for #{self.class} and #{__method__}"
         end
 
         o
@@ -331,7 +331,7 @@ module OpenStudio
 
           puts 'Adding Support Files: Libraries'
           @libraries.each do |lib|
-            fail "Libraries must specify their 'library_name' as metadata which becomes the directory upon zip" unless lib[:metadata][:library_name]
+            raise "Libraries must specify their 'library_name' as metadata which becomes the directory upon zip" unless lib[:metadata][:library_name]
 
             if File.directory? lib[:file]
               Dir[File.join(lib[:file], '**', '**')].each do |file|
