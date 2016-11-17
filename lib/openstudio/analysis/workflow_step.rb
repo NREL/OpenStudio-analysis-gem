@@ -38,6 +38,15 @@ module OpenStudio
         @measure_definition_version_uuid = nil
         @arguments = []
 
+        @arguments << {
+            display_name: 'Skip Entire Measure',
+            display_name_short: 'Skip',
+            name: '__SKIP__',
+            value_type: 'boolean',
+            default_value: false,
+            value: false
+        }
+
         # TODO: eventually the variables should be its own class. This would then be an array of Variable objects.
         @variables = []
       end

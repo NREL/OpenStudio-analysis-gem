@@ -93,10 +93,10 @@ module OpenStudio
 
         def add_model(name, display_name, type, path)
           @models << {
-            name: name,
-            display_name: display_name,
-            type: type,
-            path: path
+              name: name,
+              display_name: display_name,
+              type: type,
+              path: path
           }
         end
 
@@ -265,7 +265,7 @@ module OpenStudio
             unless (Pathname.new path).absolute?
               path = File.expand_path(File.join(@root_path, path))
             end
-            @models << { name: model_name.to_underscore, display_name: model_name, type: type, path: path }
+            @models << {name: model_name.to_underscore, display_name: model_name, type: type, path: path}
           end
 
           # Assign optional attributes
@@ -291,7 +291,7 @@ module OpenStudio
             unless (Pathname.new config_hash[:library_path]).absolute?
               config_hash[:library_path] = File.expand_path(File.join(@root_path, config_hash[:library_path]))
             end
-            @other_files << { lib_zip_name: library_name, path: config_hash[:library_path] }
+            @other_files << {lib_zip_name: library_name, path: config_hash[:library_path]}
           end
 
           if config_hash[:allow_multiple_jobs]
@@ -313,6 +313,7 @@ module OpenStudio
           @settings[:analysis_type] = 'batch_datapoints'
         end
 
+
         def parse_csv_measures(measure_rows)
           # Build metadata required for parsing
           measures = measure_rows[0].uniq.select { |measure| !measure.nil? }.map(&:to_sym)
@@ -333,19 +334,14 @@ module OpenStudio
           data = []
           measures.each_with_index do |measure, measure_index|
             data[measure_index] = {}
-            measure_xml = ''
-            for i in 0..(@measure_paths.length - 1)
-              if File.exist? File.join(@measure_paths[i], measure.to_s, 'measure.xml')
-                measure_xml = Nokogiri::XML File.read(File.join(@measure_paths[i], measure.to_s, 'measure.xml'))
-                break
-              end
-            end
-            fail "Could not find measure #{measure} xml in measure_paths: '#{@measure_paths.join("\n")}'" if measure_xml == ''
+            measure_xml, measure_type = find_measure(measure.to_s)
+
+            fail "Could not find measure #{measure} xml in measure_paths: '#{@measure_paths.join("\n")}'" unless measure_xml
             measure_data = {}
             measure_data[:classname] = measure_xml.xpath('/measure/class_name').text
             measure_data[:name] = measure_xml.xpath('/measure/name').text
             measure_data[:display_name] = measure_xml.xpath('/measure/display_name').text
-            measure_data[:measure_type] = parse_measure_type(File.join(@measure_paths[i], measure.to_s, 'measure.rb'))
+            measure_data[:measure_type] = measure_type
             measure_data[:uid] = measure_xml.xpath('/measure/uid').text
             measure_data[:version_id] = measure_xml.xpath('/measure/version_id').text
             data[measure_index][:measure_data] = measure_data
@@ -354,12 +350,14 @@ module OpenStudio
 
             # construct the list of variables
             vars.each do |var|
+              # var looks like [:cooling_adjustment, 0]
               var = var[0]
               next if var.to_s == "None"
               var_hash = {}
               found_arg = nil
               measure_xml.xpath('/measure/arguments/argument').each do |arg|
-                if arg.xpath('name').text == var.to_s
+
+                if var.to_s == '__SKIP__' || arg.xpath('name').text == var.to_s
                   found_arg = arg
                   break
                 end
@@ -367,17 +365,27 @@ module OpenStudio
 
               # var_json = measure_json['arguments'].select { |hash| hash['local_variable'] == var.to_s }[0]
               fail "measure.xml for measure #{measure} does not have an argument with argument == #{var}" unless found_arg
+              var_type = nil
+              var_units = ''
+              if var.to_s == '__SKIP__'
+                var_type = 'boolean'
+                var_units = ''
+              else
+                var_type = found_arg.xpath('type').text.downcase
+                var_units = found_arg.xpath('units')
+              end
+
               var_hash[:name] = var.to_s
               var_hash[:variable_type] = 'variable'
               var_hash[:display_name] = measure_rows[2][measure_map[measure][var]]
               var_hash[:display_name_short] = var_hash[:display_name]
               # var_hash[:name] = var_json['local_variable']
-              var_hash[:type] = found_arg.xpath('type').text.downcase
-              var_hash[:units] = found_arg.xpath('units')
+              var_hash[:type] = var_type
+              var_hash[:units] = var_units
               var_hash[:distribution] = {}
               case var_hash[:type].downcase
-                when 'bool', 'boolean' # is 'boolean' necessary? it's not in the enum catch
-                  var_hash[:distribution][:values] = (3..(measure_rows.length - 1)).map { |value| measure_rows[value.to_i][measure_map[measure][var]].to_s == 'true' }
+                when 'bool', 'boolean'
+                  var_hash[:distribution][:values] = (3..(measure_rows.length - 1)).map { |value| measure_rows[value.to_i][measure_map[measure][var]].to_s.downcase == 'true' }
                   var_hash[:distribution][:maximum] = true
                   var_hash[:distribution][:minimum] = false
                   var_hash[:distribution][:mode] = var_hash[:distribution][:values].group_by { |i| i }.max { |x, y| x[1].length <=> y[1].length }[0]
@@ -422,6 +430,19 @@ module OpenStudio
         end
 
         private
+
+        # Find the measure in the measure path
+        def find_measure(measure_name)
+          @measure_paths.each do |mp|
+            measure_xml = File.join(mp, measure_name, 'measure.xml')
+            measure_rb = File.join(mp, measure_name, 'measure.rb')
+            if File.exist?(measure_xml) && File.exist?(measure_rb)
+              return Nokogiri::XML File.read(measure_xml), parse_measure_type(measure_rb)
+            end
+          end
+
+          return nil, nil
+        end
 
         def parse_measure_type(measure_filename)
           measure_string = File.read(measure_filename)
