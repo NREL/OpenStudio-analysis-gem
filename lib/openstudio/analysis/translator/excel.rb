@@ -164,7 +164,7 @@ module OpenStudio
                       end
                       if variable['distribution']['max'].nil? || variable['distribution']['max'] == ''
                         raise "Variable #{measure['name']}:#{variable['name']} must have a maximum"
-                      end 
+                      end
                     else
                       if variable['distribution']['mean'].nil? || variable['distribution']['mean'] == ''
                         raise "Variable #{measure['name']}:#{variable['name']} must have a mean"
@@ -426,7 +426,7 @@ module OpenStudio
 
             if b_settings
               @version = row[1].chomp if row[0] == 'Spreadsheet Version'
-              @settings["#{row[0].to_underscore}"] = row[1] if row[0]
+              @settings[(row[0].to_underscore).to_s] = row[1] if row[0]
               if @settings['cluster_name']
                 @settings['cluster_name'] = @settings['cluster_name'].to_underscore
               end
@@ -463,7 +463,7 @@ module OpenStudio
                   @measure_paths << File.expand_path(File.join(@root_path, tmp_filepath))
                 end
               end
-              @run_setup["#{row[0].to_underscore}"] = row[1] if row[0]
+              @run_setup[(row[0].to_underscore).to_s] = row[1] if row[0]
 
               # type cast
               if @run_setup['allow_multiple_jobs']
@@ -476,14 +476,14 @@ module OpenStudio
               if row[0]
                 v = row[1]
                 v.to_i if v % 1 == 0
-                @problem["#{row[0].to_underscore}"] = v
+                @problem[(row[0].to_underscore).to_s] = v
               end
 
             elsif b_algorithm_setup
               if row[0] && !row[0].empty?
                 v = row[1]
                 v = v.to_i if v % 1 == 0
-                @algorithm["#{row[0].to_underscore}"] = v
+                @algorithm[(row[0].to_underscore).to_s] = v
               end
             elsif b_weather_files
               if row[0] == 'Weather File'
@@ -575,7 +575,7 @@ module OpenStudio
                                                    notes: /notes/i,
                                                    relation_to_eui: /typical\svar\sto\seui\srelationship/i,
                                                    clean: true)
-            elsif @version >= '0.3.0'.to_version            
+            elsif @version >= '0.3.0'.to_version
               rows = @xls.sheet('Variables').parse(enabled: /# variable/i,
                                                    measure_name_or_var_type: /type/i,
                                                    measure_file_name_or_var_display_name: /parameter\sdisplay\sname.*/i,
@@ -841,7 +841,7 @@ module OpenStudio
                                                objective_function_target: /objective\sfunction\starget/i,
                                                scaling_factor: /scale/i,
                                                objective_function_group: /objective/i)
-            
+
           end
 
           unless rows

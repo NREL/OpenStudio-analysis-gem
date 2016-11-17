@@ -293,7 +293,7 @@ module OpenStudio
       def save_analysis_zip(filename)
         def add_directory_to_zip(zipfile, local_directory, relative_zip_directory)
           # puts "Add Directory #{local_directory}"
-          Dir[File.join("#{local_directory}", '**', '**')].each do |file|
+          Dir[File.join(local_directory.to_s, '**', '**')].each do |file|
             # puts "Adding File #{file}"
             zipfile.add(file.sub(local_directory, relative_zip_directory), file)
           end

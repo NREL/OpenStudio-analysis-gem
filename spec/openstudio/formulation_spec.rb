@@ -47,7 +47,7 @@ describe OpenStudio::Analysis::Formulation do
 
     h = a.to_hash
     expect(h[:analysis][:problem][:analysis_type]).to eq nil
-    expect(a.save "#{run_dir}/analysis.json").to eq true
+    expect(a.save("#{run_dir}/analysis.json")).to eq true
   end
 
   it 'should increment objective functions' do

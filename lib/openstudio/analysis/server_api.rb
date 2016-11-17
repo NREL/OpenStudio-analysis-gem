@@ -6,7 +6,7 @@ module OpenStudio
       attr_reader :hostname
 
       # Define set of anlaysis methods require batch_run to be queued after them
-      BATCH_RUN_METHODS = %w(lhs preflight single_run repeat_run doe diag baseline_perturbation batch_datapoints)
+      BATCH_RUN_METHODS = %w(lhs preflight single_run repeat_run doe diag baseline_perturbation batch_datapoints).freeze
 
       def initialize(options = {})
         defaults = { hostname: 'http://localhost:8080' }
@@ -87,7 +87,7 @@ module OpenStudio
         project_id = nil
 
         # TODO: make this a display name and a machine name
-        project_hash = { project: { name: "#{options[:project_name]}" } }
+        project_hash = { project: { name: (options[:project_name]).to_s } }
 
         response = @conn.post do |req|
           req.url '/projects.json'
@@ -446,7 +446,7 @@ module OpenStudio
           end
 
           # set the analysis name
-          formulation_json[:analysis][:name] = "#{options[:analysis_name]}" unless options[:analysis_name].nil?
+          formulation_json[:analysis][:name] = (options[:analysis_name]).to_s unless options[:analysis_name].nil?
         else
           formulation_json = {
             analysis: options
@@ -824,7 +824,7 @@ module OpenStudio
         analysis_options = {
           formulation_file: nil,
           upload_file: nil,
-          reset_uuids: true,
+          reset_uuids: true
         }
         analysis_id = new_analysis(project_id, analysis_options)
 
