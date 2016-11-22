@@ -11,7 +11,11 @@ module OpenStudio
       def initialize(options = {})
         defaults = { hostname: 'http://localhost:8080', log_path: File.expand_path('~/os_server_api.log') }
         options = defaults.merge(options)
-        @logger = ::Logger.new(options[:log_path])
+      	if ENV['OS_SERVER_LOG_PATH']
+          @logger = ::Logger.new(ENV['OS_SERVER_LOG_PATH'] + '/os_server_api.log')
+        else
+          @logger = ::Logger.new(options[:log_path])
+	      end
 
         @hostname = options[:hostname]
 
