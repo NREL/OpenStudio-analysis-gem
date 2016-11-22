@@ -9,9 +9,9 @@ module OpenStudio
       BATCH_RUN_METHODS = %w(lhs preflight single_run repeat_run doe diag baseline_perturbation batch_datapoints).freeze
 
       def initialize(options = {})
-        defaults = { hostname: 'http://localhost:8080' }
+        defaults = { hostname: 'http://localhost:8080', log_path: File.expand_path('~/os_server_api.log') }
         options = defaults.merge(options)
-        @logger = ::Logger.new('faraday.log')
+        @logger = ::Logger.new(options[:log_path])
 
         @hostname = options[:hostname]
 
