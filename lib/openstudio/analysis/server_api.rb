@@ -11,7 +11,12 @@ module OpenStudio
       def initialize(options = {})
         defaults = { hostname: 'http://localhost:8080' }
         options = defaults.merge(options)
-        @logger = ::Logger.new('faraday.log')
+	if ENV['OS_SERVER_LOG_PATH']
+          @logger = ::Logger.new(ENV['OS_SERVER_LOG_PATH'] + '/faraday.log')
+	else
+          @logger = ::Logger.new('faraday.log')
+	end
+
 
         @hostname = options[:hostname]
 
