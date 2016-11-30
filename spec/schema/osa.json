@@ -290,6 +290,32 @@
         },
         "seed": {
           "$ref": "#/definitions/Seed Object"
+        },
+        "options": {
+          "description": "Each option corresponds to one WorkflowStep (i.e. Measure).  Options are listed in order",
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "measure_name": {
+                "description": "Name of the measure in this workflow",
+                "type": "string"
+              },
+              "workflow_index": {
+                "description": "Index of the measure in the workflow",
+                "type": "number"
+              },
+              "name": {
+                "description": "Name of the user specified option",
+                "type": "string"
+              },
+              "description": {
+                "description": "Description of the user specified option",
+                "type": "string"
+              }
+            },
+            "additionalProperties": false
+          }
         }
       },
       "required": [
