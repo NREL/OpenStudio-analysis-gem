@@ -76,7 +76,6 @@ module OpenStudio
 
           # Parse the osd hash based off of the osa hash. First check that the analysis id matches
           fail "File #{osd_filename} does not reference #{@osa_id}." unless @osa_id == osd[:analysis_id]
-          # @todo (rhorsey) Fix the spec so this line can be uncommented
           osw_steps_instance = @steps
           osw_steps_instance.each_with_index do |step, i|
             next unless @osa[:problem][:workflow][i][:variables]
@@ -103,7 +102,7 @@ module OpenStudio
           osw[:steps] = osw_steps_instance
           osw[:name] = osd[:name] if osd[:name]
           osw[:description] = osd[:description] if osd[:description]
-          return osw
+          osw
         end
 
         # Runs an array of OSD files
@@ -118,7 +117,7 @@ module OpenStudio
             end
           end
 
-          return r
+          r
         end
       end
     end
