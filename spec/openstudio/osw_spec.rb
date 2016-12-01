@@ -65,7 +65,7 @@ describe OpenStudio::Analysis::Translator::Workflow do
       expect(result).to be_a(Hash)
 
       # Save the file to the export directory
-      File.open('../../../spec/files/export/workflow/0.osw', 'w') { |f| f << JSON.pretty_generate(result)}
+      File.open('../../../spec/files/export/workflow/0.osw', 'w') { |f| f << JSON.pretty_generate(result) }
 
       expect(result.key?(:seed_model)).to eq false
       expect(result[:seed_file]).to eq 'large_office_air_cooled_chiller.osm'
@@ -75,7 +75,7 @@ describe OpenStudio::Analysis::Translator::Workflow do
 
     it 'should not write a osd with a different osa id' do
       osd_path = 'datapoint_wrong_osa_id.osd'
-      expect{ @translator.process_datapoint(osd_path).first }.to raise_error(RuntimeError)
+      expect { @translator.process_datapoint(osd_path).first }.to raise_error(RuntimeError)
     end
 
     it 'should write several osds' do

@@ -6,16 +6,20 @@ module OpenStudio
       attr_reader :hostname
 
       # Define set of anlaysis methods require batch_run to be queued after them
-      BATCH_RUN_METHODS = %w(lhs preflight single_run repeat_run doe diag baseline_perturbation batch_datapoints)
+      BATCH_RUN_METHODS = %w(lhs preflight single_run repeat_run doe diag baseline_perturbation batch_datapoints).freeze
 
       def initialize(options = {})
-        defaults = {hostname: 'http://localhost:8080'}
+        defaults = { hostname: 'http://localhost:8080', log_path: File.expand_path('~/os_server_api.log') }
         options = defaults.merge(options)
-        @logger = ::Logger.new('faraday.log')
+      	if ENV['OS_SERVER_LOG_PATH']
+          @logger = ::Logger.new(ENV['OS_SERVER_LOG_PATH'] + '/os_server_api.log')
+        else
+          @logger = ::Logger.new(options[:log_path])
+	      end
 
         @hostname = options[:hostname]
 
-        fail 'no host defined for server api class' if @hostname.nil?
+        raise 'no host defined for server api class' if @hostname.nil?
 
         # TODO: add support for the proxy
 
@@ -44,7 +48,7 @@ module OpenStudio
         if response.status == 200
           projects_json = JSON.parse(response.body, symbolize_names: true, max_nesting: false)
         else
-          fail 'did not receive a 200 in get_projects'
+          raise 'did not receive a 200 in get_projects'
         end
 
         projects_json
@@ -82,12 +86,12 @@ module OpenStudio
       end
 
       def new_project(options = {})
-        defaults = {project_name: "Project #{::Time.now.strftime('%Y-%m-%d %H:%M:%S')}"}
+        defaults = { project_name: "Project #{::Time.now.strftime('%Y-%m-%d %H:%M:%S')}" }
         options = defaults.merge(options)
         project_id = nil
 
         # TODO: make this a display name and a machine name
-        project_hash = {project: {name: "#{options[:project_name]}"}}
+        project_hash = { project: { name: (options[:project_name]).to_s } }
 
         response = @conn.post do |req|
           req.url '/projects.json'
@@ -406,17 +410,17 @@ module OpenStudio
 
       def new_analysis(project_id, options)
         defaults = {
-            analysis_name: nil,
-            reset_uuids: false,
-            push_to_dencity: false
+          analysis_name: nil,
+          reset_uuids: false,
+          push_to_dencity: false
         }
         options = defaults.merge(options)
 
-        fail 'No project id passed' if project_id.nil?
+        raise 'No project id passed' if project_id.nil?
 
         formulation_json = nil
         if options[:formulation_file]
-          fail "No formulation exists #{options[:formulation_file]}" unless File.exist?(options[:formulation_file])
+          raise "No formulation exists #{options[:formulation_file]}" unless File.exist?(options[:formulation_file])
           formulation_json = JSON.parse(File.read(options[:formulation_file]), symbolize_names: true)
         end
 
@@ -446,16 +450,16 @@ module OpenStudio
           end
 
           # set the analysis name
-          formulation_json[:analysis][:name] = "#{options[:analysis_name]}" unless options[:analysis_name].nil?
+          formulation_json[:analysis][:name] = (options[:analysis_name]).to_s unless options[:analysis_name].nil?
         else
           formulation_json = {
-              analysis: options
+            analysis: options
           }
           puts formulation_json
           analysis_id = SecureRandom.uuid
           formulation_json[:analysis][:uuid] = analysis_id
         end
-        fail "No analysis id defined in analysis.json #{options[:formulation_file]}" if analysis_id.nil?
+        raise "No analysis id defined in analysis.json #{options[:formulation_file]}" if analysis_id.nil?
 
         # save out this file to compare
         # File.open('formulation_merge.json', 'w') { |f| f << JSON.pretty_generate(formulation_json) }
@@ -475,14 +479,14 @@ module OpenStudio
           upload_to_dencity(analysis_id, formulation_json) if options[:push_to_dencity]
           puts "new analysis created with ID: #{analysis_id}"
         else
-          fail 'Could not create new analysis'
+          raise 'Could not create new analysis'
         end
 
         # check if we need to upload the analysis zip file
         if options[:upload_file]
-          fail "upload file does not exist #{options[:upload_file]}" unless File.exist?(options[:upload_file])
+          raise "upload file does not exist #{options[:upload_file]}" unless File.exist?(options[:upload_file])
 
-          payload = {file: Faraday::UploadIO.new(options[:upload_file], 'application/zip')}
+          payload = { file: Faraday::UploadIO.new(options[:upload_file], 'application/zip') }
           response = @conn_multipart.post "analyses/#{analysis_id}/upload.json", payload do |req|
             req.options[:timeout] = 1800 # seconds
           end
@@ -490,7 +494,7 @@ module OpenStudio
           if response.status == 201
             puts 'Successfully uploaded ZIP file'
           else
-            fail response.inspect
+            raise response.inspect
           end
         end
 
@@ -501,13 +505,13 @@ module OpenStudio
         require 'dencity'
         puts "Attempting to connect to DEnCity server using settings at '~/.dencity/config.yml'"
         conn = Dencity.connect
-        fail "Could not connect to DEnCity server at #{hostname}." unless conn.connected?
+        raise "Could not connect to DEnCity server at #{hostname}." unless conn.connected?
         begin
           r = conn.login
         rescue Faraday::ParsingError => user_id_failure
-          fail "Error in user_id field: #{user_id_failure.message}"
+          raise "Error in user_id field: #{user_id_failure.message}"
         rescue MultiJson::ParseError => authentication_failure
-          fail "Error in attempted authentication: #{authentication_failure.message}"
+          raise "Error in attempted authentication: #{authentication_failure.message}"
         end
         user_uuid = r.id
 
@@ -528,7 +532,7 @@ module OpenStudio
             break
           end
         end
-        fail "Analysis with user_defined_id of #{analysis_uuid} found on DEnCity." if found_analysis_uuid
+        raise "Analysis with user_defined_id of #{analysis_uuid} found on DEnCity." if found_analysis_uuid
         dencity_hash = OpenStudio::Analysis.to_dencity_analysis(analysis, analysis_uuid)
 
         # Write the analysis DEnCity hash to dencity_analysis.json
@@ -544,14 +548,14 @@ module OpenStudio
           runner.registerError("Upload failure: #{e.message} in #{e.backtrace.join('/n')}")
         else
           if NoMethodError == upload_response.class
-            fail "ERROR: Server responded with a NoMethodError: #{upload_response}"
+            raise "ERROR: Server responded with a NoMethodError: #{upload_response}"
           end
           if upload_response.status.to_s[0] == '2'
             puts 'Successfully uploaded processed analysis json file to the DEnCity server.'
           else
             puts 'ERROR: Server returned a non-20x status. Response below.'
             puts upload_response
-            fail
+            raise
           end
         end
       end
@@ -562,12 +566,12 @@ module OpenStudio
       # @option options [String] :datapoint_file Path to datapoint JSON to upload
       # @option options [Boolean] :reset_uuids Flag on whether or not to reset the UUID in the datapoint JSON to a new random value.
       def upload_datapoint(analysis_id, options)
-        defaults = {reset_uuids: false}
+        defaults = { reset_uuids: false }
         options = defaults.merge(options)
 
-        fail 'No analysis id passed' if analysis_id.nil?
-        fail 'No datapoints file passed to new_analysis' unless options[:datapoint_file]
-        fail "No datapoints_file exists #{options[:datapoint_file]}" unless File.exist?(options[:datapoint_file])
+        raise 'No analysis id passed' if analysis_id.nil?
+        raise 'No datapoints file passed to new_analysis' unless options[:datapoint_file]
+        raise "No datapoints_file exists #{options[:datapoint_file]}" unless File.exist?(options[:datapoint_file])
 
         dp_hash = JSON.parse(File.open(options[:datapoint_file]).read, symbolize_names: true)
 
@@ -591,7 +595,7 @@ module OpenStudio
           puts "new datapoints created for analysis #{analysis_id}"
           return JSON.parse(response.body, symbolize_names: true)
         else
-          fail "could not create new datapoints #{response.body}"
+          raise "could not create new datapoints #{response.body}"
         end
       end
 
@@ -601,9 +605,9 @@ module OpenStudio
         defaults = {}
         options = defaults.merge(options)
 
-        fail 'No analysis id passed' if analysis_id.nil?
-        fail 'No datapoints file passed to new_analysis' unless options[:datapoints_file]
-        fail "No datapoints_file exists #{options[:datapoints_file]}" unless File.exist?(options[:datapoints_file])
+        raise 'No analysis id passed' if analysis_id.nil?
+        raise 'No datapoints file passed to new_analysis' unless options[:datapoints_file]
+        raise "No datapoints_file exists #{options[:datapoints_file]}" unless File.exist?(options[:datapoints_file])
 
         dp_hash = JSON.parse(File.open(options[:datapoints_file]).read, symbolize_names: true)
 
@@ -617,12 +621,12 @@ module OpenStudio
         if response.status == 201
           puts "new datapoints created for analysis #{analysis_id}"
         else
-          fail "could not create new datapoints #{response.body}"
+          raise "could not create new datapoints #{response.body}"
         end
       end
 
       def start_analysis(analysis_id, options)
-        defaults = {analysis_action: 'start', without_delay: false}
+        defaults = { analysis_action: 'start', without_delay: false }
         options = defaults.merge(options)
 
         puts "Run analysis is configured with #{options.to_json}"
@@ -636,14 +640,14 @@ module OpenStudio
         if response.status == 200
           puts "Received request to run analysis #{analysis_id}"
         else
-          fail 'Could not start the analysis'
+          raise 'Could not start the analysis'
         end
       end
 
       # Kill the analysis
       # @param analysis [String] Analysis ID to stop
       def kill_analysis(analysis_id)
-        analysis_action = {analysis_action: 'stop'}
+        analysis_action = { analysis_action: 'stop' }
 
         response = @conn.post do |req|
           req.url "analyses/#{analysis_id}/action.json"
@@ -750,9 +754,9 @@ module OpenStudio
       def run(formulation_filename, analysis_zip_filename, analysis_type,
               options = {})
         defaults = {
-            run_data_point_filename: 'run_openstudio_workflow_monthly.rb',
-            push_to_dencity: false,
-            batch_run_method: 'batch_run'
+          run_data_point_filename: 'run_openstudio_workflow_monthly.rb',
+          push_to_dencity: false,
+          batch_run_method: 'batch_run'
         }
         options = defaults.merge(options)
 
@@ -760,20 +764,20 @@ module OpenStudio
         project_id = new_project(project_options)
 
         analysis_options = {
-            formulation_file: formulation_filename,
-            upload_file: analysis_zip_filename,
-            reset_uuids: true,
-            push_to_dencity: options[:push_to_dencity]
+          formulation_file: formulation_filename,
+          upload_file: analysis_zip_filename,
+          reset_uuids: true,
+          push_to_dencity: options[:push_to_dencity]
         }
 
         analysis_id = new_analysis(project_id, analysis_options)
 
         run_options = {
-            analysis_action: 'start',
-            without_delay: false,
-            analysis_type: analysis_type,
-            simulate_data_point_filename: 'simulate_data_point.rb', # TODO: remove these from server?
-            run_data_point_filename: options[:run_data_point_filename]
+          analysis_action: 'start',
+          without_delay: false,
+          analysis_type: analysis_type,
+          simulate_data_point_filename: 'simulate_data_point.rb', # TODO: remove these from server?
+          run_data_point_filename: options[:run_data_point_filename]
         }
         start_analysis(analysis_id, run_options)
 
@@ -781,11 +785,11 @@ module OpenStudio
         # because there is no explicit way to tell the system to do it
         if BATCH_RUN_METHODS.include? analysis_type
           run_options = {
-              analysis_action: 'start',
-              without_delay: false,
-              analysis_type: options[:batch_run_method],
-              simulate_data_point_filename: 'simulate_data_point.rb',
-              run_data_point_filename: options[:run_data_point_filename]
+            analysis_action: 'start',
+            without_delay: false,
+            analysis_type: options[:batch_run_method],
+            simulate_data_point_filename: 'simulate_data_point.rb',
+            run_data_point_filename: options[:run_data_point_filename]
           }
           start_analysis(analysis_id, run_options)
         end
@@ -799,18 +803,18 @@ module OpenStudio
         project_id = new_project(project_options)
 
         analysis_options = {
-            formulation_file: formulation_filename,
-            upload_file: analysis_zip_filename,
-            reset_uuids: true
+          formulation_file: formulation_filename,
+          upload_file: analysis_zip_filename,
+          reset_uuids: true
         }
         analysis_id = new_analysis(project_id, analysis_options)
 
         run_options = {
-            analysis_action: 'start',
-            without_delay: false,
-            analysis_type: analysis_type,
-            simulate_data_point_filename: 'simulate_data_point.rb',
-            run_data_point_filename: run_data_point_filename
+          analysis_action: 'start',
+          without_delay: false,
+          analysis_type: analysis_type,
+          simulate_data_point_filename: 'simulate_data_point.rb',
+          run_data_point_filename: run_data_point_filename
         }
         start_analysis(analysis_id, run_options)
 
@@ -822,18 +826,18 @@ module OpenStudio
         project_id = new_project(project_options)
 
         analysis_options = {
-            formulation_file: nil,
-            upload_file: nil,
-            reset_uuids: true,
+          formulation_file: nil,
+          upload_file: nil,
+          reset_uuids: true
         }
         analysis_id = new_analysis(project_id, analysis_options)
 
         run_options = {
-            analysis_action: 'start',
-            without_delay: false,
-            analysis_type: 'batch_run_analyses',
-            simulate_data_point_filename: 'simulate_data_point.rb',
-            run_data_point_filename: 'run_openstudio_workflow_monthly.rb'
+          analysis_action: 'start',
+          without_delay: false,
+          analysis_type: 'batch_run_analyses',
+          simulate_data_point_filename: 'simulate_data_point.rb',
+          run_data_point_filename: 'run_openstudio_workflow_monthly.rb'
         }
         start_analysis(analysis_id, run_options)
 

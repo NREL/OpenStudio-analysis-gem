@@ -18,7 +18,7 @@ module OpenStudio
       # @return [Boolean] Returns false if the file does not exist
       def add(path_or_filename, metadata = {})
         if !File.exist?(path_or_filename) && !Dir.exist?(path_or_filename)
-          fail "Path or file does not exist and cannot be added: #{path_or_filename}"
+          raise "Path or file does not exist and cannot be added: #{path_or_filename}"
         end
 
         # only add if it isn't allready in the list

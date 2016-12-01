@@ -1,7 +1,6 @@
 module OpenStudio
   module Analysis
     module Translator
-
       class Workflow
         attr_reader :osa_filename
         attr_reader :root_path
@@ -24,7 +23,7 @@ module OpenStudio
           if File.exist?(@osa_filename)
             @osa = ::JSON.parse(File.read(@osa_filename), symbolize_names: true)[:analysis]
           else
-            fail "File #{@osa_filename} does not exist"
+            raise "File #{@osa_filename} does not exist"
           end
 
           # Initialize some other instance variables
@@ -71,11 +70,11 @@ module OpenStudio
             # warn('data_point selector in ods will be changed to datapoint in version 1.0') # NL this isn't true anymore.
             osd = ::JSON.parse(File.read(osd_filename), symbolize_names: true)[:data_point]
           else
-            fail "File #{osd_filename} does not exist"
+            raise "File #{osd_filename} does not exist"
           end
 
           # Parse the osd hash based off of the osa hash. First check that the analysis id matches
-          fail "File #{osd_filename} does not reference #{@osa_id}." unless @osa_id == osd[:analysis_id]
+          raise "File #{osd_filename} does not reference #{@osa_id}." unless @osa_id == osd[:analysis_id]
           osw_steps_instance = @steps
           osw_steps_instance.each_with_index do |step, i|
             next unless @osa[:problem][:workflow][i][:variables]

@@ -37,7 +37,7 @@ module OpenStudio
           if File.exist?(@xls_filename)
             @xls = Roo::Spreadsheet.open(@xls_filename)
           else
-            fail "File #{@xls_filename} does not exist"
+            raise "File #{@xls_filename} does not exist"
           end
 
           # Initialize some other instance variables
@@ -66,7 +66,7 @@ module OpenStudio
           @setup = parse_setup
 
           @version = Semantic::Version.new @version
-          fail "Spreadsheet version #{@version} is no longer supported.  Please upgrade your spreadsheet to at least 0.1.9" if @version < '0.1.9'
+          raise "Spreadsheet version #{@version} is no longer supported.  Please upgrade your spreadsheet to at least 0.1.9" if @version < '0.1.9'
 
           @variables = parse_variables
 
@@ -94,34 +94,34 @@ module OpenStudio
         def validate_analysis
           # Setup the paths and do some error checking
           @measure_paths.each do |mp|
-            fail "Measures directory '#{mp}' does not exist" unless Dir.exist?(mp)
+            raise "Measures directory '#{mp}' does not exist" unless Dir.exist?(mp)
           end
 
           @models.uniq!
-          fail 'No seed models defined in spreadsheet' if @models.empty?
+          raise 'No seed models defined in spreadsheet' if @models.empty?
 
           @models.each do |model|
-            fail "Seed model does not exist: #{model[:path]}" unless File.exist?(model[:path])
+            raise "Seed model does not exist: #{model[:path]}" unless File.exist?(model[:path])
           end
 
           @weather_files.uniq!
-          fail 'No weather files found based on what is in the spreadsheet' if @weather_files.empty?
+          raise 'No weather files found based on what is in the spreadsheet' if @weather_files.empty?
 
           @weather_files.each do |wf|
-            fail "Weather file does not exist: #{wf}" unless File.exist?(wf)
+            raise "Weather file does not exist: #{wf}" unless File.exist?(wf)
           end
 
           # This can be a directory as well
           @other_files.each do |f|
-            fail "Other files do not exist for: #{f[:path]}" unless File.exist?(f[:path])
+            raise "Other files do not exist for: #{f[:path]}" unless File.exist?(f[:path])
           end
 
           @worker_inits.each do |f|
-            fail "Worker initialization file does not exist for: #{f[:path]}" unless File.exist?(f[:path])
+            raise "Worker initialization file does not exist for: #{f[:path]}" unless File.exist?(f[:path])
           end
 
           @worker_finals.each do |f|
-            fail "Worker finalization file does not exist for: #{f[:path]}" unless File.exist?(f[:path])
+            raise "Worker finalization file does not exist for: #{f[:path]}" unless File.exist?(f[:path])
           end
 
           FileUtils.mkdir_p(@export_path)
@@ -131,7 +131,7 @@ module OpenStudio
           measure_display_names = @variables['data'].map { |m| m['enabled'] ? m['display_name'] : nil }.compact
           measure_display_names_mult = measure_display_names.select { |m| measure_display_names.count(m) > 1 }.uniq
           if measure_display_names_mult && !measure_display_names_mult.empty?
-            fail "Measure Display Names are not unique for '#{measure_display_names_mult.join('\', \'')}'"
+            raise "Measure Display Names are not unique for '#{measure_display_names_mult.join('\', \'')}'"
           end
 
           # verify that all continuous variables have all the data needed and create a name map
@@ -145,7 +145,7 @@ module OpenStudio
 
                   # make sure that variables have static values
                   if variable['distribution']['static_value'].nil? || variable['distribution']['static_value'] == ''
-                    fail "Variable #{measure['name']}:#{variable['name']} needs a static value"
+                    raise "Variable #{measure['name']}:#{variable['name']} needs a static value"
                   end
 
                   if variable['type'] == 'enum' || variable['type'] == 'Choice'
@@ -153,39 +153,39 @@ module OpenStudio
                   else # must be an integer or double
                     if variable['distribution']['type'] == 'discrete_uncertain'
                       if variable['distribution']['discrete_values'].nil? || variable['distribution']['discrete_values'] == ''
-                        fail "Variable #{measure['name']}:#{variable['name']} needs discrete values"
+                        raise "Variable #{measure['name']}:#{variable['name']} needs discrete values"
                       end
                     elsif variable['distribution']['type'] == 'integer_sequence'
                       if variable['distribution']['mean'].nil? || variable['distribution']['mean'] == ''
-                        fail "Variable #{measure['name']}:#{variable['name']} must have a mean/mode"
+                        raise "Variable #{measure['name']}:#{variable['name']} must have a mean/mode"
                       end
                       if variable['distribution']['min'].nil? || variable['distribution']['min'] == ''
-                        fail "Variable #{measure['name']}:#{variable['name']} must have a minimum"
+                        raise "Variable #{measure['name']}:#{variable['name']} must have a minimum"
                       end
                       if variable['distribution']['max'].nil? || variable['distribution']['max'] == ''
-                        fail "Variable #{measure['name']}:#{variable['name']} must have a maximum"
-                      end 
+                        raise "Variable #{measure['name']}:#{variable['name']} must have a maximum"
+                      end
                     else
                       if variable['distribution']['mean'].nil? || variable['distribution']['mean'] == ''
-                        fail "Variable #{measure['name']}:#{variable['name']} must have a mean"
+                        raise "Variable #{measure['name']}:#{variable['name']} must have a mean"
                       end
                       if variable['distribution']['stddev'].nil? || variable['distribution']['stddev'] == ''
-                        fail "Variable #{measure['name']}:#{variable['name']} must have a stddev"
+                        raise "Variable #{measure['name']}:#{variable['name']} must have a stddev"
                       end
                     end
 
                     if variable['distribution']['mean'].nil? || variable['distribution']['mean'] == ''
-                      fail "Variable #{measure['name']}:#{variable['name']} must have a mean/mode"
+                      raise "Variable #{measure['name']}:#{variable['name']} must have a mean/mode"
                     end
                     if variable['distribution']['min'].nil? || variable['distribution']['min'] == ''
-                      fail "Variable #{measure['name']}:#{variable['name']} must have a minimum"
+                      raise "Variable #{measure['name']}:#{variable['name']} must have a minimum"
                     end
                     if variable['distribution']['max'].nil? || variable['distribution']['max'] == ''
-                      fail "Variable #{measure['name']}:#{variable['name']} must have a maximum"
+                      raise "Variable #{measure['name']}:#{variable['name']} must have a maximum"
                     end
                     unless variable['type'] == 'string' || variable['type'] =~ /bool/
                       if variable['distribution']['min'] > variable['distribution']['max']
-                        fail "Variable min is greater than variable max for #{measure['name']}:#{variable['name']}"
+                        raise "Variable min is greater than variable max for #{measure['name']}:#{variable['name']}"
                       end
                     end
 
@@ -197,7 +197,7 @@ module OpenStudio
 
           dupes = variable_names.select { |e| variable_names.count(e) > 1 }.uniq
           if dupes.count > 0
-            fail "duplicate variable names found in list #{dupes.inspect}"
+            raise "duplicate variable names found in list #{dupes.inspect}"
           end
 
           # most of the checks will raise a runtime exception, so this true will never be called
@@ -210,8 +210,8 @@ module OpenStudio
         # @append_model_name [Boolean] Append the name of the seed model to the display name
         # @return [Object] An OpenStudio::Analysis
         def analysis(seed_model = nil, append_model_name = false)
-          fail 'There are no seed models defined in the excel file. Please add one.' if @models.size == 0
-          fail "There are more than one seed models defined in the excel file. Call 'analyses' to return the array" if @models.size > 1 && seed_model.nil?
+          raise 'There are no seed models defined in the excel file. Please add one.' if @models.size == 0
+          raise "There are more than one seed models defined in the excel file. Call 'analyses' to return the array" if @models.size > 1 && seed_model.nil?
 
           seed_model = @models.first if seed_model.nil?
 
@@ -231,12 +231,12 @@ module OpenStudio
                   measure['local_path_to_measure'] = "#{measure_dir_to_add}/measure.rb"
                   break
                 else
-                  fail "Measure in directory '#{measure_dir_to_add}' did not contain a measure.rb file"
+                  raise "Measure in directory '#{measure_dir_to_add}' did not contain a measure.rb file"
                 end
               end
             end
 
-            fail "Could not find measure '#{measure['name']}' in directory named '#{measure['measure_file_name_directory']}' in the measure paths '#{@measure_paths.join(', ')}'" unless measure['local_path_to_measure']
+            raise "Could not find measure '#{measure['name']}' in directory named '#{measure['measure_file_name_directory']}' in the measure paths '#{@measure_paths.join(', ')}'" unless measure['local_path_to_measure']
 
             a.workflow.add_measure_from_excel(measure)
           end
@@ -426,7 +426,7 @@ module OpenStudio
 
             if b_settings
               @version = row[1].chomp if row[0] == 'Spreadsheet Version'
-              @settings["#{row[0].to_underscore}"] = row[1] if row[0]
+              @settings[(row[0].to_underscore).to_s] = row[1] if row[0]
               if @settings['cluster_name']
                 @settings['cluster_name'] = @settings['cluster_name'].to_underscore
               end
@@ -463,27 +463,27 @@ module OpenStudio
                   @measure_paths << File.expand_path(File.join(@root_path, tmp_filepath))
                 end
               end
-              @run_setup["#{row[0].to_underscore}"] = row[1] if row[0]
+              @run_setup[(row[0].to_underscore).to_s] = row[1] if row[0]
 
               # type cast
               if @run_setup['allow_multiple_jobs']
-                fail "allow_multiple_jobs is no longer a valid option in the Excel file, please delete the row and rerun"
+                raise 'allow_multiple_jobs is no longer a valid option in the Excel file, please delete the row and rerun'
               end
               if @run_setup['use_server_as_worker']
-                fail "use_server_as_worker is no longer a valid option in the Excel file, please delete the row and rerun"
+                raise 'use_server_as_worker is no longer a valid option in the Excel file, please delete the row and rerun'
               end
             elsif b_problem_setup
               if row[0]
                 v = row[1]
                 v.to_i if v % 1 == 0
-                @problem["#{row[0].to_underscore}"] = v
+                @problem[(row[0].to_underscore).to_s] = v
               end
 
             elsif b_algorithm_setup
               if row[0] && !row[0].empty?
                 v = row[1]
                 v = v.to_i if v % 1 == 0
-                @algorithm["#{row[0].to_underscore}"] = v
+                @algorithm[(row[0].to_underscore).to_s] = v
               end
             elsif b_weather_files
               if row[0] == 'Weather File'
@@ -575,7 +575,7 @@ module OpenStudio
                                                    notes: /notes/i,
                                                    relation_to_eui: /typical\svar\sto\seui\srelationship/i,
                                                    clean: true)
-            elsif @version >= '0.3.0'.to_version            
+            elsif @version >= '0.3.0'.to_version
               rows = @xls.sheet('Variables').parse(enabled: /# variable/i,
                                                    measure_name_or_var_type: /type/i,
                                                    measure_file_name_or_var_display_name: /parameter\sdisplay\sname.*/i,
@@ -692,7 +692,7 @@ module OpenStudio
             raise "Unable to parse spreadsheet #{@xls_filename} with version #{@version} due to error: #{e.message}"
           end
 
-          fail "Could not find the sheet name 'Variables' in excel file #{@root_path}" unless rows
+          raise "Could not find the sheet name 'Variables' in excel file #{@root_path}" unless rows
 
           # map the data to another hash that is more easily processed
           data = {}
@@ -841,11 +841,11 @@ module OpenStudio
                                                objective_function_target: /objective\sfunction\starget/i,
                                                scaling_factor: /scale/i,
                                                objective_function_group: /objective/i)
-            
+
           end
 
           unless rows
-            fail "Could not find the sheet name 'Outputs' in excel file #{@root_path}"
+            raise "Could not find the sheet name 'Outputs' in excel file #{@root_path}"
           end
 
           data = {}

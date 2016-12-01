@@ -1,6 +1,15 @@
 OpenStudio Analysis Gem Change Log
 ==================================
 
+Version 1.0.0.rc11 (Unreleased)
+------------------
+* Default path to ServerApi logfile to ~/os_server_api.log. This can be overridden by setting the log_path options key in the initializer.
+
+Version 1.0.0.rc10
+------------------
+* Fix boolean data type in datapoints translator
+* Allow __skip__ variable in datapoints translator
+
 Version 1.0.0.rc9
 -----------------
 * Fix bug in batch datapoints to look for outputs_json, not outputs when importing the definition of the outputs JSON file.

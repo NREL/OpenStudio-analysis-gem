@@ -54,7 +54,7 @@ describe OpenStudio::Analysis::Translator::Excel do
     end
 
     it 'should fail to process' do
-      expect { @excel.process }.to raise_error("duplicate variable names found in list [\"Insulation R-value (ft^2*h*R/Btu).\"]")
+      expect { @excel.process }.to raise_error('duplicate variable names found in list ["Insulation R-value (ft^2*h*R/Btu)."]')
     end
   end
 
@@ -443,8 +443,8 @@ describe OpenStudio::Analysis::Translator::Excel do
       expect(j['analysis']['output_variables'].first['display_name_short']).to eq 'Site EUI'
       expect(j['analysis']['problem']['workflow'][0]['variables'][0]['argument']['display_name']).to eq 'Orientation'
       expect(j['analysis']['problem']['workflow'][0]['variables'][0]['argument']['display_name_short']).to eq 'Shorter Display Name'
-      expect(j['analysis']['problem']['workflow'][1]['arguments'][0]['display_name']).to eq 'unknown'
-      expect(j['analysis']['problem']['workflow'][1]['arguments'][0]['display_name_short']).to eq 'un'
+      expect(j['analysis']['problem']['workflow'][1]['arguments'][1]['display_name']).to eq 'unknown'
+      expect(j['analysis']['problem']['workflow'][1]['arguments'][1]['display_name_short']).to eq 'un'
     end
   end
 
@@ -485,7 +485,7 @@ describe OpenStudio::Analysis::Translator::Excel do
 
       expect(@excel.worker_inits.size).to eq 2
       expect(@excel.worker_inits[0][:name]).to eq 'initialize me'
-      expect(@excel.worker_inits[0][:args]).to eq "[\"first_arg\",2,{a_hash: \"input\"}]"
+      expect(@excel.worker_inits[0][:args]).to eq '["first_arg",2,{a_hash: "input"}]'
 
       # test the eval'ing of the args
       a = eval(@excel.analysis.worker_inits.first[:metadata][:args])

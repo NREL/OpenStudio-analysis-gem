@@ -56,7 +56,7 @@ module OpenStudio
       end
 
       def self.load(filename)
-        fail "EPW file does not exist: #{filename}" unless File.exist?(filename)
+        raise "EPW file does not exist: #{filename}" unless File.exist?(filename)
         f = OpenStudio::Weather::Epw.new(filename)
       end
 
@@ -65,7 +65,7 @@ module OpenStudio
           xml_builder_obj.name @city
           xml_builder_obj.visibility '0'
           xml_builder_obj.description do
-            xml_builder_obj.cdata!("<img src=\"kml/ep_header8.png\" width=180 align=right><br><table><tr><td colspan=\"2\">"\
+            xml_builder_obj.cdata!('<img src="kml/ep_header8.png" width=180 align=right><br><table><tr><td colspan="2">'\
                            "<b>#{@city}</b></href></td></tr>\n" +
                                        # "<tr><td></td><td><b>Data Type</td></tr>\n"+
                                        "<tr><td></td><td>WMO <b>#{@wmo}</b></td></tr>\n" +

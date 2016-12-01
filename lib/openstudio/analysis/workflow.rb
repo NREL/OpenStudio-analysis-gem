@@ -4,7 +4,7 @@ module OpenStudio
     class Workflow
       attr_reader :items
       # allow users to access the items via the measures attribute accessor
-      alias_method :measures, :items
+      alias measures items
 
       # Create an instance of the OpenStudio::Analysis::Workflow
       #
@@ -46,12 +46,12 @@ module OpenStudio
           if measure_hash.nil? && File.exist?(File.join(local_path_to_measure, 'measure.json'))
             measure_hash = JSON.parse(File.read(File.join(local_path_to_measure, 'measure.json')), symbolize_names: true)
           elsif measure_hash.nil?
-            fail 'measure.json was not found and was not automatically created'
+            raise 'measure.json was not found and was not automatically created'
           end
 
           add_measure(instance_name, instance_display_name, local_path_to_measure, measure_hash)
         else
-          fail "could not find measure to add to workflow #{local_path_to_measure}"
+          raise "could not find measure to add to workflow #{local_path_to_measure}"
         end
 
         @items.last
@@ -186,7 +186,7 @@ module OpenStudio
       def find_measure(instance_name)
         @items.find { |i| i.name == instance_name }
       end
-      alias_method :find_workflow_step, :find_measure
+      alias find_workflow_step find_measure
 
       # Return all the variables in the analysis as an array. The list that is returned is read only.
       #
@@ -209,7 +209,7 @@ module OpenStudio
 
           h = arr
         else
-          fail "Version #{version} not yet implemented for to_hash"
+          raise "Version #{version} not yet implemented for to_hash"
         end
 
         h
@@ -222,7 +222,7 @@ module OpenStudio
         if version == 1
           JSON.pretty_generate(to_hash(version))
         else
-          fail "Version #{version} not yet implemented for to_json"
+          raise "Version #{version} not yet implemented for to_json"
         end
       end
 
@@ -254,7 +254,7 @@ module OpenStudio
             end
           end
 
-          fail "Could not find local measure when loading workflow for #{wf[:measure_definition_class_name]} in #{File.basename(wf[:measure_definition_directory])}. You may have to add measure paths to OpenStudio::Analysis.measure_paths" unless local_measure_dir
+          raise "Could not find local measure when loading workflow for #{wf[:measure_definition_class_name]} in #{File.basename(wf[:measure_definition_directory])}. You may have to add measure paths to OpenStudio::Analysis.measure_paths" unless local_measure_dir
 
           o.add_measure_from_analysis_hash(wf[:name], wf[:display_name], local_measure_dir, wf)
         end
@@ -272,7 +272,7 @@ module OpenStudio
           j = JSON.parse(File.read(filename), symbolize_names: true)
           o = OpenStudio::Analysis::Workflow.load(j)
         else
-          fail "Could not find workflow file #{filename}"
+          raise "Could not find workflow file #{filename}"
         end
 
         o
