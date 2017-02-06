@@ -4,6 +4,7 @@ OpenStudio Analysis Gem Change Log
 Version 1.0.0.rc11 (Unreleased)
 ------------------
 * Default path to ServerApi logfile to ~/os_server_api.log. This can be overridden by setting the log_path options key in the initializer.
+* Fix get_datapoint_status for new version of API where data_points are under analysis
 
 Version 1.0.0.rc10
 ------------------

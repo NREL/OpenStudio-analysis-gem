@@ -703,12 +703,12 @@ module OpenStudio
           if filter.nil? || filter == ''
             resp = @conn.get "analyses/#{analysis_id}/status.json"
             if resp.status == 200
-              data_points = JSON.parse(resp.body, symbolize_names: true)[:data_points]
+              data_points = JSON.parse(resp.body, symbolize_names: true)[:analysis][:data_points]
             end
           else
             resp = @conn.get "analyses/#{analysis_id}/status.json", jobs: filter
             if resp.status == 200
-              data_points = JSON.parse(resp.body, symbolize_names: true)[:data_points]
+              data_points = JSON.parse(resp.body, symbolize_names: true)[:analysis][:data_points]
             end
           end
         end
