@@ -172,7 +172,7 @@ module OpenStudio
             j = JSON.parse resp.body, symbolize_names: true
             if j && j[:analysis] && j[:analysis][:analysis_type] == analysis_type
               status = j[:analysis][:status]
-            elsif j && j[:analysis] && j[:analysis][:analysis_type] == 'batch_run'
+            elsif j && j[:analysis] && analysis_type == 'batch_run'
               status = j[:analysis][:status]
             end
           end
