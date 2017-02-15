@@ -297,13 +297,21 @@ module OpenStudio
         downloaded = false
         file_path_and_name = nil
 
-        response = @conn.get "/data_points/#{datapoint_id}/download"
+        response = @conn.get "/data_points/#{datapoint_id}/download_result_file?filename=data_point.zip"
         if response.status == 200
           filename = response['content-disposition'].match(/filename=(\"?)(.+)\1/)[2]
           downloaded = true
           file_path_and_name = "#{save_directory}/#{filename}"
           puts "File #{filename} already exists, overwriting" if File.exist?(file_path_and_name)
           File.open(file_path_and_name, 'wb') { |f| f << response.body }
+        else
+          response = @conn.get "/data_points/#{datapoint_id}/download"
+          if response.status == 200
+            filename = response['content-disposition'].match(/filename=(\"?)(.+)\1/)[2]
+            downloaded = true
+            file_path_and_name = "#{save_directory}/#{filename}"
+            puts "File #{filename} already exists, overwriting" if File.exist?(file_path_and_name)
+            File.open(file_path_and_name, 'wb') { |f| f << response.body }
         end
 
         [downloaded, file_path_and_name]
