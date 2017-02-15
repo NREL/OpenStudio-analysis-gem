@@ -312,6 +312,7 @@ module OpenStudio
             file_path_and_name = "#{save_directory}/#{filename}"
             puts "File #{filename} already exists, overwriting" if File.exist?(file_path_and_name)
             File.open(file_path_and_name, 'wb') { |f| f << response.body }
+          end
         end
 
         [downloaded, file_path_and_name]
