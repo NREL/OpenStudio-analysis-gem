@@ -23,7 +23,7 @@ Gem::Specification.new do |s|
   s.require_paths = ['lib']
 
   s.add_dependency 'faraday', '~> 0.8'
-  s.add_dependency 'nokogiri', '~> 1.6'
+  s.add_dependency 'nokogiri', '~> 1.6.8'
   s.add_dependency 'roo', '~> 2.4'
   s.add_dependency 'rubyzip', '~> 1.2'
   s.add_dependency 'semantic', '~> 1.4'

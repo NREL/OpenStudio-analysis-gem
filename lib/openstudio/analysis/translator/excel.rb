@@ -702,7 +702,6 @@ module OpenStudio
           variable_index = -1
           measure_name = nil
           rows.each_with_index do |row, icnt|
-            next if icnt < 1 # skip the first line after the header
             # puts "Parsing line: #{icnt}:#{row}"
 
             # check if we are a measure - nil means that the cell was blank
