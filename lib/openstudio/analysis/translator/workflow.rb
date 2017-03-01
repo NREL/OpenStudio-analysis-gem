@@ -90,11 +90,15 @@ module OpenStudio
             end
           end
 
+          # Overwrite the seed and weather files if they are present in the datapoint.json
+          weather_file = osd[:weather_file] != '' ? osd[:weather_file] : @weather_file
+          seed_file = osd[:seed_file] != '' ? osd[:seed_file] : @seed_file
+
           # Save the OSW hash
           osw = {}
           created_at = ::Time.now
-          osw[:seed_file] = @seed_file
-          osw[:weather_file] = @weather_file
+          osw[:seed_file] = seed_file
+          osw[:weather_file] = weather_file
           osw[:file_format_version] = @osw_version
           osw[:osa_id] = @osa_id
           osw[:osd_id] = osd[:_id]
