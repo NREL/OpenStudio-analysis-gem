@@ -15,7 +15,7 @@ module OpenStudio
         begin
           if Float(attribute_value) != nil
             if Float(attribute_value).abs >= Float('1.0e+19')
-              puts "WARNING: Attribute `#{attribute_name}` is greater than 1E19. This may cause silent failures."
+              puts "WARNING: Attribute `#{attribute_name}` is greater than 1E19. This may cause failures."
             end
           end
         rescue ArgumentError, TypeError
