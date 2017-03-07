@@ -71,7 +71,6 @@ module OpenStudio
           # Try to read the osd json file
           osd = nil
           if File.exist?(osd_filename)
-            # warn('data_point selector in ods will be changed to datapoint in version 1.0') # NL this isn't true anymore.
             osd = ::JSON.parse(File.read(osd_filename), symbolize_names: true)[:data_point]
           else
             raise "File #{osd_filename} does not exist"
@@ -92,7 +91,7 @@ module OpenStudio
 
           # Overwrite the seed and weather files if they are present in the datapoint.json
           weather_file = osd[:weather_file] != '' ? osd[:weather_file] : @weather_file
-          seed_file = osd[:seed_file] != '' ? osd[:seed_file] : @seed_file
+          seed_file = osd[:seed] != '' ? osd[:seed] : @seed_file
 
           # Save the OSW hash
           osw = {}
