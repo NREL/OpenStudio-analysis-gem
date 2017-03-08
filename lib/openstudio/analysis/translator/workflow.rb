@@ -56,6 +56,7 @@ module OpenStudio
               step_hash[:name] = @options[:da_descriptions][i][:name]
               step_hash[:description] = @options[:da_descriptions][i][:description]
             end
+            # DLM: the following fields are deprecated and should be removed once EDAPT reports no longer rely on them, they are moved to step.results
             step_hash[:measure_id] = step[:measure_definition_uuid] if step[:measure_definition_uuid]
             step_hash[:version_id] = step[:measure_definition_version_uuid] if step[:measure_definition_version_uuid]
             step_hash[:modeler_description] = step[:modeler_description] if step[:modeler_description]
