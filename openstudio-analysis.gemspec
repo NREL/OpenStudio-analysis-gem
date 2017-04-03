@@ -23,11 +23,11 @@ Gem::Specification.new do |s|
   s.require_paths = ['lib']
 
   s.add_dependency 'faraday', '~> 0.8'
-  s.add_dependency 'nokogiri', '~> 1.6'
-  s.add_dependency 'roo', '~> 1.12'
-  s.add_dependency 'rubyzip', '~> 1.0' # don't update because of jruby
+  s.add_dependency 'nokogiri', '~> 1.6.8'
+  s.add_dependency 'roo', '~> 2.4'
+  s.add_dependency 'rubyzip', '~> 1.2'
   s.add_dependency 'semantic', '~> 1.4'
-  s.add_dependency 'bcl', '~> 0.5.5'
+  s.add_dependency 'bcl', '~> 0.5.7'
   s.add_dependency 'dencity', '~> 0.1.0'
 
   s.add_development_dependency 'bundler', '~> 1.7'

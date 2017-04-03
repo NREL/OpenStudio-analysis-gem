@@ -1,8 +1,48 @@
 OpenStudio Analysis Gem Change Log
 ==================================
 
-Version Unreleased (Version 0.5)
+Version 1.0.0.rc11 (Unreleased)
+------------------
+* Default path to ServerApi logfile to ~/os_server_api.log. This can be overridden by setting the log_path options key in the initializer.
+* Fix get_datapoint_status for new version of API where data_points are under analysis
+
+Version 1.0.0.rc10
+------------------
+* Fix boolean data type in datapoints translator
+* Allow __skip__ variable in datapoints translator
+
+Version 1.0.0.rc9
+-----------------
+* Fix bug in batch datapoints to look for outputs_json, not outputs when importing the definition of the outputs JSON file.
+
+Version 1.0.0.rc8
+-----------------
+* Allow "None" as an argument in batch datapoints. This will allow the measure to be added without setting any of the arguments. Useful for adding Reporting Measures to the workflow.
+
+Version 1.0.0.rc7
+-----------------
+* Use more recent version of BCL gem for underscoring strings
+
+Version 1.0.0.pre.rc6
+---------------------
+* When creating OSWs from batch datapoints, set the default run_directory to ./run
+
+Version 1.0.0.pre.rc5
+---------------------
+* fix get_datapoint method. show_full is no longer a valid endpoint in the new server code 
+
+Version 1.0.0.pre.rc4
+---------------------
+* Change seed_model to seed_file in OSWs generated from the translator
+* Add more unit tests
+
+Version 1.0.0.pre.rc3
+---------------------
+* Catch null arguments when translating from OSA/OSD to OSW
+
+Version 1.0.0.pre.rc2
 --------------------------------
+* Note that pre.rc1 was yanked from Rubygems.
 * Remove allow_multiple_jobs and server_as_worker options. These are by defaulted to true now.
 * Remove uncertain strings from end of uncertainty distributions
 * Remove measures eval path for CSV import
@@ -10,6 +50,13 @@ Version Unreleased (Version 0.5)
 * Remove support for Rubies < 2.0 and > 2.0.
 * Add json extension to formulation name upon save if none exists
 * Add zip extension to formulation zip upon save if none exists
+* In upload_datapoint, allows set the analysis_id in the file to the one passed.
+* Remove reading JSON from custom_csv method.
+
+Version 1.0.0-pat2
+------------------------------
+* Fixed bug in workflow translator which caused errors in server models
+* Updated gem versions to converge across the OpenStudio Analysis Framework platforms
 
 Version 0.4.4
 ------------------

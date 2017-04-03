@@ -32,7 +32,7 @@ module OpenStudio
     # Process an OSA with a set of OSDs into OSWs
     def self.make_osws(osa_filename, osd_array)
       translator = OpenStudio::Analysis::Translator::Workflow.new(osa_filename)
-      osd_array.each {|osd| translator.process_datapoints osd}
+      osd_array.each { |osd| translator.process_datapoints osd }
     end
 
     # Retrieve aws instance options from a project. This will return a hash
@@ -55,14 +55,14 @@ module OpenStudio
         csv.process
         options = csv.settings
       else
-        fail 'Invalid file extension'
+        raise 'Invalid file extension'
       end
 
       return options
     end
 
     # Generate a DEnCity complient hash for uploading from the analysis hash
-    #TODO make this work off of the analysis object, not the hash.
+    # TODO make this work off of the analysis object, not the hash.
     def self.to_dencity_analysis(analysis_hash, analysis_uuid)
       dencity_hash = {}
       a = analysis_hash[:analysis]
@@ -78,7 +78,7 @@ module OpenStudio
         if a[:problem][:algorithm]
           provenance[:analysis_information] = a[:problem][:algorithm]
         else
-          fail 'No algorithm found in the analysis.json.'
+          raise 'No algorithm found in the analysis.json.'
         end
 
         if a[:problem][:workflow]
@@ -129,13 +129,13 @@ module OpenStudio
             measure_metadata << new_wfi
           end
         else
-          fail 'No workflow found in the analysis.json'
+          raise 'No workflow found in the analysis.json'
         end
 
         dencity_hash[:analysis] = provenance
         dencity_hash[:measure_definitions] = measure_metadata
       else
-        fail 'No problem found in the analysis.json'
+        raise 'No problem found in the analysis.json'
       end
       return dencity_hash
     end

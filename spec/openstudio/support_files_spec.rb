@@ -30,9 +30,19 @@ describe OpenStudio::Analysis::SupportFiles do
     expect(@s.size).to eq 0
   end
 
-  it 'should only add existing files'
+  it 'should only add existing files' do
+    f = 'spec/files/worker_init/second_file.rb'
+    @s.add(f)
+    @s.add(f)
 
-  it 'should add metadata data'
+    expect(@s.size).to eq 1
+
+    f = 'non-existent.rb'
+    expect { @s.add(f) }.to raise_error /Path or file does not exist and cannot be added.*/
+  end
+
+  it 'should add metadata data' do
+  end
 
   it 'should add a directory' do
     @s.clear

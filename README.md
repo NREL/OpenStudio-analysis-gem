@@ -18,51 +18,59 @@ There are two ways to create an OpenStudio Analysis description:
 
 * Programmatically
 
-```
-analysis = OpenStudio::Analysis.create('Analysis Name')
-analysis.seed_model = 'local/dir/seed.osm'
-analysis.weather_file = 'local/dir/USA_CO_Golden-NREL.724666_TMY3.epw'
+    ```
+    analysis = OpenStudio::Analysis.create('Analysis Name')
+    analysis.seed_model = 'local/dir/seed.osm'
+    analysis.weather_file = 'local/dir/USA_CO_Golden-NREL.724666_TMY3.epw'
+    
+    # override existing workflow from a file by
+    analysis.workflow = OpenStudio::Analysis::Workflow.load_from_file(...)
+    
+    # add measures to the workflow
+    wf = analysis.workflow
+    def add_measure_from_path(instance_name, instance_display_name, local_path_to_measure)
+    wf.add_measure_from_path('instance_name', 'Display name', 'path_to_measure')
+    wf.add_measure_from_path('instance_name_2', 'Display name two', 'path_to_measure_2')
+    
+    # make a measure's argument a variable
+    m = wf.add_measure_from_path('instance_name_3', 'Display name three', 'path_to_measure_3')
+    m.make_variable('variable_argument_name', 'discrete')
+    
+    m = wf.add_measure_from_path('instance_name_4', 'Display name four', 'path_to_measure_4')
+    m.make_variable('variable_argument_name', 'pivot')
+    m.argument_value('variable_argument_name', value)
+    
+    # Save off the analysis files and a static data point
+    run_dir = 'local/run'
+    analysis.save("#{run_dir}/analysis.json")
+    analysis.save_zip("#{run_dir}/analysis.zip")
+    analysis.save_static_data_point("#{run_dir}/data_point.zip")
+    ```
 
-# override existing workflow from a file by
-analysis.workflow = OpenStudio::Analysis::Workflow.load_from_file(...)
+* Running Datapoints with Workflow Gem
 
-# add measures to the workflow
-wf = analysis.workflow
-def add_measure_from_path(instance_name, instance_display_name, local_path_to_measure)
-wf.add_measure_from_path('instance_name', 'Display name', 'path_to_measure')
-wf.add_measure_from_path('instance_name_2', 'Display name two', 'path_to_measure_2')
+    ```
+    require 'openstudio-workflow'
+    
+    run_dir = 'local/run'
+    OpenStudio::Workflow.extract_archive("#{run_dir}/analysis.zip", run_dir)
+    
+    options = {
+        problem_filename: 'analysis.json',
+        datapoint_filename: 'data_point.json',
+        analysis_root_path: run_dir
+    }
+    k = OpenStudio::Workflow.load 'Local', run_dir, options
+    k.run
+    ```
+    
+* Server API
 
-# make a measure's argument a variable
-m = wf.add_measure_from_path('instance_name_3', 'Display name three', 'path_to_measure_3')
-m.make_variable('variable_argument_name', 'discrete')
+    ```
+    
+    
+    ```
 
-m = wf.add_measure_from_path('instance_name_4', 'Display name four', 'path_to_measure_4')
-m.make_variable('variable_argument_name', 'pivot')
-m.argument_value('variable_argument_name', value)
-
-# Save off the analysis files and a static data point
-run_dir = 'local/run'
-analysis.save("#{run_dir}/analysis.json")
-analysis.save_zip("#{run_dir}/analysis.zip")
-analysis.save_static_data_point("#{run_dir}/data_point.zip")
-```
-
-If you would like to run the data point, then you can use the OpenStudio-workflow gem.
-
-```
-require 'openstudio-workflow'
-
-run_dir = 'local/run'
-OpenStudio::Workflow.extract_archive("#{run_dir}/analysis.zip", run_dir)
-
-options = {
-    problem_filename: 'analysis.json',
-    datapoint_filename: 'data_point.json',
-    analysis_root_path: run_dir
-}
-k = OpenStudio::Workflow.load 'Local', run_dir, options
-k.run
-```
 
 ## Testing
 
@@ -72,7 +80,6 @@ This gem used RSpec for testing.  To test simply run `rspec` at the command line
 
 In the programmatic interface there are still several items that would be nice to have.
 
-* verify that the measure.xml file exists
 * Check the type of measure being added and make sure that it is in the right workflow (e.g. no energyplus measures before rubymeasures)
 * add reverse translator from existing analysis.jsons
 * more explicit run workflows. For example, add workflow steps for running energyplus, openstudio translator, radiance, etc
@@ -85,5 +92,4 @@ In the programmatic interface there are still several items that would be nice t
 
 * adding mulitple seed models
 * adding multiple weather files
-* 
 

@@ -37,7 +37,7 @@ module OpenStudio
           if File.exist?(@xls_filename)
             @xls = Roo::Spreadsheet.open(@xls_filename)
           else
-            fail "File #{@xls_filename} does not exist"
+            raise "File #{@xls_filename} does not exist"
           end
 
           # Initialize some other instance variables
@@ -66,7 +66,7 @@ module OpenStudio
           @setup = parse_setup
 
           @version = Semantic::Version.new @version
-          fail "Spreadsheet version #{@version} is no longer supported.  Please upgrade your spreadsheet to at least 0.1.9" if @version < '0.1.9'
+          raise "Spreadsheet version #{@version} is no longer supported.  Please upgrade your spreadsheet to at least 0.1.9" if @version < '0.1.9'
 
           @variables = parse_variables
 
@@ -94,34 +94,34 @@ module OpenStudio
         def validate_analysis
           # Setup the paths and do some error checking
           @measure_paths.each do |mp|
-            fail "Measures directory '#{mp}' does not exist" unless Dir.exist?(mp)
+            raise "Measures directory '#{mp}' does not exist" unless Dir.exist?(mp)
           end
 
           @models.uniq!
-          fail 'No seed models defined in spreadsheet' if @models.empty?
+          raise 'No seed models defined in spreadsheet' if @models.empty?
 
           @models.each do |model|
-            fail "Seed model does not exist: #{model[:path]}" unless File.exist?(model[:path])
+            raise "Seed model does not exist: #{model[:path]}" unless File.exist?(model[:path])
           end
 
           @weather_files.uniq!
-          fail 'No weather files found based on what is in the spreadsheet' if @weather_files.empty?
+          raise 'No weather files found based on what is in the spreadsheet' if @weather_files.empty?
 
           @weather_files.each do |wf|
-            fail "Weather file does not exist: #{wf}" unless File.exist?(wf)
+            raise "Weather file does not exist: #{wf}" unless File.exist?(wf)
           end
 
           # This can be a directory as well
           @other_files.each do |f|
-            fail "Other files do not exist for: #{f[:path]}" unless File.exist?(f[:path])
+            raise "Other files do not exist for: #{f[:path]}" unless File.exist?(f[:path])
           end
 
           @worker_inits.each do |f|
-            fail "Worker initialization file does not exist for: #{f[:path]}" unless File.exist?(f[:path])
+            raise "Worker initialization file does not exist for: #{f[:path]}" unless File.exist?(f[:path])
           end
 
           @worker_finals.each do |f|
-            fail "Worker finalization file does not exist for: #{f[:path]}" unless File.exist?(f[:path])
+            raise "Worker finalization file does not exist for: #{f[:path]}" unless File.exist?(f[:path])
           end
 
           FileUtils.mkdir_p(@export_path)
@@ -131,7 +131,7 @@ module OpenStudio
           measure_display_names = @variables['data'].map { |m| m['enabled'] ? m['display_name'] : nil }.compact
           measure_display_names_mult = measure_display_names.select { |m| measure_display_names.count(m) > 1 }.uniq
           if measure_display_names_mult && !measure_display_names_mult.empty?
-            fail "Measure Display Names are not unique for '#{measure_display_names_mult.join('\', \'')}'"
+            raise "Measure Display Names are not unique for '#{measure_display_names_mult.join('\', \'')}'"
           end
 
           # verify that all continuous variables have all the data needed and create a name map
@@ -145,7 +145,7 @@ module OpenStudio
 
                   # make sure that variables have static values
                   if variable['distribution']['static_value'].nil? || variable['distribution']['static_value'] == ''
-                    fail "Variable #{measure['name']}:#{variable['name']} needs a static value"
+                    raise "Variable #{measure['name']}:#{variable['name']} needs a static value"
                   end
 
                   if variable['type'] == 'enum' || variable['type'] == 'Choice'
@@ -153,29 +153,39 @@ module OpenStudio
                   else # must be an integer or double
                     if variable['distribution']['type'] == 'discrete_uncertain'
                       if variable['distribution']['discrete_values'].nil? || variable['distribution']['discrete_values'] == ''
-                        fail "Variable #{measure['name']}:#{variable['name']} needs discrete values"
+                        raise "Variable #{measure['name']}:#{variable['name']} needs discrete values"
+                      end
+                    elsif variable['distribution']['type'] == 'integer_sequence'
+                      if variable['distribution']['mean'].nil? || variable['distribution']['mean'] == ''
+                        raise "Variable #{measure['name']}:#{variable['name']} must have a mean/mode"
+                      end
+                      if variable['distribution']['min'].nil? || variable['distribution']['min'] == ''
+                        raise "Variable #{measure['name']}:#{variable['name']} must have a minimum"
+                      end
+                      if variable['distribution']['max'].nil? || variable['distribution']['max'] == ''
+                        raise "Variable #{measure['name']}:#{variable['name']} must have a maximum"
                       end
                     else
                       if variable['distribution']['mean'].nil? || variable['distribution']['mean'] == ''
-                        fail "Variable #{measure['name']}:#{variable['name']} must have a mean"
+                        raise "Variable #{measure['name']}:#{variable['name']} must have a mean"
                       end
                       if variable['distribution']['stddev'].nil? || variable['distribution']['stddev'] == ''
-                        fail "Variable #{measure['name']}:#{variable['name']} must have a stddev"
+                        raise "Variable #{measure['name']}:#{variable['name']} must have a stddev"
                       end
                     end
 
                     if variable['distribution']['mean'].nil? || variable['distribution']['mean'] == ''
-                      fail "Variable #{measure['name']}:#{variable['name']} must have a mean/mode"
+                      raise "Variable #{measure['name']}:#{variable['name']} must have a mean/mode"
                     end
                     if variable['distribution']['min'].nil? || variable['distribution']['min'] == ''
-                      fail "Variable #{measure['name']}:#{variable['name']} must have a minimum"
+                      raise "Variable #{measure['name']}:#{variable['name']} must have a minimum"
                     end
                     if variable['distribution']['max'].nil? || variable['distribution']['max'] == ''
-                      fail "Variable #{measure['name']}:#{variable['name']} must have a maximum"
+                      raise "Variable #{measure['name']}:#{variable['name']} must have a maximum"
                     end
                     unless variable['type'] == 'string' || variable['type'] =~ /bool/
                       if variable['distribution']['min'] > variable['distribution']['max']
-                        fail "Variable min is greater than variable max for #{measure['name']}:#{variable['name']}"
+                        raise "Variable min is greater than variable max for #{measure['name']}:#{variable['name']}"
                       end
                     end
 
@@ -187,7 +197,7 @@ module OpenStudio
 
           dupes = variable_names.select { |e| variable_names.count(e) > 1 }.uniq
           if dupes.count > 0
-            fail "duplicate variable names found in list #{dupes.inspect}"
+            raise "duplicate variable names found in list #{dupes.inspect}"
           end
 
           # most of the checks will raise a runtime exception, so this true will never be called
@@ -200,8 +210,8 @@ module OpenStudio
         # @append_model_name [Boolean] Append the name of the seed model to the display name
         # @return [Object] An OpenStudio::Analysis
         def analysis(seed_model = nil, append_model_name = false)
-          fail 'There are no seed models defined in the excel file. Please add one.' if @models.size == 0
-          fail "There are more than one seed models defined in the excel file. Call 'analyses' to return the array" if @models.size > 1 && seed_model.nil?
+          raise 'There are no seed models defined in the excel file. Please add one.' if @models.size == 0
+          raise "There are more than one seed models defined in the excel file. Call 'analyses' to return the array" if @models.size > 1 && seed_model.nil?
 
           seed_model = @models.first if seed_model.nil?
 
@@ -221,12 +231,12 @@ module OpenStudio
                   measure['local_path_to_measure'] = "#{measure_dir_to_add}/measure.rb"
                   break
                 else
-                  fail "Measure in directory '#{measure_dir_to_add}' did not contain a measure.rb file"
+                  raise "Measure in directory '#{measure_dir_to_add}' did not contain a measure.rb file"
                 end
               end
             end
 
-            fail "Could not find measure '#{measure['name']}' in directory named '#{measure['measure_file_name_directory']}' in the measure paths '#{@measure_paths.join(', ')}'" unless measure['local_path_to_measure']
+            raise "Could not find measure '#{measure['name']}' in directory named '#{measure['measure_file_name_directory']}' in the measure paths '#{@measure_paths.join(', ')}'" unless measure['local_path_to_measure']
 
             a.workflow.add_measure_from_excel(measure)
           end
@@ -416,9 +426,9 @@ module OpenStudio
 
             if b_settings
               @version = row[1].chomp if row[0] == 'Spreadsheet Version'
-              @settings["#{row[0].snake_case}"] = row[1] if row[0]
+              @settings[(row[0].to_underscore).to_s] = row[1] if row[0]
               if @settings['cluster_name']
-                @settings['cluster_name'] = @settings['cluster_name'].snake_case
+                @settings['cluster_name'] = @settings['cluster_name'].to_underscore
               end
 
               if row[0] == 'AWS Tag'
@@ -435,7 +445,7 @@ module OpenStudio
                 else
                   @name = SecureRandom.uuid
                 end
-                @analysis_name = @name.snake_case
+                @analysis_name = @name.to_underscore
               end
               if row[0] == 'Export Directory'
                 tmp_filepath = row[1]
@@ -453,27 +463,27 @@ module OpenStudio
                   @measure_paths << File.expand_path(File.join(@root_path, tmp_filepath))
                 end
               end
-              @run_setup["#{row[0].snake_case}"] = row[1] if row[0]
+              @run_setup[(row[0].to_underscore).to_s] = row[1] if row[0]
 
               # type cast
               if @run_setup['allow_multiple_jobs']
-                fail "allow_multiple_jobs is no longer a valid option in the Excel file, please delete the row and rerun"
+                raise 'allow_multiple_jobs is no longer a valid option in the Excel file, please delete the row and rerun'
               end
               if @run_setup['use_server_as_worker']
-                fail "use_server_as_worker is no longer a valid option in the Excel file, please delete the row and rerun"
+                raise 'use_server_as_worker is no longer a valid option in the Excel file, please delete the row and rerun'
               end
             elsif b_problem_setup
               if row[0]
                 v = row[1]
                 v.to_i if v % 1 == 0
-                @problem["#{row[0].snake_case}"] = v
+                @problem[(row[0].to_underscore).to_s] = v
               end
 
             elsif b_algorithm_setup
               if row[0] && !row[0].empty?
                 v = row[1]
                 v = v.to_i if v % 1 == 0
-                @algorithm["#{row[0].snake_case}"] = v
+                @algorithm[(row[0].to_underscore).to_s] = v
               end
             elsif b_weather_files
               if row[0] == 'Weather File'
@@ -496,7 +506,7 @@ module OpenStudio
                 unless (Pathname.new model_path).absolute?
                   model_path = File.expand_path(File.join(@root_path, model_path))
                 end
-                @models << { name: tmp_m_name.snake_case, display_name: tmp_m_name, type: row[2], path: model_path }
+                @models << { name: tmp_m_name.to_underscore, display_name: tmp_m_name, type: row[2], path: model_path }
               end
             elsif b_other_libs
               # determine if the path is relative
@@ -542,147 +552,147 @@ module OpenStudio
           rows = nil
           begin
             if @version >= '0.3.3'.to_version
-              rows = @xls.sheet('Variables').parse(enabled: '# variable',
-                                                   measure_name_or_var_type: 'type',
-                                                   measure_file_name_or_var_display_name: 'parameter display name*',
-                                                   measure_file_name_directory: 'measure directory',
-                                                   measure_type_or_parameter_name_in_measure: 'parameter name in measure',
-                                                   display_name_short: 'parameter short display name',
-                                                   # sampling_method: 'sampling method',
-                                                   variable_type: 'Variable Type',
-                                                   units: 'units',
-                                                   default_value: 'static.default value',
-                                                   enums: 'enumerations',
-                                                   min: 'min',
-                                                   max: 'max',
-                                                   mode: 'mean|mode',
-                                                   stddev: 'std dev',
-                                                   delta_x: 'delta.x',
-                                                   discrete_values: 'discrete values',
-                                                   discrete_weights: 'discrete weights',
-                                                   distribution: 'distribution',
-                                                   source: 'data source',
-                                                   notes: 'notes',
-                                                   relation_to_eui: 'typical var to eui relationship',
+              rows = @xls.sheet('Variables').parse(enabled: /# variable/i,
+                                                   measure_name_or_var_type: /type/i,
+                                                   measure_file_name_or_var_display_name: /parameter\sdisplay\sname.*/i,
+                                                   measure_file_name_directory: /measure\sdirectory/i,
+                                                   measure_type_or_parameter_name_in_measure: /parameter\sname\sin\smeasure/i,
+                                                   display_name_short: /parameter\sshort\sdisplay\sname/i,
+                                                   # sampling_method: /sampling\smethod/i,
+                                                   variable_type: /variable\stype/i,
+                                                   units: /units/i,
+                                                   default_value: /static.default\svalue/i,
+                                                   enums: /enumerations/i,
+                                                   min: /min/i,
+                                                   max: /max/i,
+                                                   mode: /mean|mode/i,
+                                                   stddev: /std\sdev/i,
+                                                   delta_x: /delta.x/i,
+                                                   discrete_values: /discrete\svalues/i,
+                                                   discrete_weights: /discrete\sweights/i,
+                                                   distribution: /distribution/i,
+                                                   source: /data\ssource/i,
+                                                   notes: /notes/i,
+                                                   relation_to_eui: /typical\svar\sto\seui\srelationship/i,
                                                    clean: true)
             elsif @version >= '0.3.0'.to_version
-              rows = @xls.sheet('Variables').parse(enabled: '# variable',
-                                                   measure_name_or_var_type: 'type',
-                                                   measure_file_name_or_var_display_name: 'parameter display name*',
-                                                   measure_file_name_directory: 'measure directory',
-                                                   measure_type_or_parameter_name_in_measure: 'parameter name in measure',
-                                                   # sampling_method: 'sampling method',
-                                                   variable_type: 'Variable Type',
-                                                   units: 'units',
-                                                   default_value: 'static.default value',
-                                                   enums: 'enumerations',
-                                                   min: 'min',
-                                                   max: 'max',
-                                                   mode: 'mean|mode',
-                                                   stddev: 'std dev',
-                                                   delta_x: 'delta.x',
-                                                   discrete_values: 'discrete values',
-                                                   discrete_weights: 'discrete weights',
-                                                   distribution: 'distribution',
-                                                   source: 'data source',
-                                                   notes: 'notes',
-                                                   relation_to_eui: 'typical var to eui relationship',
+              rows = @xls.sheet('Variables').parse(enabled: /# variable/i,
+                                                   measure_name_or_var_type: /type/i,
+                                                   measure_file_name_or_var_display_name: /parameter\sdisplay\sname.*/i,
+                                                   measure_file_name_directory: /measure\sdirectory/i,
+                                                   measure_type_or_parameter_name_in_measure: /parameter\sname\sin\smeasure/i,
+                                                   # sampling_method: /sampling\smethod/i,
+                                                   variable_type: /variable\stype/i,
+                                                   units: /units/i,
+                                                   default_value: /static.default\svalue/i,
+                                                   enums: /enumerations/i,
+                                                   min: /min/i,
+                                                   max: /max/i,
+                                                   mode: /mean|mode/i,
+                                                   stddev: /std\sdev/i,
+                                                   delta_x: /delta.x/i,
+                                                   discrete_values: /discrete\svalues/i,
+                                                   discrete_weights: /discrete\sweights/i,
+                                                   distribution: /distribution/i,
+                                                   source: /data\ssource/i,
+                                                   notes: /notes/i,
+                                                   relation_to_eui: /typical\svar\sto\seui\srelationship/i,
                                                    clean: true)
             elsif @version >= '0.2.0'.to_version
-              rows = @xls.sheet('Variables').parse(enabled: '# variable',
-                                                   measure_name_or_var_type: 'type',
-                                                   measure_file_name_or_var_display_name: 'parameter display name*',
-                                                   measure_file_name_directory: 'measure directory',
-                                                   measure_type_or_parameter_name_in_measure: 'parameter name in measure',
-                                                   sampling_method: 'sampling method',
-                                                   variable_type: 'Variable Type',
-                                                   units: 'units',
-                                                   default_value: 'static.default value',
-                                                   enums: 'enumerations',
-                                                   min: 'min',
-                                                   max: 'max',
-                                                   mode: 'mean|mode',
-                                                   stddev: 'std dev',
-                                                   delta_x: 'delta.x',
-                                                   discrete_values: 'discrete values',
-                                                   discrete_weights: 'discrete weights',
-                                                   distribution: 'distribution',
-                                                   source: 'data source',
-                                                   notes: 'notes',
-                                                   relation_to_eui: 'typical var to eui relationship',
+              rows = @xls.sheet('Variables').parse(enabled: /# variable/i,
+                                                   measure_name_or_var_type: /type/i,
+                                                   measure_file_name_or_var_display_name: /parameter\sdisplay\sname.*/i,
+                                                   measure_file_name_directory: /measure\sdirectory/i,
+                                                   measure_type_or_parameter_name_in_measure: /parameter\sname\sin\smeasure/i,
+                                                   sampling_method: /sampling\smethod/i,
+                                                   variable_type: /variable\stype/i,
+                                                   units: /units/i,
+                                                   default_value: /static.default\svalue/i,
+                                                   enums: /enumerations/i,
+                                                   min: /min/i,
+                                                   max: /max/i,
+                                                   mode: /mean|mode/i,
+                                                   stddev: /std\sdev/i,
+                                                   delta_x: /delta.x/i,
+                                                   discrete_values: /discrete\svalues/i,
+                                                   discrete_weights: /discrete\sweights/i,
+                                                   distribution: /distribution/i,
+                                                   source: /data\ssource/i,
+                                                   notes: /notes/i,
+                                                   relation_to_eui: /typical\svar\sto\seui\srelationship/i,
                                                    clean: true)
             elsif @version >= '0.1.12'.to_version
-              rows = @xls.sheet('Variables').parse(enabled: '# variable',
-                                                   measure_name_or_var_type: 'type',
-                                                   measure_file_name_or_var_display_name: 'parameter display name*',
-                                                   measure_type_or_parameter_name_in_measure: 'parameter name in measure',
-                                                   sampling_method: 'sampling method',
-                                                   variable_type: 'Variable Type',
-                                                   units: 'units',
-                                                   default_value: 'static.default value',
-                                                   enums: 'enumerations',
-                                                   min: 'min',
-                                                   max: 'max',
-                                                   mode: 'mean|mode',
-                                                   stddev: 'std dev',
-                                                   delta_x: 'delta.x',
-                                                   discrete_values: 'discrete values',
-                                                   discrete_weights: 'discrete weights',
-                                                   distribution: 'distribution',
-                                                   source: 'data source',
-                                                   notes: 'notes',
-                                                   relation_to_eui: 'typical var to eui relationship',
+              rows = @xls.sheet('Variables').parse(enabled: /# variable/i,
+                                                   measure_name_or_var_type: /type/i,
+                                                   measure_file_name_or_var_display_name: /parameter\sdisplay\sname.*/i,
+                                                   measure_type_or_parameter_name_in_measure: /parameter\sname\sin\smeasure/i,
+                                                   sampling_method: /sampling\smethod/i,
+                                                   variable_type: /variable\stype/i,
+                                                   units: /units/i,
+                                                   default_value: /static.default\svalue/i,
+                                                   enums: /enumerations/i,
+                                                   min: /min/i,
+                                                   max: /max/i,
+                                                   mode: /mean|mode/i,
+                                                   stddev: /std\sdev/i,
+                                                   delta_x: /delta.x/i,
+                                                   discrete_values: /discrete\svalues/i,
+                                                   discrete_weights: /discrete\sweights/i,
+                                                   distribution: /distribution/i,
+                                                   source: /data\ssource/i,
+                                                   notes: /notes/i,
+                                                   relation_to_eui: /typical\svar\sto\seui\srelationship/i,
                                                    clean: true)
             elsif @version >= '0.1.11'.to_version
-              rows = @xls.sheet('Variables').parse(enabled: '# variable',
-                                                   measure_name_or_var_type: 'type',
-                                                   measure_file_name_or_var_display_name: 'parameter display name*',
-                                                   measure_type_or_parameter_name_in_measure: 'parameter name in measure',
-                                                   sampling_method: 'sampling method',
-                                                   variable_type: 'Variable Type',
-                                                   units: 'units',
-                                                   default_value: 'static.default value',
-                                                   enums: 'enumerations',
-                                                   min: 'min',
-                                                   max: 'max',
-                                                   mode: 'mean|mode',
-                                                   stddev: 'std dev',
-                                                   #:delta_x => 'delta.x',
-                                                   discrete_values: 'discrete values',
-                                                   discrete_weights: 'discrete weights',
-                                                   distribution: 'distribution',
-                                                   source: 'data source',
-                                                   notes: 'notes',
-                                                   relation_to_eui: 'typical var to eui relationship',
+              rows = @xls.sheet('Variables').parse(enabled: /# variable/i,
+                                                   measure_name_or_var_type: /type/i,
+                                                   measure_file_name_or_var_display_name: /parameter\sdisplay\sname.*/i,
+                                                   measure_type_or_parameter_name_in_measure: /parameter\sname\sin\smeasure/i,
+                                                   sampling_method: /sampling\smethod/i,
+                                                   variable_type: /variable\stype/i,
+                                                   units: /units/i,
+                                                   default_value: /static.default\svalue/i,
+                                                   enums: /enumerations/i,
+                                                   min: /min/i,
+                                                   max: /max/i,
+                                                   mode: /mean|mode/i,
+                                                   stddev: /std\sdev/i,
+                                                   # delta_x: /delta.x/i,
+                                                   discrete_values: /discrete\svalues/i,
+                                                   discrete_weights: /discrete\sweights/i,
+                                                   distribution: /distribution/i,
+                                                   source: /data\ssource/i,
+                                                   notes: /notes/i,
+                                                   relation_to_eui: /typical\svar\sto\seui\srelationship/i,
                                                    clean: true)
             else
-              rows = @xls.sheet('Variables').parse(enabled: '# variable',
-                                                   measure_name_or_var_type: 'type',
-                                                   measure_file_name_or_var_display_name: 'parameter display name*',
-                                                   measure_type_or_parameter_name_in_measure: 'parameter name in measure',
-                                                   sampling_method: 'sampling method',
-                                                   variable_type: 'Variable Type',
-                                                   units: 'units',
-                                                   default_value: 'static.default value',
-                                                   enums: 'enumerations',
-                                                   min: 'min',
-                                                   max: 'max',
-                                                   mode: 'mean|mode',
-                                                   stddev: 'std dev',
-                                                   #:delta_x => 'delta.x',
-                                                   #:discrete_values => 'discrete values',
-                                                   #:discrete_weights => 'discrete weights',
-                                                   distribution: 'distribution',
-                                                   source: 'data source',
-                                                   notes: 'notes',
-                                                   relation_to_eui: 'typical var to eui relationship',
+              rows = @xls.sheet('Variables').parse(enabled: /# variable/i,
+                                                   measure_name_or_var_type: /type/i,
+                                                   measure_file_name_or_var_display_name: /parameter\sdisplay\sname.*/i,
+                                                   measure_type_or_parameter_name_in_measure: /parameter\sname\sin\smeasure/i,
+                                                   sampling_method: /sampling\smethod/i,
+                                                   variable_type: /variable\stype/i,
+                                                   units: /units/i,
+                                                   default_value: /static.default\svalue/i,
+                                                   enums: /enumerations/i,
+                                                   min: /min/i,
+                                                   max: /max/i,
+                                                   mode: /mean|mode/i,
+                                                   stddev: /std\sdev/i,
+                                                   # delta_x: /delta.x/i,
+                                                   # discrete_values: /discrete\svalues/i,
+                                                   # discrete_weights: /discrete\sweights/i,
+                                                   distribution: /distribution/i,
+                                                   source: /data\ssource/i,
+                                                   notes: /notes/i,
+                                                   relation_to_eui: /typical\svar\sto\seui\srelationship/i,
                                                    clean: true)
             end
           rescue => e
             raise "Unable to parse spreadsheet #{@xls_filename} with version #{@version} due to error: #{e.message}"
           end
 
-          fail "Could not find the sheet name 'Variables' in excel file #{@root_path}" unless rows
+          raise "Could not find the sheet name 'Variables' in excel file #{@root_path}" unless rows
 
           # map the data to another hash that is more easily processed
           data = {}
@@ -692,7 +702,6 @@ module OpenStudio
           variable_index = -1
           measure_name = nil
           rows.each_with_index do |row, icnt|
-            next if icnt < 1 # skip the first line after the header
             # puts "Parsing line: #{icnt}:#{row}"
 
             # check if we are a measure - nil means that the cell was blank
@@ -773,12 +782,12 @@ module OpenStudio
               measure_name = display_name.downcase.strip.tr('-', '_').tr(' ', '_').gsub('__', '_')
               data['data'][measure_index]['display_name'] = display_name
               data['data'][measure_index]['name'] = measure_name
-              data['data'][measure_index]['enabled'] = row[:enabled] == 'TRUE' ? true : false
+              data['data'][measure_index]['enabled'] = row[:enabled]
               data['data'][measure_index]['measure_file_name'] = row[:measure_file_name_or_var_display_name]
               if row[:measure_file_name_directory]
                 data['data'][measure_index]['measure_file_name_directory'] = row[:measure_file_name_directory]
               else
-                data['data'][measure_index]['measure_file_name_directory'] = row[:measure_file_name_or_var_display_name].underscore
+                data['data'][measure_index]['measure_file_name_directory'] = row[:measure_file_name_or_var_display_name].to_underscore
               end
               data['data'][measure_index]['measure_type'] = row[:measure_type_or_parameter_name_in_measure]
               data['data'][measure_index]['version'] = @version_id
@@ -787,49 +796,55 @@ module OpenStudio
             end
           end
 
-          # puts data.inspect
           data
         end
 
         def parse_outputs
           rows = nil
           if @version >= '0.3.3'.to_version
-            rows = @xls.sheet('Outputs').parse(display_name: 'Variable Display Name',
-                                               display_name_short: 'Short Display Name',
-                                               metadata_id: 'Taxonomy Identifier',
-                                               name: '^Name$',
-                                               units: 'Units',
-                                               visualize: 'Visualize',
-                                               export: 'Export',
-                                               variable_type: 'Variable Type',
-                                               objective_function: 'Objective Function',
-                                               objective_function_target: 'Objective Function Target',
-                                               scaling_factor: 'Scale',
-                                               objective_function_group: 'Objective Function Group')
+            rows = @xls.sheet('Outputs').parse(display_name: /variable\sdisplay\sname/i,
+                                               display_name_short: /short\sdisplay\sname/i,
+                                               metadata_id: /taxonomy\sidentifier/i,
+                                               name: /^name$/i,
+                                               units: /units/i,
+                                               visualize: /visualize/i,
+                                               export: /export/i,
+                                               variable_type: /variable\stype/i,
+                                               objective_function: /objective\sfunction/i,
+                                               objective_function_target: /objective\sfunction\starget/i,
+                                               scaling_factor: /scale/i,
+                                               objective_function_group: /objective\sfunction\sgroup/i)
           elsif @version >= '0.3.0'.to_version
-            rows = @xls.sheet('Outputs').parse(display_name: 'Variable Display Name',
-                                               metadata_id: 'Taxonomy Identifier',
-                                               name: '^Name$',
-                                               units: 'Units',
-                                               visualize: 'Visualize',
-                                               export: 'Export',
-                                               variable_type: 'Variable Type',
-                                               objective_function: 'Objective Function',
-                                               objective_function_target: 'Objective Function Target',
-                                               scaling_factor: 'Scale',
-                                               objective_function_group: 'Objective Function Group')
+            rows = @xls.sheet('Outputs').parse(display_name: /variable\sdisplay\sname/i,
+                                               # display_name_short: /short\sdisplay\sname/i,
+                                               metadata_id: /taxonomy\sidentifier/i,
+                                               name: /^name$/i,
+                                               units: /units/i,
+                                               visualize: /visualize/i,
+                                               export: /export/i,
+                                               variable_type: /variable\stype/i,
+                                               objective_function: /objective\sfunction/i,
+                                               objective_function_target: /objective\sfunction\starget/i,
+                                               scaling_factor: /scale/i,
+                                               objective_function_group: /objective\sfunction\sgroup/i)
           else
-            rows = @xls.sheet('Outputs').parse(display_name: 'Variable Display Name',
-                                               name: '^Name$',
-                                               units: 'units',
-                                               objective_function: 'objective function',
-                                               objective_function_target: 'objective function target',
-                                               scaling_factor: 'scale',
-                                               objective_function_group: 'objective')
+            rows = @xls.sheet('Outputs').parse(display_name: /variable\sdisplay\sname/i,
+                                               # display_name_short: /short\sdisplay\sname/i,
+                                               # metadata_id: /taxonomy\sidentifier/i,
+                                               name: /^name$/i,
+                                               units: /units/i,
+                                               # visualize: /visualize/i,
+                                               # export: /export/i,
+                                               # variable_type: /variable\stype/i,
+                                               objective_function: /objective\sfunction/i,
+                                               objective_function_target: /objective\sfunction\starget/i,
+                                               scaling_factor: /scale/i,
+                                               objective_function_group: /objective/i)
+
           end
 
           unless rows
-            fail "Could not find the sheet name 'Outputs' in excel file #{@root_path}"
+            raise "Could not find the sheet name 'Outputs' in excel file #{@root_path}"
           end
 
           data = {}
@@ -847,10 +862,10 @@ module OpenStudio
             var['metadata_id'] = row[:metadata_id]
             var['name'] = row[:name]
             var['units'] = row[:units]
-            var['visualize'] = row[:visualize].downcase == 'true' ? true : false if row[:visualize]
-            var['export'] = row[:export].downcase == 'true' ? true : false if row[:export]
+            var['visualize'] = row[:visualize]
+            var['export'] = row[:export]
             var['variable_type'] = row[:variable_type].downcase if row[:variable_type]
-            var['objective_function'] = row[:objective_function].downcase == 'true' ? true : false
+            var['objective_function'] = row[:objective_function]
             var['objective_function_target'] = row[:objective_function_target]
             var['scaling_factor'] = row[:scaling_factor]
 

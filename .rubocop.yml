@@ -17,107 +17,11 @@ Lint/ParenthesesAsGroupedExpression:
 Lint/RequireParentheses:
   Enabled: true
 
-# Offense count: 1
 Lint/UnreachableCode:
   Enabled: false
 
-# Offense count: 51
 Lint/UselessAssignment:
   Enabled: true
-
-# ==================== Styles / Metrics====================
-# Offense count: 4
-Metrics/BlockNesting:
-  Max: 4
-
-# Offense count: 18
-# Configuration parameters: CountComments.
-Metrics/ClassLength:
-  Max: 500
-
-# Offense count: 27
-Metrics/CyclomaticComplexity:
-  Max: 48
-
-# Offense count: 974
-Metrics/LineLength:
-  Max: 1200
-
-# Offense count: 87
-# Configuration parameters: CountComments.
-Metrics/MethodLength:
-  Max: 350
-
-# Offense count: 1
-# Configuration parameters: CountKeywordArgs.
-Metrics/ParameterLists:
-  Max: 8
-
-# ==================== Disabled on Purpose ====================
-# Offense count: 3
-Style/AccessorMethodName:
-  Enabled: true
-
-# Need to allow indented case statements
-# Offense count: 9
-# Configuration parameters: IndentWhenRelativeTo, SupportedStyles, IndentOneStep.
-Style/CaseIndentation:
-  Enabled: false
-
-# Offense count: 18
-# Configuration parameters: EnforcedStyle, SupportedStyles.
-Style/ClassAndModuleChildren:
-  Enabled: false
-
-# Offense count: 2
-Style/ClassVars:
-  Enabled: false
-
-# Offense count: 42
-Style/Documentation:
-  Enabled: false
-
-# Offense count: 1
-Style/EachWithObject:
-  Enabled: false
-
-# Offense count: 2
-# Configuration parameters: AllowedVariables.
-Style/GlobalVars:
-  Enabled: false
-
-# Offense count: 7
-# Configuration parameters: MinBodyLength.
-Style/GuardClause:
-  Enabled: true
-
-# Offense count: 17
-# Configuration parameters: MaxLineLength.
-Style/IfUnlessModifier:
-  Enabled: false
-
-# Do NOT enable.  For some reason this is catchy any next which I feel are okay.
-# Offense count: 18
-# Configuration parameters: EnforcedStyle, SupportedStyles.
-Style/Next:
-  Enabled: false
-
-# Do NOT enable this because it appears $? is different than $CHILD_STATUS.
-# Offense count: 7
-# Cop supports --auto-correct.
-Style/SpecialGlobalVars:
-  Enabled: false
-
-# More Changes per DLM -- pulled from https://github.com/bbatsov/rubocop/blob/master/config/enabled.yml
-Style/RedundantReturn:
-  Description: 'Do not use return where it is not required.'
-  StyleGuide: 'https://github.com/bbatsov/ruby-style-guide#no-explicit-return'
-  Enabled: false
-
-Style/NumericLiterals:
-  Description: 'Add underscores to large numeric literals to improve readability.'
-  StyleGuide: 'https://github.com/bbatsov/ruby-style-guide#underscores-in-numerics'
-  Enabled: false
 
 Lint/UnusedBlockArgument:
   Description: 'Checks for unused block arguments.'
@@ -133,3 +37,103 @@ Lint/UselessAssignment:
   Description: 'Checks for useless assignment to a local variable.'
   StyleGuide: 'https://github.com/bbatsov/ruby-style-guide#underscore-unused-vars'
   Enabled: false
+
+# ==================== Performance ========================
+
+Performance/Casecmp:
+  Enabled: false
+
+# ==================== Styles / Metrics====================
+
+Metrics/BlockNesting:
+  Max: 4
+
+Metrics/ClassLength:
+  Max: 500
+
+Metrics/CyclomaticComplexity:
+  Max: 50
+
+Metrics/LineLength:
+  Max: 120
+
+Metrics/MethodLength:
+  Max: 350
+
+Metrics/ParameterLists:
+  Max: 8
+
+# ==================== Disabled on Purpose ====================
+
+# Allow indented case statements
+# Configuration parameters: IndentWhenRelativeTo, SupportedStyles, IndentOneStep.
+Style/CaseIndentation:
+  Enabled: false
+
+# Configuration parameters: EnforcedStyle, SupportedStyles, SingleLineConditionsOnly.
+# SupportedStyles: assign_to_condition, assign_inside_condition
+Style/ConditionalAssignment:
+  Enabled: false
+
+# Configuration parameters: EnforcedStyle, SupportedStyles.
+Style/ClassAndModuleChildren:
+  Enabled: false
+
+Style/ClassVars:
+  Enabled: false
+
+Style/Documentation:
+  Enabled: false
+
+# Offense count: 1
+Style/EachWithObject:
+  Enabled: false
+
+# Configuration parameters: AllowedVariables.
+Style/GlobalVars:
+  Enabled: false
+
+# Configuration parameters: MinBodyLength.
+Style/GuardClause:
+  Enabled: true
+
+# Configuration parameters: MaxLineLength.
+Style/IfUnlessModifier:
+  Enabled: false
+
+# Configuration parameters: EnforcedStyle, SupportedStyles.
+# SupportedStyles: symmetrical, new_line, same_line
+Style/MultilineMethodCallBraceLayout:
+  Enabled: false
+
+# Do NOT enable.
+# Configuration parameters: EnforcedStyle, SupportedStyles.
+Style/Next:
+  Enabled: false
+
+Style/NumericLiterals:
+  Description: 'Add underscores to large numeric literals to improve readability.'
+  StyleGuide: 'https://github.com/bbatsov/ruby-style-guide#underscores-in-numerics'
+  Enabled: false
+
+# Configuration parameters: AutoCorrect, EnforcedStyle, SupportedStyles.
+# SupportedStyles: predicate, comparison
+Style/NumericPredicate:
+  Enabled: false
+
+# More Changes per DLM -- pulled from https://github.com/bbatsov/rubocop/blob/master/config/enabled.yml
+Style/RedundantReturn:
+  Description: 'Do not use return where it is not required.'
+  StyleGuide: 'https://github.com/bbatsov/ruby-style-guide#no-explicit-return'
+  Enabled: false
+
+Style/RedundantParentheses:
+  Enabled: false
+
+# Do NOT enable this because it appears $? is different than $CHILD_STATUS.
+Style/SpecialGlobalVars:
+  Enabled: false
+
+Style/ZeroLengthPredicate:
+  Enabled: false
+

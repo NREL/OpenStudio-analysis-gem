@@ -54,7 +54,7 @@ describe OpenStudio::Analysis::Translator::Excel do
     end
 
     it 'should fail to process' do
-      expect { @excel.process }.to raise_error("duplicate variable names found in list [\"Insulation R-value (ft^2*h*R/Btu).\"]")
+      expect { @excel.process }.to raise_error('duplicate variable names found in list ["Insulation R-value (ft^2*h*R/Btu)."]')
     end
   end
 
@@ -291,16 +291,10 @@ describe OpenStudio::Analysis::Translator::Excel do
 
     it 'should process' do
       expect(@excel.process).to eq(true)
-    end
-
-    it 'should have new setting variables' do
       expect(@excel.settings['user_id']).to eq('new_user')
       expect(@excel.settings['openstudio_server_version']).to eq('1.3.2')
       expect(@excel.cluster_name).to eq('analysis_cluster_name')
       expect(@excel.run_setup['analysis_name']).to eq('Name goes here')
-    end
-
-    it 'should have the new measure directory column' do
       expect(@excel.variables['data'][1]['measure_file_name_directory']).to eq('ReduceLightingLoadsByPercentage')
     end
 
@@ -407,7 +401,7 @@ describe OpenStudio::Analysis::Translator::Excel do
 
     it 'should process' do
       model_uuid = @excel.models.first[:name]
-      expect(model_uuid).to match /[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/
+      expect(model_uuid).to match /[0-9a-f]{8}_[0-9a-f]{4}_[0-9a-f]{4}_[0-9a-f]{4}_[0-9a-f]{12}/
     end
 
     it 'should error out with missing measure information' do
@@ -426,7 +420,7 @@ describe OpenStudio::Analysis::Translator::Excel do
 
     it 'should process' do
       model_uuid = @excel.models.first[:name]
-      expect(model_uuid).to match /[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/
+      expect(model_uuid).to match /[0-9a-f]{8}_[0-9a-f]{4}_[0-9a-f]{4}_[0-9a-f]{4}_[0-9a-f]{12}/
     end
 
     it 'should process and save short display names' do
@@ -449,8 +443,8 @@ describe OpenStudio::Analysis::Translator::Excel do
       expect(j['analysis']['output_variables'].first['display_name_short']).to eq 'Site EUI'
       expect(j['analysis']['problem']['workflow'][0]['variables'][0]['argument']['display_name']).to eq 'Orientation'
       expect(j['analysis']['problem']['workflow'][0]['variables'][0]['argument']['display_name_short']).to eq 'Shorter Display Name'
-      expect(j['analysis']['problem']['workflow'][1]['arguments'][0]['display_name']).to eq 'unknown'
-      expect(j['analysis']['problem']['workflow'][1]['arguments'][0]['display_name_short']).to eq 'un'
+      expect(j['analysis']['problem']['workflow'][1]['arguments'][1]['display_name']).to eq 'unknown'
+      expect(j['analysis']['problem']['workflow'][1]['arguments'][1]['display_name_short']).to eq 'un'
     end
   end
 
@@ -491,7 +485,7 @@ describe OpenStudio::Analysis::Translator::Excel do
 
       expect(@excel.worker_inits.size).to eq 2
       expect(@excel.worker_inits[0][:name]).to eq 'initialize me'
-      expect(@excel.worker_inits[0][:args]).to eq "[\"first_arg\",2,{a_hash: \"input\"}]"
+      expect(@excel.worker_inits[0][:args]).to eq '["first_arg",2,{a_hash: "input"}]'
 
       # test the eval'ing of the args
       a = eval(@excel.analysis.worker_inits.first[:metadata][:args])
@@ -529,19 +523,19 @@ describe OpenStudio::Analysis::Translator::Excel do
 
     it 'should save the analysis' do
       expect { @excel.analysis }.to raise_error /There are more than one seed models defined in the excel file. Call .analyses. to return the array/
-      model_uuid = "#{@excel.name.snake_case}_#{@excel.models.first[:name]}"
+      model_uuid = "#{@excel.name.to_underscore}_#{@excel.models.first[:name]}"
 
       @excel.save_analysis # this will save all the analyses
 
       @excel.models.each do |f|
-        model_uuid = "#{@excel.name.snake_case}_#{f[:name]}"
+        model_uuid = "#{@excel.name.to_underscore}_#{f[:name]}"
         puts model_uuid
         expect(File.exist?("spec/files/export/analysis/#{model_uuid}.json")).to eq true
         expect(File.exist?("spec/files/export/analysis/#{model_uuid}.zip")).to eq true
       end
 
       expect(@excel.settings['openstudio_server_version']).to eq('1.11.0-rc2')
-      expect(@excel.settings['spreadsheet_version']).to eq '0.3.7'
+      expect(@excel.settings['spreadsheet_version']).to eq '0.4.0'
       expect(@excel.settings['server_instance_type']).to eq 'm3.xlarge'
       expect(@excel.settings['worker_instance_type']).to eq 'c3.4xlarge'
       expect(@excel.aws_tags).to eq(['org=5500'])
@@ -568,7 +562,7 @@ describe OpenStudio::Analysis::Translator::Excel do
       expect(j['analysis']['problem']['workflow'][1]['variables'][0]['pivot']).to eq nil
 
       expect(@excel.settings['openstudio_server_version']).to eq('1.11.0-rc2')
-      expect(@excel.settings['spreadsheet_version']).to eq '0.3.7'
+      expect(@excel.settings['spreadsheet_version']).to eq '0.4.0'
       expect(@excel.settings['server_instance_type']).to eq 'm3.xlarge'
       expect(@excel.settings['worker_instance_type']).to eq 'c3.4xlarge'
       expect(@excel.aws_tags).to eq(['org=5500'])

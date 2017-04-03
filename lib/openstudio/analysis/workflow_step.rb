@@ -38,6 +38,15 @@ module OpenStudio
         @measure_definition_version_uuid = nil
         @arguments = []
 
+        @arguments << {
+          display_name: 'Skip Entire Measure',
+          display_name_short: 'Skip',
+          name: '__SKIP__',
+          value_type: 'boolean',
+          default_value: false,
+          value: false
+        }
+
         # TODO: eventually the variables should be its own class. This would then be an array of Variable objects.
         @variables = []
       end
@@ -56,8 +65,8 @@ module OpenStudio
       # @return [Boolean] True/false if it assigned it
       def argument_value(argument_name, value)
         a = @arguments.find_all { |a| a[:name] == argument_name }
-        fail "could not find argument_name of #{argument_name} in measure #{name}. Valid argument names are #{argument_names}." if a.empty?
-        fail "more than one argument with the same name of #{argument_name} in measure #{name}" if a.size > 1
+        raise "could not find argument_name of #{argument_name} in measure #{name}. Valid argument names are #{argument_names}." if a.empty?
+        raise "more than one argument with the same name of #{argument_name} in measure #{name}" if a.size > 1
 
         a = a.first
 
@@ -81,7 +90,7 @@ module OpenStudio
       # @param argument_name [String] The instance_name of the measure argument that is to be tagged. This is the same name as the argument's variable in the measure.rb file.
       # @param variable_display_name [String] What the variable is called. It is best if the display name is self describing (i.e. does not need any other context). It can be the same as the argument display name.
       # @param distribution [Hash] Hash describing the distribution of the variable.
-      # @option distribution [String] :type Type of distribution. `discrete`, `uniform`, `triangle`, `normal`, `lognormal`
+      # @option distribution [String] :type Type of distribution. `discrete`, `uniform`, `triangle`, `normal`, `lognormal`, `integer_sequence`
       # @option distribution [String] :units Units of the variable. This is legacy as previous OpenStudio measures did not specify units separately.
       # @option distribution [String] :minimum Minimum value of the distribution, required for all distributions
       # @option distribution [String] :maximum Maximum value of the distribution, required for all distributions
@@ -101,11 +110,11 @@ module OpenStudio
         options = { variable_type: 'variable' }.merge(options)
         distribution[:mode] = distribution[:mean] if distribution.key? :mean
 
-        fail "Set the static value in the options 'options[:static_value]', not the distribution" if distribution[:static_value]
+        raise "Set the static value in the options 'options[:static_value]', not the distribution" if distribution[:static_value]
 
         a = @arguments.find_all { |a| a[:name] == argument_name }
-        fail "could not find argument_name of #{argument_name} in measure #{name}. Valid argument names are #{argument_names}." if a.empty?
-        fail "more than one argument with the same name of #{argument_name} in measure #{name}" if a.size > 1
+        raise "could not find argument_name of #{argument_name} in measure #{name}. Valid argument names are #{argument_names}." if a.empty?
+        raise "more than one argument with the same name of #{argument_name} in measure #{name}" if a.size > 1
 
         if distribution_valid?(distribution)
           # grab the argument hash
@@ -213,7 +222,7 @@ module OpenStudio
           end
 
         else
-          fail "Do not know how to create the Hash for Version #{version}"
+          raise "Do not know how to create the Hash for Version #{version}"
         end
 
         hash
@@ -240,7 +249,7 @@ module OpenStudio
         if File.exist?(path_to_measure) && File.file?(path_to_measure)
           path_to_measure = File.dirname(path_to_measure)
         else
-          fail "Could not find measure '#{instance_name}' in '#{path_to_measure}'" unless options[:ignore_not_found]
+          raise "Could not find measure '#{instance_name}' in '#{path_to_measure}'" unless options[:ignore_not_found]
         end
 
         # Extract the directory
@@ -328,7 +337,7 @@ module OpenStudio
         if File.exist?(path_to_measure) && File.file?(path_to_measure)
           path_to_measure = File.dirname(path_to_measure)
         else
-          fail "Could not find measure '#{instance_name}' in '#{path_to_measure}'" unless options[:ignore_not_found]
+          raise "Could not find measure '#{instance_name}' in '#{path_to_measure}'" unless options[:ignore_not_found]
         end
 
         # Extract the directo
@@ -409,28 +418,31 @@ module OpenStudio
       # validate the arguments of the distribution
       def distribution_valid?(d)
         # regardless of uncertainty description the following must be defined
-        fail 'No distribution defined for variable' unless d.key? :type
-        fail 'No minimum defined for variable' unless d.key? :minimum
-        fail 'No maximum defined for variable' unless d.key? :maximum
-        fail 'No mean/mode defined for variable' unless d.key? :mode
+        raise 'No distribution defined for variable' unless d.key? :type
+        raise 'No minimum defined for variable' unless d.key? :minimum
+        raise 'No maximum defined for variable' unless d.key? :maximum
+        raise 'No mean/mode defined for variable' unless d.key? :mode
 
         if d[:type] =~ /uniform/
           # Do we need to tell the user that we don't really need the mean/mode for uniform ?
         elsif d[:type] =~ /discrete/
           # require min, max, mode
-          fail 'No values passed for discrete distribution' unless d[:values] || d[:values].empty?
+          raise 'No values passed for discrete distribution' unless d[:values] || d[:values].empty?
           if d[:weights]
-            fail 'Weights are not the same length as values' unless d[:values].size == d[:weights].size
-            fail 'Weights do not sum up to one' unless d[:weights].reduce(:+).between?(0.99, 1.01) # allow a small error for now
+            raise 'Weights are not the same length as values' unless d[:values].size == d[:weights].size
+            raise 'Weights do not sum up to one' unless d[:weights].reduce(:+).between?(0.99, 1.01) # allow a small error for now
           else
             fraction = 1 / d[:values].size.to_f
             d[:weights] = [fraction] * d[:values].size
           end
+        elsif d[:type] =~ /integer_sequence/
+          d[:weights] = 1
+          d[:values] = 1
         elsif d[:type] =~ /triangle/
           # requires min, max, mode
         elsif d[:type] =~ /normal/ # both normal and lognormal
           # require min, max, mode, stddev
-          fail 'No standard deviation for variable' unless d[:standard_deviation]
+          raise 'No standard deviation for variable' unless d[:standard_deviation]
         end
 
         true

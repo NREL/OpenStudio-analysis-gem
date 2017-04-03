@@ -128,7 +128,7 @@ module OpenStudio
 
       # return the machine name of the analysis
       def name
-        @display_name.snake_case
+        @display_name.to_underscore
       end
 
       # return a hash.
@@ -190,7 +190,7 @@ module OpenStudio
 
           h
         else
-          fail "Version #{version} not defined for #{self.class} and #{__method__}"
+          raise "Version #{version} not defined for #{self.class} and #{__method__}"
         end
       end
 
@@ -218,7 +218,7 @@ module OpenStudio
             o.seed_model = h[:analysis][:seed][:path]
           end
         else
-          fail "Version #{version} not defined for #{self.class} and #{__method__}"
+          raise "Version #{version} not defined for #{self.class} and #{__method__}"
         end
 
         o
@@ -293,7 +293,7 @@ module OpenStudio
       def save_analysis_zip(filename)
         def add_directory_to_zip(zipfile, local_directory, relative_zip_directory)
           # puts "Add Directory #{local_directory}"
-          Dir[File.join("#{local_directory}", '**', '**')].each do |file|
+          Dir[File.join(local_directory.to_s, '**', '**')].each do |file|
             # puts "Adding File #{file}"
             zipfile.add(file.sub(local_directory, relative_zip_directory), file)
           end
@@ -331,7 +331,7 @@ module OpenStudio
 
           puts 'Adding Support Files: Libraries'
           @libraries.each do |lib|
-            fail "Libraries must specify their 'library_name' as metadata which becomes the directory upon zip" unless lib[:metadata][:library_name]
+            raise "Libraries must specify their 'library_name' as metadata which becomes the directory upon zip" unless lib[:metadata][:library_name]
 
             if File.directory? lib[:file]
               Dir[File.join(lib[:file], '**', '**')].each do |file|

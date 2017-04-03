@@ -1,550 +1,613 @@
 {
-	"$schema": "http://json-schema.org/draft-04/schema#",
-	"description": "JSON Schema for the OpenStudioAnalysis File Type",
-	"type": "object",
-	"properties": {
-		"analysis": {
-			"$ref": "#/definitions/Analysis"
-		}
-	},
-	"required": [
-		"analysis"
-	],
-	"additionalProperties": false,
-	"definitions": {
-		"Output": {
-			"description": "Hash",
-			"type": "object",
-			"properties": {
-				"units": {
-					"description": "Haystack complient unit string, or empty string if not applicable",
-					"type": "string"
-				},
-				"objective_function": {
-					"description": "Determines if output is part of an objective function",
-					"type": "boolean"
-				},
-				"objective_function_index": {
-					"description": "Key used to define multi-objective functions, null if not applicale",
-					"type": "number"
-				},
-				"objective_function_target": {
-					"description": "Key used to define target of the objective function, null if not applicable",
-					"type": [
-						"number",
-						"null"
-					]
-				},
-				"objective_function_group": {
-					"description": "Optional key used to define multi-objective functions",
-					"type": "number"
-				},
-				"scaling_factor": {
-					"description": "????",
-					"type": "null"
-				},
-				"display_name": {
-					"description": "User facing name of objective which must be unique",
-					"type": "string"
-				},
-				"display_name_short": {
-					"description": "User facing name less that 20 chareters",
-					"type": "string"
-				},
-				"metadata_id": {
-					"description": "??????",
-					"type": [
-						"string",
-						"null"
-					]
-				},
-				"name": {
-					"description": "Snake cased output machine name",
-					"type": "string"
-				},
-				"visualize": {
-					"description": "Determines if variable will be include in plots on the server",
-					"type": "boolean"
-				},
-				"export": {
-					"description": "?????",
-					"type": "boolean"
-				},
-				"variable_type": {
-					"description": "Allowed values of 'string', 'bool', or 'number'",
-					"type": "string"
-				}
-			},
-			"required": [
-				"units",
-				"objective_function",
-				"objective_function_index",
-				"objective_function_target",
-				"scaling_factor",
-				"display_name",
-				"metadata_id",
-				"name"
-			],
-			"additionalProperties": false
-		},
-		"Algorithm Attributes": {
-			"title": "algorithm",
-			"description": "Hash of ttributes associated with the analysis_type",
-			"type": "object",
-			"additionalProperties": {
-				"description": "Attibutes defined by analysis type"
-			}
-		},
-		"Argument": {
-			"title": "argument",
-			"description": "Indivigual argument instance",
-			"type": "object",
-			"properties": {
-				"display_name": {
-					"description": "User-facing display name which must be unique",
-					"type": "string"
-				},
-				"display_name_short": {
-					"description": "Optional user-facing display name under 20 charecters",
-					"type": "string"
-				},
-				"name": {
-					"description": "Machine readable snake-cased name of agrument as defined in the measure.xml",
-					"type": "string"
-				},
-				"value_type": {
-					"description": "Accepts inputs of 'string', 'bool', and 'number'",
-					"type": "string"
-				},
-				"default_value": {
-					"description": "Default value for argument, if defined in the measure.xml file",
-					"type": [
-						"string",
-						"number",
-						"boolean"
-					]
-				},
-				"value": {
-					"description": "Value to set argument to in analysis",
-					"type": [
-						"string",
-						"number",
-						"boolean"
-					]
-				},
-				"machine_name": {
-					"description": "????",
-					"type": "string"
-				},
-				"uuid": {
-					"description": "UUID for the measure from the measure.xml",
-					"type": "string"
-				},
-				"version_uuid": {
-					"description": "UUID for the measure version form the measure.xml",
-					"type": "string"
-				}
-			},
-			"required": [
-				"display_name",
-				"name",
-				"value",
-				"machine_name",
-				"uuid",
-				"version_uuid"
-			],
-			"additionalProperties": false
-		},
-		"Workflow Step": {
-			"description": "Indivigual measure definition",
-			"type": "object",
-			"properties": {
-				"name": {
-					"description": "Snake-cased machine readable measure name which must be unique",
-					"type": "string"
-				},
-				"display_name": {
-					"description": "User facing measure name whcih must also be unique",
-					"type": "string"
-				},
-				"measure_type": {
-					"description": "Accepts values of 'Ruby' 'EnergyPlus' and 'Reporting'",
-					"type": "string"
-				},
-				"measure_definition_class_name": {
-					"description": "Class name of measure.rb file",
-					"type": "string"
-				},
-				"measure_definition_directory": {
-					"description": "??",
-					"type": "string"
-				},
-				"measure_definition_directory_local": {
-					"description": "Local path to the measure directory",
-					"type": "string"
-				},
-				"measure_definition_display_name": {
-					"description": "?????",
-					"type": "string"
-				},
-				"measure_definition_name": {
-					"description": "?????",
-					"type": "string"
-				},
-				"measure_definition_name_xml": {
-					"description": "?????",
-					"type": "null"
-				},
-				"measure_definition_uuid": {
-					"description": "UUID of measure in measure.xml",
-					"type": "string"
-				},
-				"measure_definition_version_uuid": {
-					"description": "UUID of measure version in measure.xml",
-					"type": "string"
-				},
-				"arguments": {
-					"$ref": "#/definitions/Argument Array"
-				},
-				"variables": {
-					"$ref": "#/definitions/Variable Array"
-				},
-				"workflow_index": {
-					"description": "Index in workflow array, indexing from 0",
-					"type": "number"
-				},
-				"workflow_step_type": {
-					"description": "???????",
-					"type": "string"
-				},
-				"version_uuid": {
-					"description": "UUID of measure version from the measure.xml",
-					"type": "string"
-				},
-				"uuid": {
-					"description": "UUID of measure from the measure.xml",
-					"type": "string"
-				}
-			},
-			"required": [
-				"name",
-				"display_name",
-				"measure_type",
-				"measure_definition_class_name",
-				"measure_definition_directory",
-				"measure_definition_uuid",
-				"measure_definition_version_uuid",
-				"arguments",
-				"variables",
-				"workflow_index",
-				"workflow_step_type",
-				"version_uuid",
-				"uuid"
-			],
-			"additionalProperties": false
-		},
-		"Uncertainty Definition": {
-			"title": "uncertainty_description",
-			"description": "Set of attributes defining the variablity of the input",
-			"type": "object",
-			"properties": {
-				"type": {
-					"description": "Uncertainty type, accepting values of 'triangle', 'uniform', 'discrete', and 'normal'",
-					"type": "string",
-					"oneof": [
-						"triangle",
-						"uniform",
-						"normal",
-						"discrete"
-					]
-				},
-				"attributes": {
-					"$ref": "#/definitions/Distribution Definition"
-				}
-			},
-			"required": [
-				"type",
-				"attributes"
-			],
-			"additionalProperties": false
-		},
-		"Variable": {
-			"description": "Inidivigual variable instance",
-			"type": "object",
-			"properties": {
-				"argument": {
-					"$ref": "#/definitions/Argument"
-				},
-				"display_name": {
-					"description": "User-facing display name which must be unique",
-					"type": "string"
-				},
-				"display_name_short": {
-					"description": "Optional user-facing name under 20 charecters",
-					"type": "string"
-				},
-				"variable_type": {
-					"description": "Definition of variable type",
-					"type": "string",
-					"oneof": [
-						"variable",
-						"pivot"
-					]
-				},
-				"units": {
-					"description": "Haystack complient units with an empty string if not defined.",
-					"type": "null"
-				},
-				"minimum": {
-					"description": "????",
-					"type": "number"
-				},
-				"maximum": {
-					"description": "????",
-					"type": "number"
-				},
-				"relation_to_output": {
-					"description": "????",
-					"type": "null"
-				},
-				"static_value": {
-					"description": "Value to defalut to in the case of this variable not being perturbed in a datapoint",
-					"type": "number"
-				},
-				"uuid": {
-					"description": "Variable UUID to link against in the .osd file",
-					"type": "string"
-				},
-				"version_uuid": {
-					"description": "???",
-					"type": "string"
-				},
-				"variable": {
-					"description": "????",
-					"type": "boolean"
-				},
-				"uncertainty_description": {
-					"$ref": "#/definitions/Uncertainty Definition"
-				},
-				"workflow_index": {
-					"description": "???????",
-					"type": "number"
-				},
-				"machine_name": {
-					"description": "???????",
-					"type": "string"
-				}
-			},
-			"required": [
-				"argument",
-				"display_name",
-				"variable_type",
-				"units",
-				"static_value",
-				"uuid",
-				"version_uuid",
-				"uncertainty_description",
-				"machine_name"
-			],
-			"additionalProperties": false
-		},
-		"Problem": {
-			"title": "problem",
-			"description": "Defines procedure for running the analysis",
-			"type": "object",
-			"properties": {
-				"analysis_type": {
-					"description": "Type of analysis to be run, e.g. LHS or nsga2",
-					"type": "string",
-					"oneof": [
-						"morris",
-						"lhs",
-						"rgenound",
-						"nsga_nrel",
-						"spea",
-						"sequential_search",
-						"single_run",
-						"batch_run",
-						"doe",
-						"repeat_run",
-						"optim",
-						"baseline_purturbation",
-						"preflight"
-					]
-				},
-				"algorithm": {
-					"$ref": "#/definitions/Algorithm Attributes"
-				},
-				"workflow": {
-					"$ref": "#/definitions/Workflow"
-				},
-				"random_seed": {
-					"description": "Random seed to set server to for the execution of the OSA file",
-					"type": "number"
-				},
-				"name": {
-					"description": "??????",
-					"type": "string"
-				}
-			},
-			"required": [
-				"analysis_type",
-				"algorithm",
-				"workflow",
-				"random_seed"
-			],
-			"additionalProperties": false
-		},
-		"Output Array": {
-			"description": "Array of objects which define user-desired outputs from the analysis ",
-			"type": "array",
-			"items": {
-				"$ref": "#/definitions/Output"
-			}
-		},
-		"Workflow": {
-			"description": "Definintion of measures to be applied in the analysis",
-			"type": "array",
-			"items": {
-				"$ref": "#/definitions/Workflow Step"
-			}
-		},
-		"Seed Object": {
-			"title": "seed",
-			"description": "Seed osm or idf file for default use",
-			"type": "object",
-			"properties": {
-				"file_type": {
-					"description": "Accepted values of 'osm' and 'idf'",
-					"type": "string",
-					"oneonf": [
-						"osm",
-						"idf"
-					]
-				},
-				"path": {
-					"description": "Path to the seed file from the project directory",
-					"type": "string"
-				}
-			},
-			"required": [
-				"file_type"
-			],
-			"additionalProperties": false
-		},
-		"Weather File": {
-			"title": "weather_file",
-			"description": "Weather file for default use in the simulation",
-			"type": "object",
-			"properties": {
-				"file_type": {
-					"description": "Weather file type, e.g. TMY3",
-					"type": "string"
-				},
-				"path": {
-					"description": "Path to weather file from the project directory",
-					"type": "string"
-				}
-			},
-			"required": [
-				"file_type",
-				"path"
-			],
-			"additionalProperties": false
-		},
-		"Analysis": {
-			"title": "analysis",
-			"description": "Analysis object",
-			"type": "object",
-			"properties": {
-				"display_name": {
-					"description": "User facing string, spaces & capitals allowed",
-					"type": "string"
-				},
-				"name": {
-					"description": "snake_cassed machine name",
-					"type": "string"
-				},
-				"output_variables": {
-					"$ref": "#/definitions/Output Array"
-				},
-				"problem": {
-					"$ref": "#/definitions/Problem"
-				},
-				"seed": {
-					"$ref": "#/definitions/Seed Object"
-				},
-				"weather_file": {
-					"$ref": "#/definitions/Weather File"
-				},
-				"file_format_version": {
-					"description": "1.0",
-					"type": "number"
-				},
-				"_id": {
-					"description": "UUID of the OSA file",
-					"type": "string"
-				},
-				"uuid": {
-					"description": "UUID of the OSA file",
-					"type": "string"
-				},
-				"project_id": {
-					"description": "?????",
-					"type": "string"
-				}
-			},
-			"required": [
-				"output_variables",
-				"problem",
-				"seed",
-				"weather_file",
-				"_id",
-				"uuid",
-				"project_id"
-			],
-			"additionalProperties": false
-		},
-		"Argument Array": {
-			"description": "Array of fixed inputs for the masure",
-			"type": "array",
-			"items": {
-				"$ref": "#/definitions/Argument"
-			}
-		},
-		"Variable Array": {
-			"description": "Array of variable inputs for the measure",
-			"type": "array",
-			"items": {
-				"$ref": "#/definitions/Variable"
-			}
-		},
-		"Distribution Definition": {
-			"title": "attributes",
-			"description": "Array of attributes defining the distribution type properties",
-			"type": "array",
-			"items": {
-				"title": "Distribution Attributes",
-				"type": "object",
-				"properties": {
-					"name": {
-						"type": "string"
-					},
-					"value": {
-						"type": [
-							"array",
-							"string",
-							"number",
-							"boolean"
-						]
-					}
-				},
-				"required": [
-					"name",
-					"value"
-				],
-				"additionalProperties": false
-			}
-		}
-	}
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "description": "JSON Schema for the OpenStudioAnalysis File Type",
+  "type": "object",
+  "properties": {
+    "analysis": {
+      "$ref": "#/definitions/Analysis"
+    }
+  },
+  "required": [
+    "analysis"
+  ],
+  "additionalProperties": false,
+  "definitions": {
+    "Output": {
+      "description": "Hash",
+      "type": "object",
+      "properties": {
+        "units": {
+          "description": "Haystack compliant unit string, or empty string if not applicable",
+          "type": "string"
+        },
+        "objective_function": {
+          "description": "Determines if output is part of an objective function",
+          "type": "boolean"
+        },
+        "objective_function_index": {
+          "description": "Key used to define multi-objective functions, null if not applicable",
+          "type": "number"
+        },
+        "objective_function_target": {
+          "description": "Key used to define target of the objective function, null if not applicable",
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "objective_function_group": {
+          "description": "Optional key used to define multi-objective functions",
+          "type": "number"
+        },
+        "scaling_factor": {
+          "description": "????",
+          "type": "null"
+        },
+        "display_name": {
+          "description": "User facing name of objective which must be unique",
+          "type": "string"
+        },
+        "display_name_short": {
+          "description": "User facing name less that 20 characters",
+          "type": "string"
+        },
+        "metadata_id": {
+          "description": "??????",
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "name": {
+          "description": "Snake cased output machine name",
+          "type": "string"
+        },
+        "visualize": {
+          "description": "Determines if variable will be include in plots on the server",
+          "type": "boolean"
+        },
+        "export": {
+          "description": "?????",
+          "type": "boolean"
+        },
+        "variable_type": {
+          "description": "Allowed values of 'string', 'bool', or 'number'",
+          "type": "string"
+        }
+      },
+      "required": [
+        "units",
+        "objective_function",
+        "objective_function_index",
+        "objective_function_target",
+        "scaling_factor",
+        "display_name",
+        "metadata_id",
+        "name"
+      ],
+      "additionalProperties": false
+    },
+    "Algorithm Attributes": {
+      "title": "algorithm",
+      "description": "Hash of attributes associated with the analysis_type",
+      "type": "object",
+      "additionalProperties": {
+        "description": "Attributes defined by analysis type"
+      }
+    },
+    "Argument": {
+      "title": "argument",
+      "description": "Individual argument instance",
+      "type": "object",
+      "properties": {
+        "display_name": {
+          "description": "User-facing display name which must be unique",
+          "type": "string"
+        },
+        "display_name_short": {
+          "description": "Optional user-facing display name under 20 characters",
+          "type": "string"
+        },
+        "name": {
+          "description": "Machine readable snake-cased name of argument as defined in the measure.xml",
+          "type": "string"
+        },
+        "value_type": {
+          "description": "Accepts inputs of 'string', 'bool', and 'number'",
+          "type": "string"
+        },
+        "default_value": {
+          "description": "Default value for argument, if defined in the measure.xml file",
+          "type": [
+            "string",
+            "number",
+            "boolean"
+          ]
+        },
+        "value": {
+          "description": "Value to set argument to in analysis",
+          "type": [
+            "string",
+            "number",
+            "boolean"
+          ]
+        },
+        "machine_name": {
+          "description": "????",
+          "type": "string"
+        },
+        "uuid": {
+          "description": "UUID for the measure from the measure.xml",
+          "type": "string"
+        },
+        "version_uuid": {
+          "description": "UUID for the measure version form the measure.xml",
+          "type": "string"
+        }
+      },
+      "required": [
+        "display_name",
+        "name",
+        "value",
+        "machine_name",
+        "uuid",
+        "version_uuid"
+      ],
+      "additionalProperties": false
+    },
+    "Workflow Step": {
+      "description": "Individual measure definition",
+      "type": "object",
+      "properties": {
+        "name": {
+          "description": "Snake-cased machine readable measure name which must be unique",
+          "type": "string"
+        },
+        "display_name": {
+          "description": "User facing measure name which must also be unique",
+          "type": "string"
+        },
+        "measure_type": {
+          "description": "Accepts values of 'Ruby' 'EnergyPlus' and 'Reporting'",
+          "type": "string"
+        },
+        "description": {
+          "description": "Measure description",
+          "type": "string"
+        },
+        "taxonomy": {
+          "description": "Measure taxonomy tag",
+          "type": "string"
+        },
+        "measure_definition_class_name": {
+          "description": "Class name of measure.rb file",
+          "type": "string"
+        },
+        "measure_definition_directory": {
+          "description": "??",
+          "type": "string"
+        },
+        "measure_definition_directory_local": {
+          "description": "Local path to the measure directory",
+          "type": "string"
+        },
+        "measure_definition_display_name": {
+          "description": "?????",
+          "type": "string"
+        },
+        "measure_definition_name": {
+          "description": "?????",
+          "type": "string"
+        },
+        "measure_definition_name_xml": {
+          "description": "?????",
+          "type": "null"
+        },
+        "measure_definition_uuid": {
+          "description": "UUID of measure in measure.xml",
+          "type": "string"
+        },
+        "measure_definition_version_uuid": {
+          "description": "UUID of measure version in measure.xml",
+          "type": "string"
+        },
+        "arguments": {
+          "$ref": "#/definitions/Argument Array"
+        },
+        "variables": {
+          "$ref": "#/definitions/Variable Array"
+        },
+        "workflow_index": {
+          "description": "Index in workflow array, indexing from 0",
+          "type": "number"
+        },
+        "workflow_step_type": {
+          "description": "???????",
+          "type": "string"
+        },
+        "version_uuid": {
+          "description": "UUID of measure version from the measure.xml",
+          "type": "string"
+        },
+        "uuid": {
+          "description": "UUID of measure from the measure.xml",
+          "type": "string"
+        }
+      },
+      "required": [
+        "name",
+        "display_name",
+        "measure_type",
+        "measure_definition_class_name",
+        "measure_definition_directory",
+        "measure_definition_uuid",
+        "measure_definition_version_uuid",
+        "arguments",
+        "variables",
+        "workflow_index",
+        "workflow_step_type",
+        "version_uuid",
+        "uuid"
+      ],
+      "additionalProperties": false
+    },
+    "Uncertainty Definition": {
+      "title": "uncertainty_description",
+      "description": "Set of attributes defining the variability of the input",
+      "type": "object",
+      "properties": {
+        "type": {
+          "description": "Uncertainty type, accepting values of 'triangle', 'uniform', 'discrete', and 'normal'",
+          "type": "string",
+          "oneof": [
+            "triangle",
+            "uniform",
+            "normal",
+            "discrete"
+          ]
+        },
+        "attributes": {
+          "$ref": "#/definitions/Distribution Definition"
+        }
+      },
+      "required": [
+        "type",
+        "attributes"
+      ],
+      "additionalProperties": false
+    },
+    "Design Alternative": {
+      "description": "Individual design alternative instance",
+      "type": "object",
+      "properties": {
+        "name": {
+          "description": "Name of design alternative",
+          "type": "string"
+        },
+        "description": {
+          "description": "Description of design alternative",
+          "type": "string"
+        },
+        "seed": {
+          "$ref": "#/definitions/Seed Object"
+        },
+        "options": {
+          "description": "Each option corresponds to one WorkflowStep (i.e. Measure).  Options are listed in order",
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "measure_name": {
+                "description": "Name of the measure in this workflow",
+                "type": "string"
+              },
+              "workflow_index": {
+                "description": "Index of the measure in the workflow",
+                "type": "number"
+              },
+              "name": {
+                "description": "Name of the user specified option",
+                "type": "string"
+              },
+              "description": {
+                "description": "Description of the user specified option",
+                "type": "string"
+              }
+            },
+            "additionalProperties": false
+          }
+        }
+      },
+      "required": [
+        "name",
+        "description"
+      ],
+      "additionalProperties": false
+    },
+    "Variable": {
+      "description": "Individual variable instance",
+      "type": "object",
+      "properties": {
+        "argument": {
+          "$ref": "#/definitions/Argument"
+        },
+        "display_name": {
+          "description": "User-facing display name which must be unique",
+          "type": "string"
+        },
+        "display_name_short": {
+          "description": "Optional user-facing name under 20 characters",
+          "type": "string"
+        },
+        "variable_type": {
+          "description": "Definition of variable type",
+          "type": "string",
+          "oneof": [
+            "variable",
+            "pivot"
+          ]
+        },
+        "units": {
+          "description": "Haystack compliant units with an empty string if not defined.",
+          "type": "null"
+        },
+        "minimum": {
+          "description": "????",
+          "type": "number"
+        },
+        "maximum": {
+          "description": "????",
+          "type": "number"
+        },
+        "relation_to_output": {
+          "description": "????",
+          "type": "null"
+        },
+        "static_value": {
+          "description": "Value to default to in the case of this variable not being perturbed in a datapoint",
+          "type": "number"
+        },
+        "uuid": {
+          "description": "Variable UUID to link against in the .osd file",
+          "type": "string"
+        },
+        "version_uuid": {
+          "description": "???",
+          "type": "string"
+        },
+        "variable": {
+          "description": "????",
+          "type": "boolean"
+        },
+        "uncertainty_description": {
+          "$ref": "#/definitions/Uncertainty Definition"
+        },
+        "workflow_index": {
+          "description": "???????",
+          "type": "number"
+        },
+        "machine_name": {
+          "description": "???????",
+          "type": "string"
+        }
+      },
+      "required": [
+        "argument",
+        "display_name",
+        "variable_type",
+        "units",
+        "static_value",
+        "uuid",
+        "version_uuid",
+        "uncertainty_description",
+        "machine_name"
+      ],
+      "additionalProperties": false
+    },
+    "Problem": {
+      "title": "problem",
+      "description": "Defines procedure for running the analysis",
+      "type": "object",
+      "properties": {
+        "analysis_type": {
+          "description": "Type of analysis to be run, e.g. LHS or nsga2",
+          "type": "string",
+          "oneof": [
+            "morris",
+            "lhs",
+            "rgenound",
+            "nsga_nrel",
+            "spea",
+            "sequential_search",
+            "single_run",
+            "batch_run",
+            "doe",
+            "repeat_run",
+            "optim",
+            "baseline_perturbation",
+            "preflight"
+          ]
+        },
+        "algorithm": {
+          "$ref": "#/definitions/Algorithm Attributes"
+        },
+        "workflow": {
+          "$ref": "#/definitions/Workflow"
+        },
+        "random_seed": {
+          "description": "Random seed to set server to for the execution of the OSA file",
+          "type": "number"
+        },
+        "name": {
+          "description": "??????",
+          "type": "string"
+        },
+        "design_alternatives": {
+          "description": "Array of design alternative names and descriptions",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Design Alternative"
+          }
+        }
+      },
+      "required": [
+        "analysis_type",
+        "algorithm",
+        "workflow",
+        "random_seed"
+      ],
+      "additionalProperties": false
+    },
+    "Output Array": {
+      "description": "Array of objects which define user-desired outputs from the analysis ",
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/Output"
+      }
+    },
+    "Workflow": {
+      "description": "Definition of measures to be applied in the analysis",
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/Workflow Step"
+      }
+    },
+    "Seed Object": {
+      "title": "seed",
+      "description": "Seed osm or idf file for default use",
+      "type": "object",
+      "properties": {
+        "file_type": {
+          "description": "Accepted values of 'osm' and 'idf'",
+          "type": "string",
+          "oneonf": [
+            "osm",
+            "idf"
+          ]
+        },
+        "path": {
+          "description": "Path to the seed file from the project directory",
+          "type": "string"
+        }
+      },
+      "required": [
+        "file_type"
+      ],
+      "additionalProperties": false
+    },
+    "Weather File": {
+      "title": "weather_file",
+      "description": "Weather file for default use in the simulation",
+      "type": "object",
+      "properties": {
+        "file_type": {
+          "description": "Weather file type, e.g. TMY3",
+          "type": "string"
+        },
+        "path": {
+          "description": "Path to weather file from the project directory",
+          "type": "string"
+        }
+      },
+      "required": [
+        "file_type",
+        "path"
+      ],
+      "additionalProperties": false
+    },
+    "Analysis": {
+      "title": "analysis",
+      "description": "Analysis object",
+      "type": "object",
+      "properties": {
+        "display_name": {
+          "description": "User facing string, spaces & capitals allowed",
+          "type": "string"
+        },
+        "name": {
+          "description": "snake_cassed machine name",
+          "type": "string"
+        },
+        "output_variables": {
+          "$ref": "#/definitions/Output Array"
+        },
+        "problem": {
+          "$ref": "#/definitions/Problem"
+        },
+        "seed": {
+          "$ref": "#/definitions/Seed Object"
+        },
+        "weather_file": {
+          "$ref": "#/definitions/Weather File"
+        },
+        "file_format_version": {
+          "description": "1.0",
+          "type": "number"
+        },
+        "_id": {
+          "description": "UUID of the OSA file",
+          "type": "string"
+        },
+        "uuid": {
+          "description": "UUID of the OSA file",
+          "type": "string"
+        },
+        "project_id": {
+          "description": "?????",
+          "type": "string"
+        }
+      },
+      "required": [
+        "output_variables",
+        "problem",
+        "seed",
+        "weather_file",
+        "_id",
+        "uuid",
+        "project_id"
+      ],
+      "additionalProperties": false
+    },
+    "Argument Array": {
+      "description": "Array of fixed inputs for the measure",
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/Argument"
+      }
+    },
+    "Variable Array": {
+      "description": "Array of variable inputs for the measure",
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/Variable"
+      }
+    },
+    "Distribution Definition": {
+      "title": "attributes",
+      "description": "Array of attributes defining the distribution type properties",
+      "type": "array",
+      "items": {
+        "title": "Distribution Attributes",
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "value": {
+            "type": [
+              "array",
+              "string",
+              "number",
+              "boolean"
+            ]
+          }
+        },
+        "required": [
+          "name",
+          "value"
+        ],
+        "additionalProperties": false
+      }
+    }
+  }
 }
