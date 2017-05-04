@@ -854,7 +854,7 @@ module OpenStudio
           group_index = 1
 
           rows.each_with_index do |row, icnt|
-            next if icnt < 2 # skip the first 3 lines of the file
+            next if icnt < 1 # skip the first 3 lines of the file
 
             var = {}
             var['display_name'] = row[:display_name]
