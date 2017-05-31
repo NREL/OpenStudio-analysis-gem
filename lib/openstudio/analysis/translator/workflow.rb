@@ -47,6 +47,7 @@ module OpenStudio
             # Measures can have no arguments -- make sure to catch it
             if @osa[:problem][:workflow][i][:arguments]
               @osa[:problem][:workflow][i][:arguments].each do |arg|
+                next if arg[:value].nil?
                 step_hash[:arguments][arg[:name].to_sym] = arg[:value]
               end
             end
