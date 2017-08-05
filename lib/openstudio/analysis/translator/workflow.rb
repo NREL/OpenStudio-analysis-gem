@@ -33,11 +33,11 @@ module OpenStudio
           @measure_paths = options[:measure_paths] ? options[:measure_paths] : []
 
           # Initialize static inputs from the OSA
-          @seed_file = File.basename @osa[:seed][:path]
+          @seed_file = File.basename(@osa[:seed][:path])
           if @options[:seed]
             @seed_file = @options[:seed]
           end
-          @weather_file = File.basename @osa[:weather_file][:path]
+          @weather_file = File.basename(@osa[:weather_file][:path])
           @osa_id = @osa[:_id]
           @steps = []
           @osa[:problem][:workflow].each_with_index do |step, i|
@@ -92,8 +92,16 @@ module OpenStudio
           end
 
           # Overwrite the seed and weather files if they are present in the datapoint.json
-          weather_file = osd[:weather_file] != '' ? osd[:weather_file] : @weather_file
-          seed_file = osd[:seed] != '' ? osd[:seed] : @seed_file
+          if (osd[:weather_file] != '') && (!osd[:weather_file].nil?)
+            weather_file = osd[:weather_file]
+          else
+            weather_file = @weather_file
+          end
+          if (osd[:seed] != '') && (!osd[:seed].nil?)
+            seed_file = osd[:seed]
+          else
+            seed_file = @seed_file
+          end
 
           # Save the OSW hash
           osw = {}
