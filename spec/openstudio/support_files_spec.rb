@@ -1,4 +1,4 @@
-require 'spec_helper'
+require_relative './../spec_helper'
 
 describe OpenStudio::Analysis::SupportFiles do
   before :all do
@@ -14,7 +14,7 @@ describe OpenStudio::Analysis::SupportFiles do
     expect(@s.files.first[:file]).to eq f
 
     # add some other items
-    @s.add('spec/files/worker_init/second_file.rb')
+    @s.add('spec/files/worker_init/second_file.sh')
 
     expect(@s.size).to eq 2
     @s.each do |f|
@@ -23,7 +23,7 @@ describe OpenStudio::Analysis::SupportFiles do
   end
 
   it 'should remove existing items' do
-    f = 'spec/files/worker_init/second_file.rb'
+    f = 'spec/files/worker_init/second_file.sh'
     @s.add(f)
 
     @s.clear
@@ -31,7 +31,7 @@ describe OpenStudio::Analysis::SupportFiles do
   end
 
   it 'should only add existing files' do
-    f = 'spec/files/worker_init/second_file.rb'
+    f = 'spec/files/worker_init/second_file.sh'
     @s.add(f)
     @s.add(f)
 

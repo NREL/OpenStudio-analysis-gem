@@ -349,13 +349,13 @@ module OpenStudio
           @worker_inits.each_with_index do |f, index|
             ordered_file_name = "#{index.to_s.rjust(2, '0')}_#{File.basename(f[:file])}"
             puts "  Adding #{f[:file]} as #{ordered_file_name}"
-            zf.add(f[:file].sub(f[:file], "./lib/worker_initialize/#{ordered_file_name}"), f[:file])
+            zf.add(f[:file].sub(f[:file], "./scripts/worker_initialization//#{ordered_file_name}"), f[:file])
 
             if f[:metadata][:args]
               arg_file = "#{File.basename(ordered_file_name, '.*')}.args"
               file = Tempfile.new('arg')
               file.write(f[:metadata][:args])
-              zf.add("./lib/worker_initialize/#{arg_file}", file)
+              zf.add("./scripts/worker_initialization/#{arg_file}", file)
               file.close
             end
           end
@@ -364,13 +364,13 @@ module OpenStudio
           @worker_finalizes.each_with_index do |f, index|
             ordered_file_name = "#{index.to_s.rjust(2, '0')}_#{File.basename(f[:file])}"
             puts "  Adding #{f[:file]} as #{ordered_file_name}"
-            zf.add(f[:file].sub(f[:file], "./lib/worker_finalize/#{ordered_file_name}"), f[:file])
+            zf.add(f[:file].sub(f[:file], "./scripts/worker_finalization/#{ordered_file_name}"), f[:file])
 
             if f[:metadata][:args]
               arg_file = "#{File.basename(ordered_file_name, '.*')}.args"
               file = Tempfile.new('arg')
               file.write(f[:metadata][:args])
-              zf.add("./lib/worker_finalize/#{arg_file}", file)
+              zf.add("./scripts/worker_finalization/#{arg_file}", file)
               file.close
             end
           end
