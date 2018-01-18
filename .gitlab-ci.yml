@@ -1,0 +1,20 @@
+test:windows:
+  stage: test
+  tags:
+    - windows
+  script:
+    - bundle exec rake
+
+test:mac:
+  stage: test
+  tags:
+    - mac
+  script:
+    - bundle exec rake
+
+test:ubuntu:
+  stage: test
+  tags:
+    - ubuntu
+  script:
+    - bundle exec rake
