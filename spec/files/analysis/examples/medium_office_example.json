@@ -1668,6 +1668,7 @@
     "weather_file": {
       "file_type": "EPW",
       "path": "./weather/partial_weather.epw"
-    }
+    },
+	"uuid": "a-unique-id"
   }
 }

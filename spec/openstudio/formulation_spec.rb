@@ -38,7 +38,15 @@ describe OpenStudio::Analysis::Formulation do
     h = a.to_hash
     # expect(h[:workflow].empty?).not_to eq true
   end
-
+  
+  it 'should read from windows fqp' do
+    OpenStudio::Analysis.measure_paths << 'spec/files/measures'
+    a = OpenStudio::Analysis.create('workflow 2')
+    file = File.expand_path(File.join('spec/files/analysis/examples/medium_office_workflow.json'))
+    file = file.gsub("/", "\\") if Gem.win_platform?
+    expect(a.workflow = OpenStudio::Analysis::Workflow.from_file(file)).not_to be nil
+  end
+  
   it 'should create a save an empty analysis' do
     a = OpenStudio::Analysis.create('workflow')
     run_dir = 'spec/files/export/workflow'
