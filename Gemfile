@@ -8,7 +8,7 @@ gem 'colored', '~> 1.2'
 
 group :test do
   # Don't install coveralls on window because requires devkit for json
-  if RUBY_PLATFORM =~ /linux/	
+  if !Gem.win_platform?
     gem 'coveralls', require: false
   end
   gem 'rspec', '~> 3.4'

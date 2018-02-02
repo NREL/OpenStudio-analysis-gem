@@ -43,8 +43,7 @@ describe OpenStudio::Analysis::Formulation do
     OpenStudio::Analysis.measure_paths << 'spec/files/measures'
     a = OpenStudio::Analysis.create('workflow 2')
     file = File.expand_path(File.join('spec/files/analysis/examples/medium_office_workflow.json'))
-	file = file.gsub("/", "\\")
-	puts file
+    file = file.gsub("/", "\\") if Gem.win_platform?
     expect(a.workflow = OpenStudio::Analysis::Workflow.from_file(file)).not_to be nil
   end
   
