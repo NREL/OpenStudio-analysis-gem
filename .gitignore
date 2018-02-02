@@ -5,6 +5,7 @@
 *.swp
 *.gem
 ~$*
+.rubocop-https*
 tmp/*
 .yardoc
 doc/

@@ -5,4 +5,4 @@ AllCops:
     - 'spec/files/worker_init/*'
 
 inherit_from:
-  - https://raw.githubusercontent.com/NREL/OpenStudio-resources/add-styles-linters/styles/rubocop.yml
+  - https://raw.githubusercontent.com/NREL/OpenStudio-resources/develop/styles/rubocop.yml

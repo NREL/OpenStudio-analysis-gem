@@ -27,7 +27,7 @@ task default: 'spec:unit'
 require 'rubocop/rake_task'
 desc 'Run RuboCop on the lib directory'
 RuboCop::RakeTask.new(:rubocop) do |task|
-  task.options = ['--no-color', '--out=rubocop-results.xml']
+  task.options = ['--no-color', '--out=rubocop-results.xml', '--format', 'simple']
   task.formatters = ['RuboCop::Formatter::CheckstyleFormatter']
   task.requires = ['rubocop/formatter/checkstyle_formatter']
   # don't abort rake on failure
