@@ -92,12 +92,12 @@ module OpenStudio
           end
 
           # Overwrite the seed and weather files if they are present in the datapoint.json
-          if (osd[:weather_file] != '') && (!osd[:weather_file].nil?)
+          if (osd[:weather_file] != '') && !osd[:weather_file].nil?
             weather_file = osd[:weather_file]
           else
             weather_file = @weather_file
           end
-          if (osd[:seed] != '') && (!osd[:seed].nil?)
+          if (osd[:seed] != '') && !osd[:seed].nil?
             seed_file = osd[:seed]
           else
             seed_file = @seed_file
@@ -127,7 +127,7 @@ module OpenStudio
           osd_filename_array.each do |osd_file|
             begin
               r << process_datapoint(osd_file)
-            rescue => e
+            rescue StandardError => e
               r << nil
               puts "Warning: Failed to process datapoint #{osd_file} with error #{e.message} in #{e.backtrace.join('\n')}"
             end

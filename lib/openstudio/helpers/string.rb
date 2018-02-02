@@ -15,9 +15,9 @@ def typecast_value(variable_type, value, inspect_string = false)
         if !!value == value
           out_value = value
         else
-          if value.downcase == 'true'
+          if value.casecmp('true').zero?
             out_value = true
-          elsif value.downcase == 'false'
+          elsif value.casecmp('false').zero?
             out_value = false
           else
             raise "Can't cast to a bool from a value of '#{value}' of class '#{value.class}'"

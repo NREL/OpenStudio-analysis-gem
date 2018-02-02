@@ -46,7 +46,7 @@ module OpenStudio
           @name = nil
           @analysis_name = nil
           @settings = {}
-          @weather_files = [] # remove this from excel!
+          @weather_files = []
           @weather_paths = []
           @models = []
           @other_files = []
@@ -210,7 +210,7 @@ module OpenStudio
         # @append_model_name [Boolean] Append the name of the seed model to the display name
         # @return [Object] An OpenStudio::Analysis
         def analysis(seed_model = nil, append_model_name = false)
-          raise 'There are no seed models defined in the excel file. Please add one.' if @models.size == 0
+          raise 'There are no seed models defined in the excel file. Please add one.' if @models.empty?
           raise "There are more than one seed models defined in the excel file. Call 'analyses' to return the array" if @models.size > 1 && seed_model.nil?
 
           seed_model = @models.first if seed_model.nil?
@@ -426,7 +426,7 @@ module OpenStudio
 
             if b_settings
               @version = row[1].chomp if row[0] == 'Spreadsheet Version'
-              @settings[(row[0].to_underscore).to_s] = row[1] if row[0]
+              @settings[row[0].to_underscore.to_s] = row[1] if row[0]
               if @settings['cluster_name']
                 @settings['cluster_name'] = @settings['cluster_name'].to_underscore
               end
@@ -463,7 +463,7 @@ module OpenStudio
                   @measure_paths << File.expand_path(File.join(@root_path, tmp_filepath))
                 end
               end
-              @run_setup[(row[0].to_underscore).to_s] = row[1] if row[0]
+              @run_setup[row[0].to_underscore.to_s] = row[1] if row[0]
 
               # type cast
               if @run_setup['allow_multiple_jobs']
@@ -476,14 +476,14 @@ module OpenStudio
               if row[0]
                 v = row[1]
                 v.to_i if v % 1 == 0
-                @problem[(row[0].to_underscore).to_s] = v
+                @problem[row[0].to_underscore.to_s] = v
               end
 
             elsif b_algorithm_setup
               if row[0] && !row[0].empty?
                 v = row[1]
                 v = v.to_i if v % 1 == 0
-                @algorithm[(row[0].to_underscore).to_s] = v
+                @algorithm[row[0].to_underscore.to_s] = v
               end
             elsif b_weather_files
               if row[0] == 'Weather File'
@@ -501,7 +501,7 @@ module OpenStudio
                 tmp_m_name = SecureRandom.uuid
               end
               # Only add models if the row is flagged
-              if row[0] && row[0].downcase == 'model'
+              if row[0] && row[0].casecmp('model').zero?
                 model_path = row[3]
                 unless (Pathname.new model_path).absolute?
                   model_path = File.expand_path(File.join(@root_path, model_path))
@@ -688,7 +688,7 @@ module OpenStudio
                                                    relation_to_eui: /typical\svar\sto\seui\srelationship/i,
                                                    clean: true)
             end
-          rescue => e
+          rescue StandardError => e
             raise "Unable to parse spreadsheet #{@xls_filename} with version #{@version} due to error: #{e.message}"
           end
 

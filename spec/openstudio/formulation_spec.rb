@@ -10,12 +10,12 @@ describe OpenStudio::Analysis::Formulation do
 
   it 'should add measure paths' do
     expect(OpenStudio::Analysis.measure_paths).to eq ['./measures']
-    OpenStudio::Analysis.measure_paths = %w(a b)
-    expect(OpenStudio::Analysis.measure_paths).to eq %w(a b)
+    OpenStudio::Analysis.measure_paths = ['a', 'b']
+    expect(OpenStudio::Analysis.measure_paths).to eq ['a', 'b']
 
     # append a measure apth
     OpenStudio::Analysis.measure_paths << 'c'
-    expect(OpenStudio::Analysis.measure_paths).to eq %w(a b c)
+    expect(OpenStudio::Analysis.measure_paths).to eq ['a', 'b', 'c']
   end
 
   it 'should have a workflow object' do
@@ -38,15 +38,15 @@ describe OpenStudio::Analysis::Formulation do
     h = a.to_hash
     # expect(h[:workflow].empty?).not_to eq true
   end
-  
+
   it 'should read from windows fqp' do
     OpenStudio::Analysis.measure_paths << 'spec/files/measures'
     a = OpenStudio::Analysis.create('workflow 2')
     file = File.expand_path(File.join('spec/files/analysis/examples/medium_office_workflow.json'))
-    file = file.gsub("/", "\\") if Gem.win_platform?
+    file = file.tr('/', '\\') if Gem.win_platform?
     expect(a.workflow = OpenStudio::Analysis::Workflow.from_file(file)).not_to be nil
   end
-  
+
   it 'should create a save an empty analysis' do
     a = OpenStudio::Analysis.create('workflow')
     run_dir = 'spec/files/export/workflow'

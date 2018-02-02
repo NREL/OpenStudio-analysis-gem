@@ -13,7 +13,7 @@ module OpenStudio
       def set_attribute(attribute_name, attribute_value)
         @attributes[attribute_name] = attribute_value
         begin
-          if Float(attribute_value) != nil
+          unless Float(attribute_value).nil?
             if Float(attribute_value).abs >= Float('1.0e+19')
               raise "ERROR: Attribute `#{attribute_name}` is greater than 1E19. This may cause failures."
             end

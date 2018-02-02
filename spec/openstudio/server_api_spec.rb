@@ -13,14 +13,14 @@ describe OpenStudio::Analysis::ServerApi do
     it 'should set the default host to localhost' do
       expect(@api.hostname).to eq(@host)
     end
-	
-	#it 'should load a new analysis' do
-	#  file = File.expand_path(File.join('spec/files/analysis/examples/medium_office_example.json'))
-	#  #file = file.gsub("/", "\\")
-	#  options = { formulation_file: file}
-	#  # puts options
-	#  @api.new_analysis('a-project-id', options)
-	#end
+
+    # it 'should load a new analysis' do
+    #  file = File.expand_path(File.join('spec/files/analysis/examples/medium_office_example.json'))
+    #  #file = file.gsub("/", "\\")
+    #  options = { formulation_file: file}
+    #  # puts options
+    #  @api.new_analysis('a-project-id', options)
+    # end
   end
 
   context 'test not localhost' do

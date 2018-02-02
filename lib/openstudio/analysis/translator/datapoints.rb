@@ -155,7 +155,7 @@ module OpenStudio
         # @append_model_name [Boolean] Append the name of the seed model to the display name
         # @return [Object] An OpenStudio::Analysis
         def analysis(seed_model = nil, append_model_name = false)
-          raise 'There are no seed models defined in the excel file. Please add one.' if @models.size == 0
+          raise 'There are no seed models defined in the excel file. Please add one.' if @models.empty?
           raise 'There are more than one seed models defined in the excel file. This is not supported by the CSV Translator.' if @models.size > 1 && seed_model.nil?
 
           seed_model = @models.first if seed_model.nil?
@@ -315,7 +315,7 @@ module OpenStudio
 
         def parse_csv_measures(measure_rows)
           # Build metadata required for parsing
-          measures = measure_rows[0].uniq.select { |measure| !measure.nil? }.map(&:to_sym)
+          measures = measure_rows[0].uniq.reject(&:nil?).map(&:to_sym)
           measure_map = {}
           measure_var_list = []
           measures.each do |measure|
@@ -383,12 +383,12 @@ module OpenStudio
               var_hash[:distribution] = {}
               case var_hash[:type].downcase
                 when 'bool', 'boolean'
-                  var_hash[:distribution][:values] = (3..(measure_rows.length - 1)).map { |value| measure_rows[value.to_i][measure_map[measure][var]].to_s.downcase == 'true' }
+                  var_hash[:distribution][:values] = (3..(measure_rows.length - 1)).map { |value| measure_rows[value.to_i][measure_map[measure][var]].to_s.casecmp('true').zero? }
                   var_hash[:distribution][:maximum] = true
                   var_hash[:distribution][:minimum] = false
                   var_hash[:distribution][:mode] = var_hash[:distribution][:values].group_by { |i| i }.max { |x, y| x[1].length <=> y[1].length }[0]
                 when 'choice', 'string'
-                  var_hash[:distribution][:values] = (3..(measure_rows.length) - 1).map { |value| measure_rows[value.to_i][measure_map[measure][var]].to_s }
+                  var_hash[:distribution][:values] = (3..measure_rows.length - 1).map { |value| measure_rows[value.to_i][measure_map[measure][var]].to_s }
                   var_hash[:distribution][:minimum] = var_hash[:distribution][:values].min
                   var_hash[:distribution][:maximum] = var_hash[:distribution][:values].max
                   var_hash[:distribution][:mode] = var_hash[:distribution][:values].group_by { |i| i }.max { |x, y| x[1].length <=> y[1].length }[0]

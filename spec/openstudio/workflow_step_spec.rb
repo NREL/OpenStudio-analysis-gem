@@ -13,7 +13,8 @@ describe OpenStudio::Analysis::WorkflowStep do
       'my_instance',
       'my instance display name',
       h,
-      JSON.parse(File.read(h), symbolize_names: true))
+      JSON.parse(File.read(h), symbolize_names: true)
+    )
     puts s
   end
 
@@ -23,7 +24,8 @@ describe OpenStudio::Analysis::WorkflowStep do
       'my_instance',
       'my instance display name',
       h,
-      JSON.parse(File.read(h), symbolize_names: true))
+      JSON.parse(File.read(h), symbolize_names: true)
+    )
 
     expect(measure.name).to eq 'my_instance'
     v = {
@@ -31,7 +33,7 @@ describe OpenStudio::Analysis::WorkflowStep do
       minimum: 'low string',
       maximum: 'high string',
       mean: 'middle string',
-      values: %w(a b c d),
+      values: ['a', 'b', 'c', 'd'],
       weights: [0.25, 0.25, 0.25, 0.25]
     }
     r = measure.make_variable('cooling_sch', 'my variable', v)
@@ -44,7 +46,8 @@ describe OpenStudio::Analysis::WorkflowStep do
       'my_instance',
       'my instance display name',
       h,
-      JSON.parse(File.read(h), symbolize_names: true))
+      JSON.parse(File.read(h), symbolize_names: true)
+    )
 
     expect(measure.name).to eq 'my_instance'
     v = {
@@ -72,7 +75,8 @@ describe OpenStudio::Analysis::WorkflowStep do
       'my_instance',
       'my instance display name',
       h,
-      JSON.parse(File.read(h), symbolize_names: true))
+      JSON.parse(File.read(h), symbolize_names: true)
+    )
 
     expect(measure.name).to eq 'my_instance'
     v = {
@@ -97,7 +101,8 @@ describe OpenStudio::Analysis::WorkflowStep do
       'my_instance',
       'my instance display name',
       h,
-      JSON.parse(File.read(h), symbolize_names: true))
+      JSON.parse(File.read(h), symbolize_names: true)
+    )
 
     expect(measure.name).to eq 'my_instance'
     v = {

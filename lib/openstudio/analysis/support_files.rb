@@ -12,6 +12,11 @@ module OpenStudio
         @files = []
       end
 
+      # Check if the array is empty
+      def empty?
+        @files.empty?
+      end
+
       # Add a file to the support file list
       #
       # @param path_or_filename [String] Full path of the file to be added.

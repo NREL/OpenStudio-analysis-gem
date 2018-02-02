@@ -68,15 +68,9 @@ There are two ways to create an OpenStudio Analysis description:
     
 * Server API
 
-    ```
-    
-    
-    ```
-
-
 ## Testing
 
-This gem used RSpec for testing.  To test simply run `rspec` at the command line.
+This gem used RSpec for testing.  To test simply run `bundle exec rspec` at the command line.
 
 # Releasing
 

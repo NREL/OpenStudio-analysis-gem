@@ -6,16 +6,16 @@ module OpenStudio
       attr_reader :hostname
 
       # Define set of anlaysis methods require batch_run to be queued after them
-      BATCH_RUN_METHODS = %w(lhs preflight single_run repeat_run doe diag baseline_perturbation batch_datapoints).freeze
+      BATCH_RUN_METHODS = ['lhs', 'preflight', 'single_run', 'repeat_run', 'doe', 'diag', 'baseline_perturbation', 'batch_datapoints'].freeze
 
       def initialize(options = {})
         defaults = { hostname: 'http://localhost:8080', log_path: File.expand_path('~/os_server_api.log') }
         options = defaults.merge(options)
-      	if ENV['OS_SERVER_LOG_PATH']
+        if ENV['OS_SERVER_LOG_PATH']
           @logger = ::Logger.new(ENV['OS_SERVER_LOG_PATH'] + '/os_server_api.log')
         else
           @logger = ::Logger.new(options[:log_path])
-	      end
+        end
 
         @hostname = options[:hostname]
 
@@ -209,11 +209,8 @@ module OpenStudio
             j = JSON.parse resp.body, symbolize_names: true
             status = j if j
           end
-
         rescue Faraday::ConnectionFailed
-
         rescue Net::ReadTimeout
-
         end
 
         status
@@ -546,7 +543,7 @@ module OpenStudio
         upload = conn.load_analysis 'dencity_analysis.json'
         begin
           upload_response = upload.push
-        rescue => e
+        rescue StandardError => e
           runner.registerError("Upload failure: #{e.message} in #{e.backtrace.join('/n')}")
         else
           if NoMethodError == upload_response.class

@@ -10,12 +10,12 @@ require 'ci/reporter/rake/rspec'
 require 'bundler/gem_tasks'
 
 RSpec::Core::RakeTask.new('spec:unit') do |spec|
-  spec.rspec_opts = %w(--format progress)
+  spec.rspec_opts = ['--format', 'progress']
   spec.pattern = FileList['spec/openstudio/**/*_spec.rb']
 end
 
 RSpec::Core::RakeTask.new('spec:integration') do |spec|
-  spec.rspec_opts = %w(--format progress)
+  spec.rspec_opts = ['--format', 'progress']
   spec.pattern = FileList['spec/integration/**/*_spec.rb']
 end
 

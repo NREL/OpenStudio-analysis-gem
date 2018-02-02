@@ -64,7 +64,7 @@ describe OpenStudio::Analysis::Workflow do
     @w.add_measure_from_path('thermostat_2', 'thermostat 2', p)
 
     m = @w.find_measure('thermostat_2')
-    expect(m.argument_names).to eq %w(__SKIP__ zones cooling_sch heating_sch material_cost)
+    expect(m.argument_names).to eq ['__SKIP__', 'zones', 'cooling_sch', 'heating_sch', 'material_cost']
 
     d = {
       type: 'uniform',

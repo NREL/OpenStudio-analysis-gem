@@ -164,9 +164,9 @@ module OpenStudio
           wf = nil
           if @weather_file[:file]
             wf = @weather_file
-          elsif @weather_files.size > 0
+          elsif !@weather_files.empty?
             # get the first EPW file (not the first file)
-            wf = @weather_files.find { |w| File.extname(w[:file]).downcase == '.epw' }
+            wf = @weather_files.find { |w| File.extname(w[:file]).casecmp('.epw').zero? }
           end
 
           if wf
