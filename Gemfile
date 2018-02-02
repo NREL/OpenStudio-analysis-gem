@@ -7,7 +7,10 @@ gem 'dencity'
 gem 'colored', '~> 1.2'
 
 group :test do
-  gem 'coveralls', require: false
+  # Don't install coveralls on window because requires devkit for json
+  if RUBY_PLATFORM =~ /linux/	
+    gem 'coveralls', require: false
+  end
   gem 'rspec', '~> 3.4'
   gem 'ci_reporter_rspec'
   gem 'rubocop', '~> 0.31'

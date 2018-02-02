@@ -1,5 +1,7 @@
-require 'coveralls'
-Coveralls.wear!
+if RUBY_PLATFORM =~ /linux/
+  require 'coveralls'
+  Coveralls.wear!
+end
 
 $LOAD_PATH.unshift(File.dirname(__FILE__))
 $LOAD_PATH.unshift(File.join(File.dirname(__FILE__), '..', 'lib'))
