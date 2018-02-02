@@ -340,11 +340,12 @@ module OpenStudio
         [downloaded, file_path_and_name]
       end
 
-      def download_datapoint_reports(datapoint_id, save_directory = '.')
+      # http://localhost:3000/data_points/ff857845-a4c6-4eb9-a52b-cbc6a41976d5/download_result_file?filename=
+      def download_datapoint_report(datapoint_id, report_name, save_directory = '.')
         downloaded = false
         file_path_and_name = nil
 
-        response = @conn.get "/data_points/#{datapoint_id}/download_reports"
+        response = @conn.get "/data_points/#{datapoint_id}/download_result_file?filename=#{report_name}"
         if response.status == 200
           filename = response['content-disposition'].match(/filename=(\"?)(.+)\1/)[2]
           downloaded = true
@@ -354,16 +355,6 @@ module OpenStudio
         end
 
         [downloaded, file_path_and_name]
-      end
-
-      def download_datapoints_reports(analysis_id, save_directory = '.')
-        # get the list of all the datapoints
-        dps = get_datapoint_status(analysis_id)
-        dps.each do |dp|
-          if dp[:status] == 'completed'
-            download_datapoint_reports(dp[:_id], save_directory)
-          end
-        end
       end
 
       def download_datapoint_jsons(analysis_id, save_directory = '.')
