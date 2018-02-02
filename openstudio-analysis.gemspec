@@ -14,7 +14,7 @@ Gem::Specification.new do |s|
   s.description = 'Basic classes for generating the files needed for OpenStudio-Server'
   s.license = 'LGPL'
 
-  s.required_ruby_version = '>= 2.0'
+  s.required_ruby_version = '>= 2.1'
   s.required_rubygems_version = '>= 1.3.6'
 
   s.files         = `git ls-files -z`.split("\x0")
