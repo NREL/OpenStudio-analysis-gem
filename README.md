@@ -68,15 +68,21 @@ There are two ways to create an OpenStudio Analysis description:
     
 * Server API
 
-    ```
-    
-    
-    ```
-
-
 ## Testing
 
-This gem used RSpec for testing.  To test simply run `rspec` at the command line.
+This gem used RSpec for testing.  To test simply run `bundle exec rspec` at the command line.
+
+# Releasing
+
+Follow the steps below when releasing a new version:
+
+1. Update /lib/openstudio/analysis/version.rb to the next version. Make sure to follow semantic versioning.
+2. Add changes to the CHANGELOG.md.
+3. Run rubocop and make sure code meets coding standards.
+4. Push release candidate on a branch.
+5. Create a pull request to develop. Once the tests pass, merge into develop. 
+6. Create a pull request to master. Once tests pass, then merge into master.
+7. Checkout master and run `rake release`
 
 # Todos
 

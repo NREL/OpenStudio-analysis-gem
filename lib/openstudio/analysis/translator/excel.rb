@@ -1,3 +1,38 @@
+# *******************************************************************************
+# OpenStudio(R), Copyright (c) 2008-2018, Alliance for Sustainable Energy, LLC.
+# All rights reserved.
+# Redistribution and use in source and binary forms, with or without
+# modification, are permitted provided that the following conditions are met:
+#
+# (1) Redistributions of source code must retain the above copyright notice,
+# this list of conditions and the following disclaimer.
+#
+# (2) Redistributions in binary form must reproduce the above copyright notice,
+# this list of conditions and the following disclaimer in the documentation
+# and/or other materials provided with the distribution.
+#
+# (3) Neither the name of the copyright holder nor the names of any contributors
+# may be used to endorse or promote products derived from this software without
+# specific prior written permission from the respective party.
+#
+# (4) Other than as required in clauses (1) and (2), distributions in any form
+# of modifications or other derivative works may not use the "OpenStudio"
+# trademark, "OS", "os", or any other confusingly similar designation without
+# specific prior written permission from Alliance for Sustainable Energy, LLC.
+#
+# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+# AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+# IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+# DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER, THE UNITED STATES
+# GOVERNMENT, OR ANY CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT,
+# INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+# LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
+# PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+# LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+# NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
+# EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+# *******************************************************************************
+
 module OpenStudio
   module Analysis
     module Translator
@@ -46,7 +81,7 @@ module OpenStudio
           @name = nil
           @analysis_name = nil
           @settings = {}
-          @weather_files = [] # remove this from excel!
+          @weather_files = []
           @weather_paths = []
           @models = []
           @other_files = []
@@ -210,7 +245,7 @@ module OpenStudio
         # @append_model_name [Boolean] Append the name of the seed model to the display name
         # @return [Object] An OpenStudio::Analysis
         def analysis(seed_model = nil, append_model_name = false)
-          raise 'There are no seed models defined in the excel file. Please add one.' if @models.size == 0
+          raise 'There are no seed models defined in the excel file. Please add one.' if @models.empty?
           raise "There are more than one seed models defined in the excel file. Call 'analyses' to return the array" if @models.size > 1 && seed_model.nil?
 
           seed_model = @models.first if seed_model.nil?
@@ -426,7 +461,7 @@ module OpenStudio
 
             if b_settings
               @version = row[1].chomp if row[0] == 'Spreadsheet Version'
-              @settings[(row[0].to_underscore).to_s] = row[1] if row[0]
+              @settings[row[0].to_underscore.to_s] = row[1] if row[0]
               if @settings['cluster_name']
                 @settings['cluster_name'] = @settings['cluster_name'].to_underscore
               end
@@ -463,7 +498,7 @@ module OpenStudio
                   @measure_paths << File.expand_path(File.join(@root_path, tmp_filepath))
                 end
               end
-              @run_setup[(row[0].to_underscore).to_s] = row[1] if row[0]
+              @run_setup[row[0].to_underscore.to_s] = row[1] if row[0]
 
               # type cast
               if @run_setup['allow_multiple_jobs']
@@ -476,14 +511,14 @@ module OpenStudio
               if row[0]
                 v = row[1]
                 v.to_i if v % 1 == 0
-                @problem[(row[0].to_underscore).to_s] = v
+                @problem[row[0].to_underscore.to_s] = v
               end
 
             elsif b_algorithm_setup
               if row[0] && !row[0].empty?
                 v = row[1]
                 v = v.to_i if v % 1 == 0
-                @algorithm[(row[0].to_underscore).to_s] = v
+                @algorithm[row[0].to_underscore.to_s] = v
               end
             elsif b_weather_files
               if row[0] == 'Weather File'
@@ -501,7 +536,7 @@ module OpenStudio
                 tmp_m_name = SecureRandom.uuid
               end
               # Only add models if the row is flagged
-              if row[0] && row[0].downcase == 'model'
+              if row[0] && row[0].casecmp('model').zero?
                 model_path = row[3]
                 unless (Pathname.new model_path).absolute?
                   model_path = File.expand_path(File.join(@root_path, model_path))
@@ -688,7 +723,7 @@ module OpenStudio
                                                    relation_to_eui: /typical\svar\sto\seui\srelationship/i,
                                                    clean: true)
             end
-          rescue => e
+          rescue StandardError => e
             raise "Unable to parse spreadsheet #{@xls_filename} with version #{@version} due to error: #{e.message}"
           end
 

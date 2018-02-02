@@ -1,3 +1,38 @@
+# *******************************************************************************
+# OpenStudio(R), Copyright (c) 2008-2018, Alliance for Sustainable Energy, LLC.
+# All rights reserved.
+# Redistribution and use in source and binary forms, with or without
+# modification, are permitted provided that the following conditions are met:
+#
+# (1) Redistributions of source code must retain the above copyright notice,
+# this list of conditions and the following disclaimer.
+#
+# (2) Redistributions in binary form must reproduce the above copyright notice,
+# this list of conditions and the following disclaimer in the documentation
+# and/or other materials provided with the distribution.
+#
+# (3) Neither the name of the copyright holder nor the names of any contributors
+# may be used to endorse or promote products derived from this software without
+# specific prior written permission from the respective party.
+#
+# (4) Other than as required in clauses (1) and (2), distributions in any form
+# of modifications or other derivative works may not use the "OpenStudio"
+# trademark, "OS", "os", or any other confusingly similar designation without
+# specific prior written permission from Alliance for Sustainable Energy, LLC.
+#
+# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+# AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+# IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+# DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER, THE UNITED STATES
+# GOVERNMENT, OR ANY CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT,
+# INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+# LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
+# PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+# LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+# NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
+# EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+# *******************************************************************************
+
 module OpenStudio
   module Analysis
     module Translator
@@ -155,7 +190,7 @@ module OpenStudio
         # @append_model_name [Boolean] Append the name of the seed model to the display name
         # @return [Object] An OpenStudio::Analysis
         def analysis(seed_model = nil, append_model_name = false)
-          raise 'There are no seed models defined in the excel file. Please add one.' if @models.size == 0
+          raise 'There are no seed models defined in the excel file. Please add one.' if @models.empty?
           raise 'There are more than one seed models defined in the excel file. This is not supported by the CSV Translator.' if @models.size > 1 && seed_model.nil?
 
           seed_model = @models.first if seed_model.nil?
@@ -315,7 +350,7 @@ module OpenStudio
 
         def parse_csv_measures(measure_rows)
           # Build metadata required for parsing
-          measures = measure_rows[0].uniq.select { |measure| !measure.nil? }.map(&:to_sym)
+          measures = measure_rows[0].uniq.reject(&:nil?).map(&:to_sym)
           measure_map = {}
           measure_var_list = []
           measures.each do |measure|
@@ -383,12 +418,12 @@ module OpenStudio
               var_hash[:distribution] = {}
               case var_hash[:type].downcase
                 when 'bool', 'boolean'
-                  var_hash[:distribution][:values] = (3..(measure_rows.length - 1)).map { |value| measure_rows[value.to_i][measure_map[measure][var]].to_s.downcase == 'true' }
+                  var_hash[:distribution][:values] = (3..(measure_rows.length - 1)).map { |value| measure_rows[value.to_i][measure_map[measure][var]].to_s.casecmp('true').zero? }
                   var_hash[:distribution][:maximum] = true
                   var_hash[:distribution][:minimum] = false
                   var_hash[:distribution][:mode] = var_hash[:distribution][:values].group_by { |i| i }.max { |x, y| x[1].length <=> y[1].length }[0]
                 when 'choice', 'string'
-                  var_hash[:distribution][:values] = (3..(measure_rows.length) - 1).map { |value| measure_rows[value.to_i][measure_map[measure][var]].to_s }
+                  var_hash[:distribution][:values] = (3..measure_rows.length - 1).map { |value| measure_rows[value.to_i][measure_map[measure][var]].to_s }
                   var_hash[:distribution][:minimum] = var_hash[:distribution][:values].min
                   var_hash[:distribution][:maximum] = var_hash[:distribution][:values].max
                   var_hash[:distribution][:mode] = var_hash[:distribution][:values].group_by { |i| i }.max { |x, y| x[1].length <=> y[1].length }[0]

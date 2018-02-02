@@ -1,3 +1,38 @@
+# *******************************************************************************
+# OpenStudio(R), Copyright (c) 2008-2018, Alliance for Sustainable Energy, LLC.
+# All rights reserved.
+# Redistribution and use in source and binary forms, with or without
+# modification, are permitted provided that the following conditions are met:
+#
+# (1) Redistributions of source code must retain the above copyright notice,
+# this list of conditions and the following disclaimer.
+#
+# (2) Redistributions in binary form must reproduce the above copyright notice,
+# this list of conditions and the following disclaimer in the documentation
+# and/or other materials provided with the distribution.
+#
+# (3) Neither the name of the copyright holder nor the names of any contributors
+# may be used to endorse or promote products derived from this software without
+# specific prior written permission from the respective party.
+#
+# (4) Other than as required in clauses (1) and (2), distributions in any form
+# of modifications or other derivative works may not use the "OpenStudio"
+# trademark, "OS", "os", or any other confusingly similar designation without
+# specific prior written permission from Alliance for Sustainable Energy, LLC.
+#
+# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+# AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+# IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+# DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER, THE UNITED STATES
+# GOVERNMENT, OR ANY CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT,
+# INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+# LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
+# PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+# LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+# NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
+# EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+# *******************************************************************************
+
 # Class manages the communication with the server.
 # Presently, this class is simple and stores all information in hashs
 module OpenStudio
@@ -6,16 +41,16 @@ module OpenStudio
       attr_reader :hostname
 
       # Define set of anlaysis methods require batch_run to be queued after them
-      BATCH_RUN_METHODS = %w(lhs preflight single_run repeat_run doe diag baseline_perturbation batch_datapoints).freeze
+      BATCH_RUN_METHODS = ['lhs', 'preflight', 'single_run', 'repeat_run', 'doe', 'diag', 'baseline_perturbation', 'batch_datapoints'].freeze
 
       def initialize(options = {})
         defaults = { hostname: 'http://localhost:8080', log_path: File.expand_path('~/os_server_api.log') }
         options = defaults.merge(options)
-      	if ENV['OS_SERVER_LOG_PATH']
+        if ENV['OS_SERVER_LOG_PATH']
           @logger = ::Logger.new(ENV['OS_SERVER_LOG_PATH'] + '/os_server_api.log')
         else
           @logger = ::Logger.new(options[:log_path])
-	      end
+        end
 
         @hostname = options[:hostname]
 
@@ -209,11 +244,8 @@ module OpenStudio
             j = JSON.parse resp.body, symbolize_names: true
             status = j if j
           end
-
         rescue Faraday::ConnectionFailed
-
         rescue Net::ReadTimeout
-
         end
 
         status
@@ -546,7 +578,7 @@ module OpenStudio
         upload = conn.load_analysis 'dencity_analysis.json'
         begin
           upload_response = upload.push
-        rescue => e
+        rescue StandardError => e
           runner.registerError("Upload failure: #{e.message} in #{e.backtrace.join('/n')}")
         else
           if NoMethodError == upload_response.class
