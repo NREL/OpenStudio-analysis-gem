@@ -1,0 +1,110 @@
+{
+	"$schema": "http://json-schema.org/draft-04/schema#",
+	"description": "JSON Schema of the OpenStudioDatapoint (OSD) json fileformat v0.1",
+	"type": "object",
+	"properties": {
+		"data_point": {
+			"$ref": "#/definitions/data_point"
+		}
+	},
+	"required": [
+		"data_point"
+	],
+	"additionalProperties": false,
+	"definitions": {
+		"set_variable_values": {
+			"title": "set_variable_values",
+			"description": "Set of variable uuids as keys with associated values in the form of bool, string, or numeric",
+			"type": "object",
+			"additionalProperties": {
+				"description": "Variable uuid key with value as the value for the variable in the simulation defined by this file",
+				"type": [
+					"string",
+					"number",
+					"boolean"
+				]
+			}
+		},
+		"data_point": {
+			"title": "Datapoint",
+			"description": "Hash of datapoint attributes",
+			"type": "object",
+			"properties": {
+				"_id": {
+					"description": "UUID of the OSD file",
+					"type": "string"
+				},
+				"analysis_id": {
+					"description": "UUID of the parent OSA file",
+					"type": "string"
+				},
+				"created_at": {
+					"description": "ISO8601 string defining creation date-time",
+					"type": "string"
+				},
+				"download_information": {
+					"description": "?????",
+					"type": "null"
+				},
+				"download_status": {
+					"description": "????",
+					"type": "string"
+				},
+				"internal_ip_address": {
+					"description": "?????",
+					"type": "string"
+				},
+				"ip_address": {
+					"description": "IP address of the worker consuming the OSD file",
+					"type": "string"
+				},
+				"name": {
+					"description": "User facing datapoint name",
+					"type": "string"
+				},
+				"output": {
+					"description": "?????",
+					"type": "null"
+				},
+				"run_end_time": {
+					"description": "ISO8601 date-time when simulation associated with the file was completed",
+					"type": "string"
+				},
+				"run_start_time": {
+					"description": "ISO8601 date-time when the simulation associated with the file was started",
+					"type": "string"
+				},
+				"set_variable_values": {
+					"$ref": "#/definitions/set_variable_values"
+				},
+				"status": {
+					"description": "Current state of the OSD simulation",
+					"type": "string"
+				},
+				"status_message": {
+					"description": "Message associated with the current state of the OSD simulation",
+					"type": "string"
+				},
+				"updated_at": {
+					"description": "ISO8601 datetime at which the OSD file was last updated",
+					"type": "string"
+				},
+				"uuid": {
+					"description": "???? Same as _id",
+					"type": "string"
+				},
+				"variable_values": {
+					"description": "?????",
+					"type": "null"
+				}
+			},
+			"required": [
+				"_id",
+				"analysis_id",
+				"set_variable_values",
+				"uuid"
+			],
+			"additionalProperties": false
+		}
+	}
+}

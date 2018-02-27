@@ -1,5 +1,8 @@
-Encoding:
-  Enabled: false
+AllCops:
+  Exclude:
+    - 'spec/files/measures/**/*'
+    - 'spec/files/measures_second_path/**/*'
+    - 'spec/files/worker_init/*'
 
-LineLength:
-  Max: 150
+inherit_from:
+  - https://raw.githubusercontent.com/NREL/OpenStudio-resources/develop/styles/rubocop.yml

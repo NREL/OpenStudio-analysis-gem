@@ -1,0 +1,809 @@
+{
+  "analysis": {
+    "display_name": "LHS Discrete and Continuous Variables",
+    "name": "lhs_discrete_and_continuous_variables",
+
+    "problem": {
+      "algorithm": {
+        "sample_method": "all_variables",
+        "number_of_samples": 5,
+        "objective_functions": [
+          "standard_report_legacy.total_energy",
+          "standard_report_legacy.total_source_energy"
+        ]
+      },
+      "name": "Problem",
+      "workflow": [
+        {
+          "measure_definition_class_name": "ReduceLightingLoadsByPercentage",
+          "measure_definition_directory": "./measures/ReduceLightingLoadsByPercentage",
+          "measure_definition_display_name": "ReduceLightingLoadsByPercentage",
+          "measure_definition_uuid": "78f00128-4fcd-445e-a6b2-829b31992b6d",
+          "measure_definition_version_uuid": "6a6c33b0-905e-4848-989c-cf76d61cc9e8",
+          "measure_type": "RubyMeasure",
+          "arguments": [
+            {
+              "display_name": "Apply the Measure to a Specific Space Type or to the Entire Model.",
+              "display_name_short": "Apply the Measure to a Specific Space Type or to the Entire Model.",
+              "name": "space_type",
+              "value": "*Entire Building*",
+              "value_type": "choice"
+            },
+            {
+              "display_name": "Increase in Material and Installation Cost for Lighting per Floor Area (%).",
+              "display_name_short": "Increase in Material and Installation Cost for Lighting per Floor Area (%).",
+              "name": "material_and_installation_cost",
+              "value": 150.0,
+              "value_type": "double"
+            },
+            {
+              "display_name": "Increase in Demolition Costs for Lighting per Floor Area (%).",
+              "display_name_short": "Increase in Demolition Costs for Lighting per Floor Area (%).",
+              "name": "demolition_cost",
+              "value": 0.0,
+              "value_type": "double"
+            },
+            {
+              "display_name": "Years Until Costs Start (whole years).",
+              "display_name_short": "Years Until Costs Start (whole years).",
+              "name": "years_until_costs_start",
+              "value": 0,
+              "value_type": "integer"
+            },
+            {
+              "display_name": "Demolition Costs Occur During Initial Construction?",
+              "display_name_short": "Demolition Costs Occur During Initial Construction?",
+              "name": "demo_cost_initial_const",
+              "value": false,
+              "value_type": "bool"
+            },
+            {
+              "display_name": "Expected Life (whole years).",
+              "display_name_short": "Expected Life (whole years).",
+              "name": "expected_life",
+              "value": 15,
+              "value_type": "integer"
+            },
+            {
+              "display_name": "Increase O & M Costs for Lighting per Floor Area (%).",
+              "display_name_short": "Increase O & M Costs for Lighting per Floor Area (%).",
+              "name": "om_cost",
+              "value": 0.0,
+              "value_type": "double"
+            },
+            {
+              "display_name": "O & M Frequency (whole years).",
+              "display_name_short": "O & M Frequency (whole years).",
+              "name": "om_frequency",
+              "value": 1,
+              "value_type": "integer"
+            }
+          ],
+          "display_name": "Reduce Lighting Loads by Percentage",
+          "name": "reduce_lighting_loads_by_percentage",
+          "variables": [
+            {
+              "argument": {
+                "display_name": "LPD Reduction",
+                "display_name_short": "LPD Reduction",
+                "name": "lighting_power_reduction_percent",
+                "value_type": "double"
+              },
+              "display_name": "LPD Reduction",
+              "display_name_short": "LPD Reduction",
+              "maximum": 70.0,
+              "minimum": 0.0,
+              "relation_to_output": "",
+              "static_value": 0.0,
+              "uncertainty_description": {
+                "attributes": [
+                  {
+                    "name": "lower_bounds",
+                    "value": 0.0
+                  },
+                  {
+                    "name": "upper_bounds",
+                    "value": 70.0
+                  },
+                  {
+                    "name": "stddev",
+                    "value": 11.66666667
+                  },
+                  {
+                    "name": "delta_x",
+                    "value": null
+                  },
+                  {
+                    "name": "modes",
+                    "value": 20.0
+                  }
+                ],
+                "type": "triangle_uncertain"
+              },
+              "units": "",
+              "value_type": "double",
+              "variable": true,
+              "variable_type": "RubyContinuousVariable",
+              "uuid": "9ba0083b-d7c2-47c8-abfb-ca5767dc0fcc",
+              "version_uuid": "34b36609-48b0-4273-a39c-cc2aa87fccdb"
+            }
+          ],
+          "workflow_index": 0,
+          "workflow_step_type": "Measure",
+          "uuid": "0b6aa51c-4782-4b42-b037-4eeacfa1a731",
+          "version_uuid": "f4def2ef-11d5-43a4-9f28-099fe6b3308e"
+        },
+        {
+          "measure_definition_class_name": "RotateBuilding",
+          "measure_definition_directory": "./measures/RotateBuilding",
+          "measure_definition_display_name": "RotateBuilding",
+          "measure_definition_uuid": "ba96677d-824a-482d-9ebe-c27b76e6b64f",
+          "measure_definition_version_uuid": "4a2075a4-9e03-4226-a177-5eb1e826d9cd",
+          "measure_type": "RubyMeasure",
+          "arguments": [
+          ],
+          "display_name": "Rotate Building Relative to Current Orientation",
+          "name": "rotate_building_relative_to_current_orientation",
+          "variables": [
+            {
+              "argument": {
+                "display_name": "Rotation",
+                "display_name_short": "Rotation",
+                "name": "relative_building_rotation",
+                "value_type": "double"
+              },
+              "display_name": "Rotation",
+              "display_name_short": "Rotation",
+              "maximum": 359.0,
+              "minimum": 0.0,
+              "relation_to_output": "",
+              "static_value": 0.0,
+              "uncertainty_description": {
+                "attributes": [
+                  {
+                    "name": "lower_bounds",
+                    "value": 0.0
+                  },
+                  {
+                    "name": "upper_bounds",
+                    "value": 359.0
+                  },
+                  {
+                    "name": "stddev",
+                    "value": 59.83333333
+                  },
+                  {
+                    "name": "delta_x",
+                    "value": null
+                  },
+                  {
+                    "name": "modes",
+                    "value": 180.0
+                  }
+                ],
+                "type": "uniform_uncertain"
+              },
+              "units": "",
+              "value_type": "double",
+              "variable": true,
+              "variable_type": "RubyContinuousVariable",
+              "uuid": "e9770de2-acbc-4e55-b540-b771fb5ad8ae",
+              "version_uuid": "45698a34-a683-4814-ba98-6a9a2dbb0a24"
+            }
+          ],
+          "workflow_index": 1,
+          "workflow_step_type": "Measure",
+          "uuid": "ed05ae87-3999-471d-81a0-489bc66bda3a",
+          "version_uuid": "f3fbb4b3-8eaa-4005-9bfd-19bf0e698569"
+        },
+        {
+          "measure_definition_class_name": "IncreaseInsulationRValueForExteriorWalls",
+          "measure_definition_directory": "./measures/IncreaseInsulationRValueForExteriorWalls",
+          "measure_definition_display_name": "IncreaseInsulationRValueForExteriorWalls",
+          "measure_definition_uuid": "1ce4be4c-9c7a-4560-9da6-0c97f5f5aa70",
+          "measure_definition_version_uuid": "37434096-9031-43f7-a1ab-6a96448d4fae",
+          "measure_type": "RubyMeasure",
+          "arguments": [
+            {
+              "display_name": "Increase in Material and Installation Costs for Construction per Area Used ($/ft^2).",
+              "display_name_short": "Increase in Material and Installation Costs for Construction per Area Used ($/ft^2).",
+              "name": "material_cost_increase_ip",
+              "value": 0.0,
+              "value_type": "double"
+            },
+            {
+              "display_name": "One Time Retrofit Cost to Add Insulation to Construction ($/ft^2).",
+              "display_name_short": "One Time Retrofit Cost to Add Insulation to Construction ($/ft^2).",
+              "name": "one_time_retrofit_cost_ip",
+              "value": 0.0,
+              "value_type": "double"
+            },
+            {
+              "display_name": "Year to Incur One Time Retrofit Cost (whole years).",
+              "display_name_short": "Year to Incur One Time Retrofit Cost (whole years).",
+              "name": "years_until_retrofit_cost",
+              "value": 0,
+              "value_type": "integer"
+            }
+          ],
+          "display_name": "Set R-value of Insulation for Exterior Walls to a Specific Value",
+          "name": "set_r_value_of_insulation_for_exterior_walls_to_a_specific_value",
+          "variables": [
+            {
+              "argument": {
+                "display_name": "Wall R-Value",
+                "display_name_short": "Wall R-Value",
+                "name": "r_value",
+                "value_type": "double"
+              },
+              "display_name": "Wall R-Value",
+              "display_name_short": "Wall R-Value",
+              "maximum": 50.0,
+              "minimum": 0.0,
+              "relation_to_output": "",
+              "static_value": 13.0,
+              "uncertainty_description": {
+                "attributes": [
+                  {
+                    "name": "lower_bounds",
+                    "value": 0.0
+                  },
+                  {
+                    "name": "upper_bounds",
+                    "value": 50.0
+                  },
+                  {
+                    "name": "stddev",
+                    "value": 8.333333333
+                  },
+                  {
+                    "name": "delta_x",
+                    "value": null
+                  },
+                  {
+                    "name": "modes",
+                    "value": 25.0
+                  }
+                ],
+                "type": "normal_uncertain"
+              },
+              "units": "",
+              "value_type": "double",
+              "variable": true,
+              "variable_type": "RubyContinuousVariable",
+              "uuid": "8d6ed73f-8ea0-4c1d-92d8-0fb80f953544",
+              "version_uuid": "69c5192a-f5ce-40a0-a442-0c34292397ad"
+            }
+          ],
+          "workflow_index": 2,
+          "workflow_step_type": "Measure",
+          "uuid": "8559fb4c-a000-4faf-bf55-6f63b0916a2e",
+          "version_uuid": "5693c218-b314-4a45-80f2-24bbfe4430f5"
+        },
+        {
+          "measure_definition_class_name": "IncreaseInsulationRValueForRoofs",
+          "measure_definition_directory": "./measures/IncreaseInsulationRValueForRoofs",
+          "measure_definition_display_name": "IncreaseInsulationRValueForRoofs",
+          "measure_definition_uuid": "64c0e15a-d1b0-409f-bbe0-48be29ac0df6",
+          "measure_definition_version_uuid": "ac146eb7-a08c-4b6b-8e98-948acaaf826f",
+          "measure_type": "RubyMeasure",
+          "arguments": [
+            {
+              "display_name": "Increase in Material and Installation Costs for Construction per Area Used ($/ft^2).",
+              "display_name_short": "Increase in Material and Installation Costs for Construction per Area Used ($/ft^2).",
+              "name": "material_cost_increase_ip",
+              "value": 0.0,
+              "value_type": "double"
+            },
+            {
+              "display_name": "One Time Retrofit Cost to Add Insulation to Construction ($/ft^2).",
+              "display_name_short": "One Time Retrofit Cost to Add Insulation to Construction ($/ft^2).",
+              "name": "one_time_retrofit_cost_ip",
+              "value": 0.0,
+              "value_type": "double"
+            },
+            {
+              "display_name": "Year to Incur One Time Retrofit Cost (whole years).",
+              "display_name_short": "Year to Incur One Time Retrofit Cost (whole years).",
+              "name": "years_until_retrofit_cost",
+              "value": 0,
+              "value_type": "integer"
+            }
+          ],
+          "display_name": "Set R-value of Insulation for Roofs to a Specific Value",
+          "name": "set_r_value_of_insulation_for_roofs_to_a_specific_value",
+          "variables": [
+            {
+              "argument": {
+                "display_name": "Roof R-Value",
+                "display_name_short": "Roof R-Value",
+                "name": "r_value",
+                "value_type": "double"
+              },
+              "display_name": "Roof R-Value",
+              "display_name_short": "Roof R-Value",
+              "maximum": 80.0,
+              "minimum": 10.0,
+              "relation_to_output": "",
+              "static_value": 10.0,
+              "uncertainty_description": {
+                "attributes": [
+                  {
+                    "name": "discrete",
+                    "values_and_weights": [
+                      {
+                        "value": 10,
+                        "weight": 0.05
+                      },
+                      {
+                        "value": 30,
+                        "weight": 0.1
+                      },
+                      {
+                        "value": 50,
+                        "weight": 0.45
+                      },
+                      {
+                        "value": 80,
+                        "weight": 0.4
+                      }
+                    ]
+                  },
+                  {
+                    "name": "lower_bounds",
+                    "value": 10.0
+                  },
+                  {
+                    "name": "upper_bounds",
+                    "value": 80.0
+                  },
+                  {
+                    "name": "modes",
+                    "value": 50.0
+                  }
+                ],
+                "type": "discrete_uncertain"
+              },
+              "units": "",
+              "value_type": "double",
+              "variable": true,
+              "variable_type": "RubyContinuousVariable",
+              "uuid": "8af655ff-289d-4529-bbf1-9fc6a9d30304",
+              "version_uuid": "c93d0de5-ca58-465b-a47f-3285e7f4ef2f"
+            }
+          ],
+          "workflow_index": 3,
+          "workflow_step_type": "Measure",
+          "uuid": "8755721d-2d17-4da8-af16-d06cc7631402",
+          "version_uuid": "f6832566-5ec6-452b-ae47-f5df142b78ca"
+        },
+        {
+          "measure_definition_class_name": "SetWindowToWallRatioByFacade",
+          "measure_definition_directory": "./measures/SetWindowToWallRatioByFacade",
+          "measure_definition_display_name": "SetWindowToWallRatioByFacade",
+          "measure_definition_uuid": "814c9ba8-3261-4680-b157-8c5d68e7d164",
+          "measure_definition_version_uuid": "926c097f-0ee0-4709-823f-ea5aaa6ded7d",
+          "measure_type": "RubyMeasure",
+          "arguments": [
+            {
+              "display_name": "Sill Height (in).",
+              "display_name_short": "Sill Height (in).",
+              "name": "sillHeight",
+              "value": 30.0,
+              "value_type": "double"
+            },
+            {
+              "display_name": "Cardinal Direction.",
+              "display_name_short": "Cardinal Direction.",
+              "name": "facade",
+              "value": "South",
+              "value_type": "choice"
+            }
+          ],
+          "display_name": "Window to Wall Ratio South",
+          "name": "window_to_wall_ratio_south",
+          "variables": [
+            {
+              "argument": {
+                "display_name": "South WWR",
+                "display_name_short": "South WWR",
+                "name": "wwr",
+                "value_type": "double"
+              },
+              "display_name": "South WWR",
+              "display_name_short": "South WWR",
+              "maximum": 0.95,
+              "minimum": 0.05,
+              "relation_to_output": "",
+              "static_value": 0.4,
+              "uncertainty_description": {
+                "attributes": [
+                  {
+                    "name": "lower_bounds",
+                    "value": 0.05
+                  },
+                  {
+                    "name": "upper_bounds",
+                    "value": 0.95
+                  },
+                  {
+                    "name": "stddev",
+                    "value": 0.15
+                  },
+                  {
+                    "name": "delta_x",
+                    "value": null
+                  },
+                  {
+                    "name": "modes",
+                    "value": 0.4
+                  }
+                ],
+                "type": "triangle_uncertain"
+              },
+              "units": "",
+              "value_type": "double",
+              "variable": true,
+              "variable_type": "RubyContinuousVariable",
+              "uuid": "99273c00-75b5-4fd2-bdd3-47b010f1cf41",
+              "version_uuid": "32e948b4-5939-4e51-8531-26ee2eb75056"
+            }
+          ],
+          "workflow_index": 4,
+          "workflow_step_type": "Measure",
+          "uuid": "a0e0d308-8f41-488d-93f8-f7f77d170794",
+          "version_uuid": "143ff609-4142-4275-abe0-bbc15098495d"
+        },
+        {
+          "measure_definition_class_name": "SetWindowToWallRatioByFacade",
+          "measure_definition_directory": "./measures/SetWindowToWallRatioByFacade",
+          "measure_definition_display_name": "SetWindowToWallRatioByFacade",
+          "measure_definition_uuid": "ee7fe83c-5e46-4436-b3cf-9e6601f22686",
+          "measure_definition_version_uuid": "100a22b5-7b8c-497f-a1f2-1016639faea8",
+          "measure_type": "RubyMeasure",
+          "arguments": [
+            {
+              "display_name": "Sill Height (in).",
+              "display_name_short": "Sill Height (in).",
+              "name": "sillHeight",
+              "value": 30.0,
+              "value_type": "double"
+            },
+            {
+              "display_name": "Cardinal Direction.",
+              "display_name_short": "Cardinal Direction.",
+              "name": "facade",
+              "value": "West",
+              "value_type": "choice"
+            }
+          ],
+          "display_name": "Window to Wall Ratio West",
+          "name": "window_to_wall_ratio_west",
+          "variables": [
+            {
+              "argument": {
+                "display_name": "West WWR",
+                "display_name_short": "West WWR",
+                "name": "wwr",
+                "value_type": "double"
+              },
+              "display_name": "West WWR",
+              "display_name_short": "West WWR",
+              "maximum": 0.95,
+              "minimum": 0.05,
+              "relation_to_output": "",
+              "static_value": 0.4,
+              "uncertainty_description": {
+                "attributes": [
+                  {
+                    "name": "lower_bounds",
+                    "value": 0.05
+                  },
+                  {
+                    "name": "upper_bounds",
+                    "value": 0.95
+                  },
+                  {
+                    "name": "stddev",
+                    "value": 0.15
+                  },
+                  {
+                    "name": "delta_x",
+                    "value": null
+                  },
+                  {
+                    "name": "modes",
+                    "value": 0.4
+                  }
+                ],
+                "type": "triangle_uncertain"
+              },
+              "units": "",
+              "value_type": "double",
+              "variable": true,
+              "variable_type": "RubyContinuousVariable",
+              "uuid": "241930b0-0e12-4068-8c54-984db765896a",
+              "version_uuid": "34d5d6da-494a-402f-bdb1-bfffb3e55d0d"
+            }
+          ],
+          "workflow_index": 5,
+          "workflow_step_type": "Measure",
+          "uuid": "d0ced65e-9925-4d4e-8083-b40a9be54688",
+          "version_uuid": "a2b9958b-a051-49d9-b552-8a5dd181eef4"
+        },
+        {
+          "measure_definition_class_name": "SetWindowToWallRatioByFacade",
+          "measure_definition_directory": "./measures/SetWindowToWallRatioByFacade",
+          "measure_definition_display_name": "SetWindowToWallRatioByFacade",
+          "measure_definition_uuid": "6335d2bc-2c42-4ab7-a094-fc80edc52ae2",
+          "measure_definition_version_uuid": "49845f5d-b6f3-43b4-a60c-1fb457b7d4fc",
+          "measure_type": "RubyMeasure",
+          "arguments": [
+            {
+              "display_name": "Sill Height (in).",
+              "display_name_short": "Sill Height (in).",
+              "name": "sillHeight",
+              "value": 30.0,
+              "value_type": "double"
+            },
+            {
+              "display_name": "Cardinal Direction.",
+              "display_name_short": "Cardinal Direction.",
+              "name": "facade",
+              "value": "East",
+              "value_type": "choice"
+            }
+          ],
+          "display_name": "Window to Wall Ratio East",
+          "name": "window_to_wall_ratio_east",
+          "variables": [
+            {
+              "argument": {
+                "display_name": "East WWR",
+                "display_name_short": "East WWR",
+                "name": "wwr",
+                "value_type": "double"
+              },
+              "display_name": "East WWR",
+              "display_name_short": "East WWR",
+              "maximum": 0.95,
+              "minimum": 0.05,
+              "relation_to_output": "",
+              "static_value": 0.4,
+              "uncertainty_description": {
+                "attributes": [
+                  {
+                    "name": "lower_bounds",
+                    "value": 0.05
+                  },
+                  {
+                    "name": "upper_bounds",
+                    "value": 0.95
+                  },
+                  {
+                    "name": "stddev",
+                    "value": 0.15
+                  },
+                  {
+                    "name": "delta_x",
+                    "value": null
+                  },
+                  {
+                    "name": "modes",
+                    "value": 0.4
+                  }
+                ],
+                "type": "triangle_uncertain"
+              },
+              "units": "",
+              "value_type": "double",
+              "variable": true,
+              "variable_type": "RubyContinuousVariable",
+              "uuid": "e3b2d43b-25dc-41fd-8ae7-57c225765009",
+              "version_uuid": "932aea3c-b41e-45f0-9e93-762275921ecc"
+            }
+          ],
+          "workflow_index": 6,
+          "workflow_step_type": "Measure",
+          "uuid": "6787736c-a20b-4d86-ada3-623574f82c70",
+          "version_uuid": "cce67243-9c17-405f-a759-d0db4d8b540c"
+        },
+        {
+          "measure_definition_class_name": "AddOverhangsByProjectionFactor",
+          "measure_definition_directory": "./measures/AddOverhangsByProjectionFactor",
+          "measure_definition_display_name": "AddOverhangsByProjectionFactor",
+          "measure_definition_uuid": "cf84938f-4084-474c-ac72-c9fb135e6592",
+          "measure_definition_version_uuid": "931bb4a7-12d3-4465-9c9e-eff7b1ff2656",
+          "measure_type": "RubyMeasure",
+          "arguments": [
+            {
+              "display_name": "Cardinal Direction",
+              "display_name_short": "Cardinal Direction",
+              "name": "facade",
+              "value": "South",
+              "value_type": "choice"
+            },
+            {
+              "display_name": "Remove Existing Space Shading Surfaces From the Model?",
+              "display_name_short": "Remove Existing Space Shading Surfaces From the Model?",
+              "name": "remove_ext_space_shading",
+              "value": false,
+              "value_type": "bool"
+            }
+          ],
+          "display_name": "Overhangs PF South",
+          "name": "overhangs_pf_south",
+          "variables": [
+            {
+              "argument": {
+                "display_name": "South Projection Factor",
+                "display_name_short": "South PF",
+                "name": "projection_factor",
+                "value_type": "double"
+              },
+              "display_name": "South Projection Factor",
+              "display_name_short": "South PF",
+              "maximum": 1.0,
+              "minimum": 0.0,
+              "relation_to_output": "",
+              "static_value": 0.0,
+              "uncertainty_description": {
+                "attributes": [
+                  {
+                    "name": "lower_bounds",
+                    "value": 0.0
+                  },
+                  {
+                    "name": "upper_bounds",
+                    "value": 1.0
+                  },
+                  {
+                    "name": "stddev",
+                    "value": 0.133333333
+                  },
+                  {
+                    "name": "delta_x",
+                    "value": null
+                  },
+                  {
+                    "name": "modes",
+                    "value": 0.5
+                  }
+                ],
+                "type": "uniform_uncertain"
+              },
+              "units": "",
+              "value_type": "double",
+              "variable": true,
+              "variable_type": "RubyContinuousVariable",
+              "uuid": "173d60e5-9ec8-4abe-b881-db33217d1ec8",
+              "version_uuid": "32cbd0c8-383f-4e95-8489-d6b9329f33e1"
+            }
+          ],
+          "workflow_index": 7,
+          "workflow_step_type": "Measure",
+          "uuid": "4bfd0cd7-5644-40dd-b539-128025930c62",
+          "version_uuid": "03437c07-fc57-4dcb-aea5-d65ff5adcfd1"
+        },
+        {
+          "measure_definition_class_name": "AddOverhangsByProjectionFactor",
+          "measure_definition_directory": "./measures/AddOverhangsByProjectionFactor",
+          "measure_definition_display_name": "AddOverhangsByProjectionFactor",
+          "measure_definition_uuid": "cd2538f4-1211-46ea-a3c2-f2af2c78c4c2",
+          "measure_definition_version_uuid": "12346d51-cecc-485f-8453-4da6f2059bdb",
+          "measure_type": "RubyMeasure",
+          "arguments": [
+            {
+              "display_name": "Cardinal Direction",
+              "display_name_short": "Cardinal Direction",
+              "name": "facade",
+              "value": "East",
+              "value_type": "choice"
+            },
+            {
+              "display_name": "Remove Existing Space Shading Surfaces From the Model?",
+              "display_name_short": "Remove Existing Space Shading Surfaces From the Model?",
+              "name": "remove_ext_space_shading",
+              "value": false,
+              "value_type": "bool"
+            }
+          ],
+          "display_name": "Overhangs PF East",
+          "name": "overhangs_pf_east",
+          "variables": [
+            {
+              "argument": {
+                "display_name": "East Projection Factor",
+                "display_name_short": "East PF",
+                "name": "projection_factor",
+                "value_type": "double"
+              },
+              "display_name": "East Projection Factor",
+              "display_name_short": "East PF",
+              "maximum": 1.0,
+              "minimum": 0.0,
+              "relation_to_output": "",
+              "static_value": 0.0,
+              "uncertainty_description": {
+                "attributes": [
+                  {
+                    "name": "lower_bounds",
+                    "value": 0.0
+                  },
+                  {
+                    "name": "upper_bounds",
+                    "value": 1.0
+                  },
+                  {
+                    "name": "stddev",
+                    "value": 0.133333333
+                  },
+                  {
+                    "name": "delta_x",
+                    "value": null
+                  },
+                  {
+                    "name": "modes",
+                    "value": 0.5
+                  }
+                ],
+                "type": "uniform_uncertain"
+              },
+              "units": "",
+              "value_type": "double",
+              "variable": true,
+              "variable_type": "RubyContinuousVariable",
+              "uuid": "fc42904c-ddaa-4108-8799-7b9764b271ab",
+              "version_uuid": "f99a24a9-d15c-40bf-ac92-430dff02e56c"
+            }
+          ],
+          "workflow_index": 8,
+          "workflow_step_type": "Measure",
+          "uuid": "679a9f82-bc06-4114-93ae-554523367f2c",
+          "version_uuid": "aa7a5e67-720f-47cd-880c-a242e30049c6"
+        },
+        {
+          "measure_definition_class_name": "XcelEDATariffSelectionandModelSetup",
+          "measure_definition_directory": "./measures/XcelEDATariffSelectionandModelSetup",
+          "measure_definition_display_name": "XcelEDATariffSelectionandModelSetup",
+          "measure_definition_uuid": "03259e4e-2c5c-463f-97c0-59b6628eda31",
+          "measure_definition_version_uuid": "86c49807-5fd2-45f4-966c-95e1d76e489c",
+          "measure_type": "EnergyPlusMeasure",
+          "arguments": [
+            {
+              "display_name": "Select an Electricity Tariff.",
+              "display_name_short": "Select an Electricity Tariff.",
+              "name": "elec_tar",
+              "value": "Secondary General",
+              "value_type": "choice"
+            },
+            {
+              "display_name": "Select a Gas Tariff.",
+              "display_name_short": "Select a Gas Tariff.",
+              "name": "gas_tar",
+              "value": "Large CG",
+              "value_type": "choice"
+            }
+          ],
+          "display_name": "Xcel EDA Tariff Selection and Model Setup",
+          "name": "xcel_eda_tariff_selection_and_model_setup",
+          "variables": [
+          ],
+          "workflow_index": 9,
+          "workflow_step_type": "Measure",
+          "uuid": "02c5ad9b-7594-4586-bb95-c21f938327a7",
+          "version_uuid": "fb04c295-7664-43ff-a99e-fd20f5d9db8f"
+        }
+      ],
+      "analysis_type": "lhs"
+    },
+    "seed": {
+      "file_type": "OSM",
+      "path": "./seed/seed.osm"
+    },
+    "weather_file": {
+      "file_type": "EPW",
+      "path": "./weather/USA_CO_Denver.Intl.AP.725650_TMY3.epw"
+    }
+  }
+}

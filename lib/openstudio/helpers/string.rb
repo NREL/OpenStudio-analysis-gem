@@ -1,46 +1,66 @@
-# add the underscore from rails for snake_casing strings
+# *******************************************************************************
+# OpenStudio(R), Copyright (c) 2008-2018, Alliance for Sustainable Energy, LLC.
+# All rights reserved.
+# Redistribution and use in source and binary forms, with or without
+# modification, are permitted provided that the following conditions are met:
+#
+# (1) Redistributions of source code must retain the above copyright notice,
+# this list of conditions and the following disclaimer.
+#
+# (2) Redistributions in binary form must reproduce the above copyright notice,
+# this list of conditions and the following disclaimer in the documentation
+# and/or other materials provided with the distribution.
+#
+# (3) Neither the name of the copyright holder nor the names of any contributors
+# may be used to endorse or promote products derived from this software without
+# specific prior written permission from the respective party.
+#
+# (4) Other than as required in clauses (1) and (2), distributions in any form
+# of modifications or other derivative works may not use the "OpenStudio"
+# trademark, "OS", "os", or any other confusingly similar designation without
+# specific prior written permission from Alliance for Sustainable Energy, LLC.
+#
+# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+# AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+# IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+# DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER, THE UNITED STATES
+# GOVERNMENT, OR ANY CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT,
+# INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+# LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
+# PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+# LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+# NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
+# EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+# *******************************************************************************
 
-class String
-  def underscore
-    gsub(/::/, '/')
-    .gsub(/([A-Z]+)([A-Z][a-z])/, '\1_\2')
-    .gsub(/([a-z\d])([A-Z])/, '\1_\2')
-    .tr('-', '_')
-    .downcase
-  end
 
-  def snake_case
-    gsub(' ', '_').downcase
-  end
-
-  def to_bool
-    return true if self == true || self =~ (/(true|t|yes|y|1)$/i)
-    return false if self == false || self =~ (/(false|f|no|n|0)$/i)
-    fail "invalid value for Boolean: '#{self}'"
-  end
-end
-
+# Typecast Variable Values by a string.
 def typecast_value(variable_type, value, inspect_string = false)
   out_value = nil
-  case variable_type.downcase
-    when 'double'
-      out_value = value.to_f
-    when 'integer'
-      out_value = value.to_i
-    when 'string'
-      out_value = inspect_string ? value.inspect : value.to_s
-    when 'choice'
-      out_value = value.inspect
-    when 'bool', 'boolean'
-      if value.downcase == 'true'
-        out_value = true
-      elsif value.downcase == 'false'
-        out_value = false
+  unless value.nil?
+    case variable_type.downcase
+      when 'double'
+        out_value = value.to_f
+      when 'integer'
+        out_value = value.to_i
+      when 'string', 'choice'
+        out_value = inspect_string ? value.inspect : value.to_s
+      when 'bool', 'boolean'
+        # Check if the value is already a boolean
+        if !!value == value
+          out_value = value
+        else
+          if value.casecmp('true').zero?
+            out_value = true
+          elsif value.casecmp('false').zero?
+            out_value = false
+          else
+            raise "Can't cast to a bool from a value of '#{value}' of class '#{value.class}'"
+          end
+        end
       else
-        fail "Can't cast to a bool from a value of '#{value}' of class '#{value.class}'"
-      end
-    else
-      fail "Unknown variable type of '#{@variable['type']}'"
+        raise "Unknown variable type of '#{@variable['type']}'"
+    end
   end
 
   out_value

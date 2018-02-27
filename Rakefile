@@ -1,54 +1,70 @@
+# *******************************************************************************
+# OpenStudio(R), Copyright (c) 2008-2018, Alliance for Sustainable Energy, LLC.
+# All rights reserved.
+# Redistribution and use in source and binary forms, with or without
+# modification, are permitted provided that the following conditions are met:
+#
+# (1) Redistributions of source code must retain the above copyright notice,
+# this list of conditions and the following disclaimer.
+#
+# (2) Redistributions in binary form must reproduce the above copyright notice,
+# this list of conditions and the following disclaimer in the documentation
+# and/or other materials provided with the distribution.
+#
+# (3) Neither the name of the copyright holder nor the names of any contributors
+# may be used to endorse or promote products derived from this software without
+# specific prior written permission from the respective party.
+#
+# (4) Other than as required in clauses (1) and (2), distributions in any form
+# of modifications or other derivative works may not use the "OpenStudio"
+# trademark, "OS", "os", or any other confusingly similar designation without
+# specific prior written permission from Alliance for Sustainable Energy, LLC.
+#
+# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+# AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+# IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+# DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER, THE UNITED STATES
+# GOVERNMENT, OR ANY CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT,
+# INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+# LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
+# PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+# LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+# NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
+# EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+# *******************************************************************************
+
 require 'bundler'
 Bundler.setup
 
-require 'rake'
 require 'rspec/core/rake_task'
 
-$LOAD_PATH.unshift File.expand_path('../lib', __FILE__)
-require 'openstudio/analysis/version'
+# Always create spec reports
+require 'ci/reporter/rake/rspec'
 
-task gem: :build
-desc 'build gem locally'
-task :build do
-  system 'gem build openstudio-analysis.gemspec'
-end
-
-desc 'build and install gem locally'
-task install: :build do
-  system "gem install openstudio-analysis-#{OpenStudio::Analysis::VERSION}.gem --no-ri --no-rdoc"
-end
-
-desc 'release gem (this builds, pushes to rubygems, and tags in github'
-task release: :build do
-  # add catch if there are local changes not committed to crash
-  system "git tag -a v#{OpenStudio::Analysis::VERSION} -m 'Tagging #{OpenStudio::Analysis::VERSION}'"
-  system 'git push --tags'
-  system "gem push openstudio-analysis-#{OpenStudio::Analysis::VERSION}.gem"
-  system "rm openstudio-analysis-#{OpenStudio::Analysis::VERSION}.gem"
-end
+# Gem tasks
+require 'bundler/gem_tasks'
 
 RSpec::Core::RakeTask.new('spec:unit') do |spec|
-  spec.rspec_opts = %w(--format progress --format CI::Reporter::RSpec)
+  spec.rspec_opts = ['--format', 'progress']
   spec.pattern = FileList['spec/openstudio/**/*_spec.rb']
 end
 
 RSpec::Core::RakeTask.new('spec:integration') do |spec|
-  spec.rspec_opts = %w(--format progress --format CI::Reporter::RSpec)
+  spec.rspec_opts = ['--format', 'progress']
   spec.pattern = FileList['spec/integration/**/*_spec.rb']
 end
 
+task 'spec:unit' => 'ci:setup:rspec'
+task 'spec:integration' => 'ci:setup:rspec'
+
 task default: 'spec:unit'
 
-desc 'import files from other repos'
-task :import_files do
-  # tbd
+require 'rubocop/rake_task'
+desc 'Run RuboCop on the lib directory'
+RuboCop::RakeTask.new(:rubocop) do |task|
+  task.options = ['--no-color', '--out=rubocop-results.xml', '--format', 'simple']
+  task.formatters = ['RuboCop::Formatter::CheckstyleFormatter']
+  task.requires = ['rubocop/formatter/checkstyle_formatter']
+  # don't abort rake on failure
+  task.fail_on_error = false
 end
-
-desc 'uninstall all openstudio-analysis gems'
-task :uninstall do
-
-  system 'gem uninstall openstudio-analysis -a'
-end
-
-desc 'reinstall the gem (uninstall, build, and reinstall'
-task reinstall: [:uninstall, :install]

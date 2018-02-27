@@ -14,16 +14,22 @@ Gem::Specification.new do |s|
   s.description = 'Basic classes for generating the files needed for OpenStudio-Server'
   s.license = 'LGPL'
 
-  s.required_ruby_version = '>= 1.9.3'
+  s.required_ruby_version = '>= 2.1'
   s.required_rubygems_version = '>= 1.3.6'
 
-  s.add_dependency('faraday', '~> 0.8')
-  s.add_dependency('uuid', '~> 2.3')
-  s.add_dependency('roo', '~> 1.12')
-  s.add_dependency('rubyzip', '~> 1.0') # don't update because of jruby
-  s.add_dependency('semantic', '~> 1.3')
+  s.files         = `git ls-files -z`.split("\x0")
+  s.executables   = s.files.grep(%r{^bin/}) { |f| File.basename(f) }
+  s.test_files    = s.files.grep(%r{^(test|spec|features)/})
+  s.require_paths = ['lib']
 
-  s.files = Dir.glob('lib/**/*') + %w(README.md CHANGELOG.md Rakefile)
-  s.test_files = Dir.glob('spec/**/*')
-  s.require_path = 'lib'
+  s.add_dependency 'bcl', '~> 0.5.7'
+  s.add_dependency 'dencity', '~> 0.1.0'
+  s.add_dependency 'faraday', '~> 0.8'
+  s.add_dependency 'nokogiri', '~> 1.6.8'
+  s.add_dependency 'roo', '~> 2.4'
+  s.add_dependency 'rubyzip', '~> 1.2'
+  s.add_dependency 'semantic', '~> 1.4'
+
+  s.add_development_dependency 'bundler', '~> 1.7'
+  s.add_development_dependency 'rake', '~> 11.1'
 end
