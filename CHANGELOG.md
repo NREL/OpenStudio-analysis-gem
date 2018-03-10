@@ -4,7 +4,7 @@ OpenStudio Analysis Gem Change Log
 Version 1.0.0
 -------------
 This is the first official release in quite some time. This includes many changes which unfortunately have not been 
-catelogued. The changes from 0.4.5 include:
+cataloged. The changes from 0.4.5 include:
 
 * Requires ruby > 2.1.
 * Default path to ServerApi logfile to ~/os_server_api.log. This can be overridden by setting the log_path options key in the initializer.
