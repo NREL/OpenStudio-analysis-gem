@@ -785,12 +785,12 @@ module OpenStudio
       # @option options [String] :run_data_point_filename Name of ruby file that the server runs -- will be deprecated
       # @option options [String] :push_to_dencity Whether or not to push to DEnCity
       # @option options [String] :batch_run_method Which batch run method to use (batch_run or batch_run_local [no R])
-      def run(formulation_filename, analysis_zip_filename, analysis_type,
-              options = {})
+      def run(formulation_filename, analysis_zip_filename, analysis_type, options = {})
         defaults = {
           run_data_point_filename: 'run_openstudio_workflow_monthly.rb',
           push_to_dencity: false,
-          batch_run_method: 'batch_run'
+          batch_run_method: 'batch_run',
+          without_delay: false
         }
         options = defaults.merge(options)
 
@@ -808,7 +808,7 @@ module OpenStudio
 
         run_options = {
           analysis_action: 'start',
-          without_delay: false,
+          without_delay: options[:without_delay],
           analysis_type: analysis_type,
           simulate_data_point_filename: 'simulate_data_point.rb', # TODO: remove these from server?
           run_data_point_filename: options[:run_data_point_filename]
