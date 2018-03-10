@@ -91,12 +91,12 @@ EOT
 js_header_text.strip!
 
 paths = [
-    { glob: 'lib/**/*.rb', license: ruby_header_text, regex: ruby_regex },
-    { glob: 'spec/openstudio/**/*.rb', license: ruby_header_text, regex: ruby_regex },
-    { glob: 'spec/integration/**/*.rb', license: ruby_header_text, regex: ruby_regex },
+  { glob: 'lib/**/*.rb', license: ruby_header_text, regex: ruby_regex },
+  { glob: 'spec/openstudio/**/*.rb', license: ruby_header_text, regex: ruby_regex },
+  { glob: 'spec/integration/**/*.rb', license: ruby_header_text, regex: ruby_regex },
 
-    # single files
-    { glob: 'Rakefile', license: ruby_header_text, regex: ruby_regex },
+  # single files
+  { glob: 'Rakefile', license: ruby_header_text, regex: ruby_regex }
 ]
 
 paths.each do |path|
