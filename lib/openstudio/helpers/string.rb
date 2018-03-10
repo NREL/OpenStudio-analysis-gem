@@ -33,7 +33,6 @@
 # EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 # *******************************************************************************
 
-
 # Typecast Variable Values by a string.
 def typecast_value(variable_type, value, inspect_string = false)
   out_value = nil
