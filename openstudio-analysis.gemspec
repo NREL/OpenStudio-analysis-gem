@@ -12,7 +12,7 @@ Gem::Specification.new do |s|
   s.homepage = 'http://openstudio.nrel.gov'
   s.summary = 'Create JSON, ZIP to communicate with OpenStudio Distributed Analysis in the Cloud'
   s.description = 'Basic classes for generating the files needed for OpenStudio-Server'
-  s.license = 'LGPL'
+  s.license = 'BSD'
 
   s.required_ruby_version = '>= 2.2'
   s.required_rubygems_version = '>= 1.3.6'
