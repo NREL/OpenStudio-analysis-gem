@@ -1,10 +1,16 @@
 OpenStudio Analysis Gem Change Log
 ==================================
 
+Version 1.0.1
+-------------
+* Add support for Ruby 2.5.1 (keeping support for 2.2)
+* Lock version of Roo to older version 
+* Updated copyright dates and remove old LGPL license. License is not LGPL but a BSD-style license.
+
 Version 1.0.0
 -------------
 This is the first official release in quite some time. This includes many changes which unfortunately have not been 
-catelogued. The changes from 0.4.5 include:
+cataloged. The changes from 0.4.5 include:
 
 * Requires ruby > 2.1.
 * Default path to ServerApi logfile to ~/os_server_api.log. This can be overridden by setting the log_path options key in the initializer.

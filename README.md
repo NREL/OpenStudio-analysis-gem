@@ -30,7 +30,7 @@ There are two ways to create an OpenStudio Analysis description:
     
     # add measures to the workflow
     wf = analysis.workflow
-    def add_measure_from_path(instance_name, instance_display_name, local_path_to_measure)
+    # def add_measure_from_path(instance_name, instance_display_name, local_path_to_measure)
     wf.add_measure_from_path('instance_name', 'Display name', 'path_to_measure')
     wf.add_measure_from_path('instance_name_2', 'Display name two', 'path_to_measure_2')
     

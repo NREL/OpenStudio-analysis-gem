@@ -5,7 +5,7 @@
 *.swp
 *.gem
 ~$*
-.rubocop-https*
+.rubocop-http*
 tmp/*
 .yardoc
 doc/
@@ -18,3 +18,4 @@ Gemfile.lock
 spec/files/measures/ActualMeasureNoJson/measure.json
 rubocop-results.xml
 coverage
+/gems
