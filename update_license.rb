@@ -96,7 +96,8 @@ paths = [
   { glob: 'spec/integration/**/*.rb', license: ruby_header_text, regex: ruby_regex },
 
   # single files
-  { glob: 'Rakefile', license: ruby_header_text, regex: ruby_regex }
+  { glob: 'Rakefile', license: ruby_header_text, regex: ruby_regex },
+  { glob: 'spec/spec_helper.rb', license: ruby_header_text, regex: ruby_regex }
 ]
 
 paths.each do |path|
