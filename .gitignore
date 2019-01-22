@@ -18,3 +18,4 @@ Gemfile.lock
 spec/files/measures/ActualMeasureNoJson/measure.json
 rubocop-results.xml
 coverage
+/gems
