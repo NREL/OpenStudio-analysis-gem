@@ -30,6 +30,5 @@ Gem::Specification.new do |s|
   s.add_dependency 'rubyzip', '~> 1.2'
   s.add_dependency 'semantic', '~> 1.4'
 
-  s.add_development_dependency 'bundler', '~> 1.7'
   s.add_development_dependency 'rake', '~> 12.3.1'
 end
