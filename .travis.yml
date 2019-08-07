@@ -1,5 +1,4 @@
 language: ruby
 rvm:
-  - 2.2.4
-  - 2.5.1  # next version of openstudio will use 2.5.1
-before_install: gem install bundler -v 1.16.2 
+  - 2.5.1  
+before_install: gem install bundler -v 1.17.1
