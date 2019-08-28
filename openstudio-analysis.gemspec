@@ -14,7 +14,7 @@ Gem::Specification.new do |s|
   s.description = 'Basic classes for generating the files needed for OpenStudio-Server'
   s.license = 'BSD'
 
-  s.required_ruby_version = '>= 2.2'
+  s.required_ruby_version = '~> 2.5.1'
   s.required_rubygems_version = '>= 1.3.6'
 
   s.files         = `git ls-files -z`.split("\x0")
@@ -25,7 +25,7 @@ Gem::Specification.new do |s|
   s.add_dependency 'bcl', '~> 0.5.8'
   s.add_dependency 'dencity', '~> 0.1.0'
   s.add_dependency 'faraday', '~> 0.14'
-  s.add_dependency 'nokogiri', '~> 1.6.8'  # keep at 1.6.8 until OpenStudio updates its version
+  s.add_dependency 'nokogiri', '~> 1.8.2' 
   s.add_dependency 'roo', '~> 2.7.1'
   s.add_dependency 'rubyzip', '~> 1.2'
   s.add_dependency 'semantic', '~> 1.4'

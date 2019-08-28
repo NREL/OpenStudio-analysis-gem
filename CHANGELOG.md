@@ -1,5 +1,10 @@
 OpenStudio Analysis Gem Change Log
 ==================================
+Version 1.0.2
+-------------
+* Updates required for OpenStudio 3x
+* Require Ruby ~> 2.5.1
+* Update to Nokogiri ~> 1.8.2 (required for Ruby 2.5 on Windows)
 
 Version 1.0.1
 -------------
