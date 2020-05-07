@@ -27,7 +27,7 @@ Gem::Specification.new do |s|
   s.add_dependency 'faraday', '~> 0.14'
   s.add_dependency 'nokogiri', '~> 1.8.2' 
   s.add_dependency 'roo', '~> 2.8.3'
-  s.add_dependency 'rubyzip', '~> 1.2'
+  s.add_dependency 'rubyzip', '~> 2.3.0'
   s.add_dependency 'semantic', '~> 1.4'
 
   s.add_development_dependency 'rake', '~> 12.3.1'
