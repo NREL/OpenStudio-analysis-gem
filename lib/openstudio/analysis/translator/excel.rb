@@ -536,7 +536,7 @@ module OpenStudio
                 tmp_m_name = SecureRandom.uuid
               end
               # Only add models if the row is flagged
-              if row[0] && row[0].casecmp('model').zero?
+              if row[0]&.casecmp('model')&.zero?
                 model_path = row[3]
                 unless (Pathname.new model_path).absolute?
                   model_path = File.expand_path(File.join(@root_path, model_path))

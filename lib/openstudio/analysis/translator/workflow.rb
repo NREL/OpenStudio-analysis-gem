@@ -80,11 +80,9 @@ module OpenStudio
             step_hash[:measure_dir_name] = File.basename(step[:measure_definition_directory])
             step_hash[:arguments] = {}
             # Measures can have no arguments -- make sure to catch it
-            if @osa[:problem][:workflow][i][:arguments]
-              @osa[:problem][:workflow][i][:arguments].each do |arg|
-                next if arg[:value].nil?
-                step_hash[:arguments][arg[:name].to_sym] = arg[:value]
-              end
+            @osa[:problem][:workflow][i][:arguments]&.each do |arg|
+              next if arg[:value].nil?
+              step_hash[:arguments][arg[:name].to_sym] = arg[:value]
             end
             step_hash[:name] = step[:name] if step[:name]
             step_hash[:description] = step[:description] if step[:description]
@@ -160,12 +158,10 @@ module OpenStudio
         def process_datapoints(osd_filename_array)
           r = []
           osd_filename_array.each do |osd_file|
-            begin
-              r << process_datapoint(osd_file)
-            rescue StandardError => e
-              r << nil
-              puts "Warning: Failed to process datapoint #{osd_file} with error #{e.message} in #{e.backtrace.join('\n')}"
-            end
+            r << process_datapoint(osd_file)
+          rescue StandardError => e
+            r << nil
+            puts "Warning: Failed to process datapoint #{osd_file} with error #{e.message} in #{e.backtrace.join('\n')}"
           end
 
           r

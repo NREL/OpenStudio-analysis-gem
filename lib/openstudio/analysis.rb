@@ -130,35 +130,31 @@ module OpenStudio
             new_wfi[:description] = wf[:description] if wf[:description]
             new_wfi[:arguments] = []
 
-            if wf[:arguments]
-              wf[:arguments].each do |arg|
-                wfi_arg = {}
-                wfi_arg[:display_name] = arg[:display_name] if arg[:display_name]
-                wfi_arg[:display_name_short] = arg[:display_name_short] if arg[:display_name_short]
-                wfi_arg[:name] = arg[:name] if arg[:name]
-                wfi_arg[:data_type] = arg[:value_type] if arg[:value_type]
-                wfi_arg[:default_value] = nil
-                wfi_arg[:description] = ''
-                wfi_arg[:display_units] = '' # should be haystack compatible unit strings
-                wfi_arg[:units] = '' # should be haystack compatible unit strings
+            wf[:arguments]&.each do |arg|
+              wfi_arg = {}
+              wfi_arg[:display_name] = arg[:display_name] if arg[:display_name]
+              wfi_arg[:display_name_short] = arg[:display_name_short] if arg[:display_name_short]
+              wfi_arg[:name] = arg[:name] if arg[:name]
+              wfi_arg[:data_type] = arg[:value_type] if arg[:value_type]
+              wfi_arg[:default_value] = nil
+              wfi_arg[:description] = ''
+              wfi_arg[:display_units] = '' # should be haystack compatible unit strings
+              wfi_arg[:units] = '' # should be haystack compatible unit strings
 
-                new_wfi[:arguments] << wfi_arg
-              end
+              new_wfi[:arguments] << wfi_arg
             end
 
-            if wf[:variables]
-              wf[:variables].each do |arg|
-                wfi_var = {}
-                wfi_var[:display_name] = arg[:argument][:display_name] if arg[:argument][:display_name]
-                wfi_var[:display_name_short] = arg[:argument][:display_name_short] if arg[:argument][:display_name_short]
-                wfi_var[:name] = arg[:argument][:name] if arg[:argument][:name]
-                wfi_var[:default_value] = nil
-                wfi_var[:data_type] = arg[:argument][:value_type] if arg[:argument][:value_type]
-                wfi_var[:description] = ''
-                wfi_var[:display_units] = arg[:units] if arg[:units]
-                wfi_var[:units] = '' # should be haystack compatible unit strings
-                new_wfi[:arguments] << wfi_var
-              end
+            wf[:variables]&.each do |arg|
+              wfi_var = {}
+              wfi_var[:display_name] = arg[:argument][:display_name] if arg[:argument][:display_name]
+              wfi_var[:display_name_short] = arg[:argument][:display_name_short] if arg[:argument][:display_name_short]
+              wfi_var[:name] = arg[:argument][:name] if arg[:argument][:name]
+              wfi_var[:default_value] = nil
+              wfi_var[:data_type] = arg[:argument][:value_type] if arg[:argument][:value_type]
+              wfi_var[:description] = ''
+              wfi_var[:display_units] = arg[:units] if arg[:units]
+              wfi_var[:units] = '' # should be haystack compatible unit strings
+              new_wfi[:arguments] << wfi_var
             end
 
             measure_metadata << new_wfi

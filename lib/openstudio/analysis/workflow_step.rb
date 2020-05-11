@@ -312,40 +312,36 @@ module OpenStudio
         # do not allow the choice variable_type
 
         s.type = hash[:measure_type] # this is actually the measure type
-        if hash[:arguments]
-          hash[:arguments].each do |arg|
-            # warn the user to we need to deprecate variable_type and use value_type (which is what os server uses)
-            var_type = arg[:variable_type] ? arg[:variable_type].downcase : arg[:value_type]
+        hash[:arguments]&.each do |arg|
+          # warn the user to we need to deprecate variable_type and use value_type (which is what os server uses)
+          var_type = arg[:variable_type] ? arg[:variable_type].downcase : arg[:value_type]
 
-            if var_type == 'choice'
-              # WARN the user that the measure had a "choice data type"
-              var_type = 'string'
-            end
-
-            s.arguments << {
-              display_name: arg[:display_name],
-              display_name_short: arg[:display_name_short],
-              name: arg[:name],
-              value_type: var_type,
-              default_value: arg[:default_value],
-              value: arg[:default_value]
-            }
+          if var_type == 'choice'
+            # WARN the user that the measure had a "choice data type"
+            var_type = 'string'
           end
+
+          s.arguments << {
+            display_name: arg[:display_name],
+            display_name_short: arg[:display_name_short],
+            name: arg[:name],
+            value_type: var_type,
+            default_value: arg[:default_value],
+            value: arg[:default_value]
+          }
         end
 
         # Load the arguments of variables, but do not make them variables. This format is more about arugments, than variables
-        if hash[:variables]
-          hash[:variables].each do |variable|
-            # add the arguments first
-            s.arguments << {
-              display_name: variable[:argument][:display_name],
-              display_name_short: variable[:argument][:display_name_short],
-              name: variable[:argument][:name],
-              value_type: variable[:argument][:value_type],
-              default_value: variable[:argument][:default_value],
-              value: variable[:argument][:default_value]
-            }
-          end
+        hash[:variables]&.each do |variable|
+          # add the arguments first
+          s.arguments << {
+            display_name: variable[:argument][:display_name],
+            display_name_short: variable[:argument][:display_name_short],
+            name: variable[:argument][:name],
+            value_type: variable[:argument][:value_type],
+            default_value: variable[:argument][:default_value],
+            value: variable[:argument][:default_value]
+          }
         end
 
         s
@@ -398,51 +394,47 @@ module OpenStudio
         s.measure_definition_version_uuid = hash[:measure_definition_version_uuid]
 
         s.type = hash[:measure_type] # this is actually the measure type
-        if hash[:arguments]
-          hash[:arguments].each do |arg|
-            # warn the user to we need to deprecate variable_type and use value_type (which is what os server uses)
-            var_type = arg[:value_type]
+        hash[:arguments]&.each do |arg|
+          # warn the user to we need to deprecate variable_type and use value_type (which is what os server uses)
+          var_type = arg[:value_type]
 
-            if var_type == 'choice'
-              # WARN the user that the measure had a "choice data type"
-              var_type = 'string'
-            end
-
-            s.arguments << {
-              display_name: arg[:display_name],
-              display_name_short: arg[:display_name_short],
-              name: arg[:name],
-              value_type: var_type,
-              default_value: arg[:default_value],
-              value: arg[:value]
-            }
+          if var_type == 'choice'
+            # WARN the user that the measure had a "choice data type"
+            var_type = 'string'
           end
+
+          s.arguments << {
+            display_name: arg[:display_name],
+            display_name_short: arg[:display_name_short],
+            name: arg[:name],
+            value_type: var_type,
+            default_value: arg[:default_value],
+            value: arg[:value]
+          }
         end
 
-        if hash[:variables]
-          hash[:variables].each do |variable|
-            # add the arguments first
-            s.arguments << {
-              display_name: variable[:argument][:display_name],
-              display_name_short: variable[:argument][:display_name_short],
-              name: variable[:argument][:name],
-              value_type: variable[:argument][:value_type],
-              default_value: variable[:argument][:default_value],
-              value: variable[:argument][:default_value]
-            }
+        hash[:variables]&.each do |variable|
+          # add the arguments first
+          s.arguments << {
+            display_name: variable[:argument][:display_name],
+            display_name_short: variable[:argument][:display_name_short],
+            name: variable[:argument][:name],
+            value_type: variable[:argument][:value_type],
+            default_value: variable[:argument][:default_value],
+            value: variable[:argument][:default_value]
+          }
 
-            var_options = {}
-            var_options[:variable_type] = variable[:variable_type]
-            var_options[:variable_display_name_short] = variable[:display_name_short]
-            var_options[:static_value] = variable[:static_value]
-            distribution = variable[:uncertainty_description]
-            distribution[:minimum] = variable[:minimum]
-            distribution[:mean] = distribution[:attributes].find { |a| a[:name] == 'modes' }[:value]
-            distribution[:maximum] = variable[:maximum]
-            distribution[:standard_deviation] = distribution[:attributes].find { |a| a[:name] == 'stddev' }[:value]
-            distribution[:step_size] = distribution[:attributes].find { |a| a[:name] == 'delta_x' }[:value]
-            s.make_variable(variable[:argument][:name], variable[:display_name], distribution, var_options)
-          end
+          var_options = {}
+          var_options[:variable_type] = variable[:variable_type]
+          var_options[:variable_display_name_short] = variable[:display_name_short]
+          var_options[:static_value] = variable[:static_value]
+          distribution = variable[:uncertainty_description]
+          distribution[:minimum] = variable[:minimum]
+          distribution[:mean] = distribution[:attributes].find { |a| a[:name] == 'modes' }[:value]
+          distribution[:maximum] = variable[:maximum]
+          distribution[:standard_deviation] = distribution[:attributes].find { |a| a[:name] == 'stddev' }[:value]
+          distribution[:step_size] = distribution[:attributes].find { |a| a[:name] == 'delta_x' }[:value]
+          s.make_variable(variable[:argument][:name], variable[:display_name], distribution, var_options)
         end
 
         s

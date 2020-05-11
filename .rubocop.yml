@@ -5,4 +5,4 @@ AllCops:
     - 'spec/files/worker_init/*'
 
 inherit_from:
-  - http://s3.amazonaws.com/openstudio-resources/styles/rubocop.yml
+  - http://s3.amazonaws.com/openstudio-resources/styles/rubocop_v3.yml

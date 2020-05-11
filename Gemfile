@@ -3,7 +3,6 @@ source 'http://rubygems.org'
 gemspec
 
 gem 'colored', '~> 1.2'
-gem 'dencity'
 gem 'openstudio-aws', '~> 0.4.2'
 
 group :test do
@@ -12,7 +11,4 @@ group :test do
     gem 'coveralls', require: false
   end
   gem 'ci_reporter_rspec'
-  gem 'rspec', '~> 3.4'
-  gem 'rubocop'
-  gem 'rubocop-checkstyle_formatter'
 end
