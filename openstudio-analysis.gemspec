@@ -22,7 +22,7 @@ Gem::Specification.new do |s|
   s.test_files    = s.files.grep(%r{^(test|spec|features)/})
   s.require_paths = ['lib']
 
-  s.add_dependency 'bcl', '~> 0.5.8'
+  s.add_dependency 'bcl', '= 0.5.8'
   s.add_dependency 'dencity', '~> 0.1.0'
   s.add_dependency 'faraday', '~> 0.14'
   s.add_dependency 'nokogiri', '~> 1.8.2' 
