@@ -1,5 +1,10 @@
 OpenStudio Analysis Gem Change Log
 ==================================
+
+Version 1.0.3
+-------------
+* Update dependencies roo and rubyzip
+
 Version 1.0.2
 -------------
 * Updates required for OpenStudio 3x

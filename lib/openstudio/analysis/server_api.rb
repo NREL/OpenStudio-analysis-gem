@@ -1,5 +1,5 @@
 # *******************************************************************************
-# OpenStudio(R), Copyright (c) 2008-2019, Alliance for Sustainable Energy, LLC.
+# OpenStudio(R), Copyright (c) 2008-2020, Alliance for Sustainable Energy, LLC.
 # All rights reserved.
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions are met:
@@ -152,10 +152,8 @@ module OpenStudio
         response = @conn.get "/projects/#{project_id}.json"
         if response.status == 200
           analyses = JSON.parse(response.body, symbolize_names: true, max_nesting: false)
-          if analyses[:analyses]
-            analyses[:analyses].each do |analysis|
-              analysis_ids << analysis[:_id]
-            end
+          analyses[:analyses]&.each do |analysis|
+            analysis_ids << analysis[:_id]
           end
         end
 
@@ -467,16 +465,12 @@ module OpenStudio
 
             formulation_json[:analysis][:problem][:workflow].each do |wf|
               wf[:uuid] = SecureRandom.uuid
-              if wf[:arguments]
-                wf[:arguments].each do |arg|
-                  arg[:uuid] = SecureRandom.uuid
-                end
+              wf[:arguments]&.each do |arg|
+                arg[:uuid] = SecureRandom.uuid
               end
-              if wf[:variables]
-                wf[:variables].each do |var|
-                  var[:uuid] = SecureRandom.uuid
-                  var[:argument][:uuid] = SecureRandom.uuid if var[:argument]
-                end
+              wf[:variables]&.each do |var|
+                var[:uuid] = SecureRandom.uuid
+                var[:argument][:uuid] = SecureRandom.uuid if var[:argument]
               end
             end
           else
