@@ -1,6 +1,10 @@
 OpenStudio Analysis Gem Change Log
 ==================================
 
+Version 1.0.4
+-------------
+* Update dependency nokogiri
+
 Version 1.0.3
 -------------
 * Update dependencies roo and rubyzip
