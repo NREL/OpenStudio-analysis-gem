@@ -151,7 +151,7 @@ describe OpenStudio::Analysis::Formulation do
   end
 
   it 'should create a new formulation' do
-    #a = OpenStudio::Analysis.create('my analysis')
+    a = OpenStudio::Analysis.create('my analysis')
     #p = 'spec/files/measures/SetThermostatSchedules'
 
     #a.workflow.add_measure_from_path('thermostat', 'thermostat', p)
