@@ -25,7 +25,7 @@ Gem::Specification.new do |s|
 
   s.add_dependency 'bcl', '~> 0.6.1'
   s.add_dependency 'dencity', '~> 0.1.0'
-  s.add_dependency 'faraday', '~> 0.14'
+  s.add_dependency 'faraday', '~> 1.0.1'
   s.add_dependency 'nokogiri', '~> 1.10.8'
   s.add_dependency 'roo', '~> 2.8.3'
   s.add_dependency 'rubyzip', '~> 2.3.0'
