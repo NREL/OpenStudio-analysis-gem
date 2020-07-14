@@ -70,13 +70,14 @@ module OpenStudio
 
         if Dir.exist?(local_path_to_measure) && File.directory?(local_path_to_measure)
           # Watch out for namespace conflicts (use ::BCL)
-          b = ::BCL::ComponentMethods.new
+          #b = ::BCL::ComponentMethods.new
           measure_hash = nil
-          unless File.exist?(File.join(local_path_to_measure, 'measure.json'))
-            measure_hash = b.parse_measure_file(nil, File.join(local_path_to_measure, measure_filename))
-            File.open(File.join(local_path_to_measure, 'measure.json'), 'w') { |f| f << JSON.pretty_generate(measure_hash) }
-            warn("measure.json not found in #{local_path_to_measure}, will parse measure file using BCL gem")
-          end
+          #unless File.exist?(File.join(local_path_to_measure, 'measure.json'))
+          #  measure_hash = b.parse_measure_file(nil, File.join(local_path_to_measure, measure_filename))
+          #  File.open(File.join(local_path_to_measure, 'measure.json'), 'w') { |f| f << JSON.pretty_generate(measure_hash) }
+          #  warn("measure.json not found in #{local_path_to_measure}, will parse measure file using BCL gem")
+             warn("measure.json not on BCL anymore")
+          #end
 
           if measure_hash.nil? && File.exist?(File.join(local_path_to_measure, 'measure.json'))
             measure_hash = JSON.parse(File.read(File.join(local_path_to_measure, 'measure.json')), symbolize_names: true)
