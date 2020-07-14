@@ -61,36 +61,7 @@ module OpenStudio
       # @param local_path_to_measure [String] This is the local path to the measure directory, relative or absolute. It is used when zipping up all the measures.
       # @return [Object] Returns the measure that was added as an OpenStudio::AnalysisWorkflowStep object
       def add_measure_from_path(instance_name, instance_display_name, local_path_to_measure)
-        measure_filename = 'measure.rb'
-
-        if File.exist?(local_path_to_measure) && File.file?(local_path_to_measure)
-          measure_filename = File.basename(local_path_to_measure)
-          local_path_to_measure = File.dirname(local_path_to_measure)
-        end
-
-        if Dir.exist?(local_path_to_measure) && File.directory?(local_path_to_measure)
-          # Watch out for namespace conflicts (use ::BCL)
-          #b = ::BCL::ComponentMethods.new
-          measure_hash = nil
-          #unless File.exist?(File.join(local_path_to_measure, 'measure.json'))
-          #  measure_hash = b.parse_measure_file(nil, File.join(local_path_to_measure, measure_filename))
-          #  File.open(File.join(local_path_to_measure, 'measure.json'), 'w') { |f| f << JSON.pretty_generate(measure_hash) }
-          #  warn("measure.json not found in #{local_path_to_measure}, will parse measure file using BCL gem")
-             warn("measure.json not on BCL anymore")
-          #end
-
-          if measure_hash.nil? && File.exist?(File.join(local_path_to_measure, 'measure.json'))
-            measure_hash = JSON.parse(File.read(File.join(local_path_to_measure, 'measure.json')), symbolize_names: true)
-          elsif measure_hash.nil?
-            raise 'measure.json was not found and was not automatically created'
-          end
-
-          add_measure(instance_name, instance_display_name, local_path_to_measure, measure_hash)
-        else
-          raise "could not find measure to add to workflow #{local_path_to_measure}"
-        end
-
-        @items.last
+          warn("measure.json not used anymore")
       end
 
       # Add a measure from the custom hash format without reading the measure.rb or measure.json file
