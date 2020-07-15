@@ -1,5 +1,5 @@
-class RotateBuilding < OpenStudio::Ruleset::ModelUserScript
+class SetWindowToWallRatioByFacade < OpenStudio::Measure::ModelMeasure
   # not a real measure
 end # end the measure
 
-RotateBuilding.new.registerWithApplication
+SetWindowToWallRatioByFacade.new.registerWithApplication

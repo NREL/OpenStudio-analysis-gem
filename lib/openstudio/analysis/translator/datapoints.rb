@@ -482,7 +482,7 @@ module OpenStudio
 
           if measure_string =~ /OpenStudio::Ruleset::WorkspaceUserScript/
             return 'EnergyPlusMeasure'
-          elsif measure_string =~ /OpenStudio::Ruleset::ModelUserScript/
+          elsif measure_string =~ /OpenStudio::Measure::ModelMeasure/
             return 'RubyMeasure'
           elsif measure_string =~ /OpenStudio::Ruleset::ReportingUserScript/
             return 'ReportingMeasure'

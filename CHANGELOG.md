@@ -1,6 +1,11 @@
 OpenStudio Analysis Gem Change Log
 ==================================
 
+Version 1.0.5
+-------------
+* Upgrade to latest BCL (0.6.1)
+* Upgrade Faraday (1.0.1)
+
 Version 1.0.4
 -------------
 * Update dependency nokogiri

@@ -1,5 +1,5 @@
 #start the measure
-class RotateBuilding < OpenStudio::Ruleset::ModelUserScript
+class RotateBuilding < OpenStudio::Measure::ModelMeasure
 
   #define the name that a user will see
   def name
