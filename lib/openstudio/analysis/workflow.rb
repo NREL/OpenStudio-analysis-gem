@@ -53,15 +53,34 @@ module OpenStudio
         @items.clear
       end
 
-      # Add a measure to the workflow from a path. Inside the path it is expecting to have a measure.json file
-      # if not, the BCL gem is used to create the measure.json file.
+      # Add a measure to the workflow from a path. This will parse the measure.xml which must exist.
       #
       # @params instance_name [String] The name of the instance. This allows for multiple measures to be added to the workflow with uni que names
       # @params instance_display_name [String] The display name of the instance. This allows for multiple measures to be added to the workflow with unique names
       # @param local_path_to_measure [String] This is the local path to the measure directory, relative or absolute. It is used when zipping up all the measures.
       # @return [Object] Returns the measure that was added as an OpenStudio::AnalysisWorkflowStep object
       def add_measure_from_path(instance_name, instance_display_name, local_path_to_measure)
-          warn("measure.json not used anymore")
+        measure_filename = 'measure.rb'
+
+        if File.exist?(local_path_to_measure) && File.file?(local_path_to_measure)
+          measure_filename = File.basename(local_path_to_measure)
+          local_path_to_measure = File.dirname(local_path_to_measure)
+        end
+
+        if Dir.exist?(local_path_to_measure) && File.directory?(local_path_to_measure)
+          measure_hash = nil
+          if File.exist?(File.join(local_path_to_measure, 'measure.xml'))
+            measure_hash = parse_measure_xml(File.join(local_path_to_measure, 'measure.xml'))
+          else
+            raise "Could not find measure.xml"
+          end
+
+          add_measure(instance_name, instance_display_name, local_path_to_measure, measure_hash)
+        else
+          raise "could not find measure to add to workflow #{local_path_to_measure}"
+        end
+
+        @items.last
       end
 
       # Add a measure from the custom hash format without reading the measure.rb or measure.json file

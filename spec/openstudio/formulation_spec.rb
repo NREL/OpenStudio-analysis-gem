@@ -152,10 +152,10 @@ describe OpenStudio::Analysis::Formulation do
 
   it 'should create a new formulation' do
     a = OpenStudio::Analysis.create('my analysis')
-    #p = 'spec/files/measures/SetThermostatSchedules'
+    p = 'spec/files/measures/SetThermostatSchedules'
 
-    #a.workflow.add_measure_from_path('thermostat', 'thermostat', p)
-    #m = a.workflow.add_measure_from_path('thermostat_2', 'thermostat 2', p)
+    a.workflow.add_measure_from_path('thermostat', 'thermostat', p)
+    m = a.workflow.add_measure_from_path('thermostat_2', 'thermostat 2', p)
 
     d = {
       type: 'uniform',
@@ -163,12 +163,12 @@ describe OpenStudio::Analysis::Formulation do
       maximum: 7,
       mean: 6.2
     }
-    #m.make_variable('cooling_sch', 'Change the cooling schedule', d)
-    #m.argument_value('heating_sch', 'some-string')
+    m.make_variable('cooling_sch', 'Change the cooling schedule', d)
+    m.argument_value('heating_sch', 'some-string')
 
-    #expect(a.workflow.measures.size).to eq 2
-    #expect(a.workflow.measures[1].arguments[3][:value]).to eq 'some-string'
-    #expect(a.workflow.measures[1].variables[0][:uuid]).to match /[\w]{8}(-[\w]{4}){3}-[\w]{12}/
+    expect(a.workflow.measures.size).to eq 2
+    expect(a.workflow.measures[1].arguments[3][:value]).to eq 'some-string'
+    expect(a.workflow.measures[1].variables[0][:uuid]).to match /[\w]{8}(-[\w]{4}){3}-[\w]{12}/
 
     a.analysis_type = 'single_run'
     a.algorithm.set_attribute('sample_method', 'all_variables')
@@ -195,6 +195,6 @@ describe OpenStudio::Analysis::Formulation do
     expect(a.analysis_type).to eq 'single_run'
 
     dp_hash = a.to_static_data_point_hash
-    #expect(dp_hash[:data_point][:set_variable_values].values).to eq ['*No Change*']
+    expect(dp_hash[:data_point][:set_variable_values].values).to eq ['*No Change*']
   end
 end

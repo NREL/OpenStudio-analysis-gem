@@ -1,8 +1,8 @@
 <measure>
   <schema_version>3.0</schema_version>
   <name>increase_insulation_r_value_for_roofs</name>
-  <uid>a5be6c96-4ecc-47fa-8d32-f4216ebc2e7d</uid>
-  <version_id>f17efdf7-17f7-40d6-9a1b-af32e285d3c2</version_id>
+  <uid>5fdd943e-ddd1-44b4-ae2d-94373fd71a78</uid>
+  <version_id>c7800259-d525-4a08-b70d-dd261ca13353</version_id>
   <version_modified>20200715T151411Z</version_modified>
   <xml_checksum>49BEF039</xml_checksum>
   <class_name>IncreaseInsulationRValueForRoofs</class_name>

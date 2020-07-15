@@ -96,7 +96,7 @@ module OpenStudio
             step_hash[:modeler_description] = step[:modeler_description] if step[:modeler_description]
             step_hash[:taxonomy] = step[:taxonomy] if step[:taxonomy]
             step_hash[:measure_type] = step[:measure_type]
-            step_hash[:measure_type] = 'ModelMeasure' if step_hash[:measure_type] == 'RubyMeasure'
+            step_hash[:measure_type] = 'ModelMeasure'
             @steps << step_hash
           end
         end

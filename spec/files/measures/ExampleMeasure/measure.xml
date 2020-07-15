@@ -1,8 +1,8 @@
 <measure>
   <schema_version>3.0</schema_version>
   <name>example_measure_auto_directory_name</name>
-  <uid>a5be6c96-4ecc-47fa-8d32-f4216ebc2e7d</uid>
-  <version_id>03e443b4-1b04-437b-84c8-99954d65866b</version_id>
+  <uid>318edb8d-9514-4818-9578-608dc3fc1ba2</uid>
+  <version_id>5e40babf-f692-4747-8db0-cd125d438c3f</version_id>
   <version_modified>20200715T153157Z</version_modified>
   <xml_checksum>49BEF039</xml_checksum>
   <class_name>ExampleMeasureAutoDirectoryName</class_name>

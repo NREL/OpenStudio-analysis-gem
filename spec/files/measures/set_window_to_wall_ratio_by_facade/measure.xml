@@ -1,8 +1,8 @@
 <measure>
   <schema_version>3.0</schema_version>
   <name>set_window_to_wall_ratio_by_facade</name>
-  <uid>a5be6c96-4ecc-47fa-8d32-f4216ebc2e7d</uid>
-  <version_id>e42fba3c-1534-4276-9caf-bde35acff4bc</version_id>
+  <uid>128ed74e-3d59-4197-86bc-18f1bfa7fd01</uid>
+  <version_id>3b9f0f76-c0df-4f3b-abf6-9c761ff47cf0</version_id>
   <version_modified>20200715T152726Z</version_modified>
   <xml_checksum>49BEF039</xml_checksum>
   <class_name>SetWindowToWallRatioByFacade</class_name>

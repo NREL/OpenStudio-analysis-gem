@@ -1,8 +1,8 @@
 <measure>
   <schema_version>3.0</schema_version>
   <name>reduce_lighting_loads_by_percentage</name>
-  <uid>a5be6c96-4ecc-47fa-8d32-f4216ebc2e7d</uid>
-  <version_id>579dddc9-91f8-4c3c-afcb-9007350a735e</version_id>
+  <uid>f2ff7b71-8ad5-45fc-88aa-4b919aac35f9</uid>
+  <version_id>8dfff1ed-8d54-4d83-b6bb-9379161e325c</version_id>
   <version_modified>20200715T153157Z</version_modified>
   <xml_checksum>49BEF039</xml_checksum>
   <class_name>ReduceLightingLoadsByPercentage</class_name>

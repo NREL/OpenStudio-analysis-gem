@@ -1,8 +1,8 @@
 <measure>
   <schema_version>3.0</schema_version>
   <name>rotate_building</name>
-  <uid>a5be6c96-4ecc-47fa-8d32-f4216ebc2e7d</uid>
-  <version_id>26287d36-cda6-42b8-b12d-b874f31d1ec7</version_id>
+  <uid>66ce0dbc-2020-4e65-a5b3-cfb054179dc6</uid>
+  <version_id>8816b5be-667e-418c-9efb-9b31dd019a77</version_id>
   <version_modified>20200715T152005Z</version_modified>
   <xml_checksum>49BEF039</xml_checksum>
   <class_name>RotateBuilding</class_name>

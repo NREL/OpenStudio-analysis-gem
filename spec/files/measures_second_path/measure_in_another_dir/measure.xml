@@ -1,8 +1,8 @@
 <measure>
   <schema_version>3.0</schema_version>
   <name>measure_in_another_dir</name>
-  <uid>a5be6c96-4ecc-47fa-8d32-f4216ebc2e7d</uid>
-  <version_id>0e8d5116-f0db-49fe-8f72-55eb67258665</version_id>
+  <uid>f29ecdfc-6cf9-41e8-a031-7fec6aca20e5</uid>
+  <version_id>3381ced8-a763-4c81-ad1b-4260db68119e</version_id>
   <version_modified>20200715T152946Z</version_modified>
   <xml_checksum>49BEF039</xml_checksum>
   <class_name>MeasureInAnotherDir</class_name>

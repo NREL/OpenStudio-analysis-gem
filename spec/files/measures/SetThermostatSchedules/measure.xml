@@ -1,8 +1,8 @@
 <measure>
   <schema_version>3.0</schema_version>
   <name>set_thermostat_schedules</name>
-  <uid>a5be6c96-4ecc-47fa-8d32-f4216ebc2e7d</uid>
-  <version_id>867c172c-84f1-477a-a1c8-dfbafceb5806</version_id>
+  <uid>e4d0f93b-d6f4-4dea-bbe4-4de179013971</uid>
+  <version_id>bf4a8498-9ec6-4c13-afb7-26499b4e0e11</version_id>
   <version_modified>20200715T152005Z</version_modified>
   <xml_checksum>49BEF039</xml_checksum>
   <class_name>SetThermostatSchedules</class_name>
