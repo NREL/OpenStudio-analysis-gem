@@ -58,7 +58,7 @@ module OpenStudio
         attr_accessor :name
         attr_reader :analysis_name
 
-        require 'nokogiri'
+        require 'rexml/document'
 
         # Pass in the filename to read
         def initialize(csv_filename)
@@ -368,16 +368,16 @@ module OpenStudio
           data = []
           measures.each_with_index do |measure, measure_index|
             data[measure_index] = {}
-            measure_xml, measure_type = find_measure(measure.to_s)
+            measure_parsed = find_measure(measure.to_s)
 
-            raise "Could not find measure #{measure} xml in measure_paths: '#{@measure_paths.join("\n")}'" unless measure_xml
+            raise "Could not find measure #{measure} xml in measure_paths: '#{@measure_paths.join("\n")}'" unless measure_parsed
             measure_data = {}
-            measure_data[:classname] = measure_xml.xpath('/measure/class_name').text
-            measure_data[:name] = measure_xml.xpath('/measure/name').text
-            measure_data[:display_name] = measure_xml.xpath('/measure/display_name').text
-            measure_data[:measure_type] = measure_type
-            measure_data[:uid] = measure_xml.xpath('/measure/uid').text
-            measure_data[:version_id] = measure_xml.xpath('/measure/version_id').text
+            measure_data[:classname] = measure_parsed[:classname]
+            measure_data[:name] = measure_parsed[:name]
+            measure_data[:display_name] = measure_parsed[:display_name]
+            measure_data[:measure_type] = measure_parsed[:measure_type]
+            measure_data[:uid] = measure_parsed[:uid]
+            measure_data[:version_id] = measure_parsed[:version_id]
             data[measure_index][:measure_data] = measure_data
             data[measure_index][:vars] = []
             vars = measure_map[measure]
@@ -389,8 +389,8 @@ module OpenStudio
               next if var.to_s == 'None'
               var_hash = {}
               found_arg = nil
-              measure_xml.xpath('/measure/arguments/argument').each do |arg|
-                if var.to_s == '__SKIP__' || arg.xpath('name').text == var.to_s
+              measure_parsed[:arguments].each do |arg|
+                if var.to_s == '__SKIP__' || arg[:name] == var.to_s
                   found_arg = arg
                   break
                 end
@@ -404,8 +404,8 @@ module OpenStudio
                 var_type = 'boolean'
                 var_units = ''
               else
-                var_type = found_arg.xpath('type').text.downcase
-                var_units = found_arg.xpath('units')
+                var_type = found_arg[:variable_type].downcase
+                var_units = found_arg[:units]
               end
 
               var_hash[:name] = var.to_s
@@ -437,7 +437,8 @@ module OpenStudio
               var_hash[:distribution][:type] = 'discrete'
               var_hash[:distribution][:units] = var_hash[:units]
               if var_hash[:type] == 'choice'
-                var_hash[:distribution][:enumerations] = found_arg.xpath('choices/choice').map { |s| s.xpath('value').text }
+                # var_hash[:distribution][:enumerations] = found_arg.xpath('choices/choice').map { |s| s.xpath('value').text }
+                # This would need to be updated if we want to do this again... sorry.
               elsif var_hash[:type] == 'bool'
                 var_hash[:distribution][:enumerations] = []
                 var_hash[:distribution][:enumerations] << true
@@ -447,13 +448,13 @@ module OpenStudio
             end
             data[measure_index][:args] = []
 
-            measure_xml.xpath('/measure/arguments/argument').each do |arg_xml|
+            measure_parsed[:arguments].each do |arg_xml|
               arg = {}
-              arg[:value_type] = arg_xml.xpath('type').text.downcase
-              arg[:name] = arg_xml.xpath('name').text.downcase
-              arg[:display_name] = arg_xml.xpath('display_name').text.downcase
+              arg[:value_type] = arg_xml[:variable_type]
+              arg[:name] = arg_xml[:name]
+              arg[:display_name] = arg_xml[:display_name].downcase
               arg[:display_name_short] = arg[:display_name]
-              arg[:default_value] = arg_xml.xpath('default_value').text.downcase
+              arg[:default_value] = arg_xml[:default_value].downcase
               arg[:value] = arg[:default_value]
               data[measure_index][:args] << arg
             end
@@ -470,27 +471,12 @@ module OpenStudio
             measure_xml = File.join(mp, measure_name, 'measure.xml')
             measure_rb = File.join(mp, measure_name, 'measure.rb')
             if File.exist?(measure_xml) && File.exist?(measure_rb)
-              return Nokogiri::XML File.read(measure_xml), parse_measure_type(measure_rb)
+              measure_parsed = parse_measure_xml(measure_xml)
+              return measure_parsed
             end
           end
 
-          return nil, nil
-        end
-
-        def parse_measure_type(measure_filename)
-          measure_string = File.read(measure_filename)
-
-          if measure_string =~ /OpenStudio::Ruleset::WorkspaceUserScript/
-            return 'EnergyPlusMeasure'
-          elsif measure_string =~ /OpenStudio::Measure::ModelMeasure/
-            return 'RubyMeasure'
-          elsif measure_string =~ /OpenStudio::Ruleset::ReportingUserScript/
-            return 'ReportingMeasure'
-          elsif measure_string =~ /OpenStudio::Ruleset::UtilityUserScript/
-            return 'UtilityUserScript'
-          else
-            raise "measure type is unknown with an inherited class in #{measure_filename}"
-          end
+          return nil
         end
       end
     end

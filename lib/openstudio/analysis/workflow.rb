@@ -83,12 +83,12 @@ module OpenStudio
         @items.last
       end
 
-      # Add a measure from the custom hash format without reading the measure.rb or measure.json file
+      # Add a measure from the custom hash format without reading the measure.rb or measure.xml file
       #
       # @params instance_name [String] The name of the instance. This allows for multiple measures to be added to the workflow with unique names
       # @params instance_display_name [String] The display name of the instance. This allows for multiple measures to be added to the workflow with unique names
       # @param local_path_to_measure [String] This is the local path to the measure directory, relative or absolute. It is used when zipping up all the measures.
-      # @param measure_metadata [Hash] Format of the measure.json
+      # @param measure_metadata [Hash] Format of the measure.xml in JSON format
       # @return [Object] Returns the measure that was added as an OpenStudio::AnalysisWorkflowStep object
       def add_measure(instance_name, instance_display_name, local_path_to_measure, measure_metadata)
         @items << OpenStudio::Analysis::WorkflowStep.from_measure_hash(instance_name, instance_display_name, local_path_to_measure, measure_metadata)
@@ -101,7 +101,7 @@ module OpenStudio
       # @params instance_name [String] The name of the instance. This allows for multiple measures to be added to the workflow with unique names
       # @params instance_display_name [String] The display name of the instance. This allows for multiple measures to be added to the workflow with unique names
       # @param local_path_to_measure [String] This is the local path to the measure directory, relative or absolute. It is used when zipping up all the measures.
-      # @param measure_metadata [Hash] Format of the measure.json
+      # @param measure_metadata [Hash] Format of the measure.xml in JSON format
       # @return [Object] Returns the measure that was added as an OpenStudio::AnalysisWorkflowStep object
       def add_measure_from_analysis_hash(instance_name, instance_display_name, local_path_to_measure, measure_metadata)
         @items << OpenStudio::Analysis::WorkflowStep.from_analysis_hash(instance_name, instance_display_name, local_path_to_measure, measure_metadata)

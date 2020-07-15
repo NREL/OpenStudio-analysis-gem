@@ -40,7 +40,6 @@ def parse_measure_xml(measure_xml_filename)
   xml_to_parse = File.open(measure_xml_filename)
   xml_root = REXML::Document.new(xml_to_parse).root
 
-  # puts xml_root
   # pull out some information
   measure_hash[:classname] = xml_root.elements['//measure/class_name'].text
   measure_hash[:name] = xml_root.elements['//measure/name'].text
@@ -54,16 +53,15 @@ def parse_measure_xml(measure_xml_filename)
   measure_hash[:arguments] = []
 
   REXML::XPath.each(xml_root, '//measure/arguments/argument' ) do |arg|
+
     measure_hash[:arguments] << {
         name: arg.elements['name'].text,
         display_name: arg.elements['display_name'].text,
-        variable_type: arg.elements['type'].text,
-        default_value: arg.elements['default_value'].text
+        variable_type: arg.elements['type'].text.downcase,
+        default_value: arg.elements['default_value'].text,
+        units: arg.elements['units'] ? arg.elements['units'].text : ''
     }
   end
-
-  # require 'prettyprint'
-  # pp measure_hash
 
   measure_hash
 end
