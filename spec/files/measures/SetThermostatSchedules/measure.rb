@@ -2,7 +2,7 @@
 # http://openstudio.nrel.gov/openstudio-measure-writing-guide
 
 #start the measure
-class SetThermostatSchedules < OpenStudio::Ruleset::ModelUserScript
+class SetThermostatSchedules < OpenStudio::Measure::ModelMeasure
   
   #define the name that a user will see, this method may be deprecated as
   #the display name in PAT comes from the name field in measure.xml
@@ -237,9 +237,8 @@ class SetThermostatSchedules < OpenStudio::Ruleset::ModelUserScript
     
     return true
  
-  end #end the run method
-
-end #end the measure
+  end
+end
 
 #this allows the measure to be use by the application
 SetThermostatSchedules.new.registerWithApplication

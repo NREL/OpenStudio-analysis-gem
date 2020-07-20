@@ -43,23 +43,32 @@ describe OpenStudio::Analysis::WorkflowStep do
   end
 
   it 'should add a measure' do
-    h = 'spec/files/measures/IncreaseInsulationRValueForRoofs/measure.json'
+    # convert XML to hash
+    xml_file = 'spec/files/measures/IncreaseInsulationRValueForRoofs/measure.xml'
+    h = parse_measure_xml(xml_file)
     s = OpenStudio::Analysis::WorkflowStep.from_measure_hash(
       'my_instance',
       'my instance display name',
-      h,
-      JSON.parse(File.read(h), symbolize_names: true)
+      xml_file,
+      h
     )
-    puts s
+
+    expect(s.name).to eq 'my_instance'
+    expect(s.measure_definition_class_name).to eq 'IncreaseInsulationRValueForRoofs'
+    expect(s.type).to eq 'ModelMeasure'
+    expect(s.measure_definition_uuid).to eq '5fdd943e-ddd1-44b4-ae2d-94373fd71a78'
+    expect(s.measure_definition_version_uuid).to eq 'c7800259-d525-4a08-b70d-dd261ca13353'
+
   end
 
   it 'should tag a discrete variable' do
-    h = 'spec/files/measures/SetThermostatSchedules/measure.json'
+    xml_file = 'spec/files/measures/SetThermostatSchedules/measure.xml'
+    h = parse_measure_xml(xml_file)
     measure = OpenStudio::Analysis::WorkflowStep.from_measure_hash(
       'my_instance',
       'my instance display name',
-      h,
-      JSON.parse(File.read(h), symbolize_names: true)
+      xml_file,
+      h
     )
 
     expect(measure.name).to eq 'my_instance'
@@ -76,12 +85,13 @@ describe OpenStudio::Analysis::WorkflowStep do
   end
 
   it 'should tag a continuous variable' do
-    h = 'spec/files/measures/SetThermostatSchedules/measure.json'
+    xml_file = 'spec/files/measures/SetThermostatSchedules/measure.xml'
+    h = parse_measure_xml(xml_file)
     measure = OpenStudio::Analysis::WorkflowStep.from_measure_hash(
       'my_instance',
       'my instance display name',
-      h,
-      JSON.parse(File.read(h), symbolize_names: true)
+      xml_file,
+      h
     )
 
     expect(measure.name).to eq 'my_instance'
@@ -105,12 +115,14 @@ describe OpenStudio::Analysis::WorkflowStep do
   end
 
   it 'should tag a normal continuous variable' do
-    h = 'spec/files/measures/SetThermostatSchedules/measure.json'
+    xml_file = 'spec/files/measures/SetThermostatSchedules/measure.xml'
+    h = parse_measure_xml(xml_file)
+
     measure = OpenStudio::Analysis::WorkflowStep.from_measure_hash(
       'my_instance',
       'my instance display name',
-      h,
-      JSON.parse(File.read(h), symbolize_names: true)
+      xml_file,
+      h
     )
 
     expect(measure.name).to eq 'my_instance'
@@ -131,12 +143,13 @@ describe OpenStudio::Analysis::WorkflowStep do
   end
 
   it 'should tag a uniform variable' do
-    h = 'spec/files/measures/SetThermostatSchedules/measure.json'
+    xml_file = 'spec/files/measures/SetThermostatSchedules/measure.xml'
+    h = parse_measure_xml(xml_file)
     measure = OpenStudio::Analysis::WorkflowStep.from_measure_hash(
       'my_instance',
       'my instance display name',
-      h,
-      JSON.parse(File.read(h), symbolize_names: true)
+      xml_file,
+      h
     )
 
     expect(measure.name).to eq 'my_instance'

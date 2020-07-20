@@ -1,5 +1,5 @@
-class ExampleMeasure < OpenStudio::Ruleset::ModelUserScript
+class ExampleMeasure < OpenStudio::Measure::ModelMeasure
   # not a real measure
 end # end the measure
 
-IncreaseInsulationRValueForRoofs.new.registerWithApplication
+ExampleMeasure.new.registerWithApplication

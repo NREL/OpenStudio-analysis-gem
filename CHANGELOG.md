@@ -1,6 +1,13 @@
 OpenStudio Analysis Gem Change Log
 ==================================
 
+Version 1.0.5
+-------------
+* Upgrade to latest BCL (0.6.1)
+* Remove need for measure.json (which has been deprecated in BCL gem)
+* Upgrade Faraday (1.0.1)
+* Remove dependency on Nokogiri
+
 Version 1.0.4
 -------------
 * Update dependency nokogiri
