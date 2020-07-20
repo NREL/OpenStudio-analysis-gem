@@ -60,7 +60,7 @@ module OpenStudio
         @name = ''
         @display_name = ''
 
-        # The type of item being added (RubyMeasure, EnergyPlusMeasure, ...)
+        # The type of item being added (ModelMeasure, EnergyPlusMeasure, ...)
         @type = nil
 
         @measure_definition_class_name = nil
@@ -267,15 +267,12 @@ module OpenStudio
       #
       # @param instance_name [String] Machine name of the instance
       # @param instance_display_name [String] Display name of the instance
-      # @param path_to_measure [String] This is the local path to the measure directroy, relative or absolute. It is used when zipping up all the measures.
-      # @param hash [Hash] Measure hash in the format of the measure.json (from the Analysis Spreadsheet project)
+      # @param path_to_measure [String] This is the local path to the measure directory, relative or absolute. It is used when zipping up all the measures.
+      # @param hash [Hash] Measure hash in the format of a converted measure.xml hash (from the Analysis Spreadsheet project)
       # @param options [Hash] Optional arguments
       # @option options [Boolean] :ignore_not_found Do not raise an exception if the measure could not be found on the machine
       # @return [Object] Returns the OpenStudio::Analysis::WorkflowStep
       def self.from_measure_hash(instance_name, instance_display_name, path_to_measure, hash, options = {})
-        # TODO: Validate the hash
-        # TODO: validate that the measure exists?
-
         if File.directory? path_to_measure
           path_to_measure = File.join(path_to_measure, 'measure.rb')
         end
@@ -352,7 +349,7 @@ module OpenStudio
       # @param instance_name [String] Machine name of the instance
       # @param instance_display_name [String] Display name of the instance
       # @param path_to_measure [String] This is the local path to the measure directroy, relative or absolute. It is used when zipping up all the measures.
-      # @param hash [Hash] Measure hash in the format of the measure.json (from the Analysis Spreadsheet project)
+      # @param hash [Hash] Measure hash in the format of the measure.xml converted to JSON (from the Analysis Spreadsheet project)
       # @param options [Hash] Optional arguments
       # @option options [Boolean] :ignore_not_found Do not raise an exception if the measure could not be found on the machine
       # @return [Object] Returns the OpenStudio::Analysis::WorkflowStep
