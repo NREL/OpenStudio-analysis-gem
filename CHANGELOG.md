@@ -1,6 +1,10 @@
 OpenStudio Analysis Gem Change Log
 ==================================
 
+Version 1.0.6
+-------------
+* Always include ../lib to the file paths to search
+
 Version 1.0.5
 -------------
 * Upgrade to latest BCL (0.6.1)

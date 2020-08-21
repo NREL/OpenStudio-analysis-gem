@@ -52,14 +52,13 @@ def parse_measure_xml(measure_xml_filename)
   measure_hash[:version_id] = xml_root.elements['//measure/version_id'].text
   measure_hash[:arguments] = []
 
-  REXML::XPath.each(xml_root, '//measure/arguments/argument' ) do |arg|
-
+  REXML::XPath.each(xml_root, '//measure/arguments/argument') do |arg|
     measure_hash[:arguments] << {
-        name: arg.elements['name'].text,
-        display_name: arg.elements['display_name'].text,
-        variable_type: arg.elements['type'].text.downcase,
-        default_value: arg.elements['default_value'].text,
-        units: arg.elements['units'] ? arg.elements['units'].text : ''
+      name: arg.elements['name'].text,
+      display_name: arg.elements['display_name'].text,
+      variable_type: arg.elements['type'].text.downcase,
+      default_value: arg.elements['default_value'].text,
+      units: arg.elements['units'] ? arg.elements['units'].text : ''
     }
   end
 
