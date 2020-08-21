@@ -58,7 +58,6 @@ describe OpenStudio::Analysis::WorkflowStep do
     expect(s.type).to eq 'ModelMeasure'
     expect(s.measure_definition_uuid).to eq '5fdd943e-ddd1-44b4-ae2d-94373fd71a78'
     expect(s.measure_definition_version_uuid).to eq 'c7800259-d525-4a08-b70d-dd261ca13353'
-
   end
 
   it 'should tag a discrete variable' do

@@ -65,6 +65,7 @@ module OpenStudio
           @osw_version = '0.0.1'
           @options = options
           @file_paths = options[:file_paths] ? options[:file_paths] : []
+          @file_paths << '../lib'
           @measure_paths = options[:measure_paths] ? options[:measure_paths] : []
 
           # Initialize static inputs from the OSA
