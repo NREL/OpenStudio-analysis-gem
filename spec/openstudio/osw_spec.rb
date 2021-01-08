@@ -65,8 +65,8 @@ describe OpenStudio::Analysis::Translator::Workflow do
       expect(@translator.osa).not_to eq({})
     end
 
-    it 'should not have measure or file paths' do
-      expect(@translator.file_paths).to eq([])
+    it 'should not have measure_paths and ../lib in file paths' do
+      expect(@translator.file_paths).to eq(['../lib'])
       expect(@translator.measure_paths).to eq([])
     end
 

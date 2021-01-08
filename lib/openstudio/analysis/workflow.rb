@@ -72,7 +72,7 @@ module OpenStudio
           if File.exist?(File.join(local_path_to_measure, 'measure.xml'))
             measure_hash = parse_measure_xml(File.join(local_path_to_measure, 'measure.xml'))
           else
-            raise "Could not find measure.xml"
+            raise 'Could not find measure.xml'
           end
 
           add_measure(instance_name, instance_display_name, local_path_to_measure, measure_hash)
