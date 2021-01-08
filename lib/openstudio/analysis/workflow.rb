@@ -262,29 +262,30 @@ module OpenStudio
 
         o = OpenStudio::Analysis::Workflow.new
 
-        h[:workflow].each do |wf|
-          puts "Adding measure #{wf[:name]}"
+        if h[:workflow]
+          h[:workflow].each do |wf|
+            puts "Adding measure #{wf[:name]}"
 
-          # Go though the defined measure paths and try and find the local measure
-          local_measure_dir = nil
-          if wf[:measure_definition_directory_local] && Dir.exist?(wf[:measure_definition_directory_local])
-            local_measure_dir = wf[:measure_definition_directory_local]
-          else
-            # search in the measure paths for the measure
-            OpenStudio::Analysis.measure_paths.each do |p|
-              test_dir = File.join(p, File.basename(wf[:measure_definition_directory]))
-              if Dir.exist?(test_dir)
-                local_measure_dir = test_dir
-                break
+            # Go though the defined measure paths and try and find the local measure
+            local_measure_dir = nil
+            if wf[:measure_definition_directory_local] && Dir.exist?(wf[:measure_definition_directory_local])
+              local_measure_dir = wf[:measure_definition_directory_local]
+            else
+              # search in the measure paths for the measure
+              OpenStudio::Analysis.measure_paths.each do |p|
+                test_dir = File.join(p, File.basename(wf[:measure_definition_directory]))
+                if Dir.exist?(test_dir)
+                  local_measure_dir = test_dir
+                  break
+                end
               end
             end
+
+            raise "Could not find local measure when loading workflow for #{wf[:measure_definition_class_name]} in #{File.basename(wf[:measure_definition_directory])}. You may have to add measure paths to OpenStudio::Analysis.measure_paths" unless local_measure_dir
+
+            o.add_measure_from_analysis_hash(wf[:name], wf[:display_name], local_measure_dir, wf)
           end
-
-          raise "Could not find local measure when loading workflow for #{wf[:measure_definition_class_name]} in #{File.basename(wf[:measure_definition_directory])}. You may have to add measure paths to OpenStudio::Analysis.measure_paths" unless local_measure_dir
-
-          o.add_measure_from_analysis_hash(wf[:name], wf[:display_name], local_measure_dir, wf)
         end
-
         o
       end
 

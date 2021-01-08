@@ -197,4 +197,11 @@ describe OpenStudio::Analysis::Formulation do
     dp_hash = a.to_static_data_point_hash
     expect(dp_hash[:data_point][:set_variable_values].values).to eq ['*No Change*']
   end
+  
+  it 'should load the urbanopt workflow from a file' do
+    OpenStudio::Analysis.measure_paths << 'spec/files/measures'
+    a = OpenStudio::Analysis.create('workflow')
+    file = File.join('spec/files/workflow/UrbanOpt.json')
+    expect(a.workflow = OpenStudio::Analysis::Workflow.from_file(file)).not_to be nil
+  end
 end
