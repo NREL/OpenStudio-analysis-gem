@@ -115,7 +115,7 @@ describe OpenStudio::Analysis::Translator::Workflow do
       end
     end
   end
-  
+
   context 'write individual osws' do
     let(:osa_path) { 'analysis.osa' }
 
