@@ -69,11 +69,11 @@ module OpenStudio
           @measure_paths = options[:measure_paths] ? options[:measure_paths] : []
 
           # Initialize static inputs from the OSA
-          @seed_file = File.basename(@osa[:seed][:path])
+          !@osa[:seed].nil? ? @seed_file = File.basename(@osa[:seed][:path]) : @seed_file = ''
           if @options[:seed]
             @seed_file = @options[:seed]
           end
-          @weather_file = File.basename(@osa[:weather_file][:path])
+          !@osa[:weather_file].nil? ? @weather_file = File.basename(@osa[:weather_file][:path]) : @weather_file = ''
           @osa_id = @osa[:_id]
           @steps = []
           @osa[:problem][:workflow].each_with_index do |step, i|

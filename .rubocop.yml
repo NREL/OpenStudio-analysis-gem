@@ -3,6 +3,7 @@ AllCops:
     - 'spec/files/measures/**/*'
     - 'spec/files/measures_second_path/**/*'
     - 'spec/files/worker_init/*'
+    - 'update_license.rb'
 
 inherit_from:
   - http://s3.amazonaws.com/openstudio-resources/styles/rubocop_v3.yml

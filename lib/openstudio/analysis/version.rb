@@ -35,6 +35,8 @@
 
 module OpenStudio
   module Analysis
-    VERSION = '1.0.6'.freeze
+    # format should be ^.*\-{1}[a-z]+[0-9]+
+    # for example: -rc1, -beta6, -customusecase0
+    VERSION = '1.1.0-rc1'.freeze
   end
 end

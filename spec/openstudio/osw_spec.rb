@@ -80,6 +80,42 @@ describe OpenStudio::Analysis::Translator::Workflow do
     end
   end
 
+  context 'read in the urbanopt osa' do
+    let(:osa_path) { File.expand_path 'UrbanOpt.json' }
+
+    before(:each) do
+      Dir.chdir 'spec/files/workflow'
+      @translator = OpenStudio::Analysis::Translator::Workflow.new(osa_path)
+    end
+
+    after(:each) do
+      Dir.chdir '../../..'
+    end
+
+    it 'should find and load the osa' do
+      expect(@translator).not_to be_nil
+    end
+
+    it 'should load the analysis' do
+      expect(@translator.osa.class).to eq(Hash)
+      expect(@translator.osa).not_to eq({})
+    end
+
+    it 'should not have measure_paths and ../lib in file paths' do
+      expect(@translator.file_paths).to eq(['../lib'])
+      expect(@translator.measure_paths).to eq([])
+    end
+
+    it 'should have steps' do
+      expect(@translator.steps.class).to eq(Array)
+      expect(@translator.steps).not_to eq([])
+      @translator.steps.each do |step|
+        expect(step.class).to eq(Hash)
+        expect(step).not_to eq({})
+      end
+    end
+  end
+
   context 'write individual osws' do
     let(:osa_path) { 'analysis.osa' }
 
