@@ -21,9 +21,9 @@ Gem::Specification.new do |s|
   s.executables = s.files.grep(%r{^exe/}) { |f| File.basename(f) }
   s.require_paths = ['lib']
 
-  s.required_ruby_version = '~> 2.5.0'
+  s.required_ruby_version = '~> 2.7.0'
 
-  s.add_dependency 'bcl', '~> 0.6.1'
+  s.add_dependency 'bcl', '~> 0.7.0'
   s.add_dependency 'dencity', '~> 0.1.0'
   s.add_dependency 'faraday', '~> 1.0.1'
   s.add_dependency 'roo', '~> 2.8.3'
