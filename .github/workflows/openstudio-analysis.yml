@@ -1,0 +1,23 @@
+name: openstudio-analysis-gem
+ 
+on: [push, pull_request]
+
+jobs:
+  ubuntu-1804: # ruby 2.5 workflow
+    if: github.event.pull_request.base.ref == '1.1.X-LTS'  # check target branch of pr
+    runs-on: ubuntu-18.04
+    steps:
+    - name: Check out repository
+      uses: actions/checkout@v2
+    - name: ruby-install
+      shell: bash
+      run: "apt install -y ruby && ruby -v" # ruby anye tests here when ready 
+  ubuntu-2004: # ruby 2.7 workflow
+    if: github.event.pull_request.base.ref != '1.1.X-LTS'  # check target branch of pr
+    runs-on: ubuntu-20.04
+    steps:
+    - name: Check out repository
+      uses: actions/checkout@v2
+    - name: ruby-install
+      shell: bash
+      run: "apt install -y ruby && ruby -v" # run any tests here when ready 
