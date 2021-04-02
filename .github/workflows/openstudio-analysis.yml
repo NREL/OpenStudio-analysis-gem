@@ -16,8 +16,24 @@ jobs:
     if: github.event.pull_request.base.ref != '1.1.X-LTS'  # check target branch of pr
     runs-on: ubuntu-20.04
     steps:
-    - name: Check out repository
+    -
+      name: Check out repository
       uses: actions/checkout@v2
-    - name: ruby-install
+    -
+      name: ruby-install
       shell: bash
-      run: "sudo apt install -y ruby && ruby -v" # run any tests here when ready 
+      run: "sudo apt install -y ruby && ruby -v" # run any tests here when ready
+    -
+      name: Display system info
+      run: |
+        ruby --version
+        docker --version
+        docker-compose --version
+    -
+      name: Start OpenStudio for testing Server API
+      run: |
+        echo "Not yet implemented"
+    -
+      name: Run tests in Docker
+      run: |
+        docker run -v $(pwd):/var/simdata/openstudio nrel/openstudio:3.1.1-alpha-ruby272-dev /bin/bash -c "bundle install && bundle exec rake"

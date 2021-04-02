@@ -1,6 +1,6 @@
 # OpenStudio Analysis Gem
 
-[![Build Status](https://travis-ci.org/NREL/OpenStudio-analysis-gem.svg?branch=develop)](https://travis-ci.org/NREL/OpenStudio-analysis-gem)
+[![Build Status](https://github.com/NREL/OpenStudio-analysis-gem/actions/workflows/openstudio-analysis.yml/badge.svg?branch=develop)](https://github.com/NREL/OpenStudio-analysis-gem/actions/workflows/openstudio-analysis.yml)
 [![Coverage Status](https://coveralls.io/repos/NREL/OpenStudio-analysis-gem/badge.svg?branch=develop)](https://coveralls.io/r/NREL/OpenStudio-analysis-gem?branch=develop)
 [![Gem Version](https://badge.fury.io/rb/openstudio-analysis.svg)](https://badge.fury.io/rb/openstudio-analysis)
 
