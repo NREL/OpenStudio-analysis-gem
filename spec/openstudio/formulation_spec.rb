@@ -1,5 +1,5 @@
 # *******************************************************************************
-# OpenStudio(R), Copyright (c) 2008-2020, Alliance for Sustainable Energy, LLC.
+# OpenStudio(R), Copyright (c) 2008-2021, Alliance for Sustainable Energy, LLC.
 # All rights reserved.
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions are met:
@@ -196,5 +196,12 @@ describe OpenStudio::Analysis::Formulation do
 
     dp_hash = a.to_static_data_point_hash
     expect(dp_hash[:data_point][:set_variable_values].values).to eq ['*No Change*']
+  end
+
+  it 'should load the urbanopt workflow from a file' do
+    OpenStudio::Analysis.measure_paths << 'spec/files/measures'
+    a = OpenStudio::Analysis.create('workflow')
+    file = File.join('spec/files/workflow/UrbanOpt.json')
+    expect(a.workflow = OpenStudio::Analysis::Workflow.from_file(file)).not_to be nil
   end
 end

@@ -1,6 +1,6 @@
 # OpenStudio Analysis Gem
 
-[![Build Status](https://travis-ci.org/NREL/OpenStudio-analysis-gem.svg?branch=develop)](https://travis-ci.org/NREL/OpenStudio-analysis-gem)
+[![Build Status](https://github.com/NREL/OpenStudio-analysis-gem/actions/workflows/openstudio-analysis.yml/badge.svg?branch=develop)](https://github.com/NREL/OpenStudio-analysis-gem/actions/workflows/openstudio-analysis.yml)
 [![Coverage Status](https://coveralls.io/repos/NREL/OpenStudio-analysis-gem/badge.svg?branch=develop)](https://coveralls.io/r/NREL/OpenStudio-analysis-gem?branch=develop)
 [![Gem Version](https://badge.fury.io/rb/openstudio-analysis.svg)](https://badge.fury.io/rb/openstudio-analysis)
 
@@ -81,8 +81,8 @@ Follow the steps below when releasing a new version:
 3. Run rubocop and make sure code meets coding standards.
 4. Push release candidate on a branch.
 5. Create a pull request to develop. Once the tests pass, merge into develop. 
-6. Create a pull request to master. Once tests pass, then merge into master.
-7. Checkout master and run `rake release`
+6. Create a pull request to main. Once tests pass, then merge into main.
+7. Checkout main and run `rake release`
 
 # Todos
 
