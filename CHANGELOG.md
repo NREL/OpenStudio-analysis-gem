@@ -1,7 +1,7 @@
 OpenStudio Analysis Gem Change Log
 ==================================
 
-Version 1.1.0 (Unreleased)
+Version 1.1.0
 --------------------------
 * Allow for blank :seed, :weather_file and :workflow sections of OSA
 
