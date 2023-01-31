@@ -330,21 +330,24 @@ module OpenStudio
       
       #create OSA from OSW
       def osw_to_osa(osw_filename)
-        #load OSW
+        #load OSW so we can loop over [:steps]
         if File.exist? osw_filename  #will this work for both rel and abs paths?
           osw = JSON.parse(File.read(osw_filename), symbolize_names: true)
         else
           raise "Could not find workflow file #{osw_filename}"
         end
         
+        #set the weather and seed files if set in OSW
         self.weather_file = osw[:weather_file] ? osw[:weather_file] : nil
         self.seed_model = osw[:seed_file] ? osw[:seed_file] : nil
 
         #loop over OSW 'steps' and map over measures
         #there is no name/display name in the OSW. Just measure directory name
         #read measure.XML from directory to get name / display name
-        #increment _1 if there are duplicates
-
+        #increment name by +_1 if there are duplicates
+        #add measure
+        #change default args to osw arg values 
+        
         osw[:steps].each do |step|
           #get measure directory
           measure_dir = step[:measure_dir_name]
@@ -364,9 +367,21 @@ module OpenStudio
             name = "#{xml[:name]}_#{count}"
             display_name = "#{xml[:display_name]} #{count}"
           end   
-          #add measure
-          #@workflow.add_measure_from_path(name, display_name, measure_dir)  #this uses the path in the OSW which could be relative          
+          #Add Measure to workflow
           @workflow.add_measure_from_path(name, display_name, measure_dir_abs_path)  #this forces to an absolute path which seems constent with PAT
+          #@workflow.add_measure_from_path(name, display_name, measure_dir)  #this uses the path in the OSW which could be relative          
+          
+          #Change the default argument values to the osw values
+          #1. find measure in @workflow
+          m = @workflow.find_measure(name)
+          #2. loop thru osw args
+          step[:arguments].each do |k,v|
+            #check if argument is in measure, otherwise setting argument_value will crash
+            raise "OSW arg: #{k} is not in Measure: #{name}" if m.arguments.find_all { |a| a[:name] == k.to_s }.empty?
+            #set measure arg to match osw arg
+            m.argument_value(k.to_s, v)
+          end
+          
         end
       end
 

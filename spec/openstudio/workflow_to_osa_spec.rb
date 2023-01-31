@@ -58,6 +58,11 @@ describe 'OSW_to_OSA' do
     m = a.workflow.find_measure('add_monthly_json_utility_data')
     expect(m.argument_names).to eq ["__SKIP__", "json", "variable_name", "fuel_type", "consumption_unit", "data_key_name", "start_date", "end_date", "remove_existing_data", "set_runperiod"]
     
+    #check argument is a Boolean and is True (default is false)
+    arg = m.arguments.find_all { |a| a[:name] == 'remove_existing_data' }
+    expect(arg[0][:value].class).to be TrueClass
+    expect(arg[0][:value]).to eq(true)
+    
     m = a.workflow.find_measure('add_monthly_json_utility_data_2')
     expect(m.argument_names).to eq ["__SKIP__", "json", "variable_name", "fuel_type", "consumption_unit", "data_key_name", "start_date", "end_date", "remove_existing_data", "set_runperiod"]
     
@@ -69,10 +74,16 @@ describe 'OSW_to_OSA' do
 
     expect(a.workflow.all_variables.size).to eq 0
     
-    #check arguments are of the correct type
+    #check arguments are of the correct type adn value
     arg = m.arguments.find_all { |a| a[:name] == 'vent_perc_change' }
     expect(arg[0][:value].is_a? Float).to be true
-    #expect(arg[0][:value]).to eq(10.0)
+    expect(arg[0][:value]).to eq(10.0)
+    
+    #check luminaire_perc_change did not change since its not in OSW
+    arg = m.arguments.find_all { |a| a[:name] == 'luminaire_perc_change' }
+    expect(arg[0][:value].is_a? Float).to be true
+    expect(arg[0][:value]).to eq(0.0)
+    
   end
 
 end
