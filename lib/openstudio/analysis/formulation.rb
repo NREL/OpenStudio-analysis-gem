@@ -321,6 +321,46 @@ module OpenStudio
 
         save_analysis_zip(filename)
       end
+      
+      #create OSA from OSW
+      def osw_to_osa(osw_filename)
+        #load OSW
+        if File.exist? osw_filename
+          osw = JSON.parse(File.read(osw_filename), symbolize_names: true)
+        else
+          raise "Could not find workflow file #{osw_filename}"
+        end
+        
+        self.weather_file = osw[:weather_file] ? osw[:weather_file] : nil
+        self.seed_model = osw[:seed_file] ? osw[:seed_file] : nil
+
+        #loop over OSW 'steps' and map over measures
+        #there is no name/display name in the OSW. Just measure directory name
+        #read measure.XML from directory to get name / display name
+        #increment _1 if there are duplicates
+
+        osw[:steps].each do |step|
+          #get measure directory
+          measure_dir = step[:measure_dir_name]
+          measure_name = measure_dir.split("measures/").last
+          #get XML
+          xml = parse_measure_xml(File.join(File.expand_path(step[:measure_dir_name]), 'measure.xml'))
+          #add check for previous names _+1
+          count = 1
+          name = xml[:name]
+          display_name = xml[:display_name]
+          loop do
+            measure = @workflow.find_measure(name)
+            break if measure.nil?
+
+            count += 1
+            name = "#{xml[:name]}_#{count}"
+            display_name = "#{xml[:display_name]} #{count}"
+          end   
+          #add measure
+          @workflow.add_measure_from_path(name, display_name, measure_dir)
+        end
+      end
 
       private
 
