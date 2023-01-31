@@ -325,7 +325,7 @@ module OpenStudio
       #create OSA from OSW
       def osw_to_osa(osw_filename)
         #load OSW
-        if File.exist? osw_filename
+        if File.exist? osw_filename  #will this work for both rel and abs paths?
           osw = JSON.parse(File.read(osw_filename), symbolize_names: true)
         else
           raise "Could not find workflow file #{osw_filename}"
@@ -344,7 +344,8 @@ module OpenStudio
           measure_dir = step[:measure_dir_name]
           measure_name = measure_dir.split("measures/").last
           #get XML
-          xml = parse_measure_xml(File.join(File.expand_path(step[:measure_dir_name]), 'measure.xml'))
+          measure_dir_abs_path = File.join(File.dirname(File.expand_path(osw_filename)),measure_dir)
+          xml = parse_measure_xml(File.join(measure_dir_abs_path, '/measure.xml'))       
           #add check for previous names _+1
           count = 1
           name = xml[:name]
@@ -358,7 +359,8 @@ module OpenStudio
             display_name = "#{xml[:display_name]} #{count}"
           end   
           #add measure
-          @workflow.add_measure_from_path(name, display_name, measure_dir)
+          #@workflow.add_measure_from_path(name, display_name, measure_dir)  #this uses the path in the OSW which could be relative          
+          @workflow.add_measure_from_path(name, display_name, measure_dir_abs_path)  #this forces to an absolute path which seems constent with PAT
         end
       end
 
