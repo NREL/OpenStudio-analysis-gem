@@ -215,6 +215,12 @@ module OpenStudio
           end
 
           h[:analysis][:file_format_version] = version
+          h[:analysis][:cli_debug] = "--debug"
+          h[:analysis][:cli_verbose] = "--verbose"
+          h[:analysis][:run_workflow_timeout] = 28800
+          h[:analysis][:upload_results_timeout] = 28800
+          h[:analysis][:initialize_worker_timeout] = 28800
+          h[:analysis][:server_scripts] = {}
 
           # This is a hack right now, but after the initial hash is created go back and add in the objective functions
           # to the the algorithm as defined in the output_variables list
