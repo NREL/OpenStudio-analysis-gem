@@ -34,6 +34,7 @@
 # *******************************************************************************
 
 require 'spec_helper'
+require 'json-schema'
 
 describe 'OSW_to_OSA' do
 
@@ -84,6 +85,10 @@ describe 'OSW_to_OSA' do
     expect(arg[0][:value].is_a? Float).to be true
     expect(arg[0][:value]).to eq(0.0)
     
+    #validate OSA against schema
+    osa_schema = JSON.parse(File.read('spec/schema/osa_server_schema.json'), symbolize_names: true)
+    errors = JSON::Validator.fully_validate(osa_schema, a.to_hash)
+    expect(errors.empty?).to eq(true), "OSA is not valid, #{errors}"
   end
 
 end
