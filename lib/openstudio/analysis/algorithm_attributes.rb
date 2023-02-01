@@ -42,7 +42,11 @@ module OpenStudio
       # Create a new instance of an algorithm
       #
       def initialize
-        @attributes = {}
+        @attributes = {
+        "seed": nil,
+        "failed_f_value": 1000000000000000000,
+        "debug_messages": 1
+        }
       end
 
       def set_attribute(attribute_name, attribute_value)

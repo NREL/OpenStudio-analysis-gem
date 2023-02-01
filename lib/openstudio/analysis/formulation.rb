@@ -341,6 +341,9 @@ module OpenStudio
         self.weather_file = osw[:weather_file] ? osw[:weather_file] : nil
         self.seed_model = osw[:seed_file] ? osw[:seed_file] : nil
 
+        #set analysis_type default to Single_Run
+        self.analysis_type = 'single_run'
+
         #loop over OSW 'steps' and map over measures
         #there is no name/display name in the OSW. Just measure directory name
         #read measure.XML from directory to get name / display name
