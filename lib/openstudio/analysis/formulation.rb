@@ -328,8 +328,8 @@ module OpenStudio
         save_analysis_zip(filename)
       end
       
-      #create OSA from OSW
-      def osw_to_osa(osw_filename)
+      #convert an OSW to an OSA
+      def convert_osw(osw_filename)
         #load OSW so we can loop over [:steps]
         if File.exist? osw_filename  #will this work for both rel and abs paths?
           osw = JSON.parse(File.read(osw_filename), symbolize_names: true)

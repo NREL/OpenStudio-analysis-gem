@@ -36,7 +36,7 @@
 require 'spec_helper'
 require 'json-schema'
 
-describe 'OSW_to_OSA' do
+describe 'Convert_an_OSW_to_OSA' do
 
   it 'should load an OSW from file and make OSA' do
     
@@ -52,7 +52,7 @@ describe 'OSW_to_OSA' do
     expect(a.workflow).not_to be nil
     
     #put OSW into OSA.workflow
-    output = a.osw_to_osa(osw_file)
+    output = a.convert_osw(osw_file)
     expect(output).not_to be nil
     
     #expect measures to be in OSA workflow
