@@ -466,7 +466,7 @@ module OpenStudio
             if File.directory? lib[:file]
               Dir[File.join(lib[:file], '**', '**')].each do |file|
                 puts "  Adding #{file}"
-                zf.add(file.sub(lib[:file], "lib/#{lib[:metadata][:library_name]}/"), file)
+                zf.add(file.sub(lib[:file], "lib/#{lib[:metadata][:library_name]}"), file)
               end
             else
               # just add the file to the zip

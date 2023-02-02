@@ -58,6 +58,11 @@ describe 'Convert_an_OSW_to_OSA' do
     #expect measures to be in OSA workflow
     m = a.workflow.find_measure('add_monthly_json_utility_data')
     expect(m.argument_names).to eq ["__SKIP__", "json", "variable_name", "fuel_type", "consumption_unit", "data_key_name", "start_date", "end_date", "remove_existing_data", "set_runperiod"]
+
+    #check arguments are of the correct type and value
+    arg = m.arguments.find_all { |a| a[:name] == 'json' }
+    expect(arg[0][:value].is_a? String).to be true
+    expect(arg[0][:value]).to eq('../../../data/electric.json')
     
     #check argument is a Boolean and is True (default is false)
     arg = m.arguments.find_all { |a| a[:name] == 'remove_existing_data' }
@@ -67,6 +72,11 @@ describe 'Convert_an_OSW_to_OSA' do
     m = a.workflow.find_measure('add_monthly_json_utility_data_2')
     expect(m.argument_names).to eq ["__SKIP__", "json", "variable_name", "fuel_type", "consumption_unit", "data_key_name", "start_date", "end_date", "remove_existing_data", "set_runperiod"]
     
+    #check arguments are of the correct type and value
+    arg = m.arguments.find_all { |a| a[:name] == 'json' }
+    expect(arg[0][:value].is_a? String).to be true
+    expect(arg[0][:value]).to eq('../../../data/natural_gas.json')
+    
     m = a.workflow.find_measure('general_calibration_measure_percent_change')
     expect(m.argument_names).to eq ["__SKIP__", "space_type", "space", "lights_perc_change", "luminaire_perc_change", "ElectricEquipment_perc_change", "GasEquipment_perc_change", "OtherEquipment_perc_change", "people_perc_change", "mass_perc_change", "infil_perc_change", "vent_perc_change"]
     
@@ -75,7 +85,7 @@ describe 'Convert_an_OSW_to_OSA' do
 
     expect(a.workflow.all_variables.size).to eq 0
     
-    #check arguments are of the correct type adn value
+    #check arguments are of the correct type and value
     arg = m.arguments.find_all { |a| a[:name] == 'vent_perc_change' }
     expect(arg[0][:value].is_a? Float).to be true
     expect(arg[0][:value]).to eq(10.0)
@@ -91,6 +101,11 @@ describe 'Convert_an_OSW_to_OSA' do
     errors = JSON::Validator.fully_validate(osa_schema, a.to_hash)
     expect(errors.empty?).to eq(true), "OSA is not valid, #{errors}"
     
+    #Add directory Data to libraries, contains calibration data jsons.  would get unzipped to /lib/folder on server
+    expect(a.libraries.add('spec/files/osw_project/Data', {library_name: 'calibration_data'})).to eq(true)
+    expect(a.libraries.size).to eq(1)
+    expect(a.libraries[0]).to eq({:file=>"spec/files/osw_project/Data", :metadata=>{:library_name=>"calibration_data"}})
+    
     #make project zip file
     a.save_osa_zip('spec/files/osw_project/analysis.zip')
     # Open the zip file
@@ -102,6 +117,8 @@ describe 'Convert_an_OSW_to_OSA' do
     expect(zip_file.find_entry("measures/CalibrationReportsEnhanced/measure.rb")).to be_truthy
     expect(zip_file.find_entry("measures/CalibrationReportsEnhanced/resources/report.html.in")).to be_truthy
     expect(zip_file.find_entry("measures/GeneralCalibrationMeasurePercentChange/measure.rb")).to be_truthy
+    expect(zip_file.find_entry("lib/calibration_data/electric.json")).to be_truthy
+    expect(zip_file.find_entry("lib/calibration_data/natural_gas.json")).to be_truthy
     end
   end
 
