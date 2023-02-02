@@ -92,7 +92,7 @@ describe 'Convert_an_OSW_to_OSA' do
     expect(errors.empty?).to eq(true), "OSA is not valid, #{errors}"
     
     #make project zip file
-    a.save_zip('spec/files/osw_project/analysis.zip')
+    a.save_osa_zip('spec/files/osw_project/analysis.zip')
     # Open the zip file
     Zip::File.open('spec/files/osw_project/analysis.zip') do |zip_file|
     # Verify that the expected files are present in the zip file

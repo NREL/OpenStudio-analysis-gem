@@ -329,6 +329,15 @@ module OpenStudio
         save_analysis_zip(filename)
       end
       
+      
+      def save_osa_zip(filename)
+        filename += '.zip' if File.extname(filename) == ''
+
+        FileUtils.mkdir_p File.dirname(filename) unless Dir.exist? File.dirname(filename)
+
+        save_analysis_zip_osa(filename)
+      end
+      
       #convert an OSW to an OSA
       def convert_osw(osw_filename)
         #load OSW so we can loop over [:steps]
@@ -392,9 +401,9 @@ module OpenStudio
 
       private
 
-      # Package up the seed, weather files, and measures
-      def save_analysis_zip(filename)
-        def add_directory_to_zip(zipfile, local_directory, relative_zip_directory)
+      # New format for OSAs. Package up the seed, weather files, and measures
+      def save_analysis_zip_osa(filename)
+        def add_directory_to_zip_osa(zipfile, local_directory, relative_zip_directory)
           puts "Add Directory #{local_directory}"
           Dir[File.join(local_directory.to_s, '**', '**')].each do |file|
             puts "Adding File #{file}"
@@ -510,7 +519,7 @@ module OpenStudio
               if File.directory?(file)
                 if File.basename(file) == 'resources' || File.basename(file) == 'lib'
                   #remove leading ./ from measure_definition_directory path if there.
-                  add_directory_to_zip(zf, file, "#{measure.measure_definition_directory.sub(/^\.\//, '')}/#{File.basename(file)}")
+                  add_directory_to_zip_osa(zf, file, "#{measure.measure_definition_directory.sub(/^\.\//, '')}/#{File.basename(file)}")
                 end
               else
                 puts "    Adding File #{file}"
@@ -523,6 +532,119 @@ module OpenStudio
 
             added_measures << measure_dir_to_add
             puts "added_measures: #{added_measures}"
+          end
+        end
+      end
+      
+      #keep legacy function
+      # Package up the seed, weather files, and measures
+      def save_analysis_zip(filename)
+        def add_directory_to_zip(zipfile, local_directory, relative_zip_directory)
+          # puts "Add Directory #{local_directory}"
+          Dir[File.join(local_directory.to_s, '**', '**')].each do |file|
+            # puts "Adding File #{file}"
+            zipfile.add(file.sub(local_directory, relative_zip_directory), file)
+          end
+          zipfile
+        end
+
+        FileUtils.rm_f(filename) if File.exist?(filename)
+
+        Zip::File.open(filename, Zip::File::CREATE) do |zf|
+          ## Weather files
+          # TODO: eventually remove the @weather_file attribute and grab the weather file out
+          # of the @weather_files
+          puts 'Adding Support Files: Weather'
+          if @weather_file[:file] && !@weather_files.files.find { |f| @weather_file[:file] == f[:file] }
+            # manually add the weather file
+            puts "  Adding #{@weather_file[:file]}"
+            zf.add("./weather/#{File.basename(@weather_file[:file])}", @weather_file[:file])
+          end
+          @weather_files.each do |f|
+            puts "  Adding #{f[:file]}"
+            zf.add("./weather/#{File.basename(f[:file])}", f[:file])
+          end
+
+          ## Seed files
+          puts 'Adding Support Files: Seed Models'
+          if @seed_model[:file] && !@seed_models.files.find { |f| @seed_model[:file] == f[:file] }
+            # manually add the weather file
+            puts "  Adding #{@seed_model[:file]}"
+            zf.add("./seed/#{File.basename(@seed_model[:file])}", @seed_model[:file])
+          end
+          @seed_models.each do |f|
+            puts "  Adding #{f[:file]}"
+            zf.add("./seed/#{File.basename(f[:file])}", f[:file])
+          end
+
+          puts 'Adding Support Files: Libraries'
+          @libraries.each do |lib|
+            raise "Libraries must specify their 'library_name' as metadata which becomes the directory upon zip" unless lib[:metadata][:library_name]
+
+            if File.directory? lib[:file]
+              Dir[File.join(lib[:file], '**', '**')].each do |file|
+                puts "  Adding #{file}"
+                zf.add(file.sub(lib[:file], "./lib/#{lib[:metadata][:library_name]}/"), file)
+              end
+            else
+              # just add the file to the zip
+              puts "  Adding #{lib[:file]}"
+              zf.add(lib[:file], "./lib/#{File.basename(lib[:file])}", lib[:file])
+            end
+          end
+
+          puts 'Adding Support Files: Worker Initialization Scripts'
+          @worker_inits.each_with_index do |f, index|
+            ordered_file_name = "#{index.to_s.rjust(2, '0')}_#{File.basename(f[:file])}"
+            puts "  Adding #{f[:file]} as #{ordered_file_name}"
+            zf.add(f[:file].sub(f[:file], "./scripts/worker_initialization//#{ordered_file_name}"), f[:file])
+
+            if f[:metadata][:args]
+              arg_file = "#{File.basename(ordered_file_name, '.*')}.args"
+              file = Tempfile.new('arg')
+              file.write(f[:metadata][:args])
+              zf.add("./scripts/worker_initialization/#{arg_file}", file)
+              file.close
+            end
+          end
+
+          puts 'Adding Support Files: Worker Finalization Scripts'
+          @worker_finalizes.each_with_index do |f, index|
+            ordered_file_name = "#{index.to_s.rjust(2, '0')}_#{File.basename(f[:file])}"
+            puts "  Adding #{f[:file]} as #{ordered_file_name}"
+            zf.add(f[:file].sub(f[:file], "./scripts/worker_finalization/#{ordered_file_name}"), f[:file])
+
+            if f[:metadata][:args]
+              arg_file = "#{File.basename(ordered_file_name, '.*')}.args"
+              file = Tempfile.new('arg')
+              file.write(f[:metadata][:args])
+              zf.add("./scripts/worker_finalization/#{arg_file}", file)
+              file.close
+            end
+          end
+
+          ## Measures
+          puts 'Adding Measures'
+          added_measures = []
+          # The list of the measures should always be there, but make sure they are uniq
+          @workflow.each do |measure|
+            measure_dir_to_add = measure.measure_definition_directory_local
+
+            next if added_measures.include? measure_dir_to_add
+
+            puts "  Adding #{File.basename(measure_dir_to_add)}"
+            Dir[File.join(measure_dir_to_add, '**')].each do |file|
+              if File.directory?(file)
+                if File.basename(file) == 'resources' || File.basename(file) == 'lib'
+                  add_directory_to_zip(zf, file, "#{measure.measure_definition_directory}/#{File.basename(file)}")
+                end
+              else
+                # puts "Adding File #{file}"
+                zf.add(file.sub(measure_dir_to_add, "#{measure.measure_definition_directory}/"), file)
+              end
+            end
+
+            added_measures << measure_dir_to_add
           end
         end
       end
