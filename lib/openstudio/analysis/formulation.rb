@@ -134,29 +134,40 @@ module OpenStudio
       # @option output_hash [Float] :scaling_factor How to scale the objective function(s). Default: nil
       # @option output_hash [Integer] :objective_function_group If grouping objective functions, then group ID. Default: nil
       def add_output(output_hash)
-        output_hash = {
-          units: '',
-          objective_function: false,
-          objective_function_index: nil,
-          objective_function_target: nil,
-          objective_function_group: nil,
-          scaling_factor: nil
-        }.merge(output_hash)
-
-        # Check if the name is already been added. Note that if the name is added again, it will not update any of
-        # the fields
-        exist = @outputs.select { |o| o[:name] == output_hash[:name] }
-        if exist.empty?
+        # Check if the name is already been added.
+        exist = @outputs.find_index { |o| o[:name] == output_hash[:name] }
+        # if so, update the fields but keep objective_function_index the same
+        if exist
+          original = @outputs[exist]
+          if original[:objective_function] && !output_hash[:objective_function]
+            return @outputs
+          end
+          output = original.merge(output_hash)
+          output[:objective_function_index] = original[:objective_function_index]
+          @outputs[exist] = output
+        else
+          output = {
+            units: '',
+            objective_function: false,
+            objective_function_index: nil,
+            objective_function_target: nil,
+            #set default to nil or 1 if objective_function is true and this is not set
+            objective_function_group: (output_hash[:objective_function] ? 1 : nil),
+            scaling_factor: nil,
+            #set default to false or true if objective_function is true and this is not set
+            visualize: (output_hash[:objective_function] ? true : false),
+            metadata_id: nil,
+            export: true,
+          }.merge(output_hash)
+          
           # if the variable is an objective_function, then increment and
           # assign and objective function index
-          if output_hash[:objective_function]
+          if output[:objective_function]
             values = @outputs.select { |o| o[:objective_function] }
-            output_hash[:objective_function_index] = values.size # size is already +1
-          else
-            output_hash[:objective_function] = false
+            output[:objective_function_index] = values.size
           end
 
-          @outputs << output_hash
+          @outputs << output
         end
 
         @outputs

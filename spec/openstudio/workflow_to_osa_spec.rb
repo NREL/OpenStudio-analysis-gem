@@ -95,6 +95,70 @@ describe 'Convert_an_OSW_to_OSA' do
     expect(arg[0][:value].is_a? Float).to be true
     expect(arg[0][:value]).to eq(0.0)
     
+    #add output variable
+    a.add_output(
+          display_name: 'electricity_consumption_cvrmse',
+          name: 'CalibrationReportsEnhanced.electricity_consumption_cvrmse',
+          units: '%',
+          objective_function: true
+        )
+    expect(a.to_hash[:analysis][:output_variables].size).to eq 1
+    expect(a.to_hash[:analysis][:output_variables].last[:objective_function_group]).to eq 1
+    expect(a.to_hash[:analysis][:output_variables].last[:objective_function_index]).to eq 0
+    
+    a.add_output(
+          display_name: 'electricity_consumption_nmbe',
+          name: 'CalibrationReportsEnhanced.electricity_consumption_nmbe',
+          units: '%',
+          objective_function: true,
+          objective_function_group: 2
+        )
+    expect(a.to_hash[:analysis][:output_variables].size).to eq 2
+    expect(a.to_hash[:analysis][:output_variables].last[:objective_function_group]).to eq 2
+    expect(a.to_hash[:analysis][:output_variables].last[:objective_function_index]).to eq 1
+    
+    a.add_output(
+          display_name: 'natural_gas_consumption_cvrmse',
+          name: 'CalibrationReportsEnhanced.natural_gas_consumption_cvrmse',
+          units: '%',
+          objective_function: true
+        )
+    expect(a.to_hash[:analysis][:output_variables].size).to eq 3
+    expect(a.to_hash[:analysis][:output_variables].last[:objective_function_group]).to eq 1
+    expect(a.to_hash[:analysis][:output_variables].last[:objective_function_index]).to eq 2
+    
+    #change to objective_function_group 3
+    a.add_output(
+          display_name: 'natural_gas_consumption_cvrmse',
+          name: 'CalibrationReportsEnhanced.natural_gas_consumption_cvrmse',
+          units: '%',
+          objective_function: true,
+          objective_function_group: 3
+        )
+    expect(a.to_hash[:analysis][:output_variables].size).to eq 3
+    expect(a.to_hash[:analysis][:output_variables].last[:objective_function_group]).to eq 3
+    expect(a.to_hash[:analysis][:output_variables].last[:objective_function_index]).to eq 2
+    
+    a.add_output(
+          display_name: 'natural_gas_consumption_nmbe',
+          name: 'CalibrationReportsEnhanced.natural_gas_consumption_nmbe',
+          units: '%',
+          objective_function: true,
+          objective_function_group: 4
+        )
+    expect(a.to_hash[:analysis][:output_variables].size).to eq 4
+    expect(a.to_hash[:analysis][:output_variables].last[:objective_function_group]).to eq 4
+    expect(a.to_hash[:analysis][:output_variables].last[:objective_function_index]).to eq 3
+    
+    a.add_output(
+          display_name: 'electricity_ip',
+          name: 'OpenStudioResults.electricity_ip',
+          units: '%',
+        )   
+    expect(a.to_hash[:analysis][:output_variables].size).to eq 5
+    expect(a.to_hash[:analysis][:output_variables].last[:objective_function_group]).to eq nil
+    expect(a.to_hash[:analysis][:output_variables].last[:objective_function_index]).to eq nil
+    
     #validate OSA against schema
     File.write('spec/files/osw_project/analysis.json',JSON.pretty_generate(a.to_hash))
     osa_schema = JSON.parse(File.read('spec/schema/osa_server_schema.json'), symbolize_names: true)
