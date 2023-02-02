@@ -86,9 +86,23 @@ describe 'Convert_an_OSW_to_OSA' do
     expect(arg[0][:value]).to eq(0.0)
     
     #validate OSA against schema
+    File.write('spec/files/osw_project/analysis.json',JSON.pretty_generate(a.to_hash))
     osa_schema = JSON.parse(File.read('spec/schema/osa_server_schema.json'), symbolize_names: true)
     errors = JSON::Validator.fully_validate(osa_schema, a.to_hash)
     expect(errors.empty?).to eq(true), "OSA is not valid, #{errors}"
+    
+    #make project zip file
+    a.save_zip('spec/files/osw_project/analysis.zip')
+    # Open the zip file
+    Zip::File.open('spec/files/osw_project/analysis.zip') do |zip_file|
+    # Verify that the expected files are present in the zip file
+    expect(zip_file.find_entry("seeds/example_model.osm")).to be_truthy
+    expect(zip_file.find_entry("weather/USA_CO_Golden-NREL.724666_TMY3.epw")).to be_truthy
+    expect(zip_file.find_entry("measures/AddMonthlyJSONUtilityData/measure.rb")).to be_truthy
+    expect(zip_file.find_entry("measures/CalibrationReportsEnhanced/measure.rb")).to be_truthy
+    expect(zip_file.find_entry("measures/CalibrationReportsEnhanced/resources/report.html.in")).to be_truthy
+    expect(zip_file.find_entry("measures/GeneralCalibrationMeasurePercentChange/measure.rb")).to be_truthy
+    end
   end
 
 end
