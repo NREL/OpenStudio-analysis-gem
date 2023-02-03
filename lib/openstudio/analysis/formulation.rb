@@ -89,7 +89,7 @@ module OpenStudio
         @libraries = SupportFiles.new
         # @initialization_scripts = SupportFiles.new
       end
-
+     
       # Initialize or return the current workflow object
       #
       # @return [Object] An OpenStudio::Analysis::Workflow object
@@ -100,7 +100,13 @@ module OpenStudio
       # Define the type of analysis which is going to be running
       #
       # @param name [String] Name of the algorithm/analysis. (e.g. rgenoud, lhs, single_run)
-      attr_writer :analysis_type
+      def analysis_type=(value)
+        if OpenStudio::Analysis::AlgorithmAttributes::ANALYSIS_TYPES.include?(value)
+          @analysis_type = value
+        else
+          raise "Invalid analysis type. Allowed types: #{OpenStudio::Analysis::AlgorithmAttributes::ANALYSIS_TYPES}"
+        end
+      end
 
       # Path to the seed model
       #

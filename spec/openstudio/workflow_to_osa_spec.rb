@@ -98,7 +98,7 @@ describe 'Convert_an_OSW_to_OSA' do
     #add output variable
     a.add_output(
           display_name: 'electricity_consumption_cvrmse',
-          name: 'CalibrationReportsEnhanced.electricity_consumption_cvrmse',
+          name: 'calibration_reports_enhanced.electricity_consumption_cvrmse',
           units: '%',
           objective_function: true
         )
@@ -108,7 +108,7 @@ describe 'Convert_an_OSW_to_OSA' do
     
     a.add_output(
           display_name: 'electricity_consumption_nmbe',
-          name: 'CalibrationReportsEnhanced.electricity_consumption_nmbe',
+          name: 'calibration_reports_enhanced.electricity_consumption_nmbe',
           units: '%',
           objective_function: true,
           objective_function_group: 2
@@ -119,7 +119,7 @@ describe 'Convert_an_OSW_to_OSA' do
     
     a.add_output(
           display_name: 'natural_gas_consumption_cvrmse',
-          name: 'CalibrationReportsEnhanced.natural_gas_consumption_cvrmse',
+          name: 'calibration_reports_enhanced.natural_gas_consumption_cvrmse',
           units: '%',
           objective_function: true
         )
@@ -130,7 +130,7 @@ describe 'Convert_an_OSW_to_OSA' do
     #change to objective_function_group 3
     a.add_output(
           display_name: 'natural_gas_consumption_cvrmse',
-          name: 'CalibrationReportsEnhanced.natural_gas_consumption_cvrmse',
+          name: 'calibration_reports_enhanced.natural_gas_consumption_cvrmse',
           units: '%',
           objective_function: true,
           objective_function_group: 3
@@ -139,9 +139,10 @@ describe 'Convert_an_OSW_to_OSA' do
     expect(a.to_hash[:analysis][:output_variables].last[:objective_function_group]).to eq 3
     expect(a.to_hash[:analysis][:output_variables].last[:objective_function_index]).to eq 2
     
+    #add another objective_function
     a.add_output(
           display_name: 'natural_gas_consumption_nmbe',
-          name: 'CalibrationReportsEnhanced.natural_gas_consumption_nmbe',
+          name: 'calibration_reports_enhanced.natural_gas_consumption_nmbe',
           units: '%',
           objective_function: true,
           objective_function_group: 4
@@ -150,15 +151,29 @@ describe 'Convert_an_OSW_to_OSA' do
     expect(a.to_hash[:analysis][:output_variables].last[:objective_function_group]).to eq 4
     expect(a.to_hash[:analysis][:output_variables].last[:objective_function_index]).to eq 3
     
+    #add a non-objective_function output
     a.add_output(
           display_name: 'electricity_ip',
-          name: 'OpenStudioResults.electricity_ip',
+          name: 'openstudio_results.electricity_ip',
           units: '%',
         )   
     expect(a.to_hash[:analysis][:output_variables].size).to eq 5
     expect(a.to_hash[:analysis][:output_variables].last[:objective_function_group]).to eq nil
     expect(a.to_hash[:analysis][:output_variables].last[:objective_function_index]).to eq nil
     
+    #make sure [:algorithm][:objective_function] match the objective_functions from outputs
+    #this is method in analysis/formulation.rb .to_hash
+    ofs = a.outputs.map { |i| i[:name] if i[:objective_function] }.compact
+    expect(a.algorithm[:objective_functions]).to match ofs
+
+    #expect analysis_type = single_run which is default in convert_osw
+    expect(a.analysis_type).to match 'single_run'
+    #change analysis_type
+    expect(a.analysis_type = 'nsga_nrel').to match 'nsga_nrel'  
+    expect(a.analysis_type = 'single_run').to match 'single_run'      
+    #try setting bad analysis_type
+    expect { a.analysis_type = 'single_run2' }.to raise_error(RuntimeError, "Invalid analysis type. Allowed types: [\"spea_nrel\", \"rgenoud\", \"nsga_nrel\", \"lhs\", \"preflight\", \"morris\", \"sobol\", \"doe\", \"fast99\", \"ga\", \"gaisl\", \"single_run\", \"repeat_run\", \"batch_run\"]")
+
     #validate OSA against schema
     File.write('spec/files/osw_project/analysis.json',JSON.pretty_generate(a.to_hash))
     osa_schema = JSON.parse(File.read('spec/schema/osa_server_schema.json'), symbolize_names: true)
