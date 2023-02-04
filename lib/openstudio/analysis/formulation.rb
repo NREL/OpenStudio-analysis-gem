@@ -66,6 +66,7 @@ module OpenStudio
       attr_reader :worker_inits
       attr_reader :worker_finalizes
       attr_reader :libraries
+      attr_reader :server_scripts
 
       # Create an instance of the OpenStudio::Analysis::Formulation
       #
@@ -87,16 +88,9 @@ module OpenStudio
         @worker_inits = SupportFiles.new
         @worker_finalizes = SupportFiles.new
         @libraries = SupportFiles.new
-        # @initialization_scripts = SupportFiles.new
+        @server_scripts = ServerScripts.new
       end
      
-      # Initialize or return the current workflow object
-      #
-      # @return [Object] An OpenStudio::Analysis::Workflow object
-      #def workflow
-      #  @workflow ||= OpenStudio::Analysis::Workflow.new
-      #end
-
       # Define the type of analysis which is going to be running
       #
       # @param name [String] Name of the algorithm/analysis. (e.g. rgenoud, lhs, single_run)
@@ -238,6 +232,10 @@ module OpenStudio
           h[:analysis][:run_workflow_timeout] = 28800
           h[:analysis][:upload_results_timeout] = 28800
           h[:analysis][:initialize_worker_timeout] = 28800
+          #-BLB I dont think this does anything. server_scripts are run if they are in 
+          #the /scripts/analysis or /scripts/data_point directories
+          #but nothing is ever checked in the OSA.
+          #
           h[:analysis][:server_scripts] = {}
 
           # This is a hack right now, but after the initial hash is created go back and add in the objective functions
@@ -429,8 +427,9 @@ module OpenStudio
           end
           zipfile
         end
-
+        #delete file if exists
         FileUtils.rm_f(filename) if File.exist?(filename)
+        #get the full path to the OSW, since all Files/Dirs should be in same directory as the OSW
         puts "osw_path: #{@osw_path}"
         osw_full_path = File.dirname(File.expand_path(@osw_path))
         puts "osw_full_path: #{osw_full_path}"
@@ -450,11 +449,6 @@ module OpenStudio
           else
             raise "Weather file does not exist at: #{File.join(osw_full_path,@weather_file[:file].sub(/^\.\//, ''))}"
           end 
-          #weather_files is not in OSA anymore so remove
-          #@weather_files.each do |f|
-          #  puts "  Adding #{f[:file]}"
-          #  zf.add("weather/#{File.basename(f[:file])}", f[:file])
-          #end
 
           ## Seed files
           puts 'Adding Support Files: Seed Models'
@@ -470,11 +464,6 @@ module OpenStudio
           else
             raise "Seed file does not exist at: #{File.join(osw_full_path,@seed_model[:file].sub(/^\.\//, ''))}"
           end        
-          #seed_models is not in OSA anymore so remove
-          #@seed_models.each do |f|
-          #  puts "  Adding #{f[:file]}"
-          #  zf.add("seed/#{File.basename(f[:file])}", f[:file])
-          #end
 
           puts 'Adding Support Files: Libraries'
           @libraries.each do |lib|
@@ -492,32 +481,27 @@ module OpenStudio
             end
           end
 
-          puts 'Adding Support Files: Worker Initialization Scripts'
-          @worker_inits.each_with_index do |f, index|
-            ordered_file_name = "#{index.to_s.rjust(2, '0')}_#{File.basename(f[:file])}"
-            puts "  Adding #{f[:file]} as #{ordered_file_name}"
-            zf.add(f[:file].sub(f[:file], "scripts/worker_initialization/#{ordered_file_name}"), f[:file])
-
-            if f[:metadata][:args]
-              arg_file = "#{File.basename(ordered_file_name, '.*')}.args"
-              file = Tempfile.new('arg')
-              file.write(f[:metadata][:args])
-              zf.add("scripts/worker_initialization/#{arg_file}", file)
-              file.close
+          puts 'Adding Support Files: Server Scripts'
+          @server_scripts.each_with_index do |f, index|
+            if f[:init_or_final] == 'finalization'
+              file_name = 'finalization.sh'
+            else
+              file_name = 'initialization.sh'
             end
-          end
+            if f[:server_or_data_point] == 'analysis'
+              new_name = "scripts/analysis/#{file_name}"
+            else
+              new_name = "scripts/data_point/#{file_name}"
+            end
+            puts "  Adding #{f[:file]} as #{new_name}"
+            zf.add(new_name, f[:file])
 
-          puts 'Adding Support Files: Worker Finalization Scripts'
-          @worker_finalizes.each_with_index do |f, index|
-            ordered_file_name = "#{index.to_s.rjust(2, '0')}_#{File.basename(f[:file])}"
-            puts "  Adding #{f[:file]} as #{ordered_file_name}"
-            zf.add(f[:file].sub(f[:file], "scripts/worker_finalization/#{ordered_file_name}"), f[:file])
-
-            if f[:metadata][:args]
-              arg_file = "#{File.basename(ordered_file_name, '.*')}.args"
+            if f[:arguments]
+              arg_file = "#{(new_name.sub(/\.sh\z/, ''))}.args"
+              puts "  Adding arguments as #{arg_file}"
               file = Tempfile.new('arg')
-              file.write(f[:metadata][:args])
-              zf.add("scripts/worker_finalization/#{arg_file}", file)
+              file.write(f[:arguments])
+              zf.add(arg_file, file)
               file.close
             end
           end
@@ -548,7 +532,6 @@ module OpenStudio
             end
 
             added_measures << measure_dir_to_add
-            puts "added_measures: #{added_measures}"
           end
         end
       end
@@ -629,17 +612,17 @@ module OpenStudio
           @worker_finalizes.each_with_index do |f, index|
             ordered_file_name = "#{index.to_s.rjust(2, '0')}_#{File.basename(f[:file])}"
             puts "  Adding #{f[:file]} as #{ordered_file_name}"
-            zf.add(f[:file].sub(f[:file], "./scripts/worker_finalization/#{ordered_file_name}"), f[:file])
+            zf.add(f[:file].sub(f[:file], "scripts/worker_finalization/#{ordered_file_name}"), f[:file])
 
             if f[:metadata][:args]
               arg_file = "#{File.basename(ordered_file_name, '.*')}.args"
               file = Tempfile.new('arg')
               file.write(f[:metadata][:args])
-              zf.add("./scripts/worker_finalization/#{arg_file}", file)
+              zf.add("scripts/worker_finalization/#{arg_file}", file)
               file.close
             end
           end
-
+          
           ## Measures
           puts 'Adding Measures'
           added_measures = []

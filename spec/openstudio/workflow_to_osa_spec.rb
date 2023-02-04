@@ -174,6 +174,13 @@ describe 'Convert_an_OSW_to_OSA' do
     #try setting bad analysis_type
     expect { a.analysis_type = 'single_run2' }.to raise_error(RuntimeError, "Invalid analysis type. Allowed types: [\"spea_nrel\", \"rgenoud\", \"nsga_nrel\", \"lhs\", \"preflight\", \"morris\", \"sobol\", \"doe\", \"fast99\", \"ga\", \"gaisl\", \"single_run\", \"repeat_run\", \"batch_run\"]")
 
+    #add data_point initialization script
+    f = 'spec/files/osw_project/scripts/script.sh'
+    expect(a.server_scripts.add(f, ['one', 'two'])).to be true
+    # add analysis finalization script
+    expect(a.server_scripts.add(f, ['three', 'four'], 'finalization', 'analysis')).to be true
+    #TODO server_scripts are not in OSA right now since its not manditory
+    
     #validate OSA against schema
     File.write('spec/files/osw_project/analysis.json',JSON.pretty_generate(a.to_hash))
     osa_schema = JSON.parse(File.read('spec/schema/osa_server_schema.json'), symbolize_names: true)
@@ -198,6 +205,10 @@ describe 'Convert_an_OSW_to_OSA' do
     expect(zip_file.find_entry("measures/GeneralCalibrationMeasurePercentChange/measure.rb")).to be_truthy
     expect(zip_file.find_entry("lib/calibration_data/electric.json")).to be_truthy
     expect(zip_file.find_entry("lib/calibration_data/natural_gas.json")).to be_truthy
+    expect(zip_file.find_entry("scripts/data_point/initialization.sh")).to be_truthy
+    expect(zip_file.find_entry("scripts/data_point/initialization.args")).to be_truthy
+    expect(zip_file.find_entry("scripts/analysis/finalization.sh")).to be_truthy
+    expect(zip_file.find_entry("scripts/analysis/finalization.args")).to be_truthy
     end
   end
 

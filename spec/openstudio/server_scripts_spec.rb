@@ -33,45 +33,39 @@
 # EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 # *******************************************************************************
 
-# Ruby libraries to include
-require 'json'
-require 'securerandom'
-require 'logger'
-require 'pathname'
-require 'csv'
+require_relative './../spec_helper'
 
-# gems to always include
-require 'faraday'
-require 'roo'
-require 'erb'
-require 'zip'
-require 'semantic'
-require 'semantic/core_ext'
+describe OpenStudio::Analysis::ServerScripts do
+  before :all do
+    @s = OpenStudio::Analysis::ServerScripts.new
+    expect(@s).to be_a OpenStudio::Analysis::ServerScripts
+  end
 
-require 'bcl'
+  it 'should add files' do
+    f = 'spec/files/osw_project/scripts/script.sh'
+    expect(@s.add(f, ['one', 'two'])).to be true
 
-# core
-require 'openstudio/analysis/server_api'
-require 'openstudio/analysis/version'
+    expect(@s.size).to eq 1
+    expect(File.exists?(@s.files.first[:file])).to be true
 
-# analysis classes
-require 'openstudio/analysis'
-require 'openstudio/analysis/support_files'
-require 'openstudio/analysis/formulation'
-require 'openstudio/analysis/workflow'
-require 'openstudio/analysis/workflow_step'
-require 'openstudio/analysis/algorithm_attributes'
-require 'openstudio/analysis/server_scripts'
+    expect(@s[0][:init_or_final]).to eq 'initialization'
+    expect(@s[0][:server_or_data_point]).to eq 'data_point'
+    
+    # add another items
+    expect(@s.add(f, ['three', 'four'], 'finalization', 'analysis')).to be true
 
-# translators
-require 'openstudio/analysis/translator/excel'
-require 'openstudio/analysis/translator/datapoints'
-require 'openstudio/analysis/translator/workflow'
+    expect(@s.size).to eq 2
+    @s.each do |f|
+      expect(f).to_not be nil
+    end
+    
+    @s.each_with_index do |file, index|
+      expect(File.basename(file[:file])).to eq 'script.sh'
+    end
+    
+    @s.clear
+    expect(@s.size).to eq 0
+    
+  end
 
-# helpers / core_ext
-require 'openstudio/helpers/string'
-require 'openstudio/helpers/hash'
-require 'openstudio/helpers/utils'
-
-# weather file parsing
-require 'openstudio/weather/epw'
+ end 
