@@ -39,7 +39,12 @@ module OpenStudio
     class ServerScripts
       attr_reader :files
 
-      # Create a new instance of the support file class
+      # Create a new instance of the Server Scripts file class
+      # Server scripts are run at either the analysis or data_point level and are either initialization or finalization
+      # file: full path to the script
+      # arguments: array of arguments for the script
+      # init_or_final: specify either 'initialization' or 'finalization'
+      # server_or_data_point: specify either 'analysis' or 'data_point'
       #
       def initialize
         @files = []

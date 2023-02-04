@@ -94,6 +94,9 @@ module OpenStudio
       # Define the type of analysis which is going to be running
       #
       # @param name [String] Name of the algorithm/analysis. (e.g. rgenoud, lhs, single_run)
+      # allowed values are ANALYSIS_TYPES = ['spea_nrel', 'rgenoud', 'nsga_nrel', 'lhs', 'preflight', 
+      #                                      'morris', 'sobol', 'doe', 'fast99', 'ga', 'gaisl', 
+      #                                      'single_run', 'repeat_run', 'batch_run']
       def analysis_type=(value)
         if OpenStudio::Analysis::AlgorithmAttributes::ANALYSIS_TYPES.include?(value)
           @analysis_type = value
@@ -353,7 +356,14 @@ module OpenStudio
         save_analysis_zip_osa(filename)
       end
       
-      #convert an OSW to an OSA
+      # convert an OSW to an OSA
+      # osw_filename is the full path to the OSW file
+      # assumes the associated files and directories are in the same location
+      #  /example.osw
+      #  /measures
+      #  /seeds
+      #  /weather
+      #
       def convert_osw(osw_filename)
         #load OSW so we can loop over [:steps]
         if File.exist? osw_filename  #will this work for both rel and abs paths?
@@ -417,6 +427,8 @@ module OpenStudio
       private
 
       # New format for OSAs. Package up the seed, weather files, and measures
+      # filename is the name of the file to be saved. ex: analysis.zip
+      # it will parse the OSA and zip up all the files defined in the workflow
       def save_analysis_zip_osa(filename)
         def add_directory_to_zip_osa(zipfile, local_directory, relative_zip_directory)
           puts "Add Directory #{local_directory}"
