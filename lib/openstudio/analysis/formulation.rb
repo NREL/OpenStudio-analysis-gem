@@ -75,7 +75,7 @@ module OpenStudio
         @display_name = display_name
         @analysis_type = nil
         @outputs = []
-
+        @workflow = OpenStudio::Analysis::Workflow.new
         # Initialize child objects (expect workflow)
         @weather_file = WeatherFile.new
         @seed_model = SeedModel.new
@@ -93,9 +93,9 @@ module OpenStudio
       # Initialize or return the current workflow object
       #
       # @return [Object] An OpenStudio::Analysis::Workflow object
-      def workflow
-        @workflow ||= OpenStudio::Analysis::Workflow.new
-      end
+      #def workflow
+      #  @workflow ||= OpenStudio::Analysis::Workflow.new
+      #end
 
       # Define the type of analysis which is going to be running
       #
