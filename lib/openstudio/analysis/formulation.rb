@@ -162,7 +162,10 @@ module OpenStudio
             metadata_id: nil,
             export: true,
           }.merge(output_hash)
-          
+          #set display_name default to be name if its not set
+          output[:display_name] = output_hash[:display_name] ? output_hash[:display_name] : output_hash[:name]
+          #set display_name_short default to be display_name if its not set, this can be null if :display_name not set
+          output[:display_name_short] = output_hash[:display_name_short] ? output_hash[:display_name_short] : output_hash[:display_name]
           # if the variable is an objective_function, then increment and
           # assign and objective function index
           if output[:objective_function]

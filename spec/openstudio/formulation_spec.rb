@@ -170,6 +170,16 @@ describe OpenStudio::Analysis::Formulation do
     expect(a.to_hash[:analysis][:output_variables].last[:units]).to eq 'therms'
   end
   
+  it 'should should have default display_name if not set' do
+    a = OpenStudio::Analysis.create('my analysis')
+
+    a.add_output(
+      name: 'standard_report_legacy.total_natural_gas',
+      units: 'MJ/m2'
+    )
+    expect(a.to_hash[:analysis][:output_variables].last[:display_name]).to eq a.to_hash[:analysis][:output_variables].last[:name]
+  end
+  
   it 'should create a new formulation' do
     a = OpenStudio::Analysis.create('my analysis')
     p = 'spec/files/measures/SetThermostatSchedules'
