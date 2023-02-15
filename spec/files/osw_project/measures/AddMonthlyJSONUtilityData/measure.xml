@@ -1,0 +1,164 @@
+<?xml version="1.0"?>
+<measure>
+  <schema_version>3.0</schema_version>
+  <name>add_monthly_json_utility_data</name>
+  <uid>6da969e0-4256-49bf-9607-26504cc3d423</uid>
+  <version_id>706776f7-efa4-4aa4-9733-96f4e64033fe</version_id>
+  <version_modified>20221115T231440Z</version_modified>
+  <xml_checksum>057E8D9D</xml_checksum>
+  <class_name>AddMonthlyJSONUtilityData</class_name>
+  <display_name>Add Monthly JSON Utility Data</display_name>
+  <description>Add Monthly JSON Utility Data</description>
+  <modeler_description>Add Monthly JSON Formatted Utility Data to OSM as a UtilityBill Object</modeler_description>
+  <arguments>
+    <argument>
+      <name>json</name>
+      <display_name>Path to JSON Data in the Server.</display_name>
+      <description>Path to JSON Data in the Server. calibration_data is directory name of uploaded files.</description>
+      <type>String</type>
+      <required>true</required>
+      <model_dependent>false</model_dependent>
+      <default_value>../../../lib/calibration_data/electric.json</default_value>
+    </argument>
+    <argument>
+      <name>variable_name</name>
+      <display_name>Variable name</display_name>
+      <description>Name of the Utility Bill Object.  For Calibration Report use Electric Bill or Gas Bill</description>
+      <type>String</type>
+      <required>true</required>
+      <model_dependent>false</model_dependent>
+      <default_value>Electric Bill</default_value>
+    </argument>
+    <argument>
+      <name>fuel_type</name>
+      <display_name>Fuel Type</display_name>
+      <description>Fuel Type</description>
+      <type>String</type>
+      <required>true</required>
+      <model_dependent>false</model_dependent>
+      <default_value>Electricity</default_value>
+    </argument>
+    <argument>
+      <name>consumption_unit</name>
+      <display_name>Consumption Unit</display_name>
+      <description>Consumption Unit (usually kWh or therms)</description>
+      <type>String</type>
+      <required>true</required>
+      <model_dependent>false</model_dependent>
+      <default_value>kWh</default_value>
+    </argument>
+    <argument>
+      <name>data_key_name</name>
+      <display_name>data key name in JSON</display_name>
+      <description>data key name in JSON</description>
+      <type>String</type>
+      <required>true</required>
+      <model_dependent>false</model_dependent>
+      <default_value>tot_kwh</default_value>
+    </argument>
+    <argument>
+      <name>start_date</name>
+      <display_name>Start date</display_name>
+      <description>Start date format %Y%m%dT%H%M%S with Hour Min Sec optional</description>
+      <type>String</type>
+      <required>true</required>
+      <model_dependent>false</model_dependent>
+      <default_value>2013-01-1</default_value>
+    </argument>
+    <argument>
+      <name>end_date</name>
+      <display_name>End date</display_name>
+      <description>End date format %Y%m%dT%H%M%S with Hour Min Sec optional</description>
+      <type>String</type>
+      <required>true</required>
+      <model_dependent>false</model_dependent>
+      <default_value>2013-12-31</default_value>
+    </argument>
+    <argument>
+      <name>remove_existing_data</name>
+      <display_name>remove all existing Utility Bill data objects from model</display_name>
+      <description>remove all existing Utility Bill data objects from model</description>
+      <type>Boolean</type>
+      <required>true</required>
+      <model_dependent>false</model_dependent>
+      <default_value>false</default_value>
+      <choices>
+        <choice>
+          <value>true</value>
+          <display_name>true</display_name>
+        </choice>
+        <choice>
+          <value>false</value>
+          <display_name>false</display_name>
+        </choice>
+      </choices>
+    </argument>
+    <argument>
+      <name>set_runperiod</name>
+      <display_name>Set RunPeriod Object in model to use start and end dates</display_name>
+      <description>Set RunPeriod Object in model to use start and end dates.  Only needed once if multiple copies of measure being used.</description>
+      <type>Boolean</type>
+      <required>true</required>
+      <model_dependent>false</model_dependent>
+      <default_value>false</default_value>
+      <choices>
+        <choice>
+          <value>true</value>
+          <display_name>true</display_name>
+        </choice>
+        <choice>
+          <value>false</value>
+          <display_name>false</display_name>
+        </choice>
+      </choices>
+    </argument>
+  </arguments>
+  <outputs />
+  <provenances />
+  <tags>
+    <tag>Whole Building.Space Types</tag>
+  </tags>
+  <attributes>
+    <attribute>
+      <name>Measure Type</name>
+      <value>ModelMeasure</value>
+      <datatype>string</datatype>
+    </attribute>
+    <attribute>
+      <name>Uses SketchUp API</name>
+      <value>false</value>
+      <datatype>boolean</datatype>
+    </attribute>
+  </attributes>
+  <files>
+    <file>
+      <filename>README.md.erb</filename>
+      <filetype>erb</filetype>
+      <usage_type>readmeerb</usage_type>
+      <checksum>703C9964</checksum>
+    </file>
+    <file>
+      <filename>README.md</filename>
+      <filetype>md</filetype>
+      <usage_type>readme</usage_type>
+      <checksum>9A5C0ABF</checksum>
+    </file>
+    <file>
+      <filename>LICENSE.md</filename>
+      <filetype>md</filetype>
+      <usage_type>license</usage_type>
+      <checksum>64FFEBDE</checksum>
+    </file>
+    <file>
+      <version>
+        <software_program>OpenStudio</software_program>
+        <identifier>2.1.0</identifier>
+        <min_compatible>2.1.0</min_compatible>
+      </version>
+      <filename>measure.rb</filename>
+      <filetype>rb</filetype>
+      <usage_type>script</usage_type>
+      <checksum>7C40B2C4</checksum>
+    </file>
+  </files>
+</measure>

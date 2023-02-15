@@ -129,7 +129,7 @@ describe OpenStudio::Analysis::Formulation do
     expect(a.to_hash[:analysis][:output_variables].last[:objective_function_index]).to eq 2
   end
 
-  it 'should not add the same output' do
+  it 'should not change an output if objective function changes from true to false' do
     a = OpenStudio::Analysis.create('my analysis')
 
     a.add_output(
@@ -150,6 +150,36 @@ describe OpenStudio::Analysis::Formulation do
     expect(a.to_hash[:analysis][:output_variables].last[:objective_function]).to eq true
   end
 
+  it 'should update an output with new values' do
+    a = OpenStudio::Analysis.create('my analysis')
+
+    a.add_output(
+      display_name: 'Total Natural Gas',
+      name: 'standard_report_legacy.total_natural_gas',
+      units: 'MJ/m2'
+    )
+    expect(a.to_hash[:analysis][:output_variables].last[:units]).to eq 'MJ/m2'
+
+    a.add_output(
+      display_name: 'Total Natural Gas',
+      name: 'standard_report_legacy.total_natural_gas',
+      units: 'therms'
+    )
+
+    expect(a.to_hash[:analysis][:output_variables].size).to eq 1
+    expect(a.to_hash[:analysis][:output_variables].last[:units]).to eq 'therms'
+  end
+  
+  it 'should should have default display_name if not set' do
+    a = OpenStudio::Analysis.create('my analysis')
+
+    a.add_output(
+      name: 'standard_report_legacy.total_natural_gas',
+      units: 'MJ/m2'
+    )
+    expect(a.to_hash[:analysis][:output_variables].last[:display_name]).to eq a.to_hash[:analysis][:output_variables].last[:name]
+  end
+  
   it 'should create a new formulation' do
     a = OpenStudio::Analysis.create('my analysis')
     p = 'spec/files/measures/SetThermostatSchedules'

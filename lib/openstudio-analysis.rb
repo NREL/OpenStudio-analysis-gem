@@ -61,6 +61,7 @@ require 'openstudio/analysis/formulation'
 require 'openstudio/analysis/workflow'
 require 'openstudio/analysis/workflow_step'
 require 'openstudio/analysis/algorithm_attributes'
+require 'openstudio/analysis/server_scripts'
 
 # translators
 require 'openstudio/analysis/translator/excel'
