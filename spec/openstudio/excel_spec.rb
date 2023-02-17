@@ -1,5 +1,5 @@
 # *******************************************************************************
-# OpenStudio(R), Copyright (c) 2008-2021, Alliance for Sustainable Energy, LLC.
+# OpenStudio(R), Copyright (c) 2008-2023, Alliance for Sustainable Energy, LLC.
 # All rights reserved.
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions are met:
@@ -288,7 +288,7 @@ describe OpenStudio::Analysis::Translator::Excel do
     it 'should create a valid hash' do
       h = @excel.analysis
 
-      expect(h.analysis_type).to eq('nsga')
+      expect(h.analysis_type).to eq('nsga_nrel')
       expect(h.algorithm).to be_a OpenStudio::Analysis::AlgorithmAttributes
       expect(h.algorithm['number_of_samples']).to eq(100)
       expect(h.algorithm['sample_method']).to eq('all_variables')

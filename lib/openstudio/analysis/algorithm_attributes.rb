@@ -1,5 +1,5 @@
 # *******************************************************************************
-# OpenStudio(R), Copyright (c) 2008-2021, Alliance for Sustainable Energy, LLC.
+# OpenStudio(R), Copyright (c) 2008-2023, Alliance for Sustainable Energy, LLC.
 # All rights reserved.
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions are met:
@@ -39,11 +39,18 @@
 module OpenStudio
   module Analysis
     class AlgorithmAttributes
-      # Create a new instance of an algorithm
+      # Create a new instance of the parameters for an algorithm 
       #
       def initialize
-        @attributes = {}
+        @attributes = {
+        "seed": nil,
+        "failed_f_value": 1000000000000000000,
+        "debug_messages": 1
+        }
       end
+
+      # these are the allowed analysis types
+      ANALYSIS_TYPES = ['spea_nrel', 'rgenoud', 'nsga_nrel', 'lhs', 'preflight', 'morris', 'sobol', 'doe', 'fast99', 'ga', 'gaisl', 'single_run', 'repeat_run', 'batch_run']
 
       def set_attribute(attribute_name, attribute_value)
         @attributes[attribute_name] = attribute_value

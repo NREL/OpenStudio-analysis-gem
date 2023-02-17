@@ -1,0 +1,57 @@
+{
+   "created_at" : "20230126T212806Z",
+   "hash" : "6A2AD6B4",
+   "seed_file" : "seeds/example_model.osm",
+   "steps" : 
+   [
+      {
+         "arguments" : 
+         {
+            "consumption_unit" : "kWh",
+            "data_key_name" : "tot_kwh",
+            "end_date" : "2013-12-31",
+            "fuel_type" : "Electricity",
+            "json" : "../../../data/electric.json",
+            "remove_existing_data" : true,
+            "set_runperiod" : true,
+            "start_date" : "2013-01-1",
+            "variable_name" : "Electricity Bill"
+         },
+         "measure_dir_name" : "measures/AddMonthlyJSONUtilityData"
+      },
+      {
+         "arguments" : 
+         {
+            "consumption_unit" : "therms",
+            "data_key_name" : "tot_therms",
+            "end_date" : "2013-12-31",
+            "fuel_type" : "Gas",
+            "json" : "../../../data/natural_gas.json",
+            "remove_existing_data" : false,
+            "start_date" : "2013-01-1",
+            "variable_name" : "Gas Bill"
+         },
+         "measure_dir_name" : "measures/AddMonthlyJSONUtilityData"
+      },
+      {
+         "arguments" : 
+         {
+            "ElectricEquipment_perc_change" : 10.0,
+            "infil_perc_change" : 10.0,
+            "lights_perc_change" : 10.0,
+            "mass_perc_change" : 10.0,
+            "people_perc_change" : 10.0,
+            "space" : "*All Spaces*",
+            "space_type" : "*All SpaceTypes*",
+            "vent_perc_change" : 10.0
+         },
+         "measure_dir_name" : "measures/GeneralCalibrationMeasurePercentChange"
+      },
+      {
+         "arguments" : {},
+         "measure_dir_name" : "measures/CalibrationReportsEnhanced"
+      }
+   ],
+   "updated_at" : "20230126T212806Z",
+   "weather_file" : "weather/USA_CO_Golden-NREL.724666_TMY3.epw"
+}

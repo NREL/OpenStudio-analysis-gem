@@ -1,5 +1,5 @@
 # *******************************************************************************
-# OpenStudio(R), Copyright (c) 2008-2021, Alliance for Sustainable Energy, LLC.
+# OpenStudio(R), Copyright (c) 2008-2023, Alliance for Sustainable Energy, LLC.
 # All rights reserved.
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions are met:
@@ -58,6 +58,7 @@ module OpenStudio
       attr_accessor :display_name
       attr_accessor :workflow
       attr_accessor :algorithm
+      attr_accessor :osw_path
 
       # the attributes below are used for packaging data into the analysis zip file
       attr_reader :weather_files
@@ -65,6 +66,7 @@ module OpenStudio
       attr_reader :worker_inits
       attr_reader :worker_finalizes
       attr_reader :libraries
+      attr_reader :server_scripts
 
       # Create an instance of the OpenStudio::Analysis::Formulation
       #
@@ -74,7 +76,7 @@ module OpenStudio
         @display_name = display_name
         @analysis_type = nil
         @outputs = []
-
+        @workflow = OpenStudio::Analysis::Workflow.new
         # Initialize child objects (expect workflow)
         @weather_file = WeatherFile.new
         @seed_model = SeedModel.new
@@ -86,20 +88,22 @@ module OpenStudio
         @worker_inits = SupportFiles.new
         @worker_finalizes = SupportFiles.new
         @libraries = SupportFiles.new
-        # @initialization_scripts = SupportFiles.new
+        @server_scripts = ServerScripts.new
       end
-
-      # Initialize or return the current workflow object
-      #
-      # @return [Object] An OpenStudio::Analysis::Workflow object
-      def workflow
-        @workflow ||= OpenStudio::Analysis::Workflow.new
-      end
-
+     
       # Define the type of analysis which is going to be running
       #
       # @param name [String] Name of the algorithm/analysis. (e.g. rgenoud, lhs, single_run)
-      attr_writer :analysis_type
+      # allowed values are ANALYSIS_TYPES = ['spea_nrel', 'rgenoud', 'nsga_nrel', 'lhs', 'preflight', 
+      #                                      'morris', 'sobol', 'doe', 'fast99', 'ga', 'gaisl', 
+      #                                      'single_run', 'repeat_run', 'batch_run']
+      def analysis_type=(value)
+        if OpenStudio::Analysis::AlgorithmAttributes::ANALYSIS_TYPES.include?(value)
+          @analysis_type = value
+        else
+          raise "Invalid analysis type. Allowed types: #{OpenStudio::Analysis::AlgorithmAttributes::ANALYSIS_TYPES}"
+        end
+      end
 
       # Path to the seed model
       #
@@ -133,29 +137,43 @@ module OpenStudio
       # @option output_hash [Float] :scaling_factor How to scale the objective function(s). Default: nil
       # @option output_hash [Integer] :objective_function_group If grouping objective functions, then group ID. Default: nil
       def add_output(output_hash)
-        output_hash = {
-          units: '',
-          objective_function: false,
-          objective_function_index: nil,
-          objective_function_target: nil,
-          objective_function_group: nil,
-          scaling_factor: nil
-        }.merge(output_hash)
-
-        # Check if the name is already been added. Note that if the name is added again, it will not update any of
-        # the fields
-        exist = @outputs.select { |o| o[:name] == output_hash[:name] }
-        if exist.empty?
+        # Check if the name is already been added.
+        exist = @outputs.find_index { |o| o[:name] == output_hash[:name] }
+        # if so, update the fields but keep objective_function_index the same
+        if exist
+          original = @outputs[exist]
+          if original[:objective_function] && !output_hash[:objective_function]
+            return @outputs
+          end
+          output = original.merge(output_hash)
+          output[:objective_function_index] = original[:objective_function_index]
+          @outputs[exist] = output
+        else
+          output = {
+            units: '',
+            objective_function: false,
+            objective_function_index: nil,
+            objective_function_target: nil,
+            #set default to nil or 1 if objective_function is true and this is not set
+            objective_function_group: (output_hash[:objective_function] ? 1 : nil),
+            scaling_factor: nil,
+            #set default to false or true if objective_function is true and this is not set
+            visualize: (output_hash[:objective_function] ? true : false),
+            metadata_id: nil,
+            export: true,
+          }.merge(output_hash)
+          #set display_name default to be name if its not set
+          output[:display_name] = output_hash[:display_name] ? output_hash[:display_name] : output_hash[:name]
+          #set display_name_short default to be display_name if its not set, this can be null if :display_name not set
+          output[:display_name_short] = output_hash[:display_name_short] ? output_hash[:display_name_short] : output_hash[:display_name]
           # if the variable is an objective_function, then increment and
           # assign and objective function index
-          if output_hash[:objective_function]
+          if output[:objective_function]
             values = @outputs.select { |o| o[:objective_function] }
-            output_hash[:objective_function_index] = values.size # size is already +1
-          else
-            output_hash[:objective_function] = false
+            output[:objective_function_index] = values.size
           end
 
-          @outputs << output_hash
+          @outputs << output
         end
 
         @outputs
@@ -215,6 +233,16 @@ module OpenStudio
           end
 
           h[:analysis][:file_format_version] = version
+          h[:analysis][:cli_debug] = "--debug"
+          h[:analysis][:cli_verbose] = "--verbose"
+          h[:analysis][:run_workflow_timeout] = 28800
+          h[:analysis][:upload_results_timeout] = 28800
+          h[:analysis][:initialize_worker_timeout] = 28800
+          #-BLB I dont think this does anything. server_scripts are run if they are in 
+          #the /scripts/analysis or /scripts/data_point directories
+          #but nothing is ever checked in the OSA.
+          #
+          h[:analysis][:server_scripts] = {}
 
           # This is a hack right now, but after the initial hash is created go back and add in the objective functions
           # to the the algorithm as defined in the output_variables list
@@ -321,9 +349,209 @@ module OpenStudio
 
         save_analysis_zip(filename)
       end
+      
+      
+      def save_osa_zip(filename)
+        filename += '.zip' if File.extname(filename) == ''
+
+        FileUtils.mkdir_p File.dirname(filename) unless Dir.exist? File.dirname(filename)
+
+        save_analysis_zip_osa(filename)
+      end
+      
+      # convert an OSW to an OSA
+      # osw_filename is the full path to the OSW file
+      # assumes the associated files and directories are in the same location
+      #  /example.osw
+      #  /measures
+      #  /seeds
+      #  /weather
+      #
+      def convert_osw(osw_filename)
+        #load OSW so we can loop over [:steps]
+        if File.exist? osw_filename  #will this work for both rel and abs paths?
+          osw = JSON.parse(File.read(osw_filename), symbolize_names: true)
+          @osw_path = File.expand_path(osw_filename)
+        else
+          raise "Could not find workflow file #{osw_filename}"
+        end
+        
+        #set the weather and seed files if set in OSW
+        self.weather_file = osw[:weather_file] ? osw[:weather_file] : nil
+        self.seed_model = osw[:seed_file] ? osw[:seed_file] : nil
+
+        #set analysis_type default to Single_Run
+        self.analysis_type = 'single_run'
+
+        #loop over OSW 'steps' and map over measures
+        #there is no name/display name in the OSW. Just measure directory name
+        #read measure.XML from directory to get name / display name
+        #increment name by +_1 if there are duplicates
+        #add measure
+        #change default args to osw arg values 
+        
+        osw[:steps].each do |step|
+          #get measure directory
+          measure_dir = step[:measure_dir_name]
+          measure_name = measure_dir.split("measures/").last
+          #get XML
+          measure_dir_abs_path = File.join(File.dirname(File.expand_path(osw_filename)),measure_dir)
+          xml = parse_measure_xml(File.join(measure_dir_abs_path, '/measure.xml'))       
+          #add check for previous names _+1
+          count = 1
+          name = xml[:name]
+          display_name = xml[:display_name]
+          loop do
+            measure = @workflow.find_measure(name)
+            break if measure.nil?
+
+            count += 1
+            name = "#{xml[:name]}_#{count}"
+            display_name = "#{xml[:display_name]} #{count}"
+          end   
+          #Add Measure to workflow
+          @workflow.add_measure_from_path(name, display_name, measure_dir_abs_path)  #this forces to an absolute path which seems constent with PAT
+          #@workflow.add_measure_from_path(name, display_name, measure_dir)  #this uses the path in the OSW which could be relative          
+          
+          #Change the default argument values to the osw values
+          #1. find measure in @workflow
+          m = @workflow.find_measure(name)
+          #2. loop thru osw args
+          step[:arguments].each do |k,v|
+            #check if argument is in measure, otherwise setting argument_value will crash
+            raise "OSW arg: #{k} is not in Measure: #{name}" if m.arguments.find_all { |a| a[:name] == k.to_s }.empty?
+            #set measure arg to match osw arg
+            m.argument_value(k.to_s, v)
+          end
+          
+        end
+      end
 
       private
 
+      # New format for OSAs. Package up the seed, weather files, and measures
+      # filename is the name of the file to be saved. ex: analysis.zip
+      # it will parse the OSA and zip up all the files defined in the workflow
+      def save_analysis_zip_osa(filename)
+        def add_directory_to_zip_osa(zipfile, local_directory, relative_zip_directory)
+          puts "Add Directory #{local_directory}"
+          Dir[File.join(local_directory.to_s, '**', '**')].each do |file|
+            puts "Adding File #{file}"
+            
+            zipfile.add(file.sub(local_directory, relative_zip_directory), file)
+          end
+          zipfile
+        end
+        #delete file if exists
+        FileUtils.rm_f(filename) if File.exist?(filename)
+        #get the full path to the OSW, since all Files/Dirs should be in same directory as the OSW
+        puts "osw_path: #{@osw_path}"
+        osw_full_path = File.dirname(File.expand_path(@osw_path))
+        puts "osw_full_path: #{osw_full_path}"
+        
+        Zip::File.open(filename, create: true) do |zf|
+          ## Weather files
+          puts 'Adding Support Files: Weather'
+          #check if weather file exists.  use abs path.  remove leading ./ from @weather_file path if there.
+          #check if path is already absolute
+          if File.exists?(@weather_file[:file])
+            puts "  Adding #{@weather_file[:file]}"
+            zf.add("weather/#{File.basename(@weather_file[:file])}", @weather_file[:file])
+          #make absolute path and check for file  
+          elsif File.exists?(File.join(osw_full_path,@weather_file[:file].sub(/^\.\//, '')))
+            puts "  Adding #{File.join(osw_full_path,@weather_file[:file].sub(/^\.\//, ''))}"
+            zf.add("weather/#{File.basename(@weather_file[:file])}", File.join(osw_full_path,@weather_file[:file].sub(/^\.\//, '')))
+          else
+            raise "Weather file does not exist at: #{File.join(osw_full_path,@weather_file[:file].sub(/^\.\//, ''))}"
+          end 
+
+          ## Seed files
+          puts 'Adding Support Files: Seed Models'
+          #check if weather file exists.  use abs path.  remove leading ./ from @seed_model path if there.
+          #check if path is already absolute
+          if File.exists?(@seed_model[:file])
+            puts "  Adding #{@seed_model[:file]}"
+            zf.add("seeds/#{File.basename(@seed_model[:file])}", @seed_model[:file])
+          #make absolute path and check for file  
+          elsif File.exists?(File.join(osw_full_path,@seed_model[:file].sub(/^\.\//, '')))
+            puts "  Adding #{File.join(osw_full_path,@seed_model[:file].sub(/^\.\//, ''))}"
+            zf.add("seeds/#{File.basename(@seed_model[:file])}", File.join(osw_full_path,@seed_model[:file].sub(/^\.\//, '')))
+          else
+            raise "Seed file does not exist at: #{File.join(osw_full_path,@seed_model[:file].sub(/^\.\//, ''))}"
+          end        
+
+          puts 'Adding Support Files: Libraries'
+          @libraries.each do |lib|
+            raise "Libraries must specify their 'library_name' as metadata which becomes the directory upon zip" unless lib[:metadata][:library_name]
+
+            if File.directory? lib[:file]
+              Dir[File.join(lib[:file], '**', '**')].each do |file|
+                puts "  Adding #{file}"
+                zf.add(file.sub(lib[:file], "lib/#{lib[:metadata][:library_name]}"), file)
+              end
+            else
+              # just add the file to the zip
+              puts "  Adding #{lib[:file]}"
+              zf.add(lib[:file], "lib/#{File.basename(lib[:file])}", lib[:file])
+            end
+          end
+
+          puts 'Adding Support Files: Server Scripts'
+          @server_scripts.each_with_index do |f, index|
+            if f[:init_or_final] == 'finalization'
+              file_name = 'finalization.sh'
+            else
+              file_name = 'initialization.sh'
+            end
+            if f[:server_or_data_point] == 'analysis'
+              new_name = "scripts/analysis/#{file_name}"
+            else
+              new_name = "scripts/data_point/#{file_name}"
+            end
+            puts "  Adding #{f[:file]} as #{new_name}"
+            zf.add(new_name, f[:file])
+
+            if f[:arguments]
+              arg_file = "#{(new_name.sub(/\.sh\z/, ''))}.args"
+              puts "  Adding arguments as #{arg_file}"
+              file = Tempfile.new('arg')
+              file.write(f[:arguments])
+              zf.add(arg_file, file)
+              file.close
+            end
+          end
+
+          ## Measures
+          puts 'Adding Measures'
+          added_measures = []
+          # The list of the measures should always be there, but make sure they are uniq
+          @workflow.each do |measure|
+            measure_dir_to_add = measure.measure_definition_directory_local
+
+            next if added_measures.include? measure_dir_to_add
+
+            puts "  Adding #{File.basename(measure_dir_to_add)}"
+            Dir[File.join(measure_dir_to_add, '**')].each do |file|
+              if File.directory?(file)
+                if File.basename(file) == 'resources' || File.basename(file) == 'lib'
+                  #remove leading ./ from measure_definition_directory path if there.
+                  add_directory_to_zip_osa(zf, file, "#{measure.measure_definition_directory.sub(/^\.\//, '')}/#{File.basename(file)}")
+                end
+              else
+                puts "    Adding File #{file}"
+                #remove leading ./ from measure.measure_definition_directory string with regex .sub(/^\.\//, '')
+                zip_path_for_measures = file.sub(measure_dir_to_add, measure.measure_definition_directory.sub(/^\.\//, ''))
+                #puts "    zip_path_for_measures: #{zip_path_for_measures}"
+                zf.add(zip_path_for_measures, file)
+              end
+            end
+
+            added_measures << measure_dir_to_add
+          end
+        end
+      end
+      
+      #keep legacy function
       # Package up the seed, weather files, and measures
       def save_analysis_zip(filename)
         def add_directory_to_zip(zipfile, local_directory, relative_zip_directory)
@@ -399,17 +627,17 @@ module OpenStudio
           @worker_finalizes.each_with_index do |f, index|
             ordered_file_name = "#{index.to_s.rjust(2, '0')}_#{File.basename(f[:file])}"
             puts "  Adding #{f[:file]} as #{ordered_file_name}"
-            zf.add(f[:file].sub(f[:file], "./scripts/worker_finalization/#{ordered_file_name}"), f[:file])
+            zf.add(f[:file].sub(f[:file], "scripts/worker_finalization/#{ordered_file_name}"), f[:file])
 
             if f[:metadata][:args]
               arg_file = "#{File.basename(ordered_file_name, '.*')}.args"
               file = Tempfile.new('arg')
               file.write(f[:metadata][:args])
-              zf.add("./scripts/worker_finalization/#{arg_file}", file)
+              zf.add("scripts/worker_finalization/#{arg_file}", file)
               file.close
             end
           end
-
+          
           ## Measures
           puts 'Adding Measures'
           added_measures = []

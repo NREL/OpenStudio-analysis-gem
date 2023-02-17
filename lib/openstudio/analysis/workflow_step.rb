@@ -1,5 +1,5 @@
 # *******************************************************************************
-# OpenStudio(R), Copyright (c) 2008-2021, Alliance for Sustainable Energy, LLC.
+# OpenStudio(R), Copyright (c) 2008-2023, Alliance for Sustainable Energy, LLC.
 # All rights reserved.
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions are met:
@@ -50,6 +50,11 @@ module OpenStudio
       attr_accessor :measure_definition_name_xml
       attr_accessor :measure_definition_uuid
       attr_accessor :measure_definition_version_uuid
+      attr_accessor :uuid
+      attr_accessor :version_uuid
+      attr_accessor :description
+      attr_accessor :taxonomy
+      
       attr_reader :arguments
       attr_reader :variables
 
@@ -71,6 +76,10 @@ module OpenStudio
         @measure_definition_name_xml = nil
         @measure_definition_uuid = nil
         @measure_definition_version_uuid = nil
+        @uuid = nil
+        @version_uuid = nil
+        @description = nil
+        #@taxonomy = nil #BLB dont do this now
         @arguments = []
 
         @arguments << {
@@ -305,6 +314,10 @@ module OpenStudio
         s.measure_definition_name_xml = hash[:name_xml]
         s.measure_definition_uuid = hash[:uid]
         s.measure_definition_version_uuid = hash[:version_id]
+        s.uuid = hash[:uid]
+        s.version_uuid = hash[:version_id]
+        s.description = hash[:description]
+        #s.taxonomy = hash[:taxonomy]   #BLB dont do this now
 
         # do not allow the choice variable_type
 
@@ -318,13 +331,30 @@ module OpenStudio
             var_type = 'string'
           end
 
+          
+          if var_type.downcase == 'double'
+            default_value = arg[:default_value].to_f
+          elsif var_type.downcase == 'integer'
+            default_value = arg[:default_value].to_i  
+          elsif var_type.downcase == 'boolean'
+            default_value = (arg[:default_value].downcase == "true")  #convert the string 'true'/'false' to boolean
+          else
+            default_value = arg[:default_value]
+          end
+          
+          if !arg[:display_name_short].nil?
+            display_name_short = arg[:display_name_short]
+          else
+            display_name_short = arg[:display_name]
+          end
+          
           s.arguments << {
             display_name: arg[:display_name],
-            display_name_short: arg[:display_name_short],
+            display_name_short: display_name_short,
             name: arg[:name],
             value_type: var_type,
-            default_value: arg[:default_value],
-            value: arg[:default_value]
+            default_value: default_value,
+            value: default_value
           }
         end
 
@@ -389,6 +419,10 @@ module OpenStudio
         s.measure_definition_name_xml = hash[:measure_definition_name_xml]
         s.measure_definition_uuid = hash[:measure_definition_uuid]
         s.measure_definition_version_uuid = hash[:measure_definition_version_uuid]
+        s.uuid = hash[:uuid] if hash[:uuid] 
+        s.version_uuid = hash[:version_uuid] if hash[:version_uuid]
+        s.description = hash[:description] if hash[:description] 
+        #s.taxonomy = hash[:taxonomy] if hash[:taxonomy] #BLB dont do this, its a Tags array of Tag
 
         s.type = hash[:measure_type] # this is actually the measure type
         hash[:arguments]&.each do |arg|
@@ -400,13 +434,33 @@ module OpenStudio
             var_type = 'string'
           end
 
+          if var_type.downcase == 'double'
+            default_value = arg[:default_value].to_f
+            value = arg[:value].to_f
+          elsif var_type.downcase == 'integer'
+            default_value = arg[:default_value].to_i
+            value = arg[:value].to_i            
+          elsif var_type.downcase == 'boolean'
+            default_value = (arg[:default_value].downcase == "true")  #convert the string 'true'/'false' to boolean
+            value = (arg[:value].downcase == "true")  #convert the string 'true'/'false' to boolean
+          else
+            default_value = arg[:default_value]
+            value = arg[:value]
+          end
+          
+          if !arg[:display_name_short].nil?
+            display_name_short = arg[:display_name_short]
+          else
+            display_name_short = arg[:display_name]
+          end
+          
           s.arguments << {
             display_name: arg[:display_name],
-            display_name_short: arg[:display_name_short],
+            display_name_short: display_name_short,
             name: arg[:name],
             value_type: var_type,
-            default_value: arg[:default_value],
-            value: arg[:value]
+            default_value: default_value,
+            value: value
           }
         end
 
