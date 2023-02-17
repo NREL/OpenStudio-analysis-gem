@@ -1,6 +1,10 @@
 OpenStudio Analysis Gem Change Log
 ==================================
 
+Version 1.3.0
+-------------
+* Create an OSA from an OSW
+
 Version 1.2.0
 -------------
 * master -> main
