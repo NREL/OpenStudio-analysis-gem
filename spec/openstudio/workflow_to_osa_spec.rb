@@ -85,6 +85,30 @@ describe 'Convert_an_OSW_to_OSA' do
 
     expect(a.workflow.all_variables.size).to eq 0
     
+    #make a variable
+    v = {
+      type: 'uniform',
+      minimum: 0.5,
+      maximum: 20,
+      mean: 10
+    }
+    out = m.make_variable('lights_perc_change', 'Lights Percent Change', v)
+    expect(out).to be true
+    expect(m.variables.size).to be 1
+
+    #make another variable
+    out = m.make_variable('ElectricEquipment_perc_change', 'Electric Equipment Percent Change', v)
+    expect(out).to be true
+    expect(m.variables.size).to be 2
+
+    #remove the first one
+    expect(m.remove_variable('lights_perc_change')).to be true
+    expect(m.variables.size).to be 1
+    
+    #remove bad one
+    expect(m.remove_variable('bad value')).to be false
+    expect(m.variables.size).to be 1
+    
     #check arguments are of the correct type and value
     arg = m.arguments.find_all { |a| a[:name] == 'vent_perc_change' }
     expect(arg[0][:value].is_a? Float).to be true

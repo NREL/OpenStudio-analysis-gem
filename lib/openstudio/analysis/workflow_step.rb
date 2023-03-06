@@ -129,6 +129,16 @@ module OpenStudio
         v
       end
 
+      def remove_variable(variable_name)
+        v_index = @variables.find_index { |v| v[:argument][:name] == variable_name }
+        if v_index
+          @variables.delete_at(v_index)
+          return true
+        else
+          return false
+        end
+      end
+      
       # Tag a measure's argument as a variable.
       #
       # @param argument_name [String] The instance_name of the measure argument that is to be tagged. This is the same name as the argument's variable in the measure.rb file.
@@ -224,7 +234,11 @@ module OpenStudio
           end
 
           # fix everything to support the legacy version
-          hash[:variables] = @variables
+          #need to make a deep copy to prevent multiple calls to .to_hash from deleting :type, :mode, etc below
+          #b.c. we still want :type to be avail, but not end up in the final hash.  without this, the delete below (line 276)
+          #will remove :type from @variables.  this would be okay if there was only 1 call to .to_hash. but thats not guaranteed
+          variables_dup = Marshal.load(Marshal.dump(@variables))
+          hash[:variables] = variables_dup
 
           # Clean up the variables to match the legacy format
           hash[:variables].each_with_index do |v, index|
