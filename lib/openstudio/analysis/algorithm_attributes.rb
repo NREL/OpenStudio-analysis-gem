@@ -50,7 +50,7 @@ module OpenStudio
       end
 
       # these are the allowed analysis types
-      ANALYSIS_TYPES = ['spea_nrel', 'rgenoud', 'nsga_nrel', 'lhs', 'preflight', 'morris', 'sobol', 'doe', 'fast99', 'ga', 'gaisl', 'single_run', 'repeat_run', 'batch_run']
+      ANALYSIS_TYPES = ['diag', 'doe', 'fast99', 'ga', 'gaisl', 'lhs', 'morris', 'nsga_nrel', 'optim', 'preflight', 'pso', 'repeat_run', 'rgenoud', 'single_run', 'sobol', 'spea_nrel']
 
       def set_attribute(attribute_name, attribute_value)
         @attributes[attribute_name] = attribute_value
