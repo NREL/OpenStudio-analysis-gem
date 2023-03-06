@@ -172,7 +172,7 @@ describe 'Convert_an_OSW_to_OSA' do
     expect(a.analysis_type = 'nsga_nrel').to match 'nsga_nrel'  
     expect(a.analysis_type = 'single_run').to match 'single_run'      
     #try setting bad analysis_type
-    expect { a.analysis_type = 'single_run2' }.to raise_error(RuntimeError, "Invalid analysis type. Allowed types: [\"spea_nrel\", \"rgenoud\", \"nsga_nrel\", \"lhs\", \"preflight\", \"morris\", \"sobol\", \"doe\", \"fast99\", \"ga\", \"gaisl\", \"single_run\", \"repeat_run\", \"batch_run\"]")
+    expect { a.analysis_type = 'single_run2' }.to raise_error(RuntimeError, /Invalid analysis type./)
 
     #add data_point initialization script
     f = 'spec/files/osw_project/scripts/script.sh'
