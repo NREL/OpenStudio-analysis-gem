@@ -101,6 +101,40 @@ describe 'Convert_an_OSW_to_OSA' do
     expect(out).to be true
     expect(m.variables.size).to be 2
 
+    #expect variable type to be uniform
+    expect(m.variables[0][:type]).to eq('uniform')
+    expect(m.variables[0][:minimum]).to eq(0.5)
+    expect(m.variables[0][:maximum]).to eq(20)
+    expect(m.variables[0][:mode]).to eq(10)
+    expect(m.variables[0][:step_size]).to be nil
+    expect(m.variables[0][:standard_deviation]).to be nil
+    #expect variable uncertainty_description to be nil since it hasnt been created yet by .to_hash 
+    expect(m.variables[0][:uncertainty_description]).to be nil
+    
+    #call .to_hash to populate uncertainty_description in the OSA
+    a.to_hash
+    #expect variable type to NOT be nil, still uniform, since it shouldnt be deleted now
+    expect(m.variables[0][:type]).to eq('uniform')
+    expect(m.variables[0][:minimum]).to eq(0.5)
+    expect(m.variables[0][:maximum]).to eq(20)
+    expect(m.variables[0][:mode]).to eq(10)
+    expect(m.variables[0][:step_size]).to be nil
+    expect(m.variables[0][:standard_deviation]).to be nil
+    #expect variable uncertainty_description to still be uniform after a call to .to_hash
+    expect(m.variables[0][:uncertainty_description]).to be nil
+    
+    #call .to_hash AGAIN to populate uncertainty_description in the OSA
+    a.to_hash
+    #expect variable type to NOT be nil, still uniform, since it shouldnt be deleted now
+    expect(m.variables[0][:type]).to eq('uniform')
+    expect(m.variables[0][:minimum]).to eq(0.5)
+    expect(m.variables[0][:maximum]).to eq(20)
+    expect(m.variables[0][:mode]).to eq(10)
+    expect(m.variables[0][:step_size]).to be nil
+    expect(m.variables[0][:standard_deviation]).to be nil
+    #expect variable uncertainty_description to still be uniform after a call to .to_hash
+    expect(m.variables[0][:uncertainty_description]).to be nil
+            
     #remove the first one
     expect(m.remove_variable('lights_perc_change')).to be true
     expect(m.variables.size).to be 1
