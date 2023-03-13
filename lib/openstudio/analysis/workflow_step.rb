@@ -129,6 +129,16 @@ module OpenStudio
         v
       end
 
+      def remove_variable(variable_name)
+        v_index = @variables.find_index { |v| v[:argument][:name] == variable_name }
+        if v_index
+          @variables.delete_at(v_index)
+          return true
+        else
+          return false
+        end
+      end
+      
       # Tag a measure's argument as a variable.
       #
       # @param argument_name [String] The instance_name of the measure argument that is to be tagged. This is the same name as the argument's variable in the measure.rb file.
@@ -224,12 +234,18 @@ module OpenStudio
           end
 
           # fix everything to support the legacy version
-          hash[:variables] = @variables
+          # we need to make a deep copy since multiple calls to .to_hash deletes :type, :mode, etc below
+          # and we still want those args to be avail for future calls, but not end up in the final OSA hash.
+          # without this, the v.delete() below (line ~278-281) will remove :type from @variables. 
+          # this would be okay if there was only 1 call to .to_hash. but thats not guaranteed
+          variables_dup = Marshal.load(Marshal.dump(@variables))
+          hash[:variables] = variables_dup
 
           # Clean up the variables to match the legacy format
           hash[:variables].each_with_index do |v, index|
             v[:variable_type] == 'pivot' ? v[:pivot] = true : v[:variable] = true
             v[:static_value] = v[:argument][:default_value] unless v[:static_value]
+            @variables[index][:static_value] = v[:static_value]
 
             v[:uncertainty_description] = {}
             # In Version 0.5 the _uncertain text will be removed from distribution
