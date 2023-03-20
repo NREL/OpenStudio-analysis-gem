@@ -1,6 +1,10 @@
 OpenStudio Analysis Gem Change Log
 ==================================
 
+Version 1.3.1
+-------------
+* Add method to delete a Variable 
+
 Version 1.3.0
 -------------
 * Create an OSA from an OSW
