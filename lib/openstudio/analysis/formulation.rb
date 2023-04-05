@@ -394,9 +394,11 @@ module OpenStudio
           #get measure directory
           measure_dir = step[:measure_dir_name]
           measure_name = measure_dir.split("measures/").last
+          puts "measure_dir_name: #{measure_name}"
           #get XML
           measure_dir_abs_path = File.join(File.dirname(File.expand_path(osw_filename)),measure_dir)
-          xml = parse_measure_xml(File.join(measure_dir_abs_path, '/measure.xml'))       
+          xml = parse_measure_xml(File.join(measure_dir_abs_path, '/measure.xml'))
+          puts "xml: #{xml}\n"          
           #add check for previous names _+1
           count = 1
           name = xml[:name]
