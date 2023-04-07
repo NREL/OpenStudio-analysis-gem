@@ -474,32 +474,39 @@ module OpenStudio
           puts 'Adding Support Files: Weather'
           #check if weather file exists.  use abs path.  remove leading ./ from @weather_file path if there.
           #check if path is already absolute
-          if File.exists?(@weather_file[:file])
-            puts "  Adding #{@weather_file[:file]}"
-            zf.add("weather/#{File.basename(@weather_file[:file])}", @weather_file[:file])
-          #make absolute path and check for file  
-          elsif File.exists?(File.join(osw_full_path,@weather_file[:file].sub(/^\.\//, '')))
-            puts "  Adding #{File.join(osw_full_path,@weather_file[:file].sub(/^\.\//, ''))}"
-            zf.add("weather/#{File.basename(@weather_file[:file])}", File.join(osw_full_path,@weather_file[:file].sub(/^\.\//, '')))
+          if @weather_file[:file]
+            if File.exists?(@weather_file[:file])
+              puts "  Adding #{@weather_file[:file]}"
+              zf.add("weather/#{File.basename(@weather_file[:file])}", @weather_file[:file])
+            #make absolute path and check for file  
+            elsif File.exists?(File.join(osw_full_path,@weather_file[:file].sub(/^\.\//, '')))
+              puts "  Adding #{File.join(osw_full_path,@weather_file[:file].sub(/^\.\//, ''))}"
+              zf.add("weather/#{File.basename(@weather_file[:file])}", File.join(osw_full_path,@weather_file[:file].sub(/^\.\//, '')))
+            else
+              raise "weather_file[:file] does not exist at: #{File.join(osw_full_path,@weather_file[:file].sub(/^\.\//, ''))}"
+            end
           else
-            raise "Weather file does not exist at: #{File.join(osw_full_path,@weather_file[:file].sub(/^\.\//, ''))}"
-          end 
+            warn "weather_file[:file] is not defined"
+          end              
 
           ## Seed files
           puts 'Adding Support Files: Seed Models'
-          #check if weather file exists.  use abs path.  remove leading ./ from @seed_model path if there.
+          #check if seed file exists.  use abs path.  remove leading ./ from @seed_model path if there.
           #check if path is already absolute
-          if File.exists?(@seed_model[:file])
-            puts "  Adding #{@seed_model[:file]}"
-            zf.add("seeds/#{File.basename(@seed_model[:file])}", @seed_model[:file])
-          #make absolute path and check for file  
-          elsif File.exists?(File.join(osw_full_path,@seed_model[:file].sub(/^\.\//, '')))
-            puts "  Adding #{File.join(osw_full_path,@seed_model[:file].sub(/^\.\//, ''))}"
-            zf.add("seeds/#{File.basename(@seed_model[:file])}", File.join(osw_full_path,@seed_model[:file].sub(/^\.\//, '')))
+          if @seed_model[:file]
+            if File.exists?(@seed_model[:file])
+              puts "  Adding #{@seed_model[:file]}"
+              zf.add("seeds/#{File.basename(@seed_model[:file])}", @seed_model[:file])
+            #make absolute path and check for file  
+            elsif File.exists?(File.join(osw_full_path,@seed_model[:file].sub(/^\.\//, '')))
+              puts "  Adding #{File.join(osw_full_path,@seed_model[:file].sub(/^\.\//, ''))}"
+              zf.add("seeds/#{File.basename(@seed_model[:file])}", File.join(osw_full_path,@seed_model[:file].sub(/^\.\//, '')))
+            else
+              raise "seed_file[:file] does not exist at: #{File.join(osw_full_path,@seed_model[:file].sub(/^\.\//, ''))}"
+            end        
           else
-            raise "Seed file does not exist at: #{File.join(osw_full_path,@seed_model[:file].sub(/^\.\//, ''))}"
-          end        
-
+            warn "seed_file[:file] is not defined"
+          end 
           puts 'Adding Support Files: Libraries'
           @libraries.each do |lib|
             raise "Libraries must specify their 'library_name' as metadata which becomes the directory upon zip" unless lib[:metadata][:library_name]
