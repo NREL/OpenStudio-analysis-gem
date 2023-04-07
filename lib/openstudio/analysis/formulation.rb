@@ -368,7 +368,7 @@ module OpenStudio
       #  /weather
       #
       def convert_osw(osw_filename, *measure_paths)
-        #load OSW so we can loop over [:steps]
+        # load OSW so we can loop over [:steps]
         if File.exist? osw_filename  #will this work for both rel and abs paths?
           osw = JSON.parse(File.read(osw_filename), symbolize_names: true)
           @osw_path = File.expand_path(osw_filename)
@@ -376,10 +376,42 @@ module OpenStudio
           raise "Could not find workflow file #{osw_filename}"
         end
         
-        #set the weather and seed files if set in OSW
-        self.weather_file = osw[:weather_file] ? osw[:weather_file] : nil
-        self.seed_model = osw[:seed_file] ? osw[:seed_file] : nil
+        # set the weather and seed files if set in OSW
+        # use :file_paths and look for files to set
+        if osw[:file_paths]        
+          # seed_model, check if in OSW and not found in path search already
+          if osw[:seed_file]
+            osw[:file_paths].each do |path|
+              if File.exist?(File.join(File.expand_path(path), osw[:seed_file]))
+                puts "found seed_file: #{osw[:seed_file]}"
+                self.seed_model = File.join(File.expand_path(path), osw[:seed_file])
+                break
+              end
+            end  
+          else 
+            warn "osw[:seed_file] is not defined"            
+          end
 
+          # weather_file, check if in OSW and not found in path search already
+          if osw[:weather_file]
+            osw[:file_paths].each do |path|
+              if File.exist?(File.join(File.expand_path(path), osw[:weather_file]))
+                puts "found weather_file: #{osw[:weather_file]}"
+                self.weather_file = File.join(File.expand_path(path), osw[:weather_file])
+                break
+              end 
+            end
+          else 
+            warn "osw[:weather_file] is not defined"            
+          end
+
+        # file_paths is not defined in OSW, so warn and try to set 
+        else
+          warn ":file_paths is not defined in the OSW."
+          self.weather_file = osw[:weather_file] ? osw[:weather_file] : nil
+          self.seed_model = osw[:seed_file] ? osw[:seed_file] : nil
+        end
+        
         #set analysis_type default to Single_Run
         self.analysis_type = 'single_run'
 
