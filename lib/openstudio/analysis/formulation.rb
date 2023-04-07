@@ -367,7 +367,7 @@ module OpenStudio
       #  /seeds
       #  /weather
       #
-      def convert_osw(osw_filename)
+      def convert_osw(osw_filename, *measure_paths)
         #load OSW so we can loop over [:steps]
         if File.exist? osw_filename  #will this work for both rel and abs paths?
           osw = JSON.parse(File.read(osw_filename), symbolize_names: true)
@@ -396,9 +396,23 @@ module OpenStudio
           measure_name = measure_dir.split("measures/").last
           puts "measure_dir_name: #{measure_name}"
           #get XML
-          measure_dir_abs_path = File.join(File.dirname(File.expand_path(osw_filename)),measure_dir)
-          xml = parse_measure_xml(File.join(measure_dir_abs_path, '/measure.xml'))
-          puts "xml: #{xml}\n"          
+          #Loop over possible measure_paths, including the dir of the osw_filename path, to find the measure, then set measure_dir_abs_path to that path
+          measure_dir_abs_path = ''
+          paths_to_parse = [File.dirname(osw_filename), *measure_paths].flatten.compact.map { |path| File.join(File.expand_path(path), measure_dir, 'measure.xml') }
+          puts "searching for xml's in: #{paths_to_parse}"
+          xml = {}
+          paths_to_parse.each do |path|
+            if File.exist?(path)
+              puts "found xml: #{path}"
+              xml = parse_measure_xml(path)
+              if !xml.empty?
+                measure_dir_abs_path = path
+                break
+              end
+            end          
+          end
+          raise "measure #{measure_name} not found" if xml.empty?
+          puts ""          
           #add check for previous names _+1
           count = 1
           name = xml[:name]
@@ -419,13 +433,17 @@ module OpenStudio
           #1. find measure in @workflow
           m = @workflow.find_measure(name)
           #2. loop thru osw args
-          step[:arguments].each do |k,v|
-            #check if argument is in measure, otherwise setting argument_value will crash
-            raise "OSW arg: #{k} is not in Measure: #{name}" if m.arguments.find_all { |a| a[:name] == k.to_s }.empty?
-            #set measure arg to match osw arg
-            m.argument_value(k.to_s, v)
+          #check if the :argument is missing from the measure step, it shouldnt be but just in case give a clean message
+          if step[:arguments].nil?
+            raise "measure #{name} step has no arguments: #{step}"
+          else          
+            step[:arguments].each do |k,v|
+              #check if argument is in measure, otherwise setting argument_value will crash
+              raise "OSW arg: #{k} is not in Measure: #{name}" if m.arguments.find_all { |a| a[:name] == k.to_s }.empty?
+              #set measure arg to match osw arg
+              m.argument_value(k.to_s, v)
+            end
           end
-          
         end
       end
 

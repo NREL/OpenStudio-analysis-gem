@@ -269,5 +269,100 @@ describe 'Convert_an_OSW_to_OSA' do
     expect(zip_file.find_entry("scripts/analysis/finalization.args")).to be_truthy
     end
   end
+  
+  it 'should handle multiple measure paths' do
+    
+    #check if file exists  
+    osw_file = 'spec/files/osw_project/diff_measure_paths.osw'
+    expect(File.exist?(osw_file)).to be true
+
+    #create OSA
+    a = OpenStudio::Analysis.create('Name')
+    expect(a).not_to be nil
+    expect(a.display_name).to eq 'Name'
+    expect(a).to be_a OpenStudio::Analysis::Formulation
+    expect(a.workflow).not_to be nil
+    
+    #put OSW into OSA.workflow
+    paths = [
+    'spec/files/measures',
+    'spec/files/measures_second_path'
+    ]
+    puts "paths = #{paths}"
+    output = a.convert_osw(osw_file, paths)
+    expect(output).not_to be nil
+    
+  end
+  
+  it 'should raise missing measure arguments in osw' do
+    
+    #check if file exists  
+    osw_file = 'spec/files/osw_project/missing_argument.osw'
+    expect(File.exist?(osw_file)).to be true
+
+    #create OSA
+    a = OpenStudio::Analysis.create('Name')
+    expect(a).not_to be nil
+    expect(a.display_name).to eq 'Name'
+    expect(a).to be_a OpenStudio::Analysis::Formulation
+    expect(a.workflow).not_to be nil
+    
+    #put OSW into OSA.workflow
+    paths = [
+    'spec/files/measures',
+    'spec/files/measures_second_path'
+    ]
+    puts "paths = #{paths}"
+    expect {output = a.convert_osw(osw_file, paths)}.to raise_error(RuntimeError, /measure measure_in_another_dir step has no arguments: {:measure_dir_name=>"measure_in_another_dir"}/)
+    
+  end
+  
+  it 'should handle empty paths' do
+    
+    #check if file exists  
+    osw_file = 'spec/files/osw_project/diff_measure_paths.osw'
+    expect(File.exist?(osw_file)).to be true
+
+    #create OSA
+    a = OpenStudio::Analysis.create('Name')
+    expect(a).not_to be nil
+    expect(a.display_name).to eq 'Name'
+    expect(a).to be_a OpenStudio::Analysis::Formulation
+    expect(a.workflow).not_to be nil
+    
+    #put OSW into OSA.workflow
+    paths = [
+    'spec/files/measures',
+    '',
+    'spec/files/measures_second_path'
+    ]
+    puts "paths = #{paths}"
+    output = a.convert_osw(osw_file, paths)
+    expect(output).not_to be nil
+    
+  end
+  
+  it 'should raise if measure not found' do
+    
+    #check if file exists  
+    osw_file = 'spec/files/osw_project/diff_measure_paths.osw'
+    expect(File.exist?(osw_file)).to be true
+
+    #create OSA
+    a = OpenStudio::Analysis.create('Name')
+    expect(a).not_to be nil
+    expect(a.display_name).to eq 'Name'
+    expect(a).to be_a OpenStudio::Analysis::Formulation
+    expect(a.workflow).not_to be nil
+    
+    #put OSW into OSA.workflow
+    paths = [
+    'spec/files/measures',
+    '',
+    ]
+    puts "paths = #{paths}"
+    expect {a.convert_osw(osw_file, paths)}.to raise_error(RuntimeError, "measure measure_in_another_dir not found")
+    
+  end
 
 end
