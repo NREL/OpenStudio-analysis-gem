@@ -465,7 +465,7 @@ describe 'Convert_an_OSW_to_OSA' do
     Dir.chdir '../../../..'
   end
   
-  it 'should handle being in subdirectory for file_paths with windows style' do
+  it 'should handle being in subdirectory for file_paths with windows style', :if => RbConfig::CONFIG['host_os'] =~ /mswin|mingw|cygwin/ do
     # This will test being in a subdirectory, with OSW at a higher level and
     # windows style paths to seeds and weather in other subdirectories
     # "file_paths": [
