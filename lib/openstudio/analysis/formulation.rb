@@ -430,9 +430,10 @@ module OpenStudio
           measure_name = measure_dir.split("measures/").last
           puts "measure_dir_name: #{measure_name}"
           #get XML
-          #Loop over possible measure_paths, including the dir of the osw_filename path, to find the measure, then set measure_dir_abs_path to that path
+          # Loop over possible user defined *measure_paths, including the dir of the osw_filename path and :measure_paths, to find the measure, 
+          # then set measure_dir_abs_path to that path
           measure_dir_abs_path = ''
-          paths_to_parse = [File.dirname(osw_filename), *measure_paths].flatten.compact.map { |path| File.join(File.expand_path(path), measure_dir, 'measure.xml') }
+          paths_to_parse = [File.dirname(osw_filename), osw[:measure_paths], *measure_paths].flatten.compact.map { |path| File.join(File.expand_path(path), measure_dir, 'measure.xml') }
           puts "searching for xml's in: #{paths_to_parse}"
           xml = {}
           paths_to_parse.each do |path|

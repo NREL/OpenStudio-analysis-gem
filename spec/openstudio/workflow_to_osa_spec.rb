@@ -270,6 +270,52 @@ describe 'Convert_an_OSW_to_OSA' do
     expect(zip_file.find_entry("scripts/analysis/finalization.args")).to be_truthy
     end
   end
+
+  it 'should handle measure paths in OSW' do
+    #measure paths are in OSW, but relative to /spec dir
+    
+    #check if file exists  
+    osw_file = 'spec/files/osw_project/measure_paths_osw.osw'
+    expect(File.exist?(osw_file)).to be true
+
+    #create OSA
+    a = OpenStudio::Analysis.create('Name')
+    expect(a).not_to be nil
+    expect(a.display_name).to eq 'Name'
+    expect(a).to be_a OpenStudio::Analysis::Formulation
+    expect(a.workflow).not_to be nil
+    
+    #put OSW into OSA.workflow
+    output = a.convert_osw(osw_file)
+    expect(output).not_to be nil
+    
+  end
+  
+  it 'should handle duplicate measure paths in OSW' do
+    #measure paths are in OSW, but relative to /spec dir
+    #paths are also manually input as well
+    
+    #check if file exists  
+    osw_file = 'spec/files/osw_project/measure_paths_osw.osw'
+    expect(File.exist?(osw_file)).to be true
+
+    #create OSA
+    a = OpenStudio::Analysis.create('Name')
+    expect(a).not_to be nil
+    expect(a.display_name).to eq 'Name'
+    expect(a).to be_a OpenStudio::Analysis::Formulation
+    expect(a.workflow).not_to be nil
+    
+    #put OSW into OSA.workflow
+    paths = [
+    'spec/files/measures',
+    'spec/files/measures_second_path'
+    ]
+    puts "paths = #{paths}"
+    output = a.convert_osw(osw_file, paths)
+    expect(output).not_to be nil
+    
+  end
   
   it 'should handle multiple measure paths' do
     
