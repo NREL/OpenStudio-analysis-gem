@@ -382,6 +382,7 @@ module OpenStudio
           # seed_model, check if in OSW and not found in path search already
           if osw[:seed_file]
             osw[:file_paths].each do |path|
+              puts "searching for seed at: #{File.join(File.expand_path(path), osw[:seed_file])}"
               if File.exist?(File.join(File.expand_path(path), osw[:seed_file]))
                 puts "found seed_file: #{osw[:seed_file]}"
                 self.seed_model = File.join(File.expand_path(path), osw[:seed_file])
@@ -395,6 +396,7 @@ module OpenStudio
           # weather_file, check if in OSW and not found in path search already
           if osw[:weather_file]
             osw[:file_paths].each do |path|
+              puts "searching for weather at: #{File.join(File.expand_path(path), osw[:weather_file])}"
               if File.exist?(File.join(File.expand_path(path), osw[:weather_file]))
                 puts "found weather_file: #{osw[:weather_file]}"
                 self.weather_file = File.join(File.expand_path(path), osw[:weather_file])
@@ -509,11 +511,30 @@ module OpenStudio
           if @weather_file[:file]
             if File.exists?(@weather_file[:file])
               puts "  Adding #{@weather_file[:file]}"
-              zf.add("weather/#{File.basename(@weather_file[:file])}", @weather_file[:file])
+              #zf.add("weather/#{File.basename(@weather_file[:file])}", @weather_file[:file])
+              base_name = File.basename(@weather_file[:file], ".*")
+              puts "base_name: #{base_name}"
+              #convert backslash on windows to forward slash so Dir.glob will work (in case user uses \)
+              weather_dirname = File.dirname(@weather_file[:file]).gsub("\\", "/")
+              puts "weather_dirname: #{weather_dirname}"
+              Dir.glob(File.join(weather_dirname, "#{base_name}.*")) do |file_path|
+                puts "file_path: #{file_path}"
+                puts "zip path: weather/#{File.basename(file_path)}"
+                zf.add("weather/#{File.basename(file_path)}", file_path)
+              end
             #make absolute path and check for file  
             elsif File.exists?(File.join(osw_full_path,@weather_file[:file].sub(/^\.\//, '')))
-              puts "  Adding #{File.join(osw_full_path,@weather_file[:file].sub(/^\.\//, ''))}"
-              zf.add("weather/#{File.basename(@weather_file[:file])}", File.join(osw_full_path,@weather_file[:file].sub(/^\.\//, '')))
+              puts "  Adding: #{File.join(osw_full_path,@weather_file[:file].sub(/^\.\//, ''))}"
+              #zf.add("weather/#{File.basename(@weather_file[:file])}", File.join(osw_full_path,@weather_file[:file].sub(/^\.\//, '')))
+              base_name = File.basename(@weather_file[:file].sub(/^\.\//, ''), ".*")
+              puts "base_name2: #{base_name}"
+              weather_dirname = File.dirname(File.join(osw_full_path,@weather_file[:file].sub(/^\.\//, ''))).gsub("\\", "/")
+              puts "weather_dirname: #{weather_dirname}"
+              Dir.glob(File.join(weather_dirname, "#{base_name}.*")) do |file_path|
+                puts "file_path2: #{file_path}"
+                puts "zip path2: weather/#{File.basename(file_path)}"
+                zf.add("weather/#{File.basename(file_path)}", file_path)
+              end
             else
               raise "weather_file[:file] does not exist at: #{File.join(osw_full_path,@weather_file[:file].sub(/^\.\//, ''))}"
             end

@@ -257,6 +257,7 @@ describe 'Convert_an_OSW_to_OSA' do
     # Verify that the expected files are present in the zip file
     expect(zip_file.find_entry("seeds/example_model.osm")).to be_truthy
     expect(zip_file.find_entry("weather/USA_CO_Golden-NREL.724666_TMY3.epw")).to be_truthy
+    expect(zip_file.find_entry("weather/USA_CO_Golden-NREL.724666_TMY3.stat")).to be_truthy
     expect(zip_file.find_entry("measures/AddMonthlyJSONUtilityData/measure.rb")).to be_truthy
     expect(zip_file.find_entry("measures/CalibrationReportsEnhanced/measure.rb")).to be_truthy
     expect(zip_file.find_entry("measures/CalibrationReportsEnhanced/resources/report.html.in")).to be_truthy
@@ -365,4 +366,153 @@ describe 'Convert_an_OSW_to_OSA' do
     
   end
 
+  it 'should handle file_paths for seed/weather' do
+    # This will test using :file_paths in OSW
+    # :file_paths have no slashes in the path name
+    # "file_paths": [
+    # " seeds",
+    # " weather"
+    # ],
+    #set working Dir to OSW so relative :file_paths in OSW are consistent
+    Dir.chdir 'spec/files/osw_project'
+    
+    #check if file exists  
+    osw_file = 'calibration_workflow_file_paths.osw'
+    expect(File.exist?(osw_file)).to be true
+
+    #create OSA
+    a = OpenStudio::Analysis.create('Name of an analysis')
+    expect(a).not_to be nil
+    expect(a.display_name).to eq 'Name of an analysis'
+    expect(a).to be_a OpenStudio::Analysis::Formulation
+    expect(a.workflow).not_to be nil
+    
+    #put OSW into OSA.workflow
+    output = a.convert_osw(osw_file)
+    expect(output).not_to be nil
+    
+    #validate OSA against schema
+    File.write('analysis2.json',JSON.pretty_generate(a.to_hash))
+    #osa_schema = JSON.parse(File.read('spec/schema/osa_server_schema.json'), symbolize_names: true)
+    #errors = JSON::Validator.fully_validate(osa_schema, a.to_hash)
+    #expect(errors.empty?).to eq(true), "OSA is not valid, #{errors}"
+    
+    #make project zip file
+    a.save_osa_zip('analysis2.zip')
+    # Open the zip file
+    Zip::File.open('analysis2.zip') do |zip_file|
+    # Verify that the expected files are present in the zip file
+    expect(zip_file.find_entry("seeds/example_model.osm")).to be_truthy
+    expect(zip_file.find_entry("weather/USA_CO_Golden-NREL.724666_TMY3.epw")).to be_truthy
+    expect(zip_file.find_entry("weather/USA_CO_Golden-NREL.724666_TMY3.stat")).to be_truthy
+    expect(zip_file.find_entry("measures/AddMonthlyJSONUtilityData/measure.rb")).to be_truthy
+    expect(zip_file.find_entry("measures/CalibrationReportsEnhanced/measure.rb")).to be_truthy
+    expect(zip_file.find_entry("measures/CalibrationReportsEnhanced/resources/report.html.in")).to be_truthy
+    expect(zip_file.find_entry("measures/GeneralCalibrationMeasurePercentChange/measure.rb")).to be_truthy
+    end
+    
+    #reset working dir
+    Dir.chdir '../../..'
+  end
+
+  it 'should handle being in subdirectory for file_paths' do
+    # This will test being in a subdirectory, with OSW at a higher level and
+    # seeds and weather in other subdirectories
+    # "file_paths": [
+    # "../seeds",
+    # "../weather"
+    # ],
+    
+    #set working Dir to OSW so relative :file_paths in OSW are consistent
+    Dir.chdir 'spec/files/osw_project/temp'
+    
+    #check if file exists  
+    osw_file = '../changed_file_paths.osw'
+    expect(File.exist?(osw_file)).to be true
+
+    #create OSA
+    a = OpenStudio::Analysis.create('Name of an analysis')
+    expect(a).not_to be nil
+    expect(a.display_name).to eq 'Name of an analysis'
+    expect(a).to be_a OpenStudio::Analysis::Formulation
+    expect(a.workflow).not_to be nil
+    
+    #put OSW into OSA.workflow
+    output = a.convert_osw(osw_file)
+    expect(output).not_to be nil
+    
+    #validate OSA against schema
+    File.write('analysis.json',JSON.pretty_generate(a.to_hash))
+    #osa_schema = JSON.parse(File.read('spec/schema/osa_server_schema.json'), symbolize_names: true)
+    #errors = JSON::Validator.fully_validate(osa_schema, a.to_hash)
+    #expect(errors.empty?).to eq(true), "OSA is not valid, #{errors}"
+    
+    #make project zip file
+    a.save_osa_zip('analysis.zip')
+    # Open the zip file
+    Zip::File.open('analysis.zip') do |zip_file|
+    # Verify that the expected files are present in the zip file
+    expect(zip_file.find_entry("seeds/example_model.osm")).to be_truthy
+    expect(zip_file.find_entry("weather/USA_CO_Golden-NREL.724666_TMY3.epw")).to be_truthy
+    expect(zip_file.find_entry("weather/USA_CO_Golden-NREL.724666_TMY3.stat")).to be_truthy
+    expect(zip_file.find_entry("measures/AddMonthlyJSONUtilityData/measure.rb")).to be_truthy
+    expect(zip_file.find_entry("measures/CalibrationReportsEnhanced/measure.rb")).to be_truthy
+    expect(zip_file.find_entry("measures/CalibrationReportsEnhanced/resources/report.html.in")).to be_truthy
+    expect(zip_file.find_entry("measures/GeneralCalibrationMeasurePercentChange/measure.rb")).to be_truthy
+    end
+    
+    #reset working dir
+    Dir.chdir '../../../..'
+  end
+  
+  it 'should handle being in subdirectory for file_paths with windows style' do
+    # This will test being in a subdirectory, with OSW at a higher level and
+    # windows style paths to seeds and weather in other subdirectories
+    # "file_paths": [
+    # "..\\seeds",
+    # "..\\weather"
+    # ],
+    
+    #set working Dir to OSW so relative :file_paths in OSW are consistent
+    Dir.chdir 'spec/files/osw_project/temp'
+    
+    #check if file exists  
+    osw_file = '../changed_file_paths_windows.osw'
+    expect(File.exist?(osw_file)).to be true
+
+    #create OSA
+    a = OpenStudio::Analysis.create('Name of an analysis')
+    expect(a).not_to be nil
+    expect(a.display_name).to eq 'Name of an analysis'
+    expect(a).to be_a OpenStudio::Analysis::Formulation
+    expect(a.workflow).not_to be nil
+    
+    #put OSW into OSA.workflow
+    output = a.convert_osw(osw_file)
+    expect(output).not_to be nil
+    
+    #validate OSA against schema
+    File.write('analysis2.json',JSON.pretty_generate(a.to_hash))
+    #osa_schema = JSON.parse(File.read('spec/schema/osa_server_schema.json'), symbolize_names: true)
+    #errors = JSON::Validator.fully_validate(osa_schema, a.to_hash)
+    #expect(errors.empty?).to eq(true), "OSA is not valid, #{errors}"
+    
+    #make project zip file
+    a.save_osa_zip('analysis2.zip')
+    # Open the zip file
+    Zip::File.open('analysis2.zip') do |zip_file|
+    # Verify that the expected files are present in the zip file
+    expect(zip_file.find_entry("seeds/example_model.osm")).to be_truthy
+    expect(zip_file.find_entry("weather/USA_CO_Golden-NREL.724666_TMY3.epw")).to be_truthy
+    expect(zip_file.find_entry("weather/USA_CO_Golden-NREL.724666_TMY3.stat")).to be_truthy
+    expect(zip_file.find_entry("measures/AddMonthlyJSONUtilityData/measure.rb")).to be_truthy
+    expect(zip_file.find_entry("measures/CalibrationReportsEnhanced/measure.rb")).to be_truthy
+    expect(zip_file.find_entry("measures/CalibrationReportsEnhanced/resources/report.html.in")).to be_truthy
+    expect(zip_file.find_entry("measures/GeneralCalibrationMeasurePercentChange/measure.rb")).to be_truthy
+    end
+    
+    #reset working dir
+    Dir.chdir '../../../..'
+  end
+    
 end
