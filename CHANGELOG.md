@@ -1,6 +1,10 @@
 OpenStudio Analysis Gem Change Log
 ==================================
 
+Version 1.3.2
+-------------
+* Add more paths to the measures dir list 
+
 Version 1.3.1
 -------------
 * Add method to delete a Variable 
