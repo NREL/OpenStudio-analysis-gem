@@ -1,0 +1,22 @@
+{
+  "seed_file": "",
+  "file_paths": [],
+  "measure_paths": [
+    "spec/files/measures",
+    "spec/files/measures_second_path"
+  ],
+  "steps": [
+    {
+      "arguments": {
+        "__SKIP__": false
+      },
+      "measure_dir_name": "ExampleMeasure"
+    },
+    {
+      "arguments": {
+        "__SKIP__": false
+      },
+      "measure_dir_name": "measure_in_another_dir"
+    }
+  ]
+}

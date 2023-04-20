@@ -367,8 +367,8 @@ module OpenStudio
       #  /seeds
       #  /weather
       #
-      def convert_osw(osw_filename)
-        #load OSW so we can loop over [:steps]
+      def convert_osw(osw_filename, *measure_paths)
+        # load OSW so we can loop over [:steps]
         if File.exist? osw_filename  #will this work for both rel and abs paths?
           osw = JSON.parse(File.read(osw_filename), symbolize_names: true)
           @osw_path = File.expand_path(osw_filename)
@@ -376,10 +376,44 @@ module OpenStudio
           raise "Could not find workflow file #{osw_filename}"
         end
         
-        #set the weather and seed files if set in OSW
-        self.weather_file = osw[:weather_file] ? osw[:weather_file] : nil
-        self.seed_model = osw[:seed_file] ? osw[:seed_file] : nil
+        # set the weather and seed files if set in OSW
+        # use :file_paths and look for files to set
+        if osw[:file_paths]        
+          # seed_model, check if in OSW and not found in path search already
+          if osw[:seed_file]
+            osw[:file_paths].each do |path|
+              puts "searching for seed at: #{File.join(File.expand_path(path), osw[:seed_file])}"
+              if File.exist?(File.join(File.expand_path(path), osw[:seed_file]))
+                puts "found seed_file: #{osw[:seed_file]}"
+                self.seed_model = File.join(File.expand_path(path), osw[:seed_file])
+                break
+              end
+            end  
+          else 
+            warn "osw[:seed_file] is not defined"            
+          end
 
+          # weather_file, check if in OSW and not found in path search already
+          if osw[:weather_file]
+            osw[:file_paths].each do |path|
+              puts "searching for weather at: #{File.join(File.expand_path(path), osw[:weather_file])}"
+              if File.exist?(File.join(File.expand_path(path), osw[:weather_file]))
+                puts "found weather_file: #{osw[:weather_file]}"
+                self.weather_file = File.join(File.expand_path(path), osw[:weather_file])
+                break
+              end 
+            end
+          else 
+            warn "osw[:weather_file] is not defined"            
+          end
+
+        # file_paths is not defined in OSW, so warn and try to set 
+        else
+          warn ":file_paths is not defined in the OSW."
+          self.weather_file = osw[:weather_file] ? osw[:weather_file] : nil
+          self.seed_model = osw[:seed_file] ? osw[:seed_file] : nil
+        end
+        
         #set analysis_type default to Single_Run
         self.analysis_type = 'single_run'
 
@@ -394,9 +428,26 @@ module OpenStudio
           #get measure directory
           measure_dir = step[:measure_dir_name]
           measure_name = measure_dir.split("measures/").last
+          puts "measure_dir_name: #{measure_name}"
           #get XML
-          measure_dir_abs_path = File.join(File.dirname(File.expand_path(osw_filename)),measure_dir)
-          xml = parse_measure_xml(File.join(measure_dir_abs_path, '/measure.xml'))       
+          # Loop over possible user defined *measure_paths, including the dir of the osw_filename path and :measure_paths, to find the measure, 
+          # then set measure_dir_abs_path to that path
+          measure_dir_abs_path = ''
+          paths_to_parse = [File.dirname(osw_filename), osw[:measure_paths], *measure_paths].flatten.compact.map { |path| File.join(File.expand_path(path), measure_dir, 'measure.xml') }
+          puts "searching for xml's in: #{paths_to_parse}"
+          xml = {}
+          paths_to_parse.each do |path|
+            if File.exist?(path)
+              puts "found xml: #{path}"
+              xml = parse_measure_xml(path)
+              if !xml.empty?
+                measure_dir_abs_path = path
+                break
+              end
+            end          
+          end
+          raise "measure #{measure_name} not found" if xml.empty?
+          puts ""          
           #add check for previous names _+1
           count = 1
           name = xml[:name]
@@ -417,13 +468,17 @@ module OpenStudio
           #1. find measure in @workflow
           m = @workflow.find_measure(name)
           #2. loop thru osw args
-          step[:arguments].each do |k,v|
-            #check if argument is in measure, otherwise setting argument_value will crash
-            raise "OSW arg: #{k} is not in Measure: #{name}" if m.arguments.find_all { |a| a[:name] == k.to_s }.empty?
-            #set measure arg to match osw arg
-            m.argument_value(k.to_s, v)
+          #check if the :argument is missing from the measure step, it shouldnt be but just in case give a clean message
+          if step[:arguments].nil?
+            raise "measure #{name} step has no arguments: #{step}"
+          else          
+            step[:arguments].each do |k,v|
+              #check if argument is in measure, otherwise setting argument_value will crash
+              raise "OSW arg: #{k} is not in Measure: #{name}" if m.arguments.find_all { |a| a[:name] == k.to_s }.empty?
+              #set measure arg to match osw arg
+              m.argument_value(k.to_s, v)
+            end
           end
-          
         end
       end
 
@@ -454,32 +509,58 @@ module OpenStudio
           puts 'Adding Support Files: Weather'
           #check if weather file exists.  use abs path.  remove leading ./ from @weather_file path if there.
           #check if path is already absolute
-          if File.exists?(@weather_file[:file])
-            puts "  Adding #{@weather_file[:file]}"
-            zf.add("weather/#{File.basename(@weather_file[:file])}", @weather_file[:file])
-          #make absolute path and check for file  
-          elsif File.exists?(File.join(osw_full_path,@weather_file[:file].sub(/^\.\//, '')))
-            puts "  Adding #{File.join(osw_full_path,@weather_file[:file].sub(/^\.\//, ''))}"
-            zf.add("weather/#{File.basename(@weather_file[:file])}", File.join(osw_full_path,@weather_file[:file].sub(/^\.\//, '')))
+          if @weather_file[:file]
+            if File.exists?(@weather_file[:file])
+              puts "  Adding #{@weather_file[:file]}"
+              #zf.add("weather/#{File.basename(@weather_file[:file])}", @weather_file[:file])
+              base_name = File.basename(@weather_file[:file], ".*")
+              puts "base_name: #{base_name}"
+              #convert backslash on windows to forward slash so Dir.glob will work (in case user uses \)
+              weather_dirname = File.dirname(@weather_file[:file]).gsub("\\", "/")
+              puts "weather_dirname: #{weather_dirname}"
+              Dir.glob(File.join(weather_dirname, "#{base_name}.*")) do |file_path|
+                puts "file_path: #{file_path}"
+                puts "zip path: weather/#{File.basename(file_path)}"
+                zf.add("weather/#{File.basename(file_path)}", file_path)
+              end
+            #make absolute path and check for file  
+            elsif File.exists?(File.join(osw_full_path,@weather_file[:file].sub(/^\.\//, '')))
+              puts "  Adding: #{File.join(osw_full_path,@weather_file[:file].sub(/^\.\//, ''))}"
+              #zf.add("weather/#{File.basename(@weather_file[:file])}", File.join(osw_full_path,@weather_file[:file].sub(/^\.\//, '')))
+              base_name = File.basename(@weather_file[:file].sub(/^\.\//, ''), ".*")
+              puts "base_name2: #{base_name}"
+              weather_dirname = File.dirname(File.join(osw_full_path,@weather_file[:file].sub(/^\.\//, ''))).gsub("\\", "/")
+              puts "weather_dirname: #{weather_dirname}"
+              Dir.glob(File.join(weather_dirname, "#{base_name}.*")) do |file_path|
+                puts "file_path2: #{file_path}"
+                puts "zip path2: weather/#{File.basename(file_path)}"
+                zf.add("weather/#{File.basename(file_path)}", file_path)
+              end
+            else
+              raise "weather_file[:file] does not exist at: #{File.join(osw_full_path,@weather_file[:file].sub(/^\.\//, ''))}"
+            end
           else
-            raise "Weather file does not exist at: #{File.join(osw_full_path,@weather_file[:file].sub(/^\.\//, ''))}"
-          end 
+            warn "weather_file[:file] is not defined"
+          end              
 
           ## Seed files
           puts 'Adding Support Files: Seed Models'
-          #check if weather file exists.  use abs path.  remove leading ./ from @seed_model path if there.
+          #check if seed file exists.  use abs path.  remove leading ./ from @seed_model path if there.
           #check if path is already absolute
-          if File.exists?(@seed_model[:file])
-            puts "  Adding #{@seed_model[:file]}"
-            zf.add("seeds/#{File.basename(@seed_model[:file])}", @seed_model[:file])
-          #make absolute path and check for file  
-          elsif File.exists?(File.join(osw_full_path,@seed_model[:file].sub(/^\.\//, '')))
-            puts "  Adding #{File.join(osw_full_path,@seed_model[:file].sub(/^\.\//, ''))}"
-            zf.add("seeds/#{File.basename(@seed_model[:file])}", File.join(osw_full_path,@seed_model[:file].sub(/^\.\//, '')))
+          if @seed_model[:file]
+            if File.exists?(@seed_model[:file])
+              puts "  Adding #{@seed_model[:file]}"
+              zf.add("seeds/#{File.basename(@seed_model[:file])}", @seed_model[:file])
+            #make absolute path and check for file  
+            elsif File.exists?(File.join(osw_full_path,@seed_model[:file].sub(/^\.\//, '')))
+              puts "  Adding #{File.join(osw_full_path,@seed_model[:file].sub(/^\.\//, ''))}"
+              zf.add("seeds/#{File.basename(@seed_model[:file])}", File.join(osw_full_path,@seed_model[:file].sub(/^\.\//, '')))
+            else
+              raise "seed_file[:file] does not exist at: #{File.join(osw_full_path,@seed_model[:file].sub(/^\.\//, ''))}"
+            end        
           else
-            raise "Seed file does not exist at: #{File.join(osw_full_path,@seed_model[:file].sub(/^\.\//, ''))}"
-          end        
-
+            warn "seed_file[:file] is not defined"
+          end 
           puts 'Adding Support Files: Libraries'
           @libraries.each do |lib|
             raise "Libraries must specify their 'library_name' as metadata which becomes the directory upon zip" unless lib[:metadata][:library_name]
