@@ -351,12 +351,12 @@ module OpenStudio
       end
       
       
-      def save_osa_zip(filename)
+      def save_osa_zip(filename, all_weather_files = false, all_seed_files = false)
         filename += '.zip' if File.extname(filename) == ''
 
         FileUtils.mkdir_p File.dirname(filename) unless Dir.exist? File.dirname(filename)
 
-        save_analysis_zip_osa(filename)
+        save_analysis_zip_osa(filename, all_weather_files, all_seed_files)
       end
       
       # convert an OSW to an OSA
@@ -487,12 +487,11 @@ module OpenStudio
       # New format for OSAs. Package up the seed, weather files, and measures
       # filename is the name of the file to be saved. ex: analysis.zip
       # it will parse the OSA and zip up all the files defined in the workflow
-      def save_analysis_zip_osa(filename)
+      def save_analysis_zip_osa(filename, all_weather_files = false, all_seed_files = false)
         def add_directory_to_zip_osa(zipfile, local_directory, relative_zip_directory)
           puts "Add Directory #{local_directory}"
           Dir[File.join(local_directory.to_s, '**', '**')].each do |file|
             puts "Adding File #{file}"
-            
             zipfile.add(file.sub(local_directory, relative_zip_directory), file)
           end
           zipfile
@@ -503,27 +502,30 @@ module OpenStudio
         puts "osw_path: #{@osw_path}"
         osw_full_path = File.dirname(File.expand_path(@osw_path))
         puts "osw_full_path: #{osw_full_path}"
-        
+
         Zip::File.open(filename, create: true) do |zf|
-          ## Weather files
+         ## Weather files
           puts 'Adding Support Files: Weather'
-          #check if weather file exists.  use abs path.  remove leading ./ from @weather_file path if there.
-          #check if path is already absolute
+          # check if weather file exists.  use abs path.  remove leading ./ from @weather_file path if there.
+          # check if path is already absolute
           if @weather_file[:file]
             if File.exists?(@weather_file[:file])
               puts "  Adding #{@weather_file[:file]}"
               #zf.add("weather/#{File.basename(@weather_file[:file])}", @weather_file[:file])
               base_name = File.basename(@weather_file[:file], ".*")
               puts "base_name: #{base_name}"
-              #convert backslash on windows to forward slash so Dir.glob will work (in case user uses \)
+              # convert backslash on windows to forward slash so Dir.glob will work (in case user uses \)
               weather_dirname = File.dirname(@weather_file[:file]).gsub("\\", "/")
               puts "weather_dirname: #{weather_dirname}"
-              Dir.glob(File.join(weather_dirname, "#{base_name}.*")) do |file_path|
-                puts "file_path: #{file_path}"
-                puts "zip path: weather/#{File.basename(file_path)}"
-                zf.add("weather/#{File.basename(file_path)}", file_path)
-              end
-            #make absolute path and check for file  
+              # If all_weather_files is true, add all files in the directory to the zip.
+              # Otherwise, add only files that match the base name.
+              file_pattern = all_weather_files ? "*" : "#{base_name}.*"
+              Dir.glob(File.join(weather_dirname, file_pattern)) do |file_path|
+               puts "file_path: #{file_path}"
+               puts "zip path: weather/#{File.basename(file_path)}"
+               zf.add("weather/#{File.basename(file_path)}", file_path)
+            end
+            # make absolute path and check for file  
             elsif File.exists?(File.join(osw_full_path,@weather_file[:file].sub(/^\.\//, '')))
               puts "  Adding: #{File.join(osw_full_path,@weather_file[:file].sub(/^\.\//, ''))}"
               #zf.add("weather/#{File.basename(@weather_file[:file])}", File.join(osw_full_path,@weather_file[:file].sub(/^\.\//, '')))
@@ -531,7 +533,8 @@ module OpenStudio
               puts "base_name2: #{base_name}"
               weather_dirname = File.dirname(File.join(osw_full_path,@weather_file[:file].sub(/^\.\//, ''))).gsub("\\", "/")
               puts "weather_dirname: #{weather_dirname}"
-              Dir.glob(File.join(weather_dirname, "#{base_name}.*")) do |file_path|
+              file_pattern = all_weather_files ? "*" : "#{base_name}.*"
+              Dir.glob(File.join(weather_dirname, file_pattern)) do |file_path|
                 puts "file_path2: #{file_path}"
                 puts "zip path2: weather/#{File.basename(file_path)}"
                 zf.add("weather/#{File.basename(file_path)}", file_path)
@@ -541,7 +544,7 @@ module OpenStudio
             end
           else
             warn "weather_file[:file] is not defined"
-          end              
+          end
 
           ## Seed files
           puts 'Adding Support Files: Seed Models'
@@ -551,16 +554,37 @@ module OpenStudio
             if File.exists?(@seed_model[:file])
               puts "  Adding #{@seed_model[:file]}"
               zf.add("seeds/#{File.basename(@seed_model[:file])}", @seed_model[:file])
+              if all_seed_files
+                seed_dirname = File.dirname(@seed_model[:file]).gsub("\\", "/")
+                puts "seed_dirname: #{seed_dirname}"
+                Dir.glob(File.join(seed_dirname, '*')) do |file_path|
+                  next if file_path == @seed_model[:file] # Skip if the file is the same as @seed_model[:file] so not added twice
+                  puts "file_path: #{file_path}"
+                  puts "zip path: seeds/#{File.basename(file_path)}"
+                  zf.add("seeds/#{File.basename(file_path)}", file_path)
+                end              
+              end
             #make absolute path and check for file  
             elsif File.exists?(File.join(osw_full_path,@seed_model[:file].sub(/^\.\//, '')))
               puts "  Adding #{File.join(osw_full_path,@seed_model[:file].sub(/^\.\//, ''))}"
               zf.add("seeds/#{File.basename(@seed_model[:file])}", File.join(osw_full_path,@seed_model[:file].sub(/^\.\//, '')))
+              if all_seed_files
+                seed_dirname = File.dirname(File.join(osw_full_path,@seed_model[:file].sub(/^\.\//, ''))).gsub("\\", "/")
+                puts "seed_dirname: #{seed_dirname}"
+                Dir.glob(File.join(seed_dirname, '*')) do |file_path|
+                  next if file_path == File.join(osw_full_path,@seed_model[:file].sub(/^\.\//, '')) # Skip if the file is the same as @seed_model[:file] so not added twice
+                  puts "file_path: #{file_path}"
+                  puts "zip path: seeds/#{File.basename(file_path)}"
+                  zf.add("seeds/#{File.basename(file_path)}", file_path)
+                end              
+              end
             else
               raise "seed_file[:file] does not exist at: #{File.join(osw_full_path,@seed_model[:file].sub(/^\.\//, ''))}"
             end        
           else
             warn "seed_file[:file] is not defined"
-          end 
+          end
+          
           puts 'Adding Support Files: Libraries'
           @libraries.each do |lib|
             raise "Libraries must specify their 'library_name' as metadata which becomes the directory upon zip" unless lib[:metadata][:library_name]
