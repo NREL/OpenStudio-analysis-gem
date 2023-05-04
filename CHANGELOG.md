@@ -1,17 +1,34 @@
 OpenStudio Analysis Gem Change Log
 ==================================
 
+Version 1.3.3
+-------------
+* Add arguments to .save_osa_zip() to add all files in weather and/or seed directories to zip file. defaults to false.
+
 Version 1.3.2
 -------------
-* Add more paths to the measures dir list 
+* Add array of search paths to .convert_osw() to find measures in various directories.
+* warn if :weather_file and :seed_model are not defined.
+* use :file_paths in the OSW to search for :seed_model and :weather_file.
+* add .stat and .ddy files to analysis.zip if in same directory as .epw defined in :weather_file.
+* use :measure_paths in OSW to search for measures. 
 
 Version 1.3.1
 -------------
-* Add method to delete a Variable 
+* Add method to delete a Variable:  **analysis.remove_variable()**
+* fix bug related to multiple calls to analysis.to_hash deleting variables
+* Add PSO and Optim to allowed algorithms 
 
 Version 1.3.0
 -------------
-* Create an OSA from an OSW
+* Create an OSA from an OSW:  **analysis.convert_osw()**
+* Add output variables and objective functions:  **analysis.add_output()**
+* Add server initialization and finalization scripts: **analysis.server_scripts.add()**
+* Set algorithm attributes:  **analysis.algorithm.set_attribute()**
+* Set algorithm type:  **analysis.analysis_type()**
+* Add additional library/data files:  **analysis.libraries.add()**
+* create analysis.json:  **File.write('analysis.json',JSON.pretty_generate(analysis.to_hash))**
+* create analysis.zip:  **analysis.save_osa_zip('analysis.zip')**
 
 Version 1.2.0
 -------------
