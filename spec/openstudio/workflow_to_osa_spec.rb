@@ -254,20 +254,26 @@ describe 'Convert_an_OSW_to_OSA' do
     a.save_osa_zip('spec/files/osw_project/analysis.zip')
     # Open the zip file
     Zip::File.open('spec/files/osw_project/analysis.zip') do |zip_file|
-    # Verify that the expected files are present in the zip file
-    expect(zip_file.find_entry("seeds/example_model.osm")).to be_truthy
-    expect(zip_file.find_entry("weather/USA_CO_Golden-NREL.724666_TMY3.epw")).to be_truthy
-    expect(zip_file.find_entry("weather/USA_CO_Golden-NREL.724666_TMY3.stat")).to be_truthy
-    expect(zip_file.find_entry("measures/AddMonthlyJSONUtilityData/measure.rb")).to be_truthy
-    expect(zip_file.find_entry("measures/CalibrationReportsEnhanced/measure.rb")).to be_truthy
-    expect(zip_file.find_entry("measures/CalibrationReportsEnhanced/resources/report.html.in")).to be_truthy
-    expect(zip_file.find_entry("measures/GeneralCalibrationMeasurePercentChange/measure.rb")).to be_truthy
-    expect(zip_file.find_entry("lib/calibration_data/electric.json")).to be_truthy
-    expect(zip_file.find_entry("lib/calibration_data/natural_gas.json")).to be_truthy
-    expect(zip_file.find_entry("scripts/data_point/initialization.sh")).to be_truthy
-    expect(zip_file.find_entry("scripts/data_point/initialization.args")).to be_truthy
-    expect(zip_file.find_entry("scripts/analysis/finalization.sh")).to be_truthy
-    expect(zip_file.find_entry("scripts/analysis/finalization.args")).to be_truthy
+      # Verify that the expected files are present in the zip file
+      expect(zip_file.find_entry("seeds/example_model.osm")).to be_truthy
+      expect(zip_file.find_entry("weather/USA_CO_Golden-NREL.724666_TMY3.epw")).to be_truthy
+      expect(zip_file.find_entry("weather/USA_CO_Golden-NREL.724666_TMY3.stat")).to be_truthy
+      expect(zip_file.find_entry("weather/USA_CO_Golden-NREL.724666_TMY3.ddy")).to be_truthy
+      expect(zip_file.find_entry("measures/AddMonthlyJSONUtilityData/measure.rb")).to be_truthy
+      expect(zip_file.find_entry("measures/CalibrationReportsEnhanced/measure.rb")).to be_truthy
+      expect(zip_file.find_entry("measures/CalibrationReportsEnhanced/resources/report.html.in")).to be_truthy
+      expect(zip_file.find_entry("measures/GeneralCalibrationMeasurePercentChange/measure.rb")).to be_truthy
+      expect(zip_file.find_entry("lib/calibration_data/electric.json")).to be_truthy
+      expect(zip_file.find_entry("lib/calibration_data/natural_gas.json")).to be_truthy
+      expect(zip_file.find_entry("scripts/data_point/initialization.sh")).to be_truthy
+      expect(zip_file.find_entry("scripts/data_point/initialization.args")).to be_truthy
+      expect(zip_file.find_entry("scripts/analysis/finalization.sh")).to be_truthy
+      expect(zip_file.find_entry("scripts/analysis/finalization.args")).to be_truthy
+      expect(zip_file.find_entry("weather/test1.epw")).to be_nil
+      expect(zip_file.find_entry("weather/test1.stat")).to be_nil
+      expect(zip_file.find_entry("weather/test1.ddy")).to be_nil
+      expect(zip_file.find_entry("weather/test2.epw")).to be_nil
+      expect(zip_file.find_entry("weather/test2.stat")).to be_nil
     end
   end
 
@@ -447,14 +453,42 @@ describe 'Convert_an_OSW_to_OSA' do
     a.save_osa_zip('analysis2.zip')
     # Open the zip file
     Zip::File.open('analysis2.zip') do |zip_file|
-    # Verify that the expected files are present in the zip file
-    expect(zip_file.find_entry("seeds/example_model.osm")).to be_truthy
-    expect(zip_file.find_entry("weather/USA_CO_Golden-NREL.724666_TMY3.epw")).to be_truthy
-    expect(zip_file.find_entry("weather/USA_CO_Golden-NREL.724666_TMY3.stat")).to be_truthy
-    expect(zip_file.find_entry("measures/AddMonthlyJSONUtilityData/measure.rb")).to be_truthy
-    expect(zip_file.find_entry("measures/CalibrationReportsEnhanced/measure.rb")).to be_truthy
-    expect(zip_file.find_entry("measures/CalibrationReportsEnhanced/resources/report.html.in")).to be_truthy
-    expect(zip_file.find_entry("measures/GeneralCalibrationMeasurePercentChange/measure.rb")).to be_truthy
+      # Verify that the expected files are present in the zip file
+      expect(zip_file.find_entry("seeds/example_model.osm")).to be_truthy
+      expect(zip_file.find_entry("weather/USA_CO_Golden-NREL.724666_TMY3.epw")).to be_truthy
+      expect(zip_file.find_entry("weather/USA_CO_Golden-NREL.724666_TMY3.stat")).to be_truthy
+      expect(zip_file.find_entry("weather/USA_CO_Golden-NREL.724666_TMY3.ddy")).to be_truthy
+      expect(zip_file.find_entry("measures/AddMonthlyJSONUtilityData/measure.rb")).to be_truthy
+      expect(zip_file.find_entry("measures/CalibrationReportsEnhanced/measure.rb")).to be_truthy
+      expect(zip_file.find_entry("measures/CalibrationReportsEnhanced/resources/report.html.in")).to be_truthy
+      expect(zip_file.find_entry("measures/GeneralCalibrationMeasurePercentChange/measure.rb")).to be_truthy
+      expect(zip_file.find_entry("seeds/example_model_2.osm")).to be_nil
+      expect(zip_file.find_entry("weather/test1.epw")).to be_nil
+      expect(zip_file.find_entry("weather/test1.stat")).to be_nil
+      expect(zip_file.find_entry("weather/test1.ddy")).to be_nil
+      expect(zip_file.find_entry("weather/test2.epw")).to be_nil
+      expect(zip_file.find_entry("weather/test2.stat")).to be_nil
+    end
+    
+    #make project zip file with all weather files
+    a.save_osa_zip('analysis3.zip', all_weather_files = true, all_seed_files = true)
+    # Open the zip file
+    Zip::File.open('analysis3.zip') do |zip_file|
+      # Verify that the expected files are present in the zip file
+      expect(zip_file.find_entry("seeds/example_model.osm")).to be_truthy
+      expect(zip_file.find_entry("seeds/example_model_2.osm")).to be_truthy
+      expect(zip_file.find_entry("weather/USA_CO_Golden-NREL.724666_TMY3.epw")).to be_truthy
+      expect(zip_file.find_entry("weather/USA_CO_Golden-NREL.724666_TMY3.stat")).to be_truthy
+      expect(zip_file.find_entry("weather/USA_CO_Golden-NREL.724666_TMY3.ddy")).to be_truthy
+      expect(zip_file.find_entry("measures/AddMonthlyJSONUtilityData/measure.rb")).to be_truthy
+      expect(zip_file.find_entry("measures/CalibrationReportsEnhanced/measure.rb")).to be_truthy
+      expect(zip_file.find_entry("measures/CalibrationReportsEnhanced/resources/report.html.in")).to be_truthy
+      expect(zip_file.find_entry("measures/GeneralCalibrationMeasurePercentChange/measure.rb")).to be_truthy
+      expect(zip_file.find_entry("weather/test1.epw")).to be_truthy
+      expect(zip_file.find_entry("weather/test1.stat")).to be_truthy
+      expect(zip_file.find_entry("weather/test1.ddy")).to be_truthy
+      expect(zip_file.find_entry("weather/test2.epw")).to be_truthy
+      expect(zip_file.find_entry("weather/test2.stat")).to be_truthy
     end
     
     #reset working dir
