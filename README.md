@@ -4,13 +4,12 @@
 [![Coverage Status](https://coveralls.io/repos/NREL/OpenStudio-analysis-gem/badge.svg?branch=develop)](https://coveralls.io/r/NREL/OpenStudio-analysis-gem?branch=develop)
 [![Gem Version](https://badge.fury.io/rb/openstudio-analysis.svg)](https://badge.fury.io/rb/openstudio-analysis)
 
-The OpenStudio Analysis Gem is used to communicate files to the OpenStudio Distributed Analysis.
+The OpenStudio Analysis Gem is used to create and communicate files to the OpenStudio Analysis Framework.
 
-The purpose of this gem is to generate the analysis.json file, analysis.zip, and communicate with the server to upload
-the simulations.
+The purpose of this gem is to generate the OpenStudio Analysis (OSA) analysis.json file, analysis.zip, and communicate with the server to upload
+the simulations.  OpenStudio Workflow (OSW) jsons can be converted to OSAs by using the analysis.convert_osw('osw.json').  Input and Output Variables as well as Objective Functions can be defined as well. 
 
-This gem does not create the cluster. Currently the only supported Cloud platform is
-Amazon AWS using either [OpenStudio's PAT](https://openstudio.nrel.gov) the [openstudio-aws gem](https://rubygems.org/gems/openstudio-aws) or using [vagrant](http://www.vagrantup.com/).
+This gem does not create the server clusters. The [OpenStudio Helm Charts](https://github.com/NREL/openstudio-server-helm) can be used to startup Kubernetes clusters on Google, Amazon or Azure.  For creating a local cluster, see [OpenStudio Server](https://github.com/NREL/OpenStudio-server/tree/develop/local_setup_scripts)
 
 ## Instructions
 
