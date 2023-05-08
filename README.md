@@ -17,7 +17,7 @@ There are two ways to create an OpenStudio Analysis description:
 * Use the Excel Translator
 
 
-* Programmatically
+* Programmatically  [example notebooks](https://github.com/NREL/docker-openstudio-jupyter)
 
     ```
     analysis = OpenStudio::Analysis.create('Analysis Name')
