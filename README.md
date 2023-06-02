@@ -1,4 +1,4 @@
-# OpenStudio Analysis Gem
+# OpenStudio(R) Analysis Gem
 
 [![Build Status](https://github.com/NREL/OpenStudio-analysis-gem/actions/workflows/openstudio-analysis.yml/badge.svg?branch=develop)](https://github.com/NREL/OpenStudio-analysis-gem/actions/workflows/openstudio-analysis.yml)
 [![Coverage Status](https://coveralls.io/repos/NREL/OpenStudio-analysis-gem/badge.svg?branch=develop)](https://coveralls.io/r/NREL/OpenStudio-analysis-gem?branch=develop)
