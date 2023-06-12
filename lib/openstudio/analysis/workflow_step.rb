@@ -309,6 +309,7 @@ module OpenStudio
 
         s.type = hash[:measure_type] # this is actually the measure type
         hash[:arguments]&.each do |arg|
+          puts arg
           # warn the user to we need to deprecate variable_type and use value_type (which is what os server uses)
           var_type = arg[:variable_type] ? arg[:variable_type].downcase : arg[:value_type]
 
@@ -323,7 +324,13 @@ module OpenStudio
           elsif var_type.downcase == 'integer'
             default_value = arg[:default_value].to_i  
           elsif var_type.downcase == 'boolean'
-            default_value = (arg[:default_value].downcase == "true")  #convert the string 'true'/'false' to boolean
+            # In some cases a nil default is okay. It is seen as "non-existing" and 
+            # needs to be passed through as such.
+            if arg[:default_value].nil?
+              default_value = nil
+            else
+              default_value = (arg[:default_value].downcase == "true")  #convert the string 'true'/'false' to boolean
+            end
           else
             default_value = arg[:default_value]
           end
@@ -427,8 +434,8 @@ module OpenStudio
             default_value = arg[:default_value].to_i
             value = arg[:value].to_i            
           elsif var_type.downcase == 'boolean'
-            default_value = (arg[:default_value].downcase == "true")  #convert the string 'true'/'false' to boolean
-            value = (arg[:value].downcase == "true")  #convert the string 'true'/'false' to boolean
+            default_value = (arg[:default_value].downcase == "true")  # convert the string 'true'/'false' to boolean
+            value = (arg[:value].downcase == "true")  # convert the string 'true'/'false' to boolean
           else
             default_value = arg[:default_value]
             value = arg[:value]
