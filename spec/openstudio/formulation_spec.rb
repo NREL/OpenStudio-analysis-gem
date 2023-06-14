@@ -188,6 +188,12 @@ describe OpenStudio::Analysis::Formulation do
 
     a.seed_model = 'spec/files/small_seed.osm'
     a.weather_file = 'spec/files/partial_weather.epw'
+    
+    expect(a.download_zip).to be true
+    expect(a.to_hash[:analysis][:download_zip]).to match true
+    a.download_zip = false
+    expect(a.download_zip).to be false
+    expect(a.to_hash[:analysis][:download_zip]).to match false
 
     expect(a.seed_model.first).to eq 'spec/files/small_seed.osm'
 

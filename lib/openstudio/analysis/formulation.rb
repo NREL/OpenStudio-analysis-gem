@@ -29,6 +29,7 @@ module OpenStudio
       attr_accessor :workflow
       attr_accessor :algorithm
       attr_accessor :osw_path
+      attr_accessor :download_zip
 
       # the attributes below are used for packaging data into the analysis zip file
       attr_reader :weather_files
@@ -51,6 +52,7 @@ module OpenStudio
         @weather_file = WeatherFile.new
         @seed_model = SeedModel.new
         @algorithm = OpenStudio::Analysis::AlgorithmAttributes.new
+        @download_zip = true
 
         # Analysis Zip attributes
         @weather_files = SupportFiles.new
@@ -90,6 +92,17 @@ module OpenStudio
         @weather_file[:file] = file
       end
 
+      # Set the value for 'download_zip'
+      #
+      # @param value [Boolean] The value for 'download_zip'
+      def download_zip=(value)
+        if [true, false].include?(value)
+          @download_zip = value
+        else
+          raise ArgumentError, "Invalid value for 'download_zip'. Only true or false allowed."
+        end
+      end
+  
       # Add an output of interest to the problem formulation
       #
       # @param output_hash [Hash] Hash of the output variable in the legacy format
@@ -208,6 +221,7 @@ module OpenStudio
           h[:analysis][:run_workflow_timeout] = 28800
           h[:analysis][:upload_results_timeout] = 28800
           h[:analysis][:initialize_worker_timeout] = 28800
+          h[:analysis][:download_zip] = @download_zip
           #-BLB I dont think this does anything. server_scripts are run if they are in 
           #the /scripts/analysis or /scripts/data_point directories
           #but nothing is ever checked in the OSA.
