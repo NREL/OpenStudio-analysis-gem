@@ -33,6 +33,12 @@ module OpenStudio
       attr_accessor :download_reports
       attr_accessor :download_osw
       attr_accessor :download_osm
+      attr_accessor :cli_debug
+      attr_accessor :cli_verbose
+      attr_accessor :initialize_worker_timeout
+      attr_accessor :run_workflow_timeout
+      attr_accessor :upload_results_timeout
+
       # the attributes below are used for packaging data into the analysis zip file
       attr_reader :weather_files
       attr_reader :seed_models
@@ -58,6 +64,11 @@ module OpenStudio
         @download_reports = true
         @download_osw = true
         @download_osm = true
+        @cli_debug = "--debug"
+        @cli_verbose = "--verbose"
+        @initialize_worker_timeout = 28800
+        @run_workflow_timeout = 28800
+        @upload_results_timeout = 28800
 
         # Analysis Zip attributes
         @weather_files = SupportFiles.new
@@ -140,7 +151,54 @@ module OpenStudio
           raise ArgumentError, "Invalid value for 'download_osm'. Only true or false allowed."
         end
       end
-  
+
+      # Set the value for 'cli_debug'
+      #
+      # @param value [Boolean] The value for 'cli_debug'
+      def cli_debug=(value)
+        @cli_debug = value
+      end
+
+      # Set the value for 'cli_verbose'
+      #
+      # @param value [Boolean] The value for 'cli_verbose'
+      def cli_verbose=(value)
+        @cli_verbose = value
+      end
+
+      # Set the value for 'run_workflow_timeout'
+      #
+      # @param value [Integer] The value for 'run_workflow_timeout'
+      def run_workflow_timeout=(value)
+        if value.is_a?(Integer)
+          @run_workflow_timeout = value
+        else
+          raise ArgumentError, "Invalid value for 'run_workflow_timeout'. Only integer values allowed."
+        end
+      end
+
+      # Set the value for 'initialize_worker_timeout'
+      #
+      # @param value [Integer] The value for 'initialize_worker_timeout'
+      def initialize_worker_timeout=(value)
+        if value.is_a?(Integer)
+          @initialize_worker_timeout = value
+        else
+          raise ArgumentError, "Invalid value for 'initialize_worker_timeout'. Only integer values allowed."
+        end
+      end
+
+      # Set the value for 'upload_results_timeout'
+      #
+      # @param value [Integer] The value for 'upload_results_timeout'
+      def upload_results_timeout=(value)
+        if value.is_a?(Integer)
+          @upload_results_timeout = value
+        else
+          raise ArgumentError, "Invalid value for 'upload_results_timeout'. Only integer values allowed."
+        end
+      end
+
       # Add an output of interest to the problem formulation
       #
       # @param output_hash [Hash] Hash of the output variable in the legacy format
@@ -254,11 +312,11 @@ module OpenStudio
           end
 
           h[:analysis][:file_format_version] = version
-          h[:analysis][:cli_debug] = "--debug"
-          h[:analysis][:cli_verbose] = "--verbose"
-          h[:analysis][:run_workflow_timeout] = 28800
-          h[:analysis][:upload_results_timeout] = 28800
-          h[:analysis][:initialize_worker_timeout] = 28800
+          h[:analysis][:cli_debug] = @cli_debug
+          h[:analysis][:cli_verbose] = @cli_verbose
+          h[:analysis][:run_workflow_timeout] = @run_workflow_timeout
+          h[:analysis][:upload_results_timeout] = @upload_results_timeout
+          h[:analysis][:initialize_worker_timeout] = @initialize_worker_timeout
           h[:analysis][:download_zip] = @download_zip
           h[:analysis][:download_reports] = @download_reports
           h[:analysis][:download_osw] = @download_osw
