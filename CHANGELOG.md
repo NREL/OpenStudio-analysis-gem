@@ -1,5 +1,9 @@
-OpenStudio Analysis Gem Change Log
+OpenStudio(R) Analysis Gem Change Log
 ==================================
+
+Version 1.3.4
+-------------
+* Update licenses
 
 Version 1.3.3
 -------------

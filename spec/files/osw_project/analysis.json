@@ -1,0 +1,548 @@
+{
+  "analysis": {
+    "display_name": "Name of an analysis",
+    "name": "name_of_an_analysis",
+    "output_variables": [
+      {
+        "units": "%",
+        "objective_function": true,
+        "objective_function_index": 0,
+        "objective_function_target": null,
+        "objective_function_group": 1,
+        "scaling_factor": null,
+        "visualize": true,
+        "metadata_id": null,
+        "export": true,
+        "display_name": "electricity_consumption_cvrmse",
+        "name": "calibration_reports_enhanced.electricity_consumption_cvrmse",
+        "display_name_short": "electricity_consumption_cvrmse"
+      },
+      {
+        "units": "%",
+        "objective_function": true,
+        "objective_function_index": 1,
+        "objective_function_target": null,
+        "objective_function_group": 2,
+        "scaling_factor": null,
+        "visualize": true,
+        "metadata_id": null,
+        "export": true,
+        "display_name": "electricity_consumption_nmbe",
+        "name": "calibration_reports_enhanced.electricity_consumption_nmbe",
+        "display_name_short": "electricity_consumption_nmbe"
+      },
+      {
+        "units": "%",
+        "objective_function": true,
+        "objective_function_index": 2,
+        "objective_function_target": null,
+        "objective_function_group": 3,
+        "scaling_factor": null,
+        "visualize": true,
+        "metadata_id": null,
+        "export": true,
+        "display_name": "natural_gas_consumption_cvrmse",
+        "name": "calibration_reports_enhanced.natural_gas_consumption_cvrmse",
+        "display_name_short": "natural_gas_consumption_cvrmse"
+      },
+      {
+        "units": "%",
+        "objective_function": true,
+        "objective_function_index": 3,
+        "objective_function_target": null,
+        "objective_function_group": 4,
+        "scaling_factor": null,
+        "visualize": true,
+        "metadata_id": null,
+        "export": true,
+        "display_name": "natural_gas_consumption_nmbe",
+        "name": "calibration_reports_enhanced.natural_gas_consumption_nmbe",
+        "display_name_short": "natural_gas_consumption_nmbe"
+      },
+      {
+        "units": "%",
+        "objective_function": false,
+        "objective_function_index": null,
+        "objective_function_target": null,
+        "objective_function_group": null,
+        "scaling_factor": null,
+        "visualize": false,
+        "metadata_id": null,
+        "export": true,
+        "display_name": "electricity_ip",
+        "name": "openstudio_results.electricity_ip",
+        "display_name_short": "electricity_ip"
+      }
+    ],
+    "problem": {
+      "analysis_type": "single_run",
+      "algorithm": {
+        "seed": null,
+        "failed_f_value": 1000000000000000000,
+        "debug_messages": 1,
+        "objective_functions": [
+          "calibration_reports_enhanced.electricity_consumption_cvrmse",
+          "calibration_reports_enhanced.electricity_consumption_nmbe",
+          "calibration_reports_enhanced.natural_gas_consumption_cvrmse",
+          "calibration_reports_enhanced.natural_gas_consumption_nmbe"
+        ]
+      },
+      "workflow": [
+        {
+          "name": "add_monthly_json_utility_data",
+          "display_name": "Add Monthly JSON Utility Data",
+          "measure_type": "ModelMeasure",
+          "measure_definition_class_name": "AddMonthlyJSONUtilityData",
+          "measure_definition_directory": "./measures/AddMonthlyJSONUtilityData",
+          "measure_definition_directory_local": "/Users/kflemin/repos/OpenStudio-analysis-gem/spec/files/osw_project/measures/AddMonthlyJSONUtilityData",
+          "measure_definition_display_name": "Add Monthly JSON Utility Data",
+          "measure_definition_name": "add_monthly_json_utility_data",
+          "measure_definition_name_xml": null,
+          "measure_definition_uuid": "6da969e0-4256-49bf-9607-26504cc3d423",
+          "measure_definition_version_uuid": "706776f7-efa4-4aa4-9733-96f4e64033fe",
+          "uuid": "6da969e0-4256-49bf-9607-26504cc3d423",
+          "version_uuid": "706776f7-efa4-4aa4-9733-96f4e64033fe",
+          "description": "Add Monthly JSON Utility Data",
+          "arguments": [
+            {
+              "display_name": "Skip Entire Measure",
+              "display_name_short": "Skip",
+              "name": "__SKIP__",
+              "value_type": "boolean",
+              "default_value": false,
+              "value": false
+            },
+            {
+              "display_name": "Path to JSON Data in the Server.",
+              "display_name_short": "Path to JSON Data in the Server.",
+              "name": "json",
+              "value_type": "string",
+              "default_value": "../../../lib/calibration_data/electric.json",
+              "value": "../../../data/electric.json"
+            },
+            {
+              "display_name": "Variable name",
+              "display_name_short": "Variable name",
+              "name": "variable_name",
+              "value_type": "string",
+              "default_value": "Electric Bill",
+              "value": "Electricity Bill"
+            },
+            {
+              "display_name": "Fuel Type",
+              "display_name_short": "Fuel Type",
+              "name": "fuel_type",
+              "value_type": "string",
+              "default_value": "Electricity",
+              "value": "Electricity"
+            },
+            {
+              "display_name": "Consumption Unit",
+              "display_name_short": "Consumption Unit",
+              "name": "consumption_unit",
+              "value_type": "string",
+              "default_value": "kWh",
+              "value": "kWh"
+            },
+            {
+              "display_name": "data key name in JSON",
+              "display_name_short": "data key name in JSON",
+              "name": "data_key_name",
+              "value_type": "string",
+              "default_value": "tot_kwh",
+              "value": "tot_kwh"
+            },
+            {
+              "display_name": "Start date",
+              "display_name_short": "Start date",
+              "name": "start_date",
+              "value_type": "string",
+              "default_value": "2013-01-1",
+              "value": "2013-01-1"
+            },
+            {
+              "display_name": "End date",
+              "display_name_short": "End date",
+              "name": "end_date",
+              "value_type": "string",
+              "default_value": "2013-12-31",
+              "value": "2013-12-31"
+            },
+            {
+              "display_name": "remove all existing Utility Bill data objects from model",
+              "display_name_short": "remove all existing Utility Bill data objects from model",
+              "name": "remove_existing_data",
+              "value_type": "boolean",
+              "default_value": false,
+              "value": true
+            },
+            {
+              "display_name": "Set RunPeriod Object in model to use start and end dates",
+              "display_name_short": "Set RunPeriod Object in model to use start and end dates",
+              "name": "set_runperiod",
+              "value_type": "boolean",
+              "default_value": false,
+              "value": true
+            }
+          ],
+          "variables": [
+
+          ],
+          "workflow_index": 0
+        },
+        {
+          "name": "add_monthly_json_utility_data_2",
+          "display_name": "Add Monthly JSON Utility Data 2",
+          "measure_type": "ModelMeasure",
+          "measure_definition_class_name": "AddMonthlyJSONUtilityData",
+          "measure_definition_directory": "./measures/AddMonthlyJSONUtilityData",
+          "measure_definition_directory_local": "/Users/kflemin/repos/OpenStudio-analysis-gem/spec/files/osw_project/measures/AddMonthlyJSONUtilityData",
+          "measure_definition_display_name": "Add Monthly JSON Utility Data",
+          "measure_definition_name": "add_monthly_json_utility_data",
+          "measure_definition_name_xml": null,
+          "measure_definition_uuid": "6da969e0-4256-49bf-9607-26504cc3d423",
+          "measure_definition_version_uuid": "706776f7-efa4-4aa4-9733-96f4e64033fe",
+          "uuid": "6da969e0-4256-49bf-9607-26504cc3d423",
+          "version_uuid": "706776f7-efa4-4aa4-9733-96f4e64033fe",
+          "description": "Add Monthly JSON Utility Data",
+          "arguments": [
+            {
+              "display_name": "Skip Entire Measure",
+              "display_name_short": "Skip",
+              "name": "__SKIP__",
+              "value_type": "boolean",
+              "default_value": false,
+              "value": false
+            },
+            {
+              "display_name": "Path to JSON Data in the Server.",
+              "display_name_short": "Path to JSON Data in the Server.",
+              "name": "json",
+              "value_type": "string",
+              "default_value": "../../../lib/calibration_data/electric.json",
+              "value": "../../../data/natural_gas.json"
+            },
+            {
+              "display_name": "Variable name",
+              "display_name_short": "Variable name",
+              "name": "variable_name",
+              "value_type": "string",
+              "default_value": "Electric Bill",
+              "value": "Gas Bill"
+            },
+            {
+              "display_name": "Fuel Type",
+              "display_name_short": "Fuel Type",
+              "name": "fuel_type",
+              "value_type": "string",
+              "default_value": "Electricity",
+              "value": "Gas"
+            },
+            {
+              "display_name": "Consumption Unit",
+              "display_name_short": "Consumption Unit",
+              "name": "consumption_unit",
+              "value_type": "string",
+              "default_value": "kWh",
+              "value": "therms"
+            },
+            {
+              "display_name": "data key name in JSON",
+              "display_name_short": "data key name in JSON",
+              "name": "data_key_name",
+              "value_type": "string",
+              "default_value": "tot_kwh",
+              "value": "tot_therms"
+            },
+            {
+              "display_name": "Start date",
+              "display_name_short": "Start date",
+              "name": "start_date",
+              "value_type": "string",
+              "default_value": "2013-01-1",
+              "value": "2013-01-1"
+            },
+            {
+              "display_name": "End date",
+              "display_name_short": "End date",
+              "name": "end_date",
+              "value_type": "string",
+              "default_value": "2013-12-31",
+              "value": "2013-12-31"
+            },
+            {
+              "display_name": "remove all existing Utility Bill data objects from model",
+              "display_name_short": "remove all existing Utility Bill data objects from model",
+              "name": "remove_existing_data",
+              "value_type": "boolean",
+              "default_value": false,
+              "value": false
+            },
+            {
+              "display_name": "Set RunPeriod Object in model to use start and end dates",
+              "display_name_short": "Set RunPeriod Object in model to use start and end dates",
+              "name": "set_runperiod",
+              "value_type": "boolean",
+              "default_value": false,
+              "value": false
+            }
+          ],
+          "variables": [
+
+          ],
+          "workflow_index": 1
+        },
+        {
+          "name": "general_calibration_measure_percent_change",
+          "display_name": "General Calibration Measure Percent Change",
+          "measure_type": "ModelMeasure",
+          "measure_definition_class_name": "GeneralCalibrationMeasurePercentChange",
+          "measure_definition_directory": "./measures/GeneralCalibrationMeasurePercentChange",
+          "measure_definition_directory_local": "/Users/kflemin/repos/OpenStudio-analysis-gem/spec/files/osw_project/measures/GeneralCalibrationMeasurePercentChange",
+          "measure_definition_display_name": "General Calibration Measure Percent Change",
+          "measure_definition_name": "general_calibration_measure_percent_change",
+          "measure_definition_name_xml": null,
+          "measure_definition_uuid": "0f583ac1-fa7e-48bc-9f80-12ed17180669",
+          "measure_definition_version_uuid": "b90bd230-116d-4a1a-be73-eec73504b1da",
+          "uuid": "0f583ac1-fa7e-48bc-9f80-12ed17180669",
+          "version_uuid": "b90bd230-116d-4a1a-be73-eec73504b1da",
+          "description": "This is a general purpose measure to calibrate space and space type elements with a percent change.",
+          "arguments": [
+            {
+              "display_name": "Skip Entire Measure",
+              "display_name_short": "Skip",
+              "name": "__SKIP__",
+              "value_type": "boolean",
+              "default_value": false,
+              "value": false
+            },
+            {
+              "display_name": "Apply the Measure to a SINGLE SpaceType, ALL the SpaceTypes or NONE.",
+              "display_name_short": "Apply the Measure to a SINGLE SpaceType, ALL the SpaceTypes or NONE.",
+              "name": "space_type",
+              "value_type": "string",
+              "default_value": "{111cb5c7-730b-4e08-8229-2bba712e75b6}",
+              "value": "*All SpaceTypes*"
+            },
+            {
+              "display_name": "Apply the Measure to a SINGLE Space, ALL the Spaces or NONE.",
+              "display_name_short": "Apply the Measure to a SINGLE Space, ALL the Spaces or NONE.",
+              "name": "space",
+              "value_type": "string",
+              "default_value": "{111cb5c7-730b-4e08-8229-2bba712e75b6}",
+              "value": "*All Spaces*"
+            },
+            {
+              "display_name": "Percent Change in the default Lights Definition.",
+              "display_name_short": "Percent Change in the default Lights Definition.",
+              "name": "lights_perc_change",
+              "value_type": "double",
+              "default_value": 0.0,
+              "value": 10.0
+            },
+            {
+              "display_name": "Percent Change in the default Luminaire Definition.",
+              "display_name_short": "Percent Change in the default Luminaire Definition.",
+              "name": "luminaire_perc_change",
+              "value_type": "double",
+              "default_value": 0.0,
+              "value": 0.0
+            },
+            {
+              "display_name": "Percent Change in the default Gas Equipment Definition.",
+              "display_name_short": "Percent Change in the default Gas Equipment Definition.",
+              "name": "GasEquipment_perc_change",
+              "value_type": "double",
+              "default_value": 0.0,
+              "value": 0.0
+            },
+            {
+              "display_name": "Percent Change in the default OtherEquipment Definition.",
+              "display_name_short": "Percent Change in the default OtherEquipment Definition.",
+              "name": "OtherEquipment_perc_change",
+              "value_type": "double",
+              "default_value": 0.0,
+              "value": 0.0
+            },
+            {
+              "display_name": "Percent Change in the default People Definition.",
+              "display_name_short": "Percent Change in the default People Definition.",
+              "name": "people_perc_change",
+              "value_type": "double",
+              "default_value": 0.0,
+              "value": 10.0
+            },
+            {
+              "display_name": "Percent Change in the default Internal Mass Definition.",
+              "display_name_short": "Percent Change in the default Internal Mass Definition.",
+              "name": "mass_perc_change",
+              "value_type": "double",
+              "default_value": 0.0,
+              "value": 10.0
+            },
+            {
+              "display_name": "Percent Change in the default Design Infiltration Outdoor Air.",
+              "display_name_short": "Percent Change in the default Design Infiltration Outdoor Air.",
+              "name": "infil_perc_change",
+              "value_type": "double",
+              "default_value": 0.0,
+              "value": 10.0
+            },
+            {
+              "display_name": "Percent Change in the default Design Specification Outdoor Air.",
+              "display_name_short": "Percent Change in the default Design Specification Outdoor Air.",
+              "name": "vent_perc_change",
+              "value_type": "double",
+              "default_value": 0.0,
+              "value": 10.0
+            }
+          ],
+          "variables": [
+            {
+              "argument": {
+                "display_name": "Percent Change in the default Electric Equipment Definition.",
+                "display_name_short": "Percent Change in the default Electric Equipment Definition.",
+                "name": "ElectricEquipment_perc_change",
+                "value_type": "double",
+                "default_value": 0.0,
+                "value": 10.0
+              },
+              "display_name": "Electric Equipment Percent Change",
+              "display_name_short": "Electric Equipment Percent Change",
+              "variable_type": "variable",
+              "units": null,
+              "minimum": 0.5,
+              "maximum": 20,
+              "relation_to_output": null,
+              "uuid": "e1995797-9a6e-40b2-9035-57c9464ea391",
+              "version_uuid": "0477b062-d5f5-45ed-a9e3-7210aff7b59a",
+              "static_value": 0.0,
+              "variable": true,
+              "uncertainty_description": {
+                "type": "uniform",
+                "attributes": [
+                  {
+                    "name": "lower_bounds",
+                    "value": 0.5
+                  },
+                  {
+                    "name": "upper_bounds",
+                    "value": 20
+                  },
+                  {
+                    "name": "modes",
+                    "value": 10
+                  },
+                  {
+                    "name": "delta_x",
+                    "value": null
+                  },
+                  {
+                    "name": "stddev",
+                    "value": null
+                  }
+                ]
+              },
+              "workflow_index": 0
+            }
+          ],
+          "workflow_index": 2
+        },
+        {
+          "name": "calibration_reports_enhanced",
+          "display_name": "Calibration Reports Enhanced",
+          "measure_type": "ReportingMeasure",
+          "measure_definition_class_name": "CalibrationReportsEnhanced",
+          "measure_definition_directory": "./measures/CalibrationReportsEnhanced",
+          "measure_definition_directory_local": "/Users/kflemin/repos/OpenStudio-analysis-gem/spec/files/osw_project/measures/CalibrationReportsEnhanced",
+          "measure_definition_display_name": "Calibration Reports Enhanced",
+          "measure_definition_name": "calibration_reports_enhanced",
+          "measure_definition_name_xml": null,
+          "measure_definition_uuid": "e6642d40-7366-4647-8724-53a37991d668",
+          "measure_definition_version_uuid": "96f837a8-f6af-4c34-84fc-c26b2ec2feba",
+          "uuid": "e6642d40-7366-4647-8724-53a37991d668",
+          "version_uuid": "96f837a8-f6af-4c34-84fc-c26b2ec2feba",
+          "description": "This measure is intended for calibibration of modeled results against user entered utility bill.",
+          "arguments": [
+            {
+              "display_name": "Skip Entire Measure",
+              "display_name_short": "Skip",
+              "name": "__SKIP__",
+              "value_type": "boolean",
+              "default_value": false,
+              "value": false
+            },
+            {
+              "display_name": "Electric NMBE limit (%)",
+              "display_name_short": "Electric NMBE limit (%)",
+              "name": "electric_nmbe_limit",
+              "value_type": "double",
+              "default_value": 5.0,
+              "value": 5.0
+            },
+            {
+              "display_name": "Electric CVRMSE limit (%)",
+              "display_name_short": "Electric CVRMSE limit (%)",
+              "name": "electric_cvrmse_limit",
+              "value_type": "double",
+              "default_value": 15.0,
+              "value": 15.0
+            },
+            {
+              "display_name": "Gas NMBE limit (%)",
+              "display_name_short": "Gas NMBE limit (%)",
+              "name": "gas_nmbe_limit",
+              "value_type": "double",
+              "default_value": 5.0,
+              "value": 5.0
+            },
+            {
+              "display_name": "Gas CVRMSE limit (%)",
+              "display_name_short": "Gas CVRMSE limit (%)",
+              "name": "gas_cvrmse_limit",
+              "value_type": "double",
+              "default_value": 15.0,
+              "value": 15.0
+            },
+            {
+              "display_name": "Fuel Oil#2 NMBE limit (%)",
+              "display_name_short": "Fuel Oil#2 NMBE limit (%)",
+              "name": "fuel_oil_nmbe_limit",
+              "value_type": "double",
+              "default_value": 5.0,
+              "value": 5.0
+            },
+            {
+              "display_name": "Fuel Oil#2 CVRMSE limit (%)",
+              "display_name_short": "Fuel Oil#2 CVRMSE limit (%)",
+              "name": "fuel_oil_cvrmse_limit",
+              "value_type": "double",
+              "default_value": 15.0,
+              "value": 15.0
+            }
+          ],
+          "variables": [
+
+          ],
+          "workflow_index": 3
+        }
+      ]
+    },
+    "seed": {
+      "file_type": "OSM",
+      "path": "./seed/example_model.osm"
+    },
+    "weather_file": {
+      "file_type": "EPW",
+      "path": "./weather/USA_CO_Golden-NREL.724666_TMY3.epw"
+    },
+    "file_format_version": 1,
+    "cli_debug": "--debug",
+    "cli_verbose": "--verbose",
+    "run_workflow_timeout": 28800,
+    "upload_results_timeout": 28800,
+    "initialize_worker_timeout": 28800,
+    "server_scripts": {
+    }
+  }
+}
