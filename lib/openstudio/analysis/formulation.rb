@@ -29,6 +29,15 @@ module OpenStudio
       attr_accessor :workflow
       attr_accessor :algorithm
       attr_accessor :osw_path
+      attr_accessor :download_zip
+      attr_accessor :download_reports
+      attr_accessor :download_osw
+      attr_accessor :download_osm
+      attr_accessor :cli_debug
+      attr_accessor :cli_verbose
+      attr_accessor :initialize_worker_timeout
+      attr_accessor :run_workflow_timeout
+      attr_accessor :upload_results_timeout
 
       # the attributes below are used for packaging data into the analysis zip file
       attr_reader :weather_files
@@ -51,6 +60,15 @@ module OpenStudio
         @weather_file = WeatherFile.new
         @seed_model = SeedModel.new
         @algorithm = OpenStudio::Analysis::AlgorithmAttributes.new
+        @download_zip = true
+        @download_reports = true
+        @download_osw = true
+        @download_osm = true
+        @cli_debug = "--debug"
+        @cli_verbose = "--verbose"
+        @initialize_worker_timeout = 28800
+        @run_workflow_timeout = 28800
+        @upload_results_timeout = 28800
 
         # Analysis Zip attributes
         @weather_files = SupportFiles.new
@@ -88,6 +106,97 @@ module OpenStudio
       # @param path [String] Path to the weather file or folder.
       def weather_file=(file)
         @weather_file[:file] = file
+      end
+
+      # Set the value for 'download_zip'
+      #
+      # @param value [Boolean] The value for 'download_zip'
+      def download_zip=(value)
+        if [true, false].include?(value)
+          @download_zip = value
+        else
+          raise ArgumentError, "Invalid value for 'download_zip'. Only true or false allowed."
+        end
+      end
+      
+      # Set the value for 'download_reports'
+      #
+      # @param value [Boolean] The value for 'download_reports'
+      def download_reports=(value)
+        if [true, false].include?(value)
+          @download_reports = value
+        else
+          raise ArgumentError, "Invalid value for 'download_reports'. Only true or false allowed."
+        end
+      end
+      
+      # Set the value for 'download_osw'
+      #
+      # @param value [Boolean] The value for 'download_osw'
+      def download_osw=(value)
+        if [true, false].include?(value)
+          @download_osw = value
+        else
+          raise ArgumentError, "Invalid value for 'download_osw'. Only true or false allowed."
+        end
+      end
+      
+      # Set the value for 'download_osm'
+      #
+      # @param value [Boolean] The value for 'download_osm'
+      def download_osm=(value)
+        if [true, false].include?(value)
+          @download_osm = value
+        else
+          raise ArgumentError, "Invalid value for 'download_osm'. Only true or false allowed."
+        end
+      end
+
+      # Set the value for 'cli_debug'
+      #
+      # @param value [Boolean] The value for 'cli_debug'
+      def cli_debug=(value)
+        @cli_debug = value
+      end
+
+      # Set the value for 'cli_verbose'
+      #
+      # @param value [Boolean] The value for 'cli_verbose'
+      def cli_verbose=(value)
+        @cli_verbose = value
+      end
+
+      # Set the value for 'run_workflow_timeout'
+      #
+      # @param value [Integer] The value for 'run_workflow_timeout'
+      def run_workflow_timeout=(value)
+        if value.is_a?(Integer)
+          @run_workflow_timeout = value
+        else
+          raise ArgumentError, "Invalid value for 'run_workflow_timeout'. Only integer values allowed."
+        end
+      end
+
+      # Set the value for 'initialize_worker_timeout'
+      #
+      # @param value [Integer] The value for 'initialize_worker_timeout'
+      def initialize_worker_timeout=(value)
+        if value.is_a?(Integer)
+          @initialize_worker_timeout = value
+        else
+          raise ArgumentError, "Invalid value for 'initialize_worker_timeout'. Only integer values allowed."
+        end
+      end
+
+      # Set the value for 'upload_results_timeout'
+      #
+      # @param value [Integer] The value for 'upload_results_timeout'
+      def upload_results_timeout=(value)
+        if value.is_a?(Integer)
+          @upload_results_timeout = value
+        else
+          raise ArgumentError, "Invalid value for 'upload_results_timeout'. Only integer values allowed."
+        end
       end
 
       # Add an output of interest to the problem formulation
@@ -203,11 +312,16 @@ module OpenStudio
           end
 
           h[:analysis][:file_format_version] = version
-          h[:analysis][:cli_debug] = "--debug"
-          h[:analysis][:cli_verbose] = "--verbose"
-          h[:analysis][:run_workflow_timeout] = 28800
-          h[:analysis][:upload_results_timeout] = 28800
-          h[:analysis][:initialize_worker_timeout] = 28800
+          h[:analysis][:cli_debug] = @cli_debug
+          h[:analysis][:cli_verbose] = @cli_verbose
+          h[:analysis][:run_workflow_timeout] = @run_workflow_timeout
+          h[:analysis][:upload_results_timeout] = @upload_results_timeout
+          h[:analysis][:initialize_worker_timeout] = @initialize_worker_timeout
+          h[:analysis][:download_zip] = @download_zip
+          h[:analysis][:download_reports] = @download_reports
+          h[:analysis][:download_osw] = @download_osw
+          h[:analysis][:download_osm] = @download_osm
+
           #-BLB I dont think this does anything. server_scripts are run if they are in 
           #the /scripts/analysis or /scripts/data_point directories
           #but nothing is ever checked in the OSA.

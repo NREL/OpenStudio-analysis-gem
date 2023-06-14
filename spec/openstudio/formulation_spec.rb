@@ -188,7 +188,79 @@ describe OpenStudio::Analysis::Formulation do
 
     a.seed_model = 'spec/files/small_seed.osm'
     a.weather_file = 'spec/files/partial_weather.epw'
+    
+    # check value of download_zip
+    expect(a.download_zip).to be true
+    expect(a.to_hash[:analysis][:download_zip]).to match true
+    a.download_zip = false
+    expect(a.download_zip).to be false
+    expect(a.to_hash[:analysis][:download_zip]).to match false
+    expect { a.download_zip='bad' }.to raise_error(ArgumentError)
+    
+    # check value of download_reports
+    expect(a.download_reports).to be true
+    expect(a.to_hash[:analysis][:download_reports]).to match true
+    a.download_reports = false
+    expect(a.download_reports).to be false
+    expect(a.to_hash[:analysis][:download_reports]).to match false
+    expect { a.download_reports='bad' }.to raise_error(ArgumentError)
+    
+    # check value of download_osw
+    expect(a.download_osw).to be true
+    expect(a.to_hash[:analysis][:download_osw]).to match true
+    a.download_osw = false
+    expect(a.download_osw).to be false
+    expect(a.to_hash[:analysis][:download_osw]).to match false
+    expect { a.download_osw='bad' }.to raise_error(ArgumentError)
+    
+    # check value of download_osm
+    expect(a.download_osm).to be true
+    expect(a.to_hash[:analysis][:download_osm]).to match true
+    a.download_osm = false
+    expect(a.download_osm).to be false
+    expect(a.to_hash[:analysis][:download_osm]).to match false
+    expect { a.download_osm='bad' }.to raise_error(ArgumentError)
 
+    # check value of cli_debug
+    expect(a.cli_debug).to eq "--debug"
+    expect(a.to_hash[:analysis][:cli_debug]).to eq "--debug"
+    a.cli_debug = ""
+    expect(a.cli_debug).to eq ""
+    expect(a.to_hash[:analysis][:cli_debug]).to eq ""
+    # we dont need to check for bad values since only the string --debug or '' are processed server side
+    
+    # check value of cli_verbose
+    expect(a.cli_verbose).to eq "--verbose"
+    expect(a.to_hash[:analysis][:cli_verbose]).to eq "--verbose"
+    a.cli_verbose = ""
+    expect(a.cli_verbose).to eq ""
+    expect(a.to_hash[:analysis][:cli_verbose]).to eq ""
+    # we dont need to check for bad values since only the string --verbose or '' are processed server side
+
+    # check value of run_workflow_timeout
+    expect(a.run_workflow_timeout).to eq 28800
+    expect(a.to_hash[:analysis][:run_workflow_timeout]).to eq 28800
+    a.run_workflow_timeout = 0
+    expect(a.run_workflow_timeout).to eq 0
+    expect(a.to_hash[:analysis][:run_workflow_timeout]).to eq 0
+    expect { a.run_workflow_timeout='bad' }.to raise_error(ArgumentError)
+
+    # check value of initialize_worker_timeout
+    expect(a.initialize_worker_timeout).to eq 28800
+    expect(a.to_hash[:analysis][:initialize_worker_timeout]).to eq 28800
+    a.initialize_worker_timeout = 0
+    expect(a.initialize_worker_timeout).to eq 0
+    expect(a.to_hash[:analysis][:initialize_worker_timeout]).to eq 0
+    expect { a.initialize_worker_timeout='bad' }.to raise_error(ArgumentError)
+
+    # check value of upload_results_timeout
+    expect(a.upload_results_timeout).to eq 28800
+    expect(a.to_hash[:analysis][:upload_results_timeout]).to eq 28800
+    a.upload_results_timeout = 0
+    expect(a.upload_results_timeout).to eq 0
+    expect(a.to_hash[:analysis][:upload_results_timeout]).to eq 0
+    expect { a.upload_results_timeout='bad' }.to raise_error(ArgumentError)
+    
     expect(a.seed_model.first).to eq 'spec/files/small_seed.osm'
 
     expect(a.to_hash[:analysis][:problem][:algorithm][:objective_functions]).to match ['total_natural_gas']
