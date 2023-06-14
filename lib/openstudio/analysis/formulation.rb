@@ -30,7 +30,9 @@ module OpenStudio
       attr_accessor :algorithm
       attr_accessor :osw_path
       attr_accessor :download_zip
-
+      attr_accessor :download_reports
+      attr_accessor :download_osw
+      attr_accessor :download_osm
       # the attributes below are used for packaging data into the analysis zip file
       attr_reader :weather_files
       attr_reader :seed_models
@@ -53,6 +55,9 @@ module OpenStudio
         @seed_model = SeedModel.new
         @algorithm = OpenStudio::Analysis::AlgorithmAttributes.new
         @download_zip = true
+        @download_reports = true
+        @download_osw = true
+        @download_osm = true
 
         # Analysis Zip attributes
         @weather_files = SupportFiles.new
@@ -100,6 +105,39 @@ module OpenStudio
           @download_zip = value
         else
           raise ArgumentError, "Invalid value for 'download_zip'. Only true or false allowed."
+        end
+      end
+      
+      # Set the value for 'download_reports'
+      #
+      # @param value [Boolean] The value for 'download_reports'
+      def download_reports=(value)
+        if [true, false].include?(value)
+          @download_reports = value
+        else
+          raise ArgumentError, "Invalid value for 'download_reports'. Only true or false allowed."
+        end
+      end
+      
+      # Set the value for 'download_osw'
+      #
+      # @param value [Boolean] The value for 'download_osw'
+      def download_osw=(value)
+        if [true, false].include?(value)
+          @download_osw = value
+        else
+          raise ArgumentError, "Invalid value for 'download_osw'. Only true or false allowed."
+        end
+      end
+      
+      # Set the value for 'download_osm'
+      #
+      # @param value [Boolean] The value for 'download_osm'
+      def download_osm=(value)
+        if [true, false].include?(value)
+          @download_osm = value
+        else
+          raise ArgumentError, "Invalid value for 'download_osm'. Only true or false allowed."
         end
       end
   
@@ -222,6 +260,10 @@ module OpenStudio
           h[:analysis][:upload_results_timeout] = 28800
           h[:analysis][:initialize_worker_timeout] = 28800
           h[:analysis][:download_zip] = @download_zip
+          h[:analysis][:download_reports] = @download_reports
+          h[:analysis][:download_osw] = @download_osw
+          h[:analysis][:download_osm] = @download_osm
+
           #-BLB I dont think this does anything. server_scripts are run if they are in 
           #the /scripts/analysis or /scripts/data_point directories
           #but nothing is ever checked in the OSA.
