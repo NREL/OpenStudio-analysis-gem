@@ -4,6 +4,8 @@ OpenStudio(R) Analysis Gem Change Log
 Version 1.3.4
 -------------
 * Update licenses
+* Add download_zip, download_osm, download_osw, download_reports attributes to OSA
+* Add cli_verbose, cli_debug, initialize_worker_timeout, run_workflow_timeout, upload_results_timeout attributes to OSA
 
 Version 1.3.3
 -------------
