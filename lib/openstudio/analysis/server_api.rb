@@ -208,8 +208,8 @@ module OpenStudio
         begin
           resp = @conn.get do |req|
             req.url 'status.json'
-            req.options.timeout = 120
-            req.options.open_timeout = 120
+            req.options.timeout = 300
+            req.options.open_timeout = 300
           end
 
           if resp.status == 200
