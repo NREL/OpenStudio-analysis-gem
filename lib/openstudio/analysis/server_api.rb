@@ -31,6 +31,8 @@ module OpenStudio
         # create connection with basic capabilities
         @conn = Faraday.new(url: @hostname) do |faraday|
           faraday.request :url_encoded # form-encode POST params
+          faraday.options.timeout = 300
+          faraday.options.open_timeout = 300
           faraday.use Faraday::Response::Logger, @logger
           # faraday.response @logger # log requests to STDOUT
           faraday.adapter Faraday.default_adapter # make requests with Net::HTTP
