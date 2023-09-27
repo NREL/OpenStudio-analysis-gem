@@ -101,13 +101,17 @@ module OpenStudio
 
         # TODO: make this a display name and a machine name
         project_hash = { project: { name: (options[:project_name]).to_s } }
-
-        response = @conn.post do |req|
-          req.url '/projects.json'
-          req.headers['Content-Type'] = 'application/json'
-          req.body = project_hash.to_json
+        begin
+          response = @conn.post do |req|
+            req.url '/projects.json'
+            req.headers['Content-Type'] = 'application/json'
+            req.body = project_hash.to_json
+          end
+          puts "response.status: #{response.status}"
+          puts response.inspect
+        rescue Net::OpenTimeout => e
+          puts "Error: #{e.message}"
         end
-
         if response.status == 201
           project_id = JSON.parse(response.body)['_id']
 
