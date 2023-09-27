@@ -110,7 +110,7 @@ module OpenStudio
           puts "response.status: #{response.status}"
           puts response.inspect
         rescue Net::OpenTimeout => e
-          puts "Error: #{e.message}"
+          puts "new_project OpenTimeout: #{e.message}"
         end
         if response.status == 201
           project_id = JSON.parse(response.body)['_id']
@@ -215,13 +215,16 @@ module OpenStudio
             req.options.timeout = 300
             req.options.open_timeout = 300
           end
-
+          puts "machine_status resp.status: #{resp.status}"
+          puts resp.inspect
           if resp.status == 200
             j = JSON.parse resp.body, symbolize_names: true
             status = j if j
           end
-        rescue Faraday::ConnectionFailed
-        rescue Net::ReadTimeout
+        rescue Faraday::ConnectionFailed => e
+          puts "machine_Status ConnectionFailed: #{e.message}"
+        rescue Net::ReadTimeout => e
+          puts "machine_Status ReadTimeout: #{e.message}"
         end
 
         status
