@@ -33,6 +33,7 @@ module OpenStudio
           faraday.request :url_encoded # form-encode POST params
           faraday.options.timeout = 300
           faraday.options.open_timeout = 300
+          faraday.options.write_timeout = 1800
           faraday.use Faraday::Response::Logger, @logger
           # faraday.response @logger # log requests to STDOUT
           faraday.adapter Faraday.default_adapter # make requests with Net::HTTP
@@ -44,6 +45,7 @@ module OpenStudio
           faraday.request :url_encoded # form-encode POST params
           faraday.options.timeout = 300
           faraday.options.open_timeout = 300
+          faraday.options.write_timeout = 1800
           faraday.use Faraday::Response::Logger, @logger
           # faraday.response :logger # log requests to STDOUT
           faraday.adapter Faraday.default_adapter # make requests with Net::HTTP
@@ -477,7 +479,8 @@ module OpenStudio
           req.url "projects/#{project_id}/analyses.json"
           req.headers['Content-Type'] = 'application/json'
           req.body = formulation_json.to_json
-          req.options[:timeout] = 600 # seconds
+          req.options.timeout = 600 # seconds
+          req.options.write_timeout = 1800
         end
 
         if response.status == 201
@@ -497,7 +500,8 @@ module OpenStudio
 
           payload = { file: Faraday::UploadIO.new(options[:upload_file], 'application/zip') }
           response = @conn_multipart.post "analyses/#{analysis_id}/upload.json", payload do |req|
-            req.options[:timeout] = 1800 # seconds
+            req.options.timeout = 1800 # seconds
+            req.options.write_timeout = 1800
           end
 
           if response.status == 201
@@ -643,7 +647,8 @@ module OpenStudio
           req.url "analyses/#{analysis_id}/action.json"
           req.headers['Content-Type'] = 'application/json'
           req.body = options.to_json
-          req.options[:timeout] = 1800 # seconds
+          req.options.timeout = 1800 # seconds
+          req.options.write_timeout = 1800
         end
 
         if response.status == 200
