@@ -1,6 +1,10 @@
 OpenStudio(R) Analysis Gem Change Log
 ==================================
 
+Version 1.3.5
+-------------
+* Increase Timeouts and write_timeouts to deal with latencies for network related issues
+
 Version 1.3.4
 -------------
 * Update licenses
