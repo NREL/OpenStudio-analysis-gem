@@ -31,6 +31,9 @@ module OpenStudio
         # create connection with basic capabilities
         @conn = Faraday.new(url: @hostname) do |faraday|
           faraday.request :url_encoded # form-encode POST params
+          faraday.options.timeout = 300
+          faraday.options.open_timeout = 300
+          faraday.options.write_timeout = 1800
           faraday.use Faraday::Response::Logger, @logger
           # faraday.response @logger # log requests to STDOUT
           faraday.adapter Faraday.default_adapter # make requests with Net::HTTP
@@ -40,6 +43,9 @@ module OpenStudio
         @conn_multipart = Faraday.new(url: @hostname) do |faraday|
           faraday.request :multipart
           faraday.request :url_encoded # form-encode POST params
+          faraday.options.timeout = 300
+          faraday.options.open_timeout = 300
+          faraday.options.write_timeout = 1800
           faraday.use Faraday::Response::Logger, @logger
           # faraday.response :logger # log requests to STDOUT
           faraday.adapter Faraday.default_adapter # make requests with Net::HTTP
@@ -97,13 +103,17 @@ module OpenStudio
 
         # TODO: make this a display name and a machine name
         project_hash = { project: { name: (options[:project_name]).to_s } }
-
-        response = @conn.post do |req|
-          req.url '/projects.json'
-          req.headers['Content-Type'] = 'application/json'
-          req.body = project_hash.to_json
+        begin
+          response = @conn.post do |req|
+            req.url '/projects.json'
+            req.headers['Content-Type'] = 'application/json'
+            req.body = project_hash.to_json
+          end
+          puts "response.status: #{response.status}"
+          puts response.inspect
+        rescue Net::OpenTimeout => e
+          puts "new_project OpenTimeout: #{e.message}"
         end
-
         if response.status == 201
           project_id = JSON.parse(response.body)['_id']
 
@@ -204,16 +214,19 @@ module OpenStudio
         begin
           resp = @conn.get do |req|
             req.url 'status.json'
-            req.options.timeout = 120
-            req.options.open_timeout = 120
+            req.options.timeout = 300
+            req.options.open_timeout = 300
           end
-
+          puts "machine_status resp.status: #{resp.status}"
+          puts resp.inspect
           if resp.status == 200
             j = JSON.parse resp.body, symbolize_names: true
             status = j if j
           end
-        rescue Faraday::ConnectionFailed
-        rescue Net::ReadTimeout
+        rescue Faraday::ConnectionFailed => e
+          puts "machine_Status ConnectionFailed: #{e.message}"
+        rescue Net::ReadTimeout => e
+          puts "machine_Status ReadTimeout: #{e.message}"
         end
 
         status
@@ -466,7 +479,8 @@ module OpenStudio
           req.url "projects/#{project_id}/analyses.json"
           req.headers['Content-Type'] = 'application/json'
           req.body = formulation_json.to_json
-          req.options[:timeout] = 600 # seconds
+          req.options.timeout = 600 # seconds
+          req.options.write_timeout = 1800
         end
 
         if response.status == 201
@@ -486,7 +500,8 @@ module OpenStudio
 
           payload = { file: Faraday::UploadIO.new(options[:upload_file], 'application/zip') }
           response = @conn_multipart.post "analyses/#{analysis_id}/upload.json", payload do |req|
-            req.options[:timeout] = 1800 # seconds
+            req.options.timeout = 1800 # seconds
+            req.options.write_timeout = 1800
           end
 
           if response.status == 201
@@ -632,7 +647,8 @@ module OpenStudio
           req.url "analyses/#{analysis_id}/action.json"
           req.headers['Content-Type'] = 'application/json'
           req.body = options.to_json
-          req.options[:timeout] = 1800 # seconds
+          req.options.timeout = 1800 # seconds
+          req.options.write_timeout = 1800
         end
 
         if response.status == 200
