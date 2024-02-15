@@ -23,7 +23,7 @@ Gem::Specification.new do |s|
 
   s.required_ruby_version = '~> 2.7.0'
 
-  s.add_dependency 'bcl', '~> 0.7.0'
+  s.add_dependency 'bcl', '~> 0.7.1'
   s.add_dependency 'dencity', '~> 0.1.0'
   s.add_dependency 'faraday', '~> 1.0.1'
   s.add_dependency 'roo', '~> 2.8.3'
@@ -33,6 +33,6 @@ Gem::Specification.new do |s|
   s.add_development_dependency 'json-schema', '~> 2.8.0'
   s.add_development_dependency 'rake', '~> 13.0'
   s.add_development_dependency 'rspec', '~> 3.9'
-  s.add_development_dependency 'rubocop', '~> 0.54.0'
+  s.add_development_dependency 'rubocop', '~> 1.15.0'
   s.add_development_dependency 'rubocop-checkstyle_formatter', '~> 0.4.0'
 end
