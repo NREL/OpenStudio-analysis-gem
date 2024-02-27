@@ -324,11 +324,11 @@ module OpenStudio
           h[:analysis][:download_reports] = @download_reports
           h[:analysis][:download_osw] = @download_osw
           h[:analysis][:download_osm] = @download_osm
-          # If there are Gemfiles, then set the hash to use the :gemfile, and also store the files in the root
-          # of the zipfile
+          
+          # If there are Gemfiles, then set the hash to use the :gemfile. The zip file method will
+          # add them to the root of the zip file.
           if @gem_files.size.positive?
             h[:analysis][:gemfile] = true
-            # h[:analysis][:gemfiles] = @gem_files.map { |g| "./#{File.basename(g[:file])}" }
           else
             h[:analysis][:gemfile] = false
           end
@@ -336,7 +336,6 @@ module OpenStudio
           #-BLB I dont think this does anything. server_scripts are run if they are in 
           #the /scripts/analysis or /scripts/data_point directories
           #but nothing is ever checked in the OSA.
-          #
           h[:analysis][:server_scripts] = {}
 
           # This is a hack right now, but after the initial hash is created go back and add in the objective functions
@@ -725,7 +724,6 @@ module OpenStudio
 
           puts 'Adding Gemfiles'
           @gem_files.each do |f| 
-            
             puts "  Adding #{f[:file]}"
             zf.add(File.basename(f[:file]), f[:file])
           end
