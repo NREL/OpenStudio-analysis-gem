@@ -35,7 +35,20 @@ describe OpenStudio::Analysis::ServerScripts do
     
     @s.clear
     expect(@s.size).to eq 0
-    
   end
 
- end 
+  it 'should add a Gemfile' do
+    # test with an entire analysis workflow
+    osa = OpenStudio::Analysis.create('Name of an analysis')
+    
+    osa.gem_files.add('spec/files/gem_files/Gemfile')
+    osa.gem_files.add('spec/files/gem_files/openstudio-gems.gemspec')
+
+    os_json = osa.to_hash
+    puts JSON.pretty_generate(os_json)
+    expect(os_json[:analysis][:gemfile]).to be true
+
+    # not sure how to test with the zip...
+  end
+
+end 
