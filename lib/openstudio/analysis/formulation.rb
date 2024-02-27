@@ -38,6 +38,7 @@ module OpenStudio
       attr_accessor :initialize_worker_timeout
       attr_accessor :run_workflow_timeout
       attr_accessor :upload_results_timeout
+      
 
       # the attributes below are used for packaging data into the analysis zip file
       attr_reader :weather_files
@@ -46,6 +47,7 @@ module OpenStudio
       attr_reader :worker_finalizes
       attr_reader :libraries
       attr_reader :server_scripts
+      attr_reader :gem_files
 
       # Create an instance of the OpenStudio::Analysis::Formulation
       #
@@ -72,6 +74,7 @@ module OpenStudio
 
         # Analysis Zip attributes
         @weather_files = SupportFiles.new
+        @gem_files = SupportFiles.new
         @seed_models = SupportFiles.new
         @worker_inits = SupportFiles.new
         @worker_finalizes = SupportFiles.new
@@ -321,7 +324,15 @@ module OpenStudio
           h[:analysis][:download_reports] = @download_reports
           h[:analysis][:download_osw] = @download_osw
           h[:analysis][:download_osm] = @download_osm
-
+          # If there are Gemfiles, then set the hash to use the :gemfile, and also store the files in the root
+          # of the zipfile
+          if @gem_files.size.positive?
+            h[:analysis][:gemfile] = true
+            # h[:analysis][:gemfiles] = @gem_files.map { |g| "./#{File.basename(g[:file])}" }
+          else
+            h[:analysis][:gemfile] = false
+          end
+          
           #-BLB I dont think this does anything. server_scripts are run if they are in 
           #the /scripts/analysis or /scripts/data_point directories
           #but nothing is ever checked in the OSA.
@@ -334,6 +345,8 @@ module OpenStudio
           if h[:analysis][:problem][:algorithm]
             h[:analysis][:problem][:algorithm][:objective_functions] = ofs
           end
+
+          
 
           h
         else
@@ -710,6 +723,13 @@ module OpenStudio
             end
           end
 
+          puts 'Adding Gemfiles'
+          @gem_files.each do |f| 
+            
+            puts "  Adding #{f[:file]}"
+            zf.add(File.basename(f[:file]), f[:file])
+          end
+
           ## Measures
           puts 'Adding Measures'
           added_measures = []
@@ -825,6 +845,12 @@ module OpenStudio
               zf.add("scripts/worker_finalization/#{arg_file}", file)
               file.close
             end
+          end
+
+          puts 'Adding Gemfiles'
+          @gem_files.each do |f| 
+            puts "  Adding #{f}"
+            zf.add(File.basename(f), f)
           end
           
           ## Measures
