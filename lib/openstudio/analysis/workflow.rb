@@ -184,6 +184,29 @@ module OpenStudio
       end
       alias find_workflow_step find_measure
 
+      # Move a measure by its name to after another measure by its name, 
+      # error if there is no measure with the name. If no after measure
+      # name is passed, then it will be at the beginning
+      #
+      # @params measure_name [String] instance name of the measure
+      # @params after_measure_name [String] instance name of the measure to move after
+      def move_measure_after(measure_name, after_measure_name=nil)
+        measure = self.find_measure(measure_name)
+        raise "Could not find measure with name #{measure_name}" unless measure
+
+        if after_measure_name.nil?
+          # put the measure at the beginning
+          @items.insert(0, @items.delete(measure))
+        else
+          after_measure = self.find_measure(after_measure_name)
+          raise "Could not find measure with name #{after_measure_name}" unless after_measure
+
+          # the index will be the index of the after measure plus 1 or the len of the list
+          idx = [@items.index(after_measure)+1, @items.length-1].min
+          @items.insert(idx, @items.delete(measure))
+        end
+      end
+        
       # Return all the variables in the analysis as an array. The list that is returned is read only.
       #
       # @return [Array] All variables in the workflow
