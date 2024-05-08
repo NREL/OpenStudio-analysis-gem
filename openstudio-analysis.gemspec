@@ -33,6 +33,6 @@ Gem::Specification.new do |s|
   s.add_development_dependency 'json-schema', '~> 2.8.1'
   s.add_development_dependency 'rake', '~> 13.0'
   s.add_development_dependency 'rspec', '~> 3.10'
-  s.add_development_dependency 'rubocop', '~> 1.50.0'
-  s.add_development_dependency 'rubocop-checkstyle_formatter', '~> 0.6.0'
+  s.add_development_dependency 'rubocop', '1.50'
+  s.add_development_dependency 'rubocop-checkstyle_formatter', '0.6.0'
 end
