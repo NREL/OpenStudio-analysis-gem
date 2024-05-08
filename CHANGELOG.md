@@ -1,6 +1,10 @@
 OpenStudio(R) Analysis Gem Change Log
 ==================================
 
+Version 1.4.0
+-------------
+* Ruby 3.2 and OpenStudio 3.8.0 
+
 Version 1.3.7
 -------------
 * Add move_measure_after()
