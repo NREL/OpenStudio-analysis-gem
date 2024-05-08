@@ -62,6 +62,41 @@ describe OpenStudio::Analysis::Workflow do
     expect(m.name).to eq 'thermostat_2'
   end
 
+  it 'should find move a workflow step to after a named step' do
+    @w.clear
+
+    p = 'spec/files/measures/SetThermostatSchedules'
+    m1 = @w.add_measure_from_path('thermostat_1', 'thermostat', p)
+    m2 = @w.add_measure_from_path('thermostat_2', 'thermostat 2', p)
+    m3 = @w.add_measure_from_path('thermostat_3', 'thermostat 3', p)
+    m4 = @w.add_measure_from_path('thermostat_4', 'thermostat 4', p)
+
+    measure_names = @w.measures.map(&:name)
+    expect(measure_names).to eq ['thermostat_1', 'thermostat_2', 'thermostat_3', 'thermostat_4']
+    # find the index where the measure is in the workflow
+    @w.move_measure_after('thermostat_4', 'thermostat_2')
+    # @w.measures.insert(@w.measures.index(m2), @w.measures.delete_at(@w.measures.index(m4)))
+    # should return thermostat, thermostat_2, thermostat_4, thermostat_3
+
+    measure_names = @w.measures.map(&:name)
+    expect(measure_names).to eq ['thermostat_1', 'thermostat_2', 'thermostat_4',  'thermostat_3']
+
+    # now move it to the end
+    @w.move_measure_after('thermostat_4', 'thermostat_3')
+    measure_names = @w.measures.map(&:name)
+    expect(measure_names).to eq ['thermostat_1', 'thermostat_2', 'thermostat_3', 'thermostat_4']
+    
+    # now move it to the beginning -- do not say the after measure
+    @w.move_measure_after('thermostat_4')
+    measure_names = @w.measures.map(&:name)
+    expect(measure_names).to eq ['thermostat_4', 'thermostat_1', 'thermostat_2', 'thermostat_3']
+    
+    # TODO: verify that errors are thrown when measures do not exist
+    
+  end
+
+
+
   it 'should find a workflow step and make a variable' do
     @w.clear
 
