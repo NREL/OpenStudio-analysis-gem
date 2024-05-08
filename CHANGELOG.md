@@ -1,6 +1,11 @@
 OpenStudio(R) Analysis Gem Change Log
 ==================================
 
+Version 1.3.7
+-------------
+* Add move_measure_after()
+* Add custom Gemfile to zip: osa.gem_files.add('spec/files/gem_files/Gemfile')
+  
 Version 1.3.6
 -------------
 * Bump BCL and Rubocop
