@@ -12,9 +12,9 @@ jobs:
     - name: ruby-install
       shell: bash
       run: "sudo apt install -y ruby && ruby -v" # ruby anye tests here when ready 
-  ubuntu-2004: # ruby 2.7 workflow
+  ubuntu-2004: # ruby 3.2 workflow in 22.04
     if: github.event.pull_request.base.ref != '1.1.X-LTS'  # check target branch of pr
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     steps:
     -
       name: Check out repository
