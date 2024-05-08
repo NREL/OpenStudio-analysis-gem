@@ -12,13 +12,48 @@ jobs:
     - name: ruby-install
       shell: bash
       run: "sudo apt install -y ruby && ruby -v" # ruby anye tests here when ready 
-  ubuntu-2004: # ruby 3.2 workflow in 22.04
+  ubuntu-2004: # ruby 2.7 workflow
+    if: github.event.pull_request.base.ref != '1.1.X-LTS'  # check target branch of pr
+    runs-on: ubuntu-20.04
+    steps:
+    -
+      name: Check out repository
+      uses: actions/checkout@v4
+    -
+      name: Display system info
+      run: |
+        ruby --version
+        docker --version
+        docker-compose --version
+    -
+      name: Start OpenStudio for testing Server API
+      run: |
+        echo "Not yet implemented"
+    -
+      name: Run tests in Docker
+      env:
+        COVERALLS_REPO_TOKEN: ${{ secrets.COVERALLS_REPO_TOKEN }}
+      run: |
+        docker run -e COVERALLS_REPO_TOKEN=${COVERALLS_REPO_TOKEN} \
+                   -v $(pwd):/var/simdata/openstudio  \
+                   nrel/openstudio:3.7.0 \
+                   /bin/bash -c "bundle install && bundle exec rake"
+  ubuntu-2204: # ruby 3.2 workflow in 22.04
     if: github.event.pull_request.base.ref != '1.1.X-LTS'  # check target branch of pr
     runs-on: ubuntu-22.04
     steps:
     -
       name: Check out repository
       uses: actions/checkout@v4
+    -
+      name: Install RVM and Ruby
+      run: | 
+        gpg --keyserver hkp://pool.sks-keyservers.net --recv-keys 409B6B1796C275462A1703113804BB82D39DC0E3 7D2BAF1CF37B13E2069D6956105BD0E739499BDB
+        curl -sSL https://get.rvm.io | bash -s stable
+        source ~/.rvm/scripts/rvm
+        rvm install 3.2
+        rvm use 3.2 --default
+        ruby -v
     -
       name: Display system info
       run: |
