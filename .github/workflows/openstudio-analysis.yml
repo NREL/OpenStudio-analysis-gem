@@ -36,5 +36,5 @@ jobs:
       run: |
         docker run -e COVERALLS_REPO_TOKEN=${COVERALLS_REPO_TOKEN} \
                    -v $(pwd):/var/simdata/openstudio  \
-                   nrel/openstudio:develop \
+                   nrel/openstudio:3.7.0 \
                    /bin/bash -c "bundle install && bundle exec rake"
