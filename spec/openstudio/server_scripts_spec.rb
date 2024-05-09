@@ -16,7 +16,7 @@ describe OpenStudio::Analysis::ServerScripts do
     expect(@s.add(f, ['one', 'two'])).to be true
 
     expect(@s.size).to eq 1
-    expect(File.exists?(@s.files.first[:file])).to be true
+    expect(File.exist?(@s.files.first[:file])).to be true
 
     expect(@s[0][:init_or_final]).to eq 'initialization'
     expect(@s[0][:server_or_data_point]).to eq 'data_point'
