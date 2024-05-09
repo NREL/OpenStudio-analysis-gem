@@ -13,7 +13,7 @@ jobs:
       shell: bash
       run: "sudo apt install -y ruby && ruby -v" # ruby anye tests here when ready 
   ubuntu-2004: # ruby 2.7 workflow
-    if: github.event.pull_request.base.ref != '1.1.X-LTS'  # check target branch of pr
+    if: github.event.pull_request.base.ref == '1.3.X-LTS'  # check target branch of pr
     runs-on: ubuntu-20.04
     steps:
     -
@@ -38,3 +38,28 @@ jobs:
                    -v $(pwd):/var/simdata/openstudio  \
                    nrel/openstudio:3.7.0 \
                    /bin/bash -c "bundle install && bundle exec rake"
+  ubuntu-2204: # ruby 3.2 workflow in 22.04
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+      - name: Install Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '3.2'
+      - name: Display system info
+        run: |
+          ruby --version
+          docker --version
+          docker-compose --version
+      - name: Start OpenStudio for testing Server API
+        run: |
+          echo "Not yet implemented"
+      - name: Run tests in Docker
+        env:
+          COVERALLS_REPO_TOKEN: ${{ secrets.COVERALLS_REPO_TOKEN }}
+        run: |
+          docker run -e COVERALLS_REPO_TOKEN=${COVERALLS_REPO_TOKEN} \
+                     -v $(pwd):/var/simdata/openstudio \
+                     nrel/openstudio:develop \
+                     /bin/bash -c "bundle install && bundle exec rake"

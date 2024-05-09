@@ -605,7 +605,7 @@ module OpenStudio
           # check if weather file exists.  use abs path.  remove leading ./ from @weather_file path if there.
           # check if path is already absolute
           if @weather_file[:file]
-            if File.exists?(@weather_file[:file])
+            if File.exist?(@weather_file[:file])
               puts "  Adding #{@weather_file[:file]}"
               #zf.add("weather/#{File.basename(@weather_file[:file])}", @weather_file[:file])
               base_name = File.basename(@weather_file[:file], ".*")
@@ -622,7 +622,7 @@ module OpenStudio
                zf.add("weather/#{File.basename(file_path)}", file_path)
             end
             # make absolute path and check for file  
-            elsif File.exists?(File.join(osw_full_path,@weather_file[:file].sub(/^\.\//, '')))
+            elsif File.exist?(File.join(osw_full_path,@weather_file[:file].sub(/^\.\//, '')))
               puts "  Adding: #{File.join(osw_full_path,@weather_file[:file].sub(/^\.\//, ''))}"
               #zf.add("weather/#{File.basename(@weather_file[:file])}", File.join(osw_full_path,@weather_file[:file].sub(/^\.\//, '')))
               base_name = File.basename(@weather_file[:file].sub(/^\.\//, ''), ".*")
@@ -647,7 +647,7 @@ module OpenStudio
           #check if seed file exists.  use abs path.  remove leading ./ from @seed_model path if there.
           #check if path is already absolute
           if @seed_model[:file]
-            if File.exists?(@seed_model[:file])
+            if File.exist?(@seed_model[:file])
               puts "  Adding #{@seed_model[:file]}"
               zf.add("seeds/#{File.basename(@seed_model[:file])}", @seed_model[:file])
               if all_seed_files
@@ -661,7 +661,7 @@ module OpenStudio
                 end              
               end
             #make absolute path and check for file  
-            elsif File.exists?(File.join(osw_full_path,@seed_model[:file].sub(/^\.\//, '')))
+            elsif File.exist?(File.join(osw_full_path,@seed_model[:file].sub(/^\.\//, '')))
               puts "  Adding #{File.join(osw_full_path,@seed_model[:file].sub(/^\.\//, ''))}"
               zf.add("seeds/#{File.basename(@seed_model[:file])}", File.join(osw_full_path,@seed_model[:file].sub(/^\.\//, '')))
               if all_seed_files
