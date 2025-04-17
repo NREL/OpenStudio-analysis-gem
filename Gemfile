@@ -4,6 +4,7 @@ gemspec
 
 gem 'colored', '~> 1.2'
 gem 'openstudio-aws', '~> 0.4.2'
+gem 'bcl', :github => 'NREL/bcl-gem', :ref => 'ruby_337'
 
 group :test do
   # Don't install coveralls on window because requires devkit for json
