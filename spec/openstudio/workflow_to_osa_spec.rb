@@ -211,7 +211,12 @@ describe 'Convert_an_OSW_to_OSA' do
     
     #validate OSA against schema
     File.write('spec/files/osw_project/analysis.json',JSON.pretty_generate(a.to_hash))
-    osa_schema = JSON.parse(File.read('spec/schema/osa_server_schema.json'), symbolize_names: true)
+    raw = File.open(
+      'spec/schema/osa_server_schema.json',
+      'r:bom|utf-8'
+    ) { |f| f.read }
+    
+    osa_schema = JSON.parse(raw, symbolize_names: true)
     errors = JSON::Validator.fully_validate(osa_schema, a.to_hash)
     expect(errors.empty?).to eq(true), "OSA is not valid, #{errors}"
     
