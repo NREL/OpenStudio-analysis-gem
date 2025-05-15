@@ -43,14 +43,6 @@ jobs:
     steps:
       - name: Check out repository
         uses: actions/checkout@v4
-      - name: Set up Docker Compose
-        uses: docker/setup-compose-action@v1
-        with:
-          version: 'latest'
-
-      - name: Start services
-        run: docker compose up -d
-
       - name: Install Ruby
         uses: ruby/setup-ruby@v1
         with:
@@ -59,7 +51,7 @@ jobs:
         run: |
           ruby --version
           docker --version
-          docker-compose --version
+          docker compose --version
       - name: Start OpenStudio for testing Server API
         run: |
           echo "Not yet implemented"
