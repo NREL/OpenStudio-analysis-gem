@@ -43,12 +43,13 @@ jobs:
     steps:
       - name: Check out repository
         uses: actions/checkout@v4
-      - name: Install Docker Compose v1
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y docker-compose-plugin
-          # symlink the CLI-plugin into /usr/local/bin
-          sudo ln -s /usr/libexec/docker/cli-plugins/docker-compose /usr/local/bin/docker-compose
+      - name: Set up Docker Compose
+        uses: docker/setup-compose-action@v1
+        with:
+          version: 'latest'
+
+      - name: Start services
+        run: docker compose up -d
 
       - name: Install Ruby
         uses: ruby/setup-ruby@v1
