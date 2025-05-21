@@ -51,7 +51,7 @@ jobs:
         run: |
           ruby --version
           docker --version
-          docker-compose --version
+          docker compose --version
       - name: Start OpenStudio for testing Server API
         run: |
           echo "Not yet implemented"
