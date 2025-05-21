@@ -1,6 +1,10 @@
 OpenStudio(R) Analysis Gem Change Log
 ==================================
 
+Version 1.5.0
+-------------
+* bump BCL
+
 Version 1.4.0
 -------------
 * Ruby 3.2 and OpenStudio 3.8.0 
