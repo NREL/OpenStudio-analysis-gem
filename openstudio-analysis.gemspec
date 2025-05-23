@@ -30,7 +30,7 @@ Gem::Specification.new do |s|
   s.add_dependency 'rubyzip', '~> 2.3.0'
   s.add_dependency 'semantic', '~> 1.4'
 
-  s.add_development_dependency 'json-schema', '~> 2.8.1'
+  s.add_development_dependency 'json-schema', '~> 4'
   s.add_development_dependency 'rake', '~> 13.0'
   s.add_development_dependency 'rspec', '~> 3.10'
   s.add_development_dependency 'rubocop', '1.50'
