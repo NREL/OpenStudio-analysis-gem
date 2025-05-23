@@ -1,6 +1,10 @@
 OpenStudio(R) Analysis Gem Change Log
 ==================================
 
+Version 1.5.1
+-------------
+* bump json-schema
+
 Version 1.5.0
 -------------
 * bump BCL
