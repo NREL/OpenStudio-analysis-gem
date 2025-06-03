@@ -1,6 +1,10 @@
 OpenStudio(R) Analysis Gem Change Log
 ==================================
 
+Version 1.5.2
+-------------
+* bump faraday to remove deprecation warnings
+
 Version 1.5.1
 -------------
 * bump json-schema
