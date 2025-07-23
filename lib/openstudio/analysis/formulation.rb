@@ -811,7 +811,7 @@ module OpenStudio
             else
               # just add the file to the zip
               puts "  Adding #{lib[:file]}"
-              zf.add(lib[:file], "./lib/#{File.basename(lib[:file])}", lib[:file])
+              zf.add("./lib/#{File.basename(lib[:file])}", lib[:file])
             end
           end
 
